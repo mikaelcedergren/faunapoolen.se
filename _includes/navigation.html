@@ -9,6 +9,7 @@
         {% assign contact_url = '/contact/' %}
         {% assign contact_label = 'Kontakta oss' %}
       {% endif %}
+      {% include language-switch.html class="hidden-desktop" %}
       <a href="{{ contact_url | relative_url }}" class="button hidden-desktop">{{ contact_label }}</a>
       <label for="menu-state" tabindex="0">
         <span class="material-symbols-outlined">menu</span>
@@ -34,9 +35,11 @@
             {% when 'Kontakta oss' %}{% assign item_label = 'Contact us' %}
             {% endcase %}
           {% endif %}
+          {% if item.style == 'button' %}
+            {% include language-switch.html class="hidden-responsive" %}
+          {% endif %}
         <a href="{{ item_url | relative_url }}"{% if item.style %} class="{{ item.style }}"{% endif %}>{{ item_label }}</a>
         {% endfor %}
-        {% include language-switch.html %}
       </div>
     </div>
     <a href="{% if page.lang == 'en' %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}" class="logo">

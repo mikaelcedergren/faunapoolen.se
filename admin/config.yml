@@ -29,7 +29,7 @@ display_url: https://mikaelcedergren.github.io/faunapoolen.se
 media_folder: assets/media/uploads
 public_folder: /assets/media/uploads
 
-locale: sv
+locale: en
 
 collections:
   - label: Site settings

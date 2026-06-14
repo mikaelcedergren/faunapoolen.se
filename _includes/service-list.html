@@ -4,8 +4,12 @@
 {% if service_items.size > 0 %}
 <section>
   <div class="section-content">
-    <div class="grid-row gap-small grid-3-columns">
-      {% for service in service_items %}
+    {% for service in service_items %}
+      {% assign row_index = forloop.index0 | modulo: 3 %}
+      {% if row_index == 0 %}
+      {% assign items_remaining = service_items.size | minus: forloop.index0 %}
+    <div class="grid-row gap-small grid-3-columns{% if items_remaining > 3 %} mb-1{% endif %}">
+      {% endif %}
       {% assign service_url = service.listing_url | default: service.url %}
       <a href="{{ service_url | relative_url }}" class="grid-cell blur-box">
         <div>
@@ -16,8 +20,11 @@
           {% if service.summary %}<p>{{ service.summary }}</p>{% endif %}
         </div>
       </a>
-      {% endfor %}
+      {% assign row_end = forloop.index | modulo: 3 %}
+      {% if row_end == 0 or forloop.last %}
     </div>
+      {% endif %}
+    {% endfor %}
   </div>
 </section>
 {% endif %}
