@@ -1,0 +1,16 @@
+{% assign list_lang = include.lang | default: page.lang | default: 'sv' %}
+{% assign supplier_items = site.suppliers | where: 'lang', list_lang | where_exp: 'supplier', 'supplier.active != false' | sort: 'order' %}
+
+{% if supplier_items.size > 0 %}
+<section class="suppliers">
+  <div class="grid-row fixed section-content">
+    {% for supplier in supplier_items %}
+    <div class="grid-cell">
+      {% if supplier.website %}<a href="{{ supplier.website }}" target="_blank" rel="noopener">{% endif %}
+      {% if supplier.logo %}<img src="{{ supplier.logo | relative_url }}" alt="{{ supplier.name | escape }}">{% endif %}
+      {% if supplier.website %}</a>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

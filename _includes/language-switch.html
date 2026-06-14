@@ -1,0 +1,10 @@
+{% if page.alternate_url %}
+  {% if page.lang == 'en' %}
+    {% assign switch_label = 'Svenska' %}
+    {% assign switch_lang = 'sv' %}
+  {% else %}
+    {% assign switch_label = 'English' %}
+    {% assign switch_lang = 'en' %}
+  {% endif %}
+<a href="{{ page.alternate_url | relative_url }}" class="language-switch" data-lang-switch="{{ switch_lang }}">{{ switch_label }}</a>
+{% endif %}

@@ -1,0 +1,404 @@
+# Use DecapBridge PKCE auth.
+backend:
+  name: git-gateway
+  repo: mikaelcedergren/faunapoolen.se
+  branch: main
+  auth_type: pkce
+  base_url: https://auth.decapbridge.com
+  auth_endpoint: /sites/2f43576c-3361-443c-a60c-1b3f3f343c52/pkce
+  auth_token_endpoint: /sites/2f43576c-3361-443c-a60c-1b3f3f343c52/token
+  gateway_url: https://gateway.decapbridge.com
+  commit_messages:
+    create: Create {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    update: Update {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    delete: Delete {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    uploadMedia: Upload "{{path}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    deleteMedia: Delete "{{path}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    openAuthoring: Message {{message}} - {{author-name}} <{{author-login}}> via DecapBridge
+
+auth:
+  email_claim: email
+  first_name_claim: first_name
+  last_name_claim: last_name
+  avatar_url_claim: avatar_url
+
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+site_url: https://mikaelcedergren.github.io/faunapoolen.se
+display_url: https://mikaelcedergren.github.io/faunapoolen.se
+
+media_folder: assets/media/uploads
+public_folder: /assets/media/uploads
+
+locale: sv
+
+collections:
+  - label: Site settings
+    name: site_settings
+    editor:
+      preview: true
+    files:
+      - label: Global settings
+        name: settings
+        file: _data/settings.yml
+        fields:
+          - { label: Site name, name: site_name, widget: string, hint: The public name of the website. }
+          - { label: Default language, name: default_language, widget: select, options: [sv, en], hint: Swedish should remain the default. }
+          - { label: Production URL, name: production_url, widget: string, hint: Future live domain. }
+          - { label: Staging URL, name: staging_url, widget: string, hint: Current GitHub Pages staging URL. }
+          - label: Default SEO
+            name: default_seo
+            widget: object
+            fields:
+              - { label: Default SEO title, name: title, widget: string }
+              - { label: Default meta description, name: description, widget: text }
+          - label: Business details
+            name: business
+            widget: object
+            fields:
+              - { label: Business name, name: name, widget: string }
+              - { label: Phone, name: phone, widget: string, required: false }
+              - { label: Phone display text, name: phone_display, widget: string, required: false }
+              - { label: Phone tel link, name: phone_tel, widget: string, required: false }
+              - { label: Email, name: email, widget: string, required: false }
+              - { label: Region, name: region, widget: string, required: false }
+          - label: Social links
+            name: social
+            widget: object
+            fields:
+              - { label: Instagram, name: instagram, widget: string, required: false }
+              - { label: Facebook, name: facebook, widget: string, required: false }
+              - { label: LinkedIn, name: linkedin, widget: string, required: false }
+          - label: Forms
+            name: forms
+            widget: object
+            fields:
+              - { label: Formspree endpoint, name: formspree_endpoint, widget: string, required: false }
+          - label: Default CTA
+            name: cta
+            widget: object
+            fields:
+              - { label: Swedish heading, name: sv_heading, widget: string, required: false }
+              - { label: Swedish text, name: sv_text, widget: text, required: false }
+              - { label: Swedish button label, name: sv_button_label, widget: string, required: false }
+              - { label: Swedish button URL, name: sv_button_url, widget: string, required: false }
+              - { label: English heading, name: en_heading, widget: string, required: false }
+              - { label: English text, name: en_text, widget: text, required: false }
+              - { label: English button label, name: en_button_label, widget: string, required: false }
+              - { label: English button URL, name: en_button_url, widget: string, required: false }
+          - label: Analytics
+            name: analytics
+            widget: object
+            fields:
+              - { label: Google Ads ID, name: google_ads_id, widget: string, required: false }
+              - { label: Google Analytics ID, name: google_analytics_id, widget: string, required: false }
+          - label: Languages
+            name: languages
+            widget: list
+            fields:
+              - { label: Language code, name: code, widget: string }
+              - { label: Label, name: label, widget: string }
+              - { label: Root URL, name: root, widget: string }
+
+      - label: Navigation
+        name: navigation
+        file: _data/navigation.yml
+        fields:
+          - label: Main navigation
+            name: main
+            widget: list
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: URL, name: url, widget: string }
+              - { label: Order, name: order, widget: number, value_type: int }
+              - { label: Style, name: style, widget: select, options: ["", button], required: false }
+          - label: Footer navigation
+            name: footer
+            widget: list
+            required: false
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: URL, name: url, widget: string }
+              - { label: Order, name: order, widget: number, value_type: int, required: false }
+
+      - label: FAQ
+        name: faq
+        file: _data/faq.yml
+        fields:
+          - label: FAQ items
+            name: items
+            widget: list
+            fields:
+              - { label: ID, name: id, widget: string, hint: Stable reference used by pages. }
+              - { label: Question, name: question, widget: string }
+              - { label: Answer, name: answer, widget: markdown }
+              - { label: Order, name: order, widget: number, value_type: int, required: false }
+              - { label: Active, name: active, widget: boolean, default: true }
+
+      - label: Testimonials
+        name: testimonials
+        file: _data/testimonials.yml
+        fields:
+          - label: Testimonials
+            name: items
+            widget: list
+            fields:
+              - { label: ID, name: id, widget: string, hint: Stable reference used by pages. }
+              - { label: Quote, name: quote, widget: text }
+              - { label: Name, name: name, widget: string, required: false }
+              - { label: Role or location, name: role, widget: string, required: false }
+              - { label: Order, name: order, widget: number, value_type: int, required: false }
+              - { label: Active, name: active, widget: boolean, default: true }
+
+  - label: Pages
+    name: site_pages
+    folder: _site_pages
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: /assets/media/pages
+    public_folder: /assets/media/pages
+    editor:
+      preview: true
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Slug, name: slug, widget: string, hint: Controls the filename and can affect URLs. }
+      - { label: Page URL, name: permalink, widget: string, hint: Public URL. Existing Swedish URLs should usually stay unchanged. }
+      - { label: Language, name: lang, widget: select, options: [sv, en], default: sv }
+      - { label: Translation key, name: translation_key, widget: string, required: false, hint: Same key connects Swedish and English versions. }
+      - { label: Alternate language URL, name: alternate_url, widget: string, required: false }
+      - { label: Published, name: published, widget: boolean, default: true }
+      - { label: Order, name: order, widget: number, value_type: int, required: false }
+      - { label: SEO title, name: seo_title, widget: string, required: false }
+      - { label: Meta description, name: description, widget: text, required: false }
+      - { label: Canonical URL, name: canonical_url, widget: string, required: false }
+      - { label: Open Graph image, name: og_image, widget: image, required: false }
+      - { label: Hero label, name: hero_label, widget: string, required: false }
+      - { label: Hero title, name: hero_title, widget: string, required: false }
+      - { label: Hero text, name: hero_text, widget: text, required: false }
+      - { label: Hero image, name: hero_image, widget: image, required: false }
+      - { label: Hero image alt text, name: hero_image_alt, widget: string, required: false }
+      - label: Structured sections
+        name: sections
+        widget: list
+        required: false
+        types:
+          - label: Text
+            name: text
+            fields:
+              - { label: Label, name: label, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Text, name: text, widget: markdown }
+          - label: Text with image
+            name: text_image
+            fields:
+              - { label: Label, name: label, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Text, name: text, widget: markdown }
+              - { label: Image, name: image, widget: image }
+              - { label: Image alt text, name: image_alt, widget: string, required: false }
+              - { label: Image position, name: image_position, widget: select, options: [left, right], default: right }
+          - label: Cards
+            name: cards
+            fields:
+              - { label: Heading, name: heading, widget: string, required: false }
+              - label: Cards
+                name: cards
+                widget: list
+                fields:
+                  - { label: Title, name: title, widget: string }
+                  - { label: Text, name: text, widget: text, required: false }
+                  - { label: Image, name: image, widget: image, required: false }
+                  - { label: Link URL, name: url, widget: string, required: false }
+          - label: Feature list
+            name: feature_list
+            fields:
+              - { label: Heading, name: heading, widget: string, required: false }
+              - label: Features
+                name: features
+                widget: list
+                field: { label: Feature, name: feature, widget: string }
+          - label: Process steps
+            name: process_steps
+            fields:
+              - { label: Heading, name: heading, widget: string, required: false }
+              - label: Steps
+                name: steps
+                widget: list
+                fields:
+                  - { label: Step title, name: title, widget: string, required: false }
+                  - { label: Text, name: text, widget: text }
+          - label: FAQ references
+            name: faq_refs
+            fields:
+              - { label: Heading, name: heading, widget: string, required: false }
+              - label: FAQ IDs
+                name: faq_ids
+                widget: list
+                field: { label: FAQ ID, name: faq_id, widget: string }
+          - label: Testimonials
+            name: testimonial_refs
+            fields:
+              - label: Testimonial IDs
+                name: testimonial_ids
+                widget: list
+                field: { label: Testimonial ID, name: testimonial_id, widget: string }
+          - label: Gallery
+            name: gallery
+            fields:
+              - label: Images
+                name: images
+                widget: list
+                fields:
+                  - { label: Image, name: image, widget: image }
+                  - { label: Alt text, name: alt, widget: string, required: false }
+          - label: Call to action
+            name: cta
+            fields:
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Text, name: text, widget: text, required: false }
+              - { label: Button label, name: button_label, widget: string, required: false }
+              - { label: Button URL, name: button_url, widget: string, required: false }
+          - label: Markdown
+            name: markdown
+            fields:
+              - { label: Content, name: content, widget: markdown }
+      - { label: Freeform body, name: body, widget: markdown, required: false }
+
+  - label: Articles
+    name: articles
+    folder: _articles
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: /assets/media/articles
+    public_folder: /assets/media/articles
+    editor:
+      preview: true
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Slug, name: slug, widget: string, hint: Existing article slugs should usually stay unchanged. }
+      - { label: Page URL, name: permalink, widget: string, hint: Current article URLs use /blog/posts/example.html. }
+      - { label: Language, name: lang, widget: select, options: [sv, en], default: sv }
+      - { label: Translation key, name: translation_key, widget: string, required: false }
+      - { label: Alternate language URL, name: alternate_url, widget: string, required: false }
+      - { label: Published, name: published, widget: boolean, default: true }
+      - { label: Date, name: date, widget: datetime, required: false }
+      - { label: Author, name: author, widget: string, required: false }
+      - { label: Order, name: order, widget: number, value_type: int, required: false }
+      - { label: Summary/excerpt, name: excerpt, widget: text, required: false }
+      - { label: SEO title, name: seo_title, widget: string, required: false }
+      - { label: Meta description, name: description, widget: text, required: false }
+      - { label: Canonical URL, name: canonical_url, widget: string, required: false }
+      - { label: Open Graph image, name: og_image, widget: image, required: false }
+      - { label: Hero image, name: hero_image, widget: image, required: false }
+      - { label: Hero image alt text, name: hero_image_alt, widget: string, required: false }
+      - { label: Related article URLs, name: related_articles, widget: list, required: false, field: { label: URL, name: url, widget: string } }
+      - { label: Article body, name: body, widget: markdown }
+
+  - label: Services
+    name: services
+    folder: _services
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: /assets/media/services
+    public_folder: /assets/media/services
+    editor:
+      preview: true
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Slug, name: slug, widget: string }
+      - { label: Page URL, name: permalink, widget: string }
+      - { label: Language, name: lang, widget: select, options: [sv, en], default: sv }
+      - { label: Translation key, name: translation_key, widget: string, required: false }
+      - { label: Alternate language URL, name: alternate_url, widget: string, required: false }
+      - { label: Published, name: published, widget: boolean, default: true }
+      - { label: Order, name: order, widget: number, value_type: int, required: false }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: Image alt text, name: image_alt, widget: string, required: false }
+      - { label: Listing card URL, name: listing_url, widget: string, required: false, hint: Optional override for where the card links. }
+      - { label: SEO title, name: seo_title, widget: string, required: false }
+      - { label: Meta description, name: description, widget: text, required: false }
+      - { label: Canonical URL, name: canonical_url, widget: string, required: false }
+      - { label: Open Graph image, name: og_image, widget: image, required: false }
+      - { label: Body, name: body, widget: markdown, required: false }
+
+  - label: Product and series pages
+    name: product_series
+    folder: _product_series
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: /assets/media/series
+    public_folder: /assets/media/series
+    editor:
+      preview: true
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Slug, name: slug, widget: string }
+      - { label: Page URL, name: permalink, widget: string }
+      - { label: Language, name: lang, widget: select, options: [sv, en], default: sv }
+      - { label: Translation key, name: translation_key, widget: string, required: false }
+      - { label: Alternate language URL, name: alternate_url, widget: string, required: false }
+      - { label: Published, name: published, widget: boolean, default: true }
+      - { label: Order, name: order, widget: number, value_type: int, required: false }
+      - { label: Hero title, name: hero_title, widget: string, required: false }
+      - { label: Hero text, name: hero_text, widget: text, required: false }
+      - { label: Hero image, name: hero_image, widget: image, required: false }
+      - { label: SEO title, name: seo_title, widget: string, required: false }
+      - { label: Meta description, name: description, widget: text, required: false }
+      - { label: Canonical URL, name: canonical_url, widget: string, required: false }
+      - { label: Open Graph image, name: og_image, widget: image, required: false }
+      - { label: Add FAQ schema, name: faq_schema, widget: boolean, default: false, required: false }
+      - { label: Body, name: body, widget: markdown, required: false }
+
+  - label: Pricing items
+    name: pricing_items
+    folder: _pricing_items
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: /assets/media/pricing
+    public_folder: /assets/media/pricing
+    editor:
+      preview: true
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Language, name: lang, widget: select, options: [sv, en], default: sv }
+      - { label: Anchor ID, name: anchor_id, widget: string }
+      - { label: Summary, name: summary, widget: text, required: false }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: Image alt text, name: image_alt, widget: string, required: false }
+      - { label: Features, name: features, widget: list, required: false, field: { label: Feature, name: feature, widget: string } }
+      - { label: Price text, name: price_text, widget: string, required: false }
+      - { label: Price link URL, name: price_url, widget: string, required: false }
+      - { label: Note, name: note, widget: string, required: false }
+      - { label: Related series links, name: related_series, widget: list, required: false, fields: [{ label: Label, name: label, widget: string }, { label: URL, name: url, widget: string }] }
+      - { label: Order, name: order, widget: number, value_type: int, required: false }
+      - { label: Published, name: published, widget: boolean, default: true }
+
+  - label: Suppliers
+    name: suppliers
+    folder: _suppliers
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    media_folder: /assets/media/suppliers
+    public_folder: /assets/media/suppliers
+    editor:
+      preview: true
+    fields:
+      - { label: Name, name: name, widget: string }
+      - { label: Language, name: lang, widget: select, options: [sv, en], default: sv }
+      - { label: Logo, name: logo, widget: image, required: false }
+      - { label: Description, name: description, widget: text, required: false }
+      - { label: Website, name: website, widget: string, required: false }
+      - { label: Order, name: order, widget: number, value_type: int, required: false }
+      - { label: Active, name: active, widget: boolean, default: true }

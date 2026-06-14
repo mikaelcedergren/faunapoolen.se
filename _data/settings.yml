@@ -1,0 +1,39 @@
+site_name: Faunapoolen
+default_language: sv
+production_url: https://faunapoolen.se
+staging_url: https://mikaelcedergren.github.io/faunapoolen.se
+default_seo:
+  title: "Faunapoolen | Naturpooler, biopooler, ecopooler och kemikaliefria pooler - design och konstruktion av experter i Sverige"
+  description: "Vi designar och bygger naturpooler, biopooler, ekopooler, kemikaliefria pooler och baddammar."
+business:
+  name: Faunapoolen
+  phone: "0735406757"
+  phone_display: "0735 - 40 67 57"
+  phone_tel: "+460735406757"
+  email: info@faunapoolen.se
+  region: Sverige
+social:
+  instagram: ""
+  facebook: ""
+  linkedin: ""
+forms:
+  formspree_endpoint: "https://formspree.io/f/xnnaekgl"
+cta:
+  sv_heading: "Kontakta oss för ett gratis prisförslag"
+  sv_text: "Vi kan skapa ett skräddarsytt paket som passar dina behov. Kontakta oss för en kostnadsfri telefonkonsultation och vi hjälper dig att ta fram ett erbjudande som passar just dig!"
+  sv_button_label: "Få ett gratis prisförslag"
+  sv_button_url: "/contact/"
+  en_heading: "Talk to us about your project"
+  en_text: "We can help you shape a natural water feature that fits your site, budget and long-term maintenance needs."
+  en_button_label: "Book a free phone consultation"
+  en_button_url: "/en/contact/"
+analytics:
+  google_ads_id: "AW-16833797321"
+  google_analytics_id: "G-E1BFSP43WZ"
+languages:
+  - code: sv
+    label: Svenska
+    root: /
+  - code: en
+    label: English
+    root: /en/

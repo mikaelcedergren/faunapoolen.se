@@ -1,0 +1,1472 @@
+[
+  {
+    "source": "assets/images/alan-Decker.jpg",
+    "target": "assets/media/pages/alan-decker.jpg",
+    "original_size": 785214,
+    "new_size": 785214,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/alan-decker.jpg",
+    "target": "assets/media/pages/alan-decker.jpg",
+    "original_size": 785214,
+    "new_size": 785214,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/apple-touch-icon.png",
+    "target": "assets/media/site/apple-touch-icon.png",
+    "original_size": 26213,
+    "new_size": 26213,
+    "before_dimensions": [
+      180,
+      180
+    ],
+    "after_dimensions": [
+      180,
+      180
+    ]
+  },
+  {
+    "source": "assets/images/aquascape-pool16.jpg",
+    "target": "assets/media/pages/aquascape-pool16.jpg",
+    "original_size": 202195,
+    "new_size": 202195,
+    "before_dimensions": [
+      1200,
+      799
+    ],
+    "after_dimensions": [
+      1200,
+      799
+    ]
+  },
+  {
+    "source": "assets/images/aquascape-team.jpg",
+    "target": "assets/media/pages/aquascape-team.jpg",
+    "original_size": 1099595,
+    "new_size": 1033038,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      2000,
+      2000
+    ]
+  },
+  {
+    "source": "assets/images/aquascape.png",
+    "target": "assets/media/suppliers/aquascape.png",
+    "original_size": 9026,
+    "new_size": 9026,
+    "before_dimensions": [
+      500,
+      500
+    ],
+    "after_dimensions": [
+      500,
+      500
+    ]
+  },
+  {
+    "source": "assets/images/background-texture-leafs.jpg",
+    "target": "assets/media/site/background-texture-leafs.jpg",
+    "original_size": 479080,
+    "new_size": 479080,
+    "before_dimensions": [
+      2048,
+      2048
+    ],
+    "after_dimensions": [
+      2048,
+      2048
+    ]
+  },
+  {
+    "source": "assets/images/blog/18.png",
+    "target": "assets/media/articles/18.jpg",
+    "original_size": 1341983,
+    "new_size": 241587,
+    "before_dimensions": [
+      1001,
+      667
+    ],
+    "after_dimensions": [
+      1001,
+      667
+    ]
+  },
+  {
+    "source": "assets/images/blog/19.png",
+    "target": "assets/media/articles/19.jpg",
+    "original_size": 1150959,
+    "new_size": 170638,
+    "before_dimensions": [
+      1001,
+      668
+    ],
+    "after_dimensions": [
+      1001,
+      668
+    ]
+  },
+  {
+    "source": "assets/images/blog/Blog-Golf-Header-Image.png",
+    "target": "assets/media/articles/blog-golf-header-image.jpg",
+    "original_size": 1308180,
+    "new_size": 236470,
+    "before_dimensions": [
+      1000,
+      667
+    ],
+    "after_dimensions": [
+      1000,
+      667
+    ]
+  },
+  {
+    "source": "assets/images/blog/aquabasin-pump-fountain.jpg",
+    "target": "assets/media/articles/aquabasin-pump-fountain.jpg",
+    "original_size": 1419345,
+    "new_size": 910409,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      2000,
+      1333
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-list-background.jpg",
+    "target": "assets/media/articles/blog-list-background.jpg",
+    "original_size": 294989,
+    "new_size": 294989,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-5-problems-with-a-natural-pool.jpg",
+    "target": "assets/media/articles/blog-post-5-problems-with-a-natural-pool.jpg",
+    "original_size": 316470,
+    "new_size": 316470,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-creating-harmony.jpg",
+    "target": "assets/media/articles/blog-post-creating-harmony.jpg",
+    "original_size": 1371920,
+    "new_size": 922229,
+    "before_dimensions": [
+      1216,
+      811
+    ],
+    "after_dimensions": [
+      2000,
+      1334
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-how-to-manage-algie.jpg",
+    "target": "assets/media/articles/blog-post-how-to-manage-algie.jpg",
+    "original_size": 202251,
+    "new_size": 202251,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-how-water-is-filtered.jpg",
+    "target": "assets/media/articles/blog-post-how-water-is-filtered.jpg",
+    "original_size": 325145,
+    "new_size": 325145,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-mood-image-1.jpg",
+    "target": "assets/media/articles/blog-post-mood-image-1.jpg",
+    "original_size": 204329,
+    "new_size": 204329,
+    "before_dimensions": [
+      1200,
+      696
+    ],
+    "after_dimensions": [
+      1200,
+      696
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-pool-conversion.jpg",
+    "target": "assets/media/articles/blog-post-pool-conversion.jpg",
+    "original_size": 1279001,
+    "new_size": 970743,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-the-difference-between-natural-pool-and-traditional-pool.jpg",
+    "target": "assets/media/articles/blog-post-the-difference-between-natural-pool-and-traditional-pool.jpg",
+    "original_size": 434832,
+    "new_size": 434832,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-water-storage-solutions.jpg",
+    "target": "assets/media/articles/blog-post-water-storage-solutions.jpg",
+    "original_size": 487819,
+    "new_size": 487819,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/blog-post-why-you-should-have-a-natural-pool.jpg",
+    "target": "assets/media/articles/blog-post-why-you-should-have-a-natural-pool.jpg",
+    "original_size": 334223,
+    "new_size": 334223,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      1200,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/blog/small-features-for-small-spaces.jpg",
+    "target": "assets/media/articles/small-features-for-small-spaces.jpg",
+    "original_size": 1130491,
+    "new_size": 717536,
+    "before_dimensions": [
+      1200,
+      800
+    ],
+    "after_dimensions": [
+      2000,
+      1333
+    ]
+  },
+  {
+    "source": "assets/images/blog/sports-stars-natural-ponds.jpg",
+    "target": "assets/media/articles/sports-stars-natural-ponds.jpg",
+    "original_size": 1146965,
+    "new_size": 734572,
+    "before_dimensions": [
+      1216,
+      811
+    ],
+    "after_dimensions": [
+      2000,
+      1334
+    ]
+  },
+  {
+    "source": "assets/images/dangarden.png",
+    "target": "assets/media/suppliers/dangarden.png",
+    "original_size": 53005,
+    "new_size": 53005,
+    "before_dimensions": [
+      500,
+      500
+    ],
+    "after_dimensions": [
+      500,
+      500
+    ]
+  },
+  {
+    "source": "assets/images/dip-pond-asthetics.jpg",
+    "target": "assets/media/pages/dip-pond-asthetics.jpg",
+    "original_size": 224625,
+    "new_size": 224625,
+    "before_dimensions": [
+      736,
+      1104
+    ],
+    "after_dimensions": [
+      736,
+      1104
+    ]
+  },
+  {
+    "source": "assets/images/dip-pond-large.jpg",
+    "target": "assets/media/pages/dip-pond-large.jpg",
+    "original_size": 75722,
+    "new_size": 75722,
+    "before_dimensions": [
+      640,
+      426
+    ],
+    "after_dimensions": [
+      640,
+      426
+    ]
+  },
+  {
+    "source": "assets/images/dip-pond-medium.jpg",
+    "target": "assets/media/pages/dip-pond-medium.jpg",
+    "original_size": 271695,
+    "new_size": 271695,
+    "before_dimensions": [
+      1067,
+      800
+    ],
+    "after_dimensions": [
+      1067,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/dip-pond-small.jpg",
+    "target": "assets/media/pages/dip-pond-small.jpg",
+    "original_size": 113207,
+    "new_size": 113207,
+    "before_dimensions": [
+      735,
+      488
+    ],
+    "after_dimensions": [
+      735,
+      488
+    ]
+  },
+  {
+    "source": "assets/images/dirty-pool.jpg",
+    "target": "assets/media/pages/dirty-pool.jpg",
+    "original_size": 1068520,
+    "new_size": 688835,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/favicon-16x16.png",
+    "target": "assets/media/site/favicon-16x16.png",
+    "original_size": 708,
+    "new_size": 708,
+    "before_dimensions": [
+      16,
+      16
+    ],
+    "after_dimensions": [
+      16,
+      16
+    ]
+  },
+  {
+    "source": "assets/images/favicon-32x32.png",
+    "target": "assets/media/site/favicon-32x32.png",
+    "original_size": 1729,
+    "new_size": 1729,
+    "before_dimensions": [
+      32,
+      32
+    ],
+    "after_dimensions": [
+      32,
+      32
+    ]
+  },
+  {
+    "source": "assets/images/gallery/10.jpg",
+    "target": "assets/media/pages/gallery/10.jpg",
+    "original_size": 200304,
+    "new_size": 200304,
+    "before_dimensions": [
+      800,
+      534
+    ],
+    "after_dimensions": [
+      800,
+      534
+    ]
+  },
+  {
+    "source": "assets/images/gallery/13.jpg",
+    "target": "assets/media/pages/gallery/13.jpg",
+    "original_size": 180906,
+    "new_size": 180906,
+    "before_dimensions": [
+      800,
+      534
+    ],
+    "after_dimensions": [
+      800,
+      534
+    ]
+  },
+  {
+    "source": "assets/images/gallery/14.png",
+    "target": "assets/media/pages/gallery/14.png",
+    "original_size": 751330,
+    "new_size": 751330,
+    "before_dimensions": [
+      1216,
+      811
+    ],
+    "after_dimensions": [
+      1216,
+      811
+    ]
+  },
+  {
+    "source": "assets/images/gallery/15.png",
+    "target": "assets/media/pages/gallery/15.jpg",
+    "original_size": 1195749,
+    "new_size": 239238,
+    "before_dimensions": [
+      1216,
+      811
+    ],
+    "after_dimensions": [
+      1216,
+      811
+    ]
+  },
+  {
+    "source": "assets/images/gallery/16.png",
+    "target": "assets/media/pages/gallery/16.png",
+    "original_size": 767938,
+    "new_size": 767938,
+    "before_dimensions": [
+      1216,
+      811
+    ],
+    "after_dimensions": [
+      1216,
+      811
+    ]
+  },
+  {
+    "source": "assets/images/gallery/2.jpg",
+    "target": "assets/media/pages/gallery/2.jpg",
+    "original_size": 240290,
+    "new_size": 240290,
+    "before_dimensions": [
+      850,
+      567
+    ],
+    "after_dimensions": [
+      850,
+      567
+    ]
+  },
+  {
+    "source": "assets/images/gallery/4.jpg",
+    "target": "assets/media/pages/gallery/4.jpg",
+    "original_size": 198570,
+    "new_size": 198570,
+    "before_dimensions": [
+      850,
+      567
+    ],
+    "after_dimensions": [
+      850,
+      567
+    ]
+  },
+  {
+    "source": "assets/images/gallery/5.jpg",
+    "target": "assets/media/pages/gallery/5.jpg",
+    "original_size": 267782,
+    "new_size": 267782,
+    "before_dimensions": [
+      850,
+      567
+    ],
+    "after_dimensions": [
+      850,
+      567
+    ]
+  },
+  {
+    "source": "assets/images/gallery/8.jpg",
+    "target": "assets/media/pages/gallery/8.jpg",
+    "original_size": 172615,
+    "new_size": 172615,
+    "before_dimensions": [
+      800,
+      534
+    ],
+    "after_dimensions": [
+      800,
+      534
+    ]
+  },
+  {
+    "source": "assets/images/got1.jpeg",
+    "target": "assets/media/pages/got1.jpeg",
+    "original_size": 8166256,
+    "new_size": 1458039,
+    "before_dimensions": [
+      3072,
+      3072
+    ],
+    "after_dimensions": [
+      2000,
+      2000
+    ]
+  },
+  {
+    "source": "assets/images/got3.jpeg",
+    "target": "assets/media/pages/got3.jpeg",
+    "original_size": 621764,
+    "new_size": 621764,
+    "before_dimensions": [
+      2048,
+      1536
+    ],
+    "after_dimensions": [
+      2048,
+      1536
+    ]
+  },
+  {
+    "source": "assets/images/got5.jpeg",
+    "target": "assets/media/pages/got5.jpeg",
+    "original_size": 3941793,
+    "new_size": 1094581,
+    "before_dimensions": [
+      4032,
+      3024
+    ],
+    "after_dimensions": [
+      2000,
+      1500
+    ]
+  },
+  {
+    "source": "assets/images/got8.jpeg",
+    "target": "assets/media/pages/got8.jpeg",
+    "original_size": 581458,
+    "new_size": 581458,
+    "before_dimensions": [
+      1536,
+      2048
+    ],
+    "after_dimensions": [
+      1536,
+      2048
+    ]
+  },
+  {
+    "source": "assets/images/header-background-1.jpg",
+    "target": "assets/media/pages/header-background-1.jpg",
+    "original_size": 197340,
+    "new_size": 197340,
+    "before_dimensions": [
+      1600,
+      900
+    ],
+    "after_dimensions": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/images/header-background-2.jpg",
+    "target": "assets/media/pages/header-background-2.jpg",
+    "original_size": 155687,
+    "new_size": 155687,
+    "before_dimensions": [
+      1600,
+      900
+    ],
+    "after_dimensions": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/images/header-background-3.jpg",
+    "target": "assets/media/pages/header-background-3.jpg",
+    "original_size": 130621,
+    "new_size": 130621,
+    "before_dimensions": [
+      1600,
+      900
+    ],
+    "after_dimensions": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/images/header-background-4.jpg",
+    "target": "assets/media/pages/header-background-4.jpg",
+    "original_size": 278622,
+    "new_size": 278622,
+    "before_dimensions": [
+      1490,
+      838
+    ],
+    "after_dimensions": [
+      1490,
+      838
+    ]
+  },
+  {
+    "source": "assets/images/header-background-5.jpg",
+    "target": "assets/media/pages/header-background-5.jpg",
+    "original_size": 203700,
+    "new_size": 203700,
+    "before_dimensions": [
+      1600,
+      900
+    ],
+    "after_dimensions": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/images/header-image-price-page.jpg",
+    "target": "assets/media/pages/header-image-price-page.jpg",
+    "original_size": 290670,
+    "new_size": 290670,
+    "before_dimensions": [
+      1600,
+      835
+    ],
+    "after_dimensions": [
+      1600,
+      835
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/aquascape-koi10.jpg",
+    "target": "assets/media/series/koi-ponds/aquascape-koi10.jpg",
+    "original_size": 198686,
+    "new_size": 198686,
+    "before_dimensions": [
+      736,
+      1104
+    ],
+    "after_dimensions": [
+      736,
+      1104
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/aquascape-koi11.jpg",
+    "target": "assets/media/series/koi-ponds/aquascape-koi11.jpg",
+    "original_size": 177930,
+    "new_size": 177930,
+    "before_dimensions": [
+      736,
+      1104
+    ],
+    "after_dimensions": [
+      736,
+      1104
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/aquascape-koi2.jpg",
+    "target": "assets/media/series/koi-ponds/aquascape-koi2.jpg",
+    "original_size": 252198,
+    "new_size": 252198,
+    "before_dimensions": [
+      1200,
+      1800
+    ],
+    "after_dimensions": [
+      1200,
+      1800
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/aquascape-koi3.jpg",
+    "target": "assets/media/series/koi-ponds/aquascape-koi3.jpg",
+    "original_size": 62275,
+    "new_size": 62275,
+    "before_dimensions": [
+      720,
+      479
+    ],
+    "after_dimensions": [
+      720,
+      479
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/aquascape-koi4.jpg",
+    "target": "assets/media/series/koi-ponds/aquascape-koi4.jpg",
+    "original_size": 116633,
+    "new_size": 116633,
+    "before_dimensions": [
+      520,
+      720
+    ],
+    "after_dimensions": [
+      520,
+      720
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/aquascape-koi5.jpg",
+    "target": "assets/media/series/koi-ponds/aquascape-koi5.jpg",
+    "original_size": 73005,
+    "new_size": 73005,
+    "before_dimensions": [
+      496,
+      700
+    ],
+    "after_dimensions": [
+      496,
+      700
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/features-of-wetland-filter.png",
+    "target": "assets/media/series/koi-ponds/features-of-wetland-filter.png",
+    "original_size": 181043,
+    "new_size": 181043,
+    "before_dimensions": [
+      1164,
+      733
+    ],
+    "after_dimensions": [
+      1164,
+      733
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/hero-image-koi.jpg",
+    "target": "assets/media/series/koi-ponds/hero-image-koi.jpg",
+    "original_size": 478615,
+    "new_size": 253169,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/muddy-pond.jpg",
+    "target": "assets/media/series/koi-ponds/muddy-pond.jpg",
+    "original_size": 77117,
+    "new_size": 77117,
+    "before_dimensions": [
+      1024,
+      768
+    ],
+    "after_dimensions": [
+      1024,
+      768
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/pond-skimmer-1000.jpg",
+    "target": "assets/media/series/koi-ponds/pond-skimmer-1000.jpg",
+    "original_size": 15321,
+    "new_size": 15321,
+    "before_dimensions": [
+      474,
+      474
+    ],
+    "after_dimensions": [
+      474,
+      474
+    ]
+  },
+  {
+    "source": "assets/images/koi-ponds/pool-pond-hero.jpg",
+    "target": "assets/media/series/koi-ponds/pool-pond-hero.jpg",
+    "original_size": 779711,
+    "new_size": 519856,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/logo.png",
+    "target": "assets/media/site/logo.png",
+    "original_size": 81851,
+    "new_size": 81851,
+    "before_dimensions": [
+      400,
+      282
+    ],
+    "after_dimensions": [
+      400,
+      282
+    ]
+  },
+  {
+    "source": "assets/images/mn-vvs.png",
+    "target": "assets/media/suppliers/mn-vvs.png",
+    "original_size": 3828,
+    "new_size": 3828,
+    "before_dimensions": [
+      500,
+      500
+    ],
+    "after_dimensions": [
+      500,
+      500
+    ]
+  },
+  {
+    "source": "assets/images/moerings.png",
+    "target": "assets/media/suppliers/moerings.png",
+    "original_size": 39358,
+    "new_size": 39358,
+    "before_dimensions": [
+      500,
+      500
+    ],
+    "after_dimensions": [
+      500,
+      500
+    ]
+  },
+  {
+    "source": "assets/images/mood-image-chairs-by-pool.jpg",
+    "target": "assets/media/pages/mood-image-chairs-by-pool.jpg",
+    "original_size": 184456,
+    "new_size": 184456,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/mood-image-chairs-with-water.jpg",
+    "target": "assets/media/pages/mood-image-chairs-with-water.jpg",
+    "original_size": 268027,
+    "new_size": 268027,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/mood-image-construction-workers.jpg",
+    "target": "assets/media/pages/mood-image-construction-workers.jpg",
+    "original_size": 304150,
+    "new_size": 304150,
+    "before_dimensions": [
+      960,
+      960
+    ],
+    "after_dimensions": [
+      960,
+      960
+    ]
+  },
+  {
+    "source": "assets/images/mood-image-girl-in-pool.jpg",
+    "target": "assets/media/pages/mood-image-girl-in-pool.jpg",
+    "original_size": 215410,
+    "new_size": 215410,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/mood-image-palm-pool.jpg",
+    "target": "assets/media/pages/mood-image-palm-pool.jpg",
+    "original_size": 331613,
+    "new_size": 331613,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/mood-image-winter-bath.jpg",
+    "target": "assets/media/pages/mood-image-winter-bath.jpg",
+    "original_size": 51462,
+    "new_size": 51462,
+    "before_dimensions": [
+      600,
+      600
+    ],
+    "after_dimensions": [
+      600,
+      600
+    ]
+  },
+  {
+    "source": "assets/images/og-image.png",
+    "target": "assets/media/site/og-image.png",
+    "original_size": 90140,
+    "new_size": 90140,
+    "before_dimensions": [
+      1200,
+      630
+    ],
+    "after_dimensions": [
+      1200,
+      630
+    ]
+  },
+  {
+    "source": "assets/images/plunge/aquascape-plunge1.jpg",
+    "target": "assets/media/series/plunge/aquascape-plunge1.jpg",
+    "original_size": 205130,
+    "new_size": 205130,
+    "before_dimensions": [
+      736,
+      1104
+    ],
+    "after_dimensions": [
+      736,
+      1104
+    ]
+  },
+  {
+    "source": "assets/images/plunge/aquascape-plunge2.png",
+    "target": "assets/media/series/plunge/aquascape-plunge2.jpg",
+    "original_size": 3515282,
+    "new_size": 840950,
+    "before_dimensions": [
+      1024,
+      1536
+    ],
+    "after_dimensions": [
+      1024,
+      1536
+    ]
+  },
+  {
+    "source": "assets/images/plunge/hero-image.jpg",
+    "target": "assets/media/series/plunge/hero-image.jpg",
+    "original_size": 782948,
+    "new_size": 472883,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/plunge/tomelilla-pond.png",
+    "target": "assets/media/series/plunge/tomelilla-pond.jpg",
+    "original_size": 2686150,
+    "new_size": 595244,
+    "before_dimensions": [
+      1080,
+      1080
+    ],
+    "after_dimensions": [
+      1080,
+      1080
+    ]
+  },
+  {
+    "source": "assets/images/pricing-fountains.jpg",
+    "target": "assets/media/pricing/pricing-fountains.jpg",
+    "original_size": 184998,
+    "new_size": 184998,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/pricing-koi-ponds.jpg",
+    "target": "assets/media/pricing/pricing-koi-ponds.jpg",
+    "original_size": 165773,
+    "new_size": 165773,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/pricing-landscape.jpg",
+    "target": "assets/media/pricing/pricing-landscape.jpg",
+    "original_size": 230280,
+    "new_size": 230280,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/pricing-nature-pool.jpg",
+    "target": "assets/media/pricing/pricing-nature-pool.jpg",
+    "original_size": 279156,
+    "new_size": 279156,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/pricing-water-storage.jpg",
+    "target": "assets/media/pricing/pricing-water-storage.jpg",
+    "original_size": 342948,
+    "new_size": 342948,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/section-background-1.jpg",
+    "target": "assets/media/pages/section-background-1.jpg",
+    "original_size": 170648,
+    "new_size": 170648,
+    "before_dimensions": [
+      1600,
+      900
+    ],
+    "after_dimensions": [
+      1600,
+      900
+    ]
+  },
+  {
+    "source": "assets/images/services-background-2.jpg",
+    "target": "assets/media/pages/services-background-2.jpg",
+    "original_size": 772816,
+    "new_size": 437438,
+    "before_dimensions": [
+      1216,
+      832
+    ],
+    "after_dimensions": [
+      2000,
+      1368
+    ]
+  },
+  {
+    "source": "assets/images/services/fountains.jpg",
+    "target": "assets/media/services/fountains.jpg",
+    "original_size": 72504,
+    "new_size": 72504,
+    "before_dimensions": [
+      480,
+      320
+    ],
+    "after_dimensions": [
+      480,
+      320
+    ]
+  },
+  {
+    "source": "assets/images/services/koi-ponds.jpg",
+    "target": "assets/media/services/koi-ponds.jpg",
+    "original_size": 84990,
+    "new_size": 84990,
+    "before_dimensions": [
+      480,
+      320
+    ],
+    "after_dimensions": [
+      480,
+      320
+    ]
+  },
+  {
+    "source": "assets/images/services/pondless-waterfalls.jpg",
+    "target": "assets/media/services/pondless-waterfalls.jpg",
+    "original_size": 79795,
+    "new_size": 79795,
+    "before_dimensions": [
+      480,
+      320
+    ],
+    "after_dimensions": [
+      480,
+      320
+    ]
+  },
+  {
+    "source": "assets/images/services/swim-ponds.jpg",
+    "target": "assets/media/services/swim-ponds.jpg",
+    "original_size": 83104,
+    "new_size": 83104,
+    "before_dimensions": [
+      480,
+      320
+    ],
+    "after_dimensions": [
+      480,
+      320
+    ]
+  },
+  {
+    "source": "assets/images/services/water-storage.jpg",
+    "target": "assets/media/services/water-storage.jpg",
+    "original_size": 53230,
+    "new_size": 53230,
+    "before_dimensions": [
+      480,
+      320
+    ],
+    "after_dimensions": [
+      480,
+      320
+    ]
+  },
+  {
+    "source": "assets/images/stenbolaget.png",
+    "target": "assets/media/suppliers/stenbolaget.png",
+    "original_size": 3512,
+    "new_size": 3512,
+    "before_dimensions": [
+      500,
+      500
+    ],
+    "after_dimensions": [
+      500,
+      500
+    ]
+  },
+  {
+    "source": "assets/images/swim/aquascape-swim1.jpg",
+    "target": "assets/media/series/swim/aquascape-swim1.jpg",
+    "original_size": 256723,
+    "new_size": 256723,
+    "before_dimensions": [
+      736,
+      1104
+    ],
+    "after_dimensions": [
+      736,
+      1104
+    ]
+  },
+  {
+    "source": "assets/images/swim/aquascape-swim10.jpg",
+    "target": "assets/media/series/swim/aquascape-swim10.jpg",
+    "original_size": 299434,
+    "new_size": 299434,
+    "before_dimensions": [
+      1200,
+      900
+    ],
+    "after_dimensions": [
+      1200,
+      900
+    ]
+  },
+  {
+    "source": "assets/images/swim/aquascape-swim2.jpg",
+    "target": "assets/media/series/swim/aquascape-swim2.jpg",
+    "original_size": 442756,
+    "new_size": 442756,
+    "before_dimensions": [
+      1000,
+      1500
+    ],
+    "after_dimensions": [
+      1000,
+      1500
+    ]
+  },
+  {
+    "source": "assets/images/swim/aquascape-swim3.jpg",
+    "target": "assets/media/series/swim/aquascape-swim3.jpg",
+    "original_size": 93733,
+    "new_size": 93733,
+    "before_dimensions": [
+      650,
+      488
+    ],
+    "after_dimensions": [
+      650,
+      488
+    ]
+  },
+  {
+    "source": "assets/images/swim/aquascape-swim9.png",
+    "target": "assets/media/series/swim/aquascape-swim9.jpg",
+    "original_size": 4195276,
+    "new_size": 990841,
+    "before_dimensions": [
+      1080,
+      1920
+    ],
+    "after_dimensions": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "source": "assets/images/swim/hero-image-swim.jpg",
+    "target": "assets/media/series/swim/hero-image-swim.jpg",
+    "original_size": 461279,
+    "new_size": 287114,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/swim/landing-hero-image.jpg",
+    "target": "assets/media/series/swim/landing-hero-image.jpg",
+    "original_size": 757804,
+    "new_size": 451263,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/traditional-swim-pool.jpg",
+    "target": "assets/media/pages/traditional-swim-pool.jpg",
+    "original_size": 1530910,
+    "new_size": 921739,
+    "before_dimensions": [
+      1216,
+      811
+    ],
+    "after_dimensions": [
+      2000,
+      1334
+    ]
+  },
+  {
+    "source": "assets/images/waterfall.jpg",
+    "target": "assets/media/pricing/waterfall.jpg",
+    "original_size": 226484,
+    "new_size": 226484,
+    "before_dimensions": [
+      800,
+      800
+    ],
+    "after_dimensions": [
+      800,
+      800
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront-hero-image.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront-hero-image.jpg",
+    "original_size": 570677,
+    "new_size": 413472,
+    "before_dimensions": [
+      1159,
+      752
+    ],
+    "after_dimensions": [
+      2000,
+      1297
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront1.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront1.jpg",
+    "original_size": 116342,
+    "new_size": 116342,
+    "before_dimensions": [
+      640,
+      480
+    ],
+    "after_dimensions": [
+      640,
+      480
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront2.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront2.jpg",
+    "original_size": 110167,
+    "new_size": 110167,
+    "before_dimensions": [
+      640,
+      480
+    ],
+    "after_dimensions": [
+      640,
+      480
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront3.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront3.jpg",
+    "original_size": 178502,
+    "new_size": 178502,
+    "before_dimensions": [
+      960,
+      720
+    ],
+    "after_dimensions": [
+      960,
+      720
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront4.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront4.jpg",
+    "original_size": 199067,
+    "new_size": 199067,
+    "before_dimensions": [
+      960,
+      640
+    ],
+    "after_dimensions": [
+      960,
+      640
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront5.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront5.jpg",
+    "original_size": 121434,
+    "new_size": 121434,
+    "before_dimensions": [
+      640,
+      480
+    ],
+    "after_dimensions": [
+      640,
+      480
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront6.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront6.jpg",
+    "original_size": 223022,
+    "new_size": 223022,
+    "before_dimensions": [
+      736,
+      1104
+    ],
+    "after_dimensions": [
+      736,
+      1104
+    ]
+  },
+  {
+    "source": "assets/images/waterfront/aquascape-waterfront7.jpg",
+    "target": "assets/media/series/waterfront/aquascape-waterfront7.jpg",
+    "original_size": 57578,
+    "new_size": 57578,
+    "before_dimensions": [
+      427,
+      640
+    ],
+    "after_dimensions": [
+      427,
+      640
+    ]
+  }
+]

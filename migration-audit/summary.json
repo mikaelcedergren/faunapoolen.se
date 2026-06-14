@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-06-14T14:03:20Z",
+  "new_repo_initial_files": [
+    ".gitignore",
+    "MIGRATION-BRIEF.md",
+    "README.md",
+    "migration-audit"
+  ],
+  "old_source_file_count": 68,
+  "old_page_count": 26,
+  "live_crawled_count": 24,
+  "url_map_count": 26,
+  "priority_paths": [
+    "/",
+    "/blog/posts/difference-between-normal-pool-and-natural-pool.html",
+    "/blog/posts/build-your-own-nature-pool.html"
+  ],
+  "notes": [
+    "Priority pages use live HTML as source of truth.",
+    "Other pages use local .kit source where available.",
+    "Generated .html files are treated as lower priority when matching .kit source exists."
+  ]
+}

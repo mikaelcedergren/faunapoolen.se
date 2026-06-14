@@ -141,3 +141,14 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Jekyll / Bundler
+_site/
+.jekyll-cache/
+.sass-cache/
+.bundle/
+vendor/bundle/
+
+# Generated validation artifacts
+migration-audit/playwright-validation-report.json
+migration-audit/playwright-screenshots/

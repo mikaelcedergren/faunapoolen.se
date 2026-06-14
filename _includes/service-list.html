@@ -1,0 +1,23 @@
+{% assign list_lang = include.lang | default: page.lang | default: 'sv' %}
+{% assign service_items = site.services | where: 'lang', list_lang | where_exp: 'service', 'service.published != false' | sort: 'order' %}
+
+{% if service_items.size > 0 %}
+<section>
+  <div class="section-content">
+    <div class="grid-row gap-small grid-3-columns">
+      {% for service in service_items %}
+      {% assign service_url = service.listing_url | default: service.url %}
+      <a href="{{ service_url | relative_url }}" class="grid-cell blur-box">
+        <div>
+          {% if service.image %}
+          <img src="{{ service.image | relative_url }}" alt="{{ service.image_alt | default: service.title | escape }}">
+          {% endif %}
+          <h3>{{ service.title }}</h3>
+          {% if service.summary %}<p>{{ service.summary }}</p>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

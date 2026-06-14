@@ -1,0 +1,31 @@
+{% assign testimonial_items = site.data.testimonials.items %}
+{% if include.testimonial_ids %}
+  {% assign filtered_items = '' | split: '' %}
+  {% for testimonial_id in include.testimonial_ids %}
+    {% assign matched = testimonial_items | where: 'id', testimonial_id %}
+    {% assign filtered_items = filtered_items | concat: matched %}
+  {% endfor %}
+{% else %}
+  {% assign filtered_items = testimonial_items %}
+{% endif %}
+{% assign filtered_items = filtered_items | where_exp: 'item', 'item.active != false' | sort: 'order' %}
+{% if include.limit %}
+  {% assign filtered_items = filtered_items | slice: 0, include.limit %}
+{% endif %}
+
+{% if filtered_items.size > 0 %}
+<section>
+  <div class="section-content">
+    {% assign first_item = filtered_items | first %}
+    <q>{{ first_item.quote }}</q>
+    {% if first_item.name %}<div class="text-discreet">{{ first_item.name }}</div>{% endif %}
+    {% if filtered_items.size > 1 %}
+    <div class="grid-row mt-3">
+      {% for item in filtered_items offset:1 %}
+      <div class="grid-cell">"{{ item.quote }}" {% if item.name %}<div class="text-discreet mt-1">{{ item.name }}</div>{% endif %}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}

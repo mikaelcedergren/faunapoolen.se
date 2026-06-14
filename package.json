@@ -1,0 +1,10 @@
+{
+  "name": "faunapoolen-se",
+  "private": true,
+  "scripts": {
+    "validate:playwright": "node scripts/validate-playwright.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.60.0"
+  }
+}

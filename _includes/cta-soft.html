@@ -1,0 +1,17 @@
+<section class="cta">
+  <div class="section-content">
+    {% if page.lang == 'en' %}
+    <h2>Dreaming of your own natural pool?</h2>
+    <p class="text-large">Learn more about how to create a natural pool or other eco-friendly water solution for your garden.</p>
+    <div class="mt-2 text-center">
+      <a class="button button-large" href="{{ '/en/' | relative_url }}">Read more</a>
+    </div>
+    {% else %}
+    <h2>Drömmer du om en egen naturpool?</h2>
+    <p class="text-large">Läs mer om hur du kan skapa en naturlig pool eller andra miljövänliga vattenlösningar för din trädgård.</p>
+    <div class="mt-2 text-center">
+      <a class="button button-large" href="{{ '/' | relative_url }}">Läs mer</a>
+    </div>
+    {% endif %}
+  </div>
+</section>

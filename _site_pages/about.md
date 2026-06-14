@@ -1,0 +1,34 @@
+---
+layout: default
+title: Om Faunapoolen
+slug: about
+permalink: "/about/"
+lang: sv
+translation_key: about
+published: true
+canonical_url: "/about/"
+alternate_url: "/en/about/"
+---
+
+<div class="background-image tight-fade">
+  <img src="{{ '/assets/media/pages/header-background-5.jpg' | relative_url }}">
+</div>
+
+<header>
+
+  <h1>Om Faunapoolen</h1>
+</header>
+
+<section>
+  <div class="section-content">
+    <div class="grid-row">
+      <div class="grid-cell">
+        <p>På Faunapoolen brinner vi för att skapa vackra och hållbara vattenlandskap som smälter in i sin omgivning. Vi tror på att kombinera smart design med naturens egna reningsprocesser för att skapa en badupplevelse fri från kemikalier – en plats där både människor och natur trivs.</p>
+      </div>
+      <div class="grid-cell">
+        <p>Med fokus på kvalitet, ekologi och estetik hjälper vi dig att förverkliga din dröm om en naturlig pool och andra naturliga vattenlanskap. Oavsett om du vill ha en badvänlig damm eller ett vackert vattenlandskap, guidar vi dig genom hela processen – från planering till färdig pool.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% include cta.html %}

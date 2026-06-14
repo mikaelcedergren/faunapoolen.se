@@ -1,0 +1,7 @@
+{% if include.images %}
+<section class="gallery">
+  {% for item in include.images %}
+  <img src="{{ item.image | relative_url }}" alt="{{ item.alt | escape }}">
+  {% endfor %}
+</section>
+{% endif %}

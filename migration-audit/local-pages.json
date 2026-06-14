@@ -1,0 +1,1057 @@
+[
+  {
+    "path": "/",
+    "source_file": "/Volumes/Development/faunapoolen/index.kit",
+    "source_kind": "kit",
+    "page_type": "home",
+    "priority": true,
+    "source_of_truth": "live",
+    "sha256": "0ee0dfb7a60d2582ee4bb95bde5f2683163c962f926d0c327700bfe3a300a052",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Kemikaliefria naturpooler som smälter in i din trädgård",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/header-background-1.jpg",
+        "/assets/images/mood-image-construction-workers.jpg",
+        "/assets/images/got1.jpeg",
+        "/assets/images/services/pondless-waterfalls.jpg",
+        "/assets/images/services/fountains.jpg",
+        "/assets/images/services/koi-ponds.jpg",
+        "/assets/images/services/water-storage.jpg",
+        "/assets/images/pricing-landscape.jpg",
+        "/assets/images/mood-image-girl-in-pool.jpg",
+        "/assets/images/mood-image-chairs-with-water.jpg",
+        "/assets/images/mood-image-winter-bath.jpg",
+        "/assets/images/got1.jpeg",
+        "/assets/images/gallery/10.jpg",
+        "/assets/images/gallery/4.jpg",
+        "/assets/images/gallery/5.jpg",
+        "/assets/images/gallery/2.jpg",
+        "/assets/images/gallery/13.jpg",
+        "/assets/images/gallery/14.png",
+        "/assets/images/gallery/15.png",
+        "/assets/images/gallery/16.png",
+        "/assets/images/got5.jpeg",
+        "/assets/images/got3.jpeg",
+        "/assets/images/got8.jpeg"
+      ],
+      "links": [
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/pond-packages-landing.html",
+        "/pricing/#waterfall",
+        "/pricing/#fountains",
+        "/pricing/#koi-pond",
+        "/pricing/#water-storage",
+        "/pricing/#maintenance",
+        "https://www.boverket.se/sv/PBL-kunskapsbanken/regler-om-byggande/byggregelsystemet/nya-byggregler/",
+        "https://www.naturvardsverket.se/vagledning-och-stod/avlopp/hallbar-dagvattenhantering/",
+        "/contact/",
+        "/blog/posts/why-you-should-get-a-natural-pool.html",
+        "/blog/posts/how-filtering-works-with-nature-pools.html"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_quotes.kit",
+        "/assets/components/_faq.kit",
+        "/assets/components/_cta.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/about/",
+    "source_file": "/Volumes/Development/faunapoolen/about/index.kit",
+    "source_kind": "kit",
+    "page_type": "general_page",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "1b9c1562f12681dce1775f7717a8c1a1e04380ac313f9e0821600b181b8d9261",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Om Faunapoolen",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/header-background-5.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_cta.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/",
+    "source_file": "/Volumes/Development/faunapoolen/blog/index.kit",
+    "source_kind": "kit",
+    "page_type": "article_index",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "562d67bbd15c497c689f6b3b05ff59197bd387ff0f2bec264880e2d678c533ab",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Blogg",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/blog/blog-list-background.jpg",
+        "/assets/images/blog/blog-post-pool-conversion.jpg",
+        "/assets/images/blog/blog-post-why-you-should-have-a-natural-pool.jpg",
+        "/assets/images/blog/Blog-Golf-Header-Image.png",
+        "/assets/images/blog/blog-post-5-problems-with-a-natural-pool.jpg",
+        "/assets/images/blog/sports-stars-natural-ponds.jpg",
+        "/assets/images/blog/blog-post-mood-image-1.jpg",
+        "/assets/images/blog/blog-post-the-difference-between-natural-pool-and-traditional-pool.jpg",
+        "/assets/images/blog/blog-post-how-water-is-filtered.jpg",
+        "/assets/images/blog/blog-post-water-storage-solutions.jpg",
+        "/assets/images/blog/blog-post-how-to-manage-algie.jpg",
+        "/assets/images/blog/small-features-for-small-spaces.jpg",
+        "/assets/images/blog/blog-post-creating-harmony.jpg"
+      ],
+      "links": [
+        "/blog/posts/pool-conversions.html",
+        "/blog/posts/why-you-should-get-a-natural-pool.html",
+        "/blog/posts/how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.html",
+        "/blog/posts/5-common-problems-installing-a-nature-pool.html",
+        "/blog/posts/sports-stars-natural-ponds.html",
+        "/blog/posts/build-your-own-nature-pool.html",
+        "/blog/posts/difference-between-normal-pool-and-natural-pool.html",
+        "/blog/posts/how-filtering-works-with-nature-pools.html",
+        "/blog/posts/can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.html",
+        "/blog/posts/algae-control-and-maintenance-tips.html",
+        "/blog/posts/small-features-for-small-spaces.html",
+        "/blog/posts/creating-harmony-intergrating-water-features-with-your-landscape.html"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/5-common-problems-installing-a-nature-pool.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/5-common-problems-installing-a-nature-pool.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "ecb573b5ad16a89cd6f4383be55b8d9f387c8221e194836c490e5a37a233908b",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "De 5 vanligaste problemen när du installerar en naturpool",
+      "blogIngress": "Undvik de vanligaste problemen vid installation av en naturpool. Lär dig om ekosystem, placering, tätning, cirkulation och växtval för en hållbar naturlig pool.",
+      "images": [
+        "/assets/images/blog/blog-post-5-problems-with-a-natural-pool.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/algae-control-and-maintenance-tips.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/algae-control-and-maintenance-tips.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "c90abf0b4b4690a1af4c471ab000dce7b008e9ddff44812f02e5620686036b8a",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Algkontroll och Underhållstips",
+      "blogIngress": "I detta blogginlägg kommer vi att utforska effektiva strategier för att hantera algtillväxt, dela underhållstips från branschexperter och belysa hur certifierade Aquascape-entreprenörer kan hjälpa dig att bevara skönheten i ditt vattenarrangemang.",
+      "images": [
+        "/assets/images/blog/blog-post-how-to-manage-algie.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/build-your-own-nature-pool.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/build-your-own-nature-pool.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": true,
+    "source_of_truth": "live",
+    "sha256": "38a69e35e9cc5525779ac6871d83dc88b5029bbba6eb9c85af32b8b5b80b3214",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Bygga naturpool – så gör du det själv",
+      "blogIngress": "Att bygga en naturpool själv är en dröm för många som vill skapa en unik, miljövänlig och harmonisk plats i sin trädgård. En naturpool erbjuder inte bara en badupplevelse fri från kemikalier, utan blir också en estetisk del av trädgården som smälter in i naturen. Att själv anlägga en naturpool kan verka som en stor utmaning, men det är möjligt med rätt planering och kunskap. I den här guiden får du lära dig hur du gör, vilka risker som finns och hur du undviker de vanligaste misstagen..",
+      "images": [
+        "/assets/images/blog/blog-post-mood-image-1.jpg",
+        "/assets/images/blog/blog-post-mood-image-1.jpg"
+      ],
+      "links": [
+        "/contact/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "d4398f9790779d4356ea91c374613bad61fb2a59f5cfdfa6f145e5736d8f9f2b",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Vattenlagring istället för traditionella brunnar",
+      "blogIngress": "Allt fler husägare utforskar hållbart boende och miljövänlig landskapsarkitektur. Vad gör du när traditionella brunnar inte är en genomförbar lösning för dina vattenbehov? På Faunapoolen förstår vi vikten av att hitta innovativa sätt att förbättra utomhusmiljöer samtidigt som vattenresurser hanteras effektivt. Vattenlagringslösningar kan vara ett utmärkt alternativ om du bor i ett stadsområde med restriktioner för brunnsborrning eller helt enkelt vill omfamna grönare metoder.",
+      "images": [
+        "/assets/images/blog/blog-post-water-storage-solutions.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/creating-harmony-intergrating-water-features-with-your-landscape.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/creating-harmony-intergrating-water-features-with-your-landscape.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "6516c67078c2792ca494d25b6f688129f8def0cf35ea84c59f63d06622c3f197",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Vattenlagring istället för traditionella brunnar",
+      "blogIngress": "Allt fler husägare utforskar hållbart boende och miljövänlig landskapsarkitektur. Vad gör du när traditionella brunnar inte är en genomförbar lösning för dina vattenbehov? På Faunapoolen förstår vi vikten av att hitta innovativa sätt att förbättra utomhusmiljöer samtidigt som vattenresurser hanteras effektivt. Vattenlagringslösningar kan vara ett utmärkt alternativ om du bor i ett stadsområde med restriktioner för brunnsborrning eller helt enkelt vill omfamna grönare metoder.",
+      "images": [
+        "/assets/images/blog/blog-post-creating-harmony.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/difference-between-normal-pool-and-natural-pool.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/difference-between-normal-pool-and-natural-pool.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": true,
+    "source_of_truth": "live",
+    "sha256": "4efe5327abeb8a32dc453ff5c8d24ecc68c9e08944384a7fe6ef7bce7fca656f",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Skillnad mellan naturpool och vanlig pool – vilken ska du välja?",
+      "blogIngress": "Att ha en pool hemma är en dröm för många. Det förvandlar trädgården till en plats för avkoppling, skoj och svalkande dopp under varma sommardagar. Men när du ska välja pool, finns det en viktig fråga att ställa: ska du anlägga en naturpool eller en traditionell pool? Båda alternativen har sina fördelar, men om du vill ha en hållbar pool utan kemikalier, kan en ekologisk pool vara det bästa valet. Här går vi igenom skillnaderna, så att du kan hitta rätt lösning för ditt hem!",
+      "images": [
+        "/assets/images/blog/blog-post-the-difference-between-natural-pool-and-traditional-pool.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "761caf1a2baf9c5d6da12624b703dac4e410032baef9318e682aa36b7c64dfd5",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "How Faunapoolen helps golf clubs manage ponds, lakes, and streams",
+      "blogIngress": "Water is both an asset and a liability on golf courses. A well-designed pond can frame a fairway, create strategic challenges, and provide irrigation storage.",
+      "images": [
+        "/assets/images/blog/Blog-Golf-Header-Image.png",
+        "/assets/images/blog/18.png",
+        "/assets/images/blog/19.png"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/how-filtering-works-with-nature-pools.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/how-filtering-works-with-nature-pools.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "72fe69f76e2a772bf4d76f283aa163f2fb83a87b09cbdf87a7e508bcc62978eb",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Så fungerar vattenfiltrering i naturpooler",
+      "blogIngress": "Naturpooler är en vacker och hållbar alternativ till traditionella simbassänger. En av de mest fascinerande aspekterna av naturpooler är deras unika vattenfiltreringssystem, som använder naturen själv för att hålla vattnet rent och säkert för simning.",
+      "images": [
+        "/assets/images/blog/blog-post-how-water-is-filtered.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/pool-conversions.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/pool-conversions.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "10ea92312f4dffe210b8f912f8742ba8c64348124b0b45b4f2c3c56974729044",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Converting Traditional Swimming Pools into Natural Eco-System Swim Ponds",
+      "blogIngress": "The idea of transforming an existing traditional swimming pool into a sustainable, low-maintenance, and beautiful natural swim pond is gaining traction across Europe and Scandinavia.",
+      "images": [
+        "/assets/images/koi-ponds/pool-pond-hero.jpg",
+        "/assets/images/dirty-pool.jpg",
+        "/assets/images/plunge/aquascape-plunge1.jpg",
+        "/assets/images/swim/aquascape-swim3.jpg",
+        "/assets/images/swim/aquascape-swim2.jpg",
+        "/assets/images/waterfront/aquascape-waterfront4.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/small-features-for-small-spaces.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/small-features-for-small-spaces.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "0fa1274f3269733d6ccfe929d735ebfcae4548cf03169eafcd3c1fad84baee26",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Liten trädgård? Stora idéer: Designa miljövänliga vatteninslag",
+      "blogIngress": "En kompakt trädgård betyder inte att du måste offra lugnet och skönheten hos vatteninslag. Med innovativ design och genomtänkt placering kan även de minsta ytorna rymma ett elegant pondless vattenfall, en minidamm med koi eller en diskret porlande fontän. I denna guide utforskar vi hur du kan omvandla små utomhusytor till fantastiska, miljövänliga oaser med vatteninslag som förenar estetik, hållbarhet och praktisk funktion.",
+      "images": [
+        "/assets/images/blog/small-features-for-small-spaces.jpg",
+        "/assets/images/blog/aquabasin-pump-fountain.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/sports-stars-natural-ponds.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/sports-stars-natural-ponds.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "cbb159c1978f4c93fbbc2f4952509386ba2b553efab706f84308eb6bdb9d3c30",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Varför idrottsstjärnor väljer natur swim ponds för hälsa och återhämtning",
+      "blogIngress": "I jakten på maximal prestation letar elitidrottare ständigt efter sätt att optimera återhämtningen, stärka välmåendet och förlänga karriären. En av de senaste trenderna som växer fram i både Europa och USA hittas inte i gymmet eller på kliniken – utan i trädgården. Från fotbollslegendarer till NBA-stjärnor blir natur swim ponds en allt vanligare del av hemmen, med kemikaliefritt vatten, djupgående återhämtningsfördelar och året-runt-lugn.",
+      "images": [
+        "/assets/images/blog/sports-stars-natural-ponds.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/blog/posts/why-you-should-get-a-natural-pool.html",
+    "source_file": "/Volumes/Development/faunapoolen/blog/posts/why-you-should-get-a-natural-pool.kit",
+    "source_kind": "kit",
+    "page_type": "article",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "d1b3d170f46892bd659d7e6ce24ad1cb23a4e3c55cb94df230545021ced3edc0",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "Varför du bör skaffa en naturpool",
+      "blogIngress": "Naturpooler har ökat i popularitet de senaste åren och erbjuder ett hållbart och miljövänligt alternativ till traditionella klorpooler. Oavsett om du vill minska din miljöpåverkan eller bara älskar tanken på en kemikaliefri badupplevelse, ger en naturpool många fördelar. Här är varför du bör överväga att investera i en för ditt hem.",
+      "images": [
+        "/assets/images/blog/blog-post-why-you-should-have-a-natural-pool.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_blog-header.kit",
+        "/assets/components/_blog-related.kit",
+        "/assets/components/_blog-footer.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/contact/",
+    "source_file": "/Volumes/Development/faunapoolen/contact/index.kit",
+    "source_kind": "kit",
+    "page_type": "contact",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "dbee3f6af2a0e54ee019e9d32454fd5e84c01ecf90e4eec595d327855dbf7a21",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Kontakta oss",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/header-background-4.jpg"
+      ],
+      "links": [
+        "tel:+460735406757"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/koi-pond-series.html",
+    "source_file": "/Volumes/Development/faunapoolen/koi-pond-series.kit",
+    "source_kind": "kit",
+    "page_type": "product_series",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "a155578cbfca73633edcdf65b4854faea049079217da8125e895e030979f66f6",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Ta in naturen i trädgården med vackra koi.",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/koi-ponds/hero-image-koi.jpg",
+        "/assets/images/koi-ponds/aquascape-koi3.jpg",
+        "/assets/images/koi-ponds/muddy-pond.jpg",
+        "/assets/images/koi-ponds/aquascape-koi10.jpg",
+        "/assets/images/aquascape-team.jpg",
+        "/assets/images/alan-decker.jpg",
+        "/assets/images/koi-ponds/pond-skimmer-1000.jpg",
+        "/assets/images/koi-ponds/aquascape-koi5.jpg",
+        "/assets/images/koi-ponds/aquascape-koi11.jpg",
+        "/assets/images/koi-ponds/aquascape-koi4.jpg",
+        "/assets/images/gallery/8.jpg",
+        "/assets/images/gallery/10.jpg",
+        "/assets/images/gallery/4.jpg",
+        "/assets/images/dip-pond-asthetics.jpg",
+        "/assets/images/koi-ponds/aquascape-koi2.jpg"
+      ],
+      "links": [
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/pricing/#recreation-ponds",
+        "/pricing/#waterfall",
+        "/pricing/#recreation-ponds",
+        "/pricing/#waterfall",
+        "/pricing/#fountains"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_quotes-main-only.kit",
+        "/assets/components/_faq.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/nature-pools.html",
+    "source_file": "/Volumes/Development/faunapoolen/nature-pools.kit",
+    "source_kind": "kit",
+    "page_type": "general_page",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "7af55a24a88edfeefdabe0390fd7c400dc51645be7582bc0c8e42d5e7d331be8",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Ska du bygga naturpool? Vi gör det enkelt.",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/header-background-3.jpg",
+        "/assets/images/pricing-nature-pool.jpg",
+        "/assets/images/gallery/13.jpg",
+        "/assets/images/gallery/8.jpg",
+        "/assets/images/gallery/10.jpg"
+      ],
+      "links": [
+
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_cta.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/plunge-series.html",
+    "source_file": "/Volumes/Development/faunapoolen/plunge-series.kit",
+    "source_kind": "kit",
+    "page_type": "product_series",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "2699ab8b59be512c6cfd54c9b78981c05372c69da1cedfe48320b855cbc7f34e",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Utformad som ett naturligt vattenalternativ till traditionella pooler",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/plunge/hero-image.jpg",
+        "/assets/images/plunge/tomelilla-pond.png",
+        "/assets/images/dip-pond-small.jpg",
+        "/assets/images/dip-pond-medium.jpg",
+        "/assets/images/dip-pond-large.jpg",
+        "/assets/images/gallery/8.jpg",
+        "/assets/images/gallery/10.jpg",
+        "/assets/images/gallery/4.jpg",
+        "/assets/images/plunge/aquascape-plunge1.jpg",
+        "/assets/images/mood-image-winter-bath.jpg",
+        "/assets/images/dip-pond-asthetics.jpg"
+      ],
+      "links": [
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/pricing/#recreation-ponds",
+        "/pricing/#waterfall",
+        "/pricing/#fountains",
+        "/contact/",
+        "/contact/",
+        "/contact/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_quotes-main-only.kit",
+        "/assets/components/_faq.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/pond-packages-landing.html",
+    "source_file": "/Volumes/Development/faunapoolen/pond-packages-landing.kit",
+    "source_kind": "kit",
+    "page_type": "product_series",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "fdbb8b4cc7ad4dd25f1e065db4b2c629d8eb8a73452beef94893da556b7fef67",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Förvandla din trädgård till en oas med naturligt kristallklart vatten.",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/swim/landing-hero-image.jpg",
+        "/assets/images/swim/aquascape-swim1.jpg",
+        "/assets/images/swim/aquascape-swim10.jpg",
+        "/assets/images/koi-ponds/aquascape-koi4.jpg",
+        "/assets/images/traditional-swim-pool.jpg",
+        "/assets/images/waterfront/aquascape-waterfront4.jpg",
+        "/assets/images/koi-ponds/features-of-wetland-filter.png",
+        "/assets/images/plunge/aquascape-plunge2.png",
+        "/assets/images/aquascape-team.jpg",
+        "/assets/images/alan-Decker.jpg",
+        "/assets/images/koi-ponds/aquascape-koi11.jpg",
+        "/assets/images/aquascape-pool16.jpg",
+        "/assets/images/mood-image-winter-bath.jpg",
+        "/assets/images/dip-pond-asthetics.jpg",
+        "/assets/images/dip-pond-small.jpg",
+        "/assets/images/swim/aquascape-swim1.jpg",
+        "/assets/images/waterfront/aquascape-waterfront5.jpg",
+        "/assets/images/gallery/8.jpg",
+        "/assets/images/gallery/10.jpg",
+        "/assets/images/gallery/4.jpg",
+        "/assets/images/waterfront/aquascape-waterfront6.jpg"
+      ],
+      "links": [
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/plunge-series.html",
+        "/swim-series.html",
+        "/waterfront-series.html",
+        "/contact/",
+        "/contact/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_quotes-main-only.kit",
+        "/assets/components/_faq.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/pricing/",
+    "source_file": "/Volumes/Development/faunapoolen/pricing/index.kit",
+    "source_kind": "kit",
+    "page_type": "pricing_index",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "daa16d6af3832520ebebee09a62e5bd45aa2dc6061964c2384a3dad02da69d1e",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Priser",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/header-image-price-page.jpg",
+        "/assets/images/pricing-nature-pool.jpg",
+        "/assets/images/pricing-fountains.jpg",
+        "/assets/images/pricing-koi-ponds.jpg",
+        "/assets/images/waterfall.jpg",
+        "/assets/images/pricing-water-storage.jpg",
+        "/assets/images/pricing-landscape.jpg"
+      ],
+      "links": [
+        "/plunge-series.html",
+        "/swim-series.html",
+        "/waterfront-series.html",
+        "/koi-pond-series.html",
+        "/contact/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_cta.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/services/",
+    "source_file": "/Volumes/Development/faunapoolen/services/index.kit",
+    "source_kind": "kit",
+    "page_type": "service_index",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "71e03a18692b8672460599fcbd4abfb640a350eccf4cde19d22341a476523a39",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Våra tjänster",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/header-background-3.jpg",
+        "/assets/images/services/swim-ponds.jpg",
+        "/assets/images/services/pondless-waterfalls.jpg",
+        "/assets/images/services/fountains.jpg",
+        "/assets/images/services/koi-ponds.jpg",
+        "/assets/images/services/water-storage.jpg",
+        "/assets/images/pricing-landscape.jpg"
+      ],
+      "links": [
+        "/pond-packages-landing.html",
+        "/pricing/#waterfall",
+        "/pricing/#fountains",
+        "/pricing/#koi-pond",
+        "/pricing/#water-storage",
+        "/pricing/#maintenance"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_cta.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/suppliers/",
+    "source_file": "/Volumes/Development/faunapoolen/suppliers/index.kit",
+    "source_kind": "kit",
+    "page_type": "supplier_index",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "58f449e811c699f1e9fb12ef8c0881c604fbe800b271aff5e158ac47a7f53027",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Bli leverantör till Faunapoolen",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/services-background-2.jpg",
+        "/assets/images/aquascape.png",
+        "/assets/images/moerings.png",
+        "/assets/images/dangarden.png",
+        "/assets/images/stenbolaget.png",
+        "/assets/images/mn-vvs.png",
+        "/assets/images/aquascape.png",
+        "/assets/images/moerings.png",
+        "/assets/images/dangarden.png",
+        "/assets/images/stenbolaget.png",
+        "/assets/images/mn-vvs.png"
+      ],
+      "links": [
+        "mailto:info@faunapoolen.se"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/sweden-expert-naturpooler-biopooler-ecopooler-kemikaliefria-pooler-baddammar/",
+    "source_file": "/Volumes/Development/faunapoolen/sweden-expert-naturpooler-biopooler-ecopooler-kemikaliefria-pooler-baddammar/index.kit",
+    "source_kind": "kit",
+    "page_type": "general_page",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "599522cfb319021401b1d337c7eaf71878b6bdddc494dabde3ac8cb900fe4d7d",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Vi designar och bygger naturpooler, baddammar, ekopooler och kemikaliefria pooler",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/mood-image-construction-workers.jpg",
+        "/assets/images/mood-image-girl-in-pool.jpg",
+        "/assets/images/mood-image-chairs-by-pool.jpg",
+        "/assets/images/mood-image-palm-pool.jpg"
+      ],
+      "links": [
+        "/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/swim-series.html",
+    "source_file": "/Volumes/Development/faunapoolen/swim-series.kit",
+    "source_kind": "kit",
+    "page_type": "product_series",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "c23afbd737ac1ba828c4743bbb428293e74b05d169babef5733274f39b368340",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Utformad för husägare som vill ha en riktig simtur utan kemikalier.",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/swim/hero-image-swim.jpg",
+        "/assets/images/mood-image-girl-in-pool.jpg",
+        "/assets/images/swim/aquascape-swim1.jpg",
+        "/assets/images/swim/aquascape-swim2.jpg",
+        "/assets/images/swim/aquascape-swim3.jpg",
+        "/assets/images/gallery/8.jpg",
+        "/assets/images/gallery/10.jpg",
+        "/assets/images/gallery/4.jpg",
+        "/assets/images/swim/aquascape-swim9.png",
+        "/assets/images/mood-image-winter-bath.jpg",
+        "/assets/images/koi-ponds/aquascape-koi4.jpg"
+      ],
+      "links": [
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/pricing/#recreation-ponds",
+        "/pricing/#waterfall",
+        "/pricing/#fountains",
+        "/contact/",
+        "/contact/",
+        "/contact/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_quotes-main-only.kit",
+        "/assets/components/_faq.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  },
+  {
+    "path": "/waterfront-series.html",
+    "source_file": "/Volumes/Development/faunapoolen/waterfront-series.kit",
+    "source_kind": "kit",
+    "page_type": "product_series",
+    "priority": false,
+    "source_of_truth": "local",
+    "sha256": "b61c0b671c14e806932eeb8f6e550ca6e9731b87a422cba99808bb053536811f",
+    "meta": {
+      "title": "",
+      "description": "",
+      "h1": "Djup. Expansiv. Byggd för kunder som vill ha den ultimata vattenupplevelsen.",
+      "canonical": "",
+      "ogTitle": "",
+      "ogDescription": "",
+      "blogTitle": "",
+      "blogIngress": "",
+      "images": [
+        "/assets/images/waterfront/aquascape-waterfront-hero-image.jpg",
+        "/assets/images/waterfront/aquascape-waterfront2.jpg",
+        "/assets/images/waterfront/aquascape-waterfront5.jpg",
+        "/assets/images/waterfront/aquascape-waterfront3.jpg",
+        "/assets/images/waterfront/aquascape-waterfront1.jpg",
+        "/assets/images/gallery/8.jpg",
+        "/assets/images/gallery/10.jpg",
+        "/assets/images/gallery/4.jpg",
+        "/assets/images/waterfront/aquascape-waterfront6.jpg",
+        "/assets/images/waterfront/aquascape-waterfront7.jpg",
+        "/assets/images/dip-pond-asthetics.jpg"
+      ],
+      "links": [
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/contact/",
+        "/pricing/#recreation-ponds",
+        "/pricing/#waterfall",
+        "/pricing/#fountains",
+        "/contact/",
+        "/contact/",
+        "/contact/"
+      ],
+      "includes": [
+        "/assets/components/_header.kit",
+        "/assets/components/_quotes-main-only.kit",
+        "/assets/components/_faq.kit",
+        "/assets/components/_navigation.kit",
+        "/assets/components/_footer.kit"
+      ]
+    }
+  }
+]

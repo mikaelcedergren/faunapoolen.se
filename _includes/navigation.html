@@ -1,0 +1,46 @@
+<nav class="navigation">
+  {% assign nav_items = site.data.navigation.main | sort: 'order' %}
+  <div class="nav-container">
+    <div class="nav-menu">
+      {% if page.lang == 'en' %}
+        {% assign contact_url = '/en/contact/' %}
+        {% assign contact_label = 'Contact us' %}
+      {% else %}
+        {% assign contact_url = '/contact/' %}
+        {% assign contact_label = 'Kontakta oss' %}
+      {% endif %}
+      <a href="{{ contact_url | relative_url }}" class="button hidden-desktop">{{ contact_label }}</a>
+      <label for="menu-state" tabindex="0">
+        <span class="material-symbols-outlined">menu</span>
+      </label>
+      <input id="menu-state" name="menu-state" type="checkbox">
+      <div class="menu-overlay"></div>
+      <div class="menu">
+        {% for item in nav_items %}
+          {% assign item_url = item.url %}
+          {% assign item_label = item.label %}
+          {% if page.lang == 'en' %}
+            {% if item.url == '/' %}
+              {% assign item_url = '/en/' %}
+            {% else %}
+              {% assign item_url = item.url | prepend: '/en' %}
+            {% endif %}
+            {% case item.label %}
+            {% when 'Start' %}{% assign item_label = 'Home' %}
+            {% when 'Tjänster' %}{% assign item_label = 'Services' %}
+            {% when 'Blogg' %}{% assign item_label = 'Blog' %}
+            {% when 'Leverantörer' %}{% assign item_label = 'Suppliers' %}
+            {% when 'Om oss' %}{% assign item_label = 'About' %}
+            {% when 'Kontakta oss' %}{% assign item_label = 'Contact us' %}
+            {% endcase %}
+          {% endif %}
+        <a href="{{ item_url | relative_url }}"{% if item.style %} class="{{ item.style }}"{% endif %}>{{ item_label }}</a>
+        {% endfor %}
+        {% include language-switch.html %}
+      </div>
+    </div>
+    <a href="{% if page.lang == 'en' %}{{ '/en/' | relative_url }}{% else %}{{ '/' | relative_url }}{% endif %}" class="logo">
+      <img src="{{ '/assets/media/site/logo.png' | relative_url }}" alt="Faunapoolen">
+    </a>
+  </div>
+</nav>

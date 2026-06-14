@@ -1,0 +1,10 @@
+body {
+  background: #133f4a;
+  color: #fff;
+  padding: 2rem;
+}
+
+.cms-preview-note {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}

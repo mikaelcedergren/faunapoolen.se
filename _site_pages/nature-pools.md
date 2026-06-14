@@ -1,0 +1,184 @@
+---
+layout: default
+title: Ska du bygga naturpool? Vi gör det enkelt.
+slug: nature-pools
+permalink: "/nature-pools.html"
+lang: sv
+translation_key: nature-pools
+published: true
+canonical_url: "/nature-pools.html"
+alternate_url: "/en/nature-pools.html"
+---
+
+<div class="background-image tight-fade">
+    <img src="{{ '/assets/media/pages/header-background-3.jpg' | relative_url }}">
+</div>
+
+<header>
+
+    <h1>Ska du bygga naturpool? Vi gör det enkelt.</h1>
+</header>
+
+<section>
+    <div class="grid-row align-center section-content">
+        <div class="grid-cell">
+
+            <h2>Därför väljer folk oss</h2>
+            <p>Vi kan naturpooler. Det är allt vi gör, och vi gör det bra. Inga mellanhänder, inga standardlösningar — bara skräddarsytt, byggt av oss från grunden. Du får tydlig offert, realistisk tidsplan och en kontaktperson som faktiskt svarar.</p>
+            <p>Kort sagt: Vi gör det enkelt att få en naturpool du är stolt över.</p>
+            <p>Vi vet att en pool är en stor investering. Därför bygger vi för lång sikt — både när det gäller hållbarhet, funktion och känslan varje gång du kliver ner i vattnet.</p>
+        </div>
+        <div class="grid-cell">
+            <img src="{{ '/assets/media/pricing/pricing-nature-pool.jpg' | relative_url }}" alt="kemikaliefri biopool" class="section-image" />
+        </div>
+    </div>
+</section>
+
+<section class="pb-0">
+    <div class="section-content">
+
+        <h2 class="text-center">Så här kan det se ut</h2>
+        <p class="text-center">Så här kan en naturpool se ut hos dig, helt integrerad i trädgården, med rent, klart vatten utan kemikalier. Varje pool vi bygger är unik, anpassad efter platsen och hur du vill använda den.</p>
+    </div>
+</section>
+
+<section class="gallery">
+    <img src="{{ '/assets/media/pages/gallery/13.jpg' | relative_url }}" />
+    <img src="{{ '/assets/media/pages/gallery/8.jpg' | relative_url }}" />
+    <img src="{{ '/assets/media/pages/gallery/10.jpg' | relative_url }}" />
+</section>
+
+<section>
+    <div class="section-content">
+        <q>Jag är mycket nöjd med killarna på Faunapoolen. Jag hade en design i åtanke redan, och installationen flöt på smidigt. Dessutom var alla så otroligt trevliga!</q>
+        <div class="pt-1 line-height-1 color-secondary"><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span><span class="material-symbols-outlined">star</span></div>
+        <div class="text-discreet">Helen</div>
+    </div>
+</section>
+{% include cta.html %}
+<section>
+    <div class="section-content">
+
+        <h2>Vanliga frågor</h2>
+        <div class="accordion">
+            <div class="accordion-item">
+                <div class="accordion-header"> Vilka typer av vattenmiljöer installerar ni? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Vi specialiserar oss på ett brett utbud av högkvalitativa och miljövänliga vattenmiljöer, inklusive naturpooler, koi-dammar, vattenfall, fontäner, bäckar och vattenlagringslösningar.</p>
+                    <p>Varje design anpassas efter din yta, livsstil och estetiska preferenser.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Hur fungerar Faunapoolens vattenmiljöer? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Våra vattenmiljöer bygger på ett recirkulerande system där vattnet ständigt rör sig genom biologisk och mekanisk filtrering. Det minskar både avfall och underhåll — samtidigt som du får klart, friskt vatten året runt. Vi använder Aquascapes ekosystem, en beprövad metod som efterliknar naturens eget kretslopp. Resultatet är en vacker vattenmiljö helt utan starka kemikalier.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Hur mycket utrymme behöver jag för en vattenmiljö? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Vattenmiljöer kan utformas för alla typer av utrymmen, från små bubblande fontäner för kompakta trädgårdar till större dammar och vattenfall. Även på begränsade ytor kan vi skapa en rofylld och hållbar vattenmiljö som förhöjer din trädgård.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Kommer vattenmiljön att fungera i min lokala miljö? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Ja! Varje vattenmiljö utformas specifikt för din fastighet och dess omgivning. Vi tar hänsyn till platsförhållanden, estetik och funktionalitet för att skapa en unik design som harmoniserar med din trädgård.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Hur väljer jag rätt vattenmiljö för min trädgård? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Att välja rätt vattenmiljö beror på din tillgängliga yta, önskad estetik och hur mycket underhåll du vill ha.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Behöver jag en stor trädgård för att installera en vattenmiljö? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Inte alls! vattenmiljöer finns i olika storlekar och stilar för att passa alla utrymmen. Om du har en liten uteplats, innergård eller till och med en balkong kan en bubblande stenfontän eller en minidamm vara en perfekt lösning.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Kan jag anpassa designen på min vattenmiljö? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Ja! Varje vattenmiljö kan anpassas helt för att matcha din stil och ditt landskap. Från val av natursten och skräddarsydda vattenfall till integrerad LED-belysning och akvatiska växter – din vattenmiljö kan bli lika unik som din utemiljö. Oavsett om du föredrar en modern och stilren design eller ett naturligt och djurvänligt ekosystem, arbetar vi med Aquascapes hållbara produkter för att skapa en vattenmiljö som är skräddarsydd efter din vision.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Kommer min vattenmiljö att förbättras med tiden? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Ja! En välutformad vattenmiljö utvecklas vackert över tid när akvatiska växter etablerar sig, nyttiga bakterier balanserar ekosystemet och en naturlig patina förhöjer sten- och träelement. Med tiden kommer vattenmiljön att locka fler djur och skapa en levande, självförsörjande miljö som bara blir bättre med åren.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Var finns ni? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Vi är baserade i Sverige och betjänar kunder i hela regionen. Vårt team är tillgängligt för konsultationer och installationer på flera platser – kontakta oss för att se om vi verkar i ditt område!</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Arbetar ni med projekt i andra EU-länder? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Ja! Vi tar oss an utvalda internationella projekt inom EU. Om du är intresserad av en vatteninstallation utanför Sverige, kontakta oss för att diskutera logistik och möjligheter.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Erbjuder ni hård- och mjuklandskapstjänster? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Ja! Förutom att designa och installera vattenmiljöer erbjuder vi även tjänster inom hårdlandskap, såsom stenläggning, uteplatser och stödmurar. Vi arbetar också med mjuklandskap, inklusive plantering av inhemska växter, dekorativ trädgårdsdesign och ekosystemvänlig plantering.</p>
+                    <p>Vårt mål är att skapa en sammanhängande utemiljö som kompletterar din vattenmiljö och framhäver den naturliga skönheten på din tomt.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Hur mycket kostar en vattenmiljö? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Priset varierar beroende på storlek, materialval och projektets komplexitet. Mindre vattenmiljöer, som fontäner eller pondless vattenfall, är ofta mer prisvänliga, medan större dammar eller specialdesignade naturpooler kräver en större investering.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Tar ni ut en avgift för konsultation? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Telefonkonsultation: Ingen avgift, vi erbjuder en kostnadsfri inledande telefonkonsultation för att diskutera ditt projekt, besvara frågor och ge allmän vägledning.</p>
+                    <p>Platsbesök: Ja, vi tar ut en avgift för konsultation på plats. Detta inkluderar en professionell platsanalys, expert-rekommendationer anpassade till din trädgård och en inledande diskussion om projektet. Avgiften garanterar en noggrann och dedikerad genomgång och kommer dras av från den totala kostnaden om du väljer att gå vidare med installationen.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Är vatteninstallationer underhållskrävande? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Inte alls! Vatteninstallationer med Aquascapes filtreringssystem är designade för att kräva minimalt underhåll tack vare naturlig filtrering. Rutinvård består av att ta bort löv och skräp, kontrollera vattennivån och utföra säsongsbaserat underhåll.</p>
+                    <p>Vi erbjuder även professionella service- och rengöringstjänster för att hålla din vattenmiljö i toppskick.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Behöver jag ha igång min vatteninstallation året runt? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Du kan själv välja om du vill ha vatteninstallationen igång alla årets dagar eller stänga ner den under vintern. Många uppskattar de vackra isformationer som uppstår under kalla månader. Om du föredrar att stänga ner den, hjälper vi dig gärna med korrekt vinterförberedelse.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header"> Servar ni vatteninstallationer som inte är byggda av Faunapoolen? <span class="material-symbols-outlined icon">keyboard_arrow_down</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Ja! Vi erbjuder underhåll, reparationer och uppgraderingar för vatteninstallationer – oavsett vem som har byggt dem.</p>
+                    <p>Oavsett om du behöver en säsongsrengöring, förbättrad filtrering, läcksökning eller en fullständig renovering, kan vårt team hjälpa dig att se till att din vatteninstallation fungerar optimalt och ser fantastisk ut.</p>
+                    <p>Kontakta oss för att boka en bedömning!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

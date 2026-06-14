@@ -1,0 +1,336 @@
+---
+layout: default
+title: Utformad som ett naturligt vattenalternativ till traditionella pooler
+slug: plunge-series
+permalink: "/plunge-series.html"
+lang: sv
+translation_key: plunge-series
+published: true
+canonical_url: "/plunge-series.html"
+alternate_url: "/en/plunge-series.html"
+faq_schema: true
+---
+
+<div class="background-image tight-fade">
+  <img src="{{ '/assets/media/series/plunge/hero-image.jpg' | relative_url }}">
+</div>
+
+<header>
+  <!-- <pre>Naturpooler & vattenlandskap</pre> -->
+
+  <h1>Utformad som ett naturligt vattenalternativ till traditionella pooler</h1>
+  <!-- <a href="{{ '/contact/' | relative_url }}"><span>Få en kostnadsfri designkonsultation</span><span class="material-symbols-outlined">arrow_forward</span></a> -->
+</header>
+<!--
+<section>
+  <div class="section-content">
+    <div class="grid-row gap-small">
+      <div class="grid-cell blur-box">
+        <div><span class="material-symbols-outlined">draw</span>
+
+          <h3>Design</h3>
+          <p>Vi skapar en unik och personlig design för ditt vattenlandskap som harmoniserar med din trädgård och dina önskemål.</p>
+        </div>
+        <a href="{{ '/contact/' | relative_url }}" class="mt-1">Kontakta oss för designförslag</a>
+      </div>
+      <div class="grid-cell blur-box">
+        <div><span class="material-symbols-outlined">construction</span>
+
+          <h3>Installation</h3>
+          <p>Vårt erfarna team ansvarar för en professionell installation av ditt vattenlandskap, vilket garanterar hög kvalitet och hållbarhet.</p>
+        </div>
+        <a href="{{ '/contact/' | relative_url }}" class="mt-1">Kontakta oss för installation</a>
+      </div>
+      <div class="grid-cell blur-box">
+        <div><span class="material-symbols-outlined">restart_alt</span>
+
+          <h3>Service & underhåll</h3>
+          <p>Vi erbjuder omfattande service för att säkerställa att ditt vattenlandskap alltid fungerar optimalt och ser fantastisk ut.</p>
+        </div>
+        <a href="{{ '/contact/' | relative_url }}" class="mt-1">Kontakta oss för service</a>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<section>
+  <div class="grid-row align-center section-content">
+    <div class="grid-cell">
+      <pre>Plunge-serien</pre>
+
+      <h2>Plunge-serien förkroppsligar sofistikering utan överdrift: ren estetik, ekologisk intelligens och vattnets återställande kraft i sin renaste form.</h2>
+      <p>Oavsett om den används för svalkande dopp, kontrastbehandling eller meditativ stillhet, är upplevelsen omedelbar, revitaliserande och djupt jordande.</p>
+      <p class="pb-1">Sveriges enda Aquascape-entreprenör levererar en doppupplevelse som känns levande.</p>
+      <p>Svep uppåt för att utforska alternativen i Plunge-serien.</p>
+      <p class="pb-1"></p>
+    </div>
+    <div class="grid-cell hidden-responsive">
+      <img src="{{ '/assets/media/series/plunge/tomelilla-pond.jpg' | relative_url }}" alt="" class="section-image" />
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-content">
+    <div class="Choose Your Plunge Pond">
+
+      <h2 class="text-center">Välj rätt dykalternativ för dig.</h2>
+      <div class="grid-row gap-small mb-1 grid-3-columns">
+        <a href="{{ '/pricing/#recreation-ponds' | relative_url }}" class="grid-cell blur-box">
+          <div>
+            <img src="{{ '/assets/media/pages/dip-pond-small.jpg' | relative_url }}" alt="Naturpool">
+
+            <h3>Plunge-serien S</h3>
+            <ul class="prominent">
+              <p></p>
+              <li><span class="material-symbols-outlined">check_small</span><span>3.5m x 5m x 1.2m</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Perfekt för kompakta trädgårdar eller gårdar.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Biofalls 6000 filtreringssystem och Intake Bay skimmersystem.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Naturstenskanter, vattenväxter och belysning.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Integrering av vattenfall och 1m bäck.</span></li>
+            </ul>
+          </div>
+
+          <h3 class="mt-2 mb-0">Från 1 799 750 kr</h3>
+          <span class="text-discreet text-small">plus moms &amp; frakt</span>
+        </a>
+        <a href="{{ '/pricing/#waterfall' | relative_url }}" class="grid-cell blur-box">
+          <div>
+            <img src="{{ '/assets/media/pages/dip-pond-medium.jpg' | relative_url }}" alt="Vattenfall">
+
+            <h3>Plunge-serien M</h3>
+            <ul class="prominent">
+              <p></p>
+              <li><span class="material-symbols-outlined">check_small</span><span>3.5m x 5m x 1.5m</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Vår mest populära modell – naturlig design, stark cirkulation och livfull klarhet.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Biofalls 6000 filtreringssystem och Intake Bay skimmersystem.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Naturstenskanter, vattenväxter och belysning.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Integrering av vattenfall och 2m bäck</span></li>
+            </ul>
+          </div>
+
+          <h3 class="mt-2 mb-0">Från 2 199 750 kr</h3>
+          <span class="text-discreet text-small">plus moms &amp; frakt</span>
+        </a>
+        <a href="{{ '/pricing/#fountains' | relative_url }}" class="grid-cell blur-box">
+          <div>
+            <img src="{{ '/assets/media/pages/dip-pond-large.jpg' | relative_url }}" alt="Fontäner">
+
+            <h3>Plunge-serien L</h3>
+            <ul class="prominent">
+              <p></p>
+              <li><span class="material-symbols-outlined">check_small</span><span>3.5m x 5m x 1.8m</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Perfekt för små bakgårdar, Airbnb-boenden eller små trädgårdar.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Biofalls 6000 filtreringssystem och ett Intake Bay-skimmersystem.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Naturstenskanter, vattenväxter och belysning.</span></li>
+              <li><span class="material-symbols-outlined">check_small</span><span>Integrering av vattenfall och 3m-ström</span></li>
+            </ul>
+          </div>
+
+          <h3 class="mt-2 mb-0">Från 2 499 750 kr</h3>
+          <span class="text-discreet text-small">plus moms &amp; frakt</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-content">
+    <pre>Hjälp naturen på vägen</pre>
+
+    <h2>Visste du att du kan vara berättigad till statligt stöd?</h2>
+    <div class="grid-row">
+      <div class="grid-cell">
+        <p>Äger du en gård? Du kan vara berättigad till hållbarhetsbidrag från Sverige och EU som stöder:</p>
+        <ul class="prominent">
+          <li><span class="material-symbols-outlined">check_small</span><span>Naturlig vattenfiltrering och projekt för biologisk mångfald.</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Minskning av kemikalieanvändning i hemmiljöer.</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Regnvattenhantering och ekologisk landskapsarkitektur.</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Implementera lokala växter och fisk samtidigt som ekosystemet förbättras.</span></li>
+        </ul>
+        <p>En naturlig pool från Aquascape Ecosystem uppfyller alla dessa krav.</p>
+
+        <h3>Aktuellt exempel: Gotlands kommun hanterar årliga vattenproblem – de godkände ett baddammsprojekt för Faunapoolen inom 48 timmar. Inget bygglov krävdes, vilket sparade husägaren tusentals kronor i extra avgifter och tid.</h3>
+        <p class="mb-05">Vi kommer att kontrollera din behörighet som en del av din kostnadsfria konsultation.</p>
+        <p></p>
+        <a href="{{ '/contact/' | relative_url }}" class="button">Få en kostnadsfri telefonkonsultation</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-content">
+    <div>
+
+      <h2 class="text-center">Med varje Plunge-serieprojekt strävar vi efter att återanvända så mycket som möjligt av det jordmaterial som tas bort från marken.</h2>
+    </div>
+  </div>
+</section>
+
+<section class="gallery">
+  <div class="section-content">
+    <img src="{{ '/assets/media/pages/gallery/8.jpg' | relative_url }}" />
+    <img src="{{ '/assets/media/pages/gallery/10.jpg' | relative_url }}" />
+    <img src="{{ '/assets/media/pages/gallery/4.jpg' | relative_url }}" />
+  </div>
+</section>
+
+<section>
+  <div class="grid-row align-center section-content">
+    <div class="grid-cell">
+      <img src="{{ '/assets/media/series/plunge/aquascape-plunge1.jpg' | relative_url }}" alt="" class="section-image" />
+    </div>
+    <div class="grid-cell">
+      <pre>Processen</pre>
+
+      <h2>Din väg till ett Aquascape Ecosystem</h2>
+
+      <h3>1. Ansökan och kvalificering</h3>
+      <p>Svara på några frågor om dina planer och förutsättningar för att kvalificera dig för en fri 30-minuters konsultation.</p>
+
+      <h3>2. Fri telefonkonsultation</h3>
+      <p>Vi diskuterar dina mål i förhållande till budget och utrymme för att sätta realistiska förväntningar inför nästa steg.</p>
+
+      <h3>3. Besök</h3>
+      <p>Vi hälsar på för att kontrollera alla platsförutsättningar och återkommer sedan med ett officiellt erbjudande med ett fast pris. (Besöket dras av från slutpriset.)</p>
+
+      <h3>4. Konstruktion</h3>
+      <p>När du godkänt erbjudandet börjar vi bygga ditt egna Aquascape Ecosystem enligt plan och tidsram.</p>
+
+      <h3>5. Avslappning</h3>
+      <p>Naturligt optimerad filtrering och cirkulation låter dig njuta av kristallklart vatten året runt med minimalt underhåll.</p>
+      <p></p>
+      <a href="{{ '/contact/' | relative_url }}" class="button">Få en kostnadsfri telefonkonsultation</a>
+      <p></p>
+      <p></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-content">
+    <pre>Anpassa din vattenmiljö</pre>
+
+    <h2>Lägg till ytterligare vattenelement för att skapa ett verkligt unikt vattenlevande mästerverk.</h2>
+    <div class="grid-row">
+      <div class="grid-cell">
+        <p>Välj bland ett stort utbud av extra vattenfunktioner för att förbättra ditt dammprojekt:</p>
+        <ul class="prominent">
+          <li><span class="material-symbols-outlined">check_small</span><span>System för uppsamling av regnvatten</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Vattenfall</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Strömmar</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Fontäner</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Negativa kanter</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Franska avlopp</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Hårdbeklädnad som altaner och samtalseldgropar</span></li>
+          <li><span class="material-symbols-outlined">check_small</span><span>Mjuklandskap som trädgårdsbevattning och mycket mer...</span></li>
+        </ul>
+        <p></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% include testimonials.html limit=1 %}
+<section>
+  <div class="grid-row align-center section-content">
+    <div class="grid-cell">
+      <pre>365 dagar om året</pre>
+
+      <h2>Njut av din baddamm även på vintern.</h2>
+      <p>Våra naturliga baddammar är utformade för att vara så miljövänliga som möjligt. Genom att använda naturliga material för att filtrera vattnet via vår pump, sten och växtsystem behövs inga kemikalier, vilket skapar ett rent och hållbart vattensystem för våra vattenlevande vänner.</p>
+      <p>Minimal energi förbrukas tack vare våra lågspänningspumpar, och ju oftare vi människor interagerar med våra ekosystemdammar, desto bättre presterar dammen, även under vintermånaderna.</p>
+    </div>
+    <div class="grid-cell">
+      <img src="{{ '/assets/media/pages/mood-image-winter-bath.jpg' | relative_url }}" alt="" class="section-image" />
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="grid-row align-center section-content">
+    <div class="grid-cell">
+      <img src="{{ '/assets/media/pages/dip-pond-asthetics.jpg' | relative_url }}" alt="" class="section-image" />
+    </div>
+    <div class="grid-cell">
+      <pre>Låt oss börja tillsammans</pre>
+
+      <h2>Redo att förvandla din trädgård till en privat oas?</h2>
+      <ul class="prominent">
+        <li><span class="material-symbols-outlined">check_small</span><span>Kemikaliefri, naturvänlig vattendesign.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>Minimerat underhållsbehov – naturen gör det tunga arbetet.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>Anpassad till skandinaviskt klimat – fungerar året runt.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>Hjälp med eventuell finansiering via LOVA, LONA och LIFE.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>Globalt beprövat system i över 30 år.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>Löpande uppföljningar.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>En del av det globala Aquascape-nätverket.</span></li>
+        <li><span class="material-symbols-outlined">check_small</span><span>Valfritt underhållspaket för avkoppling utan händer.</span></li>
+      </ul>
+      <p>Om du vill att din naturliga pool ska vara redo för sommaren:</p>
+      <p></p>
+      <a href="{{ '/contact/' | relative_url }}" class="button">Få en kostnadsfri telefonkonsultation</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-content">
+    <div class="grid-row">
+      <div class="grid-cell">
+
+        <h2>Boka ett konsultationssamtal</h2>
+        <p class="hidden-responsive">Klar att starta ditt projekt.</p>
+        <p>När vi har fått dina svar kopplar vi dig till vår projektledare för att diskutera designalternativ och ytterligare alternativ som är anpassade till din fastighet och livsstil.</p>
+        <table class="mt-2">
+          <tbody>
+            <tr>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-cell">
+        <form action="{{ site.data.settings.forms.formspree_endpoint }}" method="POST">
+          <select id="category" name="kategori" required>
+            <option value="" disabled selected>Pakettyp...</option>
+            <option>Plunge-serien S</option>
+            <option>Plunge-serien M</option>
+            <option>Plunge-serien L</option>
+          </select>
+          <select id="planning" name="planning" required>
+            <option value="" disabled selected>När planerar du att starta...</option>
+            <option>Nu</option>
+            <option>Inom 6 månader</option>
+            <option>Inom de kommande 12 månaderna</option>
+          </select>
+          <select id="ownership" name="ownership" required>
+            <option value="" disabled selected>Äger du fastigheten?</option>
+            <option>Ja</option>
+            <option>Nej</option>
+          </select>
+          <select id="ownership" name="own a pond" required>
+            <option value="" disabled selected>Har du redan en damm?</option>
+            <option>Ja</option>
+            <option>Nej</option>
+          </select>
+          <select id="ownership" name="lead origin" required>
+            <option value="" disabled selected>Hur hittade du Faunapoolen?</option>
+            <option>Google-sökning</option>
+            <option>Facebook</option>
+            <option>Instagram</option>
+            <option>Rekommendation</option>
+            <option>Övrigt</option>
+          </select>
+          <input id="location" name="plats" type="text" placeholder="Plats / postnummer..." required>
+          <input type="text" name="firstName" placeholder="Ditt namn..." required="required" />
+          <input type="email" name="email" placeholder="Din epost..." required="required" />
+          <input type="text" name="phone" placeholder="Ditt telefonnummer..." />
+          <textarea name="message" placeholder="Berätta mer om ditt projekt..." required="required"></textarea>
+          <!-- your other form fields go here -->
+          <button type="submit">Skicka</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% include faq.html %}

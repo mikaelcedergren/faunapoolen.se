@@ -1,0 +1,62 @@
+title: Faunapoolen
+description: Naturpooler, biopooler, ecopooler och kemikaliefria pooler.
+url: "https://faunapoolen.se"
+baseurl: "/faunapoolen.se"
+staging_noindex: true
+
+timezone: Europe/Stockholm
+encoding: utf-8
+markdown: kramdown
+
+plugins:
+  - jekyll-redirect-from
+
+collections:
+  site_pages:
+    output: true
+  articles:
+    output: true
+  services:
+    output: false
+  product_series:
+    output: true
+  pricing_items:
+    output: false
+  suppliers:
+    output: false
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      lang: sv
+  - scope:
+      type: site_pages
+    values:
+      layout: page
+  - scope:
+      type: articles
+    values:
+      layout: article
+  - scope:
+      type: services
+    values:
+      layout: service
+  - scope:
+      type: product_series
+    values:
+      layout: product_series
+
+exclude:
+  - AGENTS.md
+  - Gemfile
+  - Gemfile.lock
+  - MIGRATION-BRIEF.md
+  - migration-audit/
+  - node_modules/
+  - package-lock.json
+  - package.json
+  - README.md
+  - scripts/
+  - vendor/

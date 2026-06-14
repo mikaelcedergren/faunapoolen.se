@@ -1,0 +1,59 @@
+name: Optimize CMS media
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "assets/media/**"
+      - ".github/scripts/optimize_media.py"
+      - ".github/workflows/optimize-media.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: optimize-cms-media
+  cancel-in-progress: true
+
+jobs:
+  optimize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install image optimizer
+        run: python -m pip install "pillow>=10,<12"
+
+      - name: Collect changed media
+        run: |
+          git diff -z --name-only HEAD^ HEAD -- 'assets/media/**' > /tmp/changed-media || true
+          if [ ! -s /tmp/changed-media ]; then
+            find assets/media -type f -print0 > /tmp/changed-media
+          fi
+
+      - name: Optimize changed media
+        run: python .github/scripts/optimize_media.py --file-list /tmp/changed-media
+
+      - name: Commit optimized media
+        run: |
+          if git diff --quiet -- assets/media; then
+            echo "No optimized media changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/media
+          git commit -m "Optimize uploaded media"
+          git push
