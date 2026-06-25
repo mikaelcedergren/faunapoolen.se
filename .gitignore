@@ -149,6 +149,22 @@ _site/
 .bundle/
 vendor/bundle/
 
+# Angular / build
+.angular/
+out-tsc/
+*.tsbuildinfo
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+
+# launchd service logs
+.run/*.log
+
+# macOS
+.DS_Store
+
 # Generated validation artifacts
 migration-audit/playwright-validation-report.json
 migration-audit/playwright-screenshots/

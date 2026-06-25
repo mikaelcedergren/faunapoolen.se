@@ -1,0 +1,35 @@
+{
+  "name": "faunapoolen.se",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Faunapoolen — static site served by Express on the Mac mini (carbon copy of the CodeKit output, no CodeKit needed to run).",
+  "author": "Mikael Cedergren <michael@wargr.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://faunapoolen.se",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikaelcedergren/faunapoolen.se.git"
+  },
+  "type": "module",
+  "packageManager": "pnpm@10.7.1",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "start": "node server/index.mjs",
+    "serve": "node server/index.mjs",
+    "refresh": "bash scripts/refresh.sh",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install chromium",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "compression": "^1.7.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.60.0",
+    "prettier": "^3.8.1"
+  }
+}
