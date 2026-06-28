@@ -1,0 +1,147 @@
+<main>
+  <router-outlet />
+
+  @if (en) {
+    <nav class="navigation">
+      <div class="nav-container">
+        <div class="nav-menu">
+          <a href="/en/contact/" class="button hidden-desktop">Contact us</a>
+          <label for="menu-state" tabindex="0">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <input id="menu-state" name="menu-state" type="checkbox" />
+          <div class="menu-overlay"></div>
+          <div class="menu">
+            <a href="/en/">Home</a>
+            <a href="/en/services/">Services</a>
+            <a href="/en/pricing/">Prices</a>
+            <a href="/en/blog/">Blog</a>
+            <a href="/en/suppliers/">Suppliers</a>
+            <a href="/en/about/">About us</a>
+            <details class="language-switcher">
+              <summary aria-label="Choose language">
+                <span
+                  class="language-current language-flag language-flag-en"
+                  aria-hidden="true"
+                ></span>
+              </summary>
+              <div class="language-options" aria-label="Language">
+                <a
+                  href="/"
+                  data-language-link="sv"
+                  hreflang="sv"
+                  aria-label="Swedish"
+                  title="Swedish"
+                >
+                  <span class="language-flag language-flag-sv" aria-hidden="true"></span>
+                </a>
+                <a
+                  href="/en/"
+                  data-language-link="en"
+                  hreflang="en"
+                  aria-label="English"
+                  title="English"
+                >
+                  <span class="language-flag language-flag-en" aria-hidden="true"></span>
+                </a>
+              </div>
+            </details>
+            <a href="/en/contact/" class="button">Contact us</a>
+          </div>
+        </div>
+        <a href="/en/" class="logo">
+          <img src="/assets/images/logo.png" alt="Faunapoolen" loading="eager" decoding="async" />
+        </a>
+      </div>
+    </nav>
+
+    <footer>
+      <div class="footer-content">
+        <div>
+          <div>Faunapoolen AB</div>
+          <div class="mb-1">0735 - 40 67 57</div>
+          <a href="https://inkandlynx.com/" target="_blank">Design by Ink&amp;Lynx</a>
+        </div>
+        <div>
+          <a href="/en/">Home</a>
+          <a href="/en/services/">Services</a>
+          <a href="/en/pricing/">Prices</a>
+          <a href="/en/blog/">Blog</a>
+          <a href="/en/suppliers/">Suppliers</a>
+          <a href="/en/contact/">Contact us</a>
+        </div>
+      </div>
+    </footer>
+  } @else {
+    <nav class="navigation">
+      <div class="nav-container">
+        <div class="nav-menu">
+          <a href="/contact/" class="button hidden-desktop">Kontakta oss</a>
+          <label for="menu-state" tabindex="0">
+            <span class="material-symbols-outlined">menu</span>
+          </label>
+          <input id="menu-state" name="menu-state" type="checkbox" />
+          <div class="menu-overlay"></div>
+          <div class="menu">
+            <a href="/">Start</a>
+            <a href="/services/">Tjänster</a>
+            <a href="/pricing/">Priser</a>
+            <a href="/blog/">Blogg</a>
+            <a href="/suppliers/">Leverantörer</a>
+            <a href="/about/">Om oss</a>
+            <details class="language-switcher">
+              <summary aria-label="Välj språk">
+                <span
+                  class="language-current language-flag language-flag-sv"
+                  aria-hidden="true"
+                ></span>
+              </summary>
+              <div class="language-options" aria-label="Språk">
+                <a
+                  href="/"
+                  data-language-link="sv"
+                  hreflang="sv"
+                  aria-label="Svenska"
+                  title="Svenska"
+                >
+                  <span class="language-flag language-flag-sv" aria-hidden="true"></span>
+                </a>
+                <a
+                  href="/en/"
+                  data-language-link="en"
+                  hreflang="en"
+                  aria-label="Engelska"
+                  title="Engelska"
+                >
+                  <span class="language-flag language-flag-en" aria-hidden="true"></span>
+                </a>
+              </div>
+            </details>
+            <a href="/contact/" class="button">Kontakta oss</a>
+          </div>
+        </div>
+        <a href="/" class="logo">
+          <img src="/assets/images/logo.png" alt="Faunapoolen" loading="eager" decoding="async" />
+        </a>
+      </div>
+    </nav>
+
+    <footer>
+      <div class="footer-content">
+        <div>
+          <div>Faunapoolen AB</div>
+          <div class="mb-1">0735 - 40 67 57</div>
+          <a href="https://inkandlynx.com/" target="_blank">Design av Ink&amp;Lynx</a>
+        </div>
+        <div>
+          <a href="/">Start</a>
+          <a href="/services/">Tjänster</a>
+          <a href="/pricing/">Priser</a>
+          <a href="/blog/">Blogg</a>
+          <a href="/suppliers/">Leverantörer</a>
+          <a href="/contact/">Kontakta oss</a>
+        </div>
+      </div>
+    </footer>
+  }
+</main>

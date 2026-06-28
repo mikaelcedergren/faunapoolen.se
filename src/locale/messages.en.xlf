@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="sv" target-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="home.title" datatype="html">
+        <source>Faunapoolen | Ekologisk pool och vattenlandskap utan klor</source>
+        <target>Faunapoolen | ecological pool and water landscape without chlorine</target>
+      </trans-unit>
+      <trans-unit id="home.keywords" datatype="html">
+        <source>ekologisk pool, simdamm, pool utan klor, vattenlandskap, vattenfall trädgård, fontän, koidamm, regnvatteninsamling, naturlig trädgårdsdesign</source>
+        <target>ecological pool, swimming pond, chlorine-free pool, water landscape, waterfall garden, fountain, koi pond, rainwater collection, natural garden design</target>
+      </trans-unit>
+      <trans-unit id="home.description" datatype="html">
+        <source>Faunapoolen designar ekologisk pool, simdamm, vattenfall, fontän och vattenlandskap som smälter in naturligt i din trädgård.</source>
+        <target>Faunapoolen designs ecological pools, swimming ponds, waterfalls, fountains, and water landscapes that blend naturally into your garden.</target>
+      </trans-unit>
+      <trans-unit id="home.ogTitle" datatype="html">
+        <source>Faunapoolen | Ekologisk pool och vattenlandskap</source>
+        <target>Faunapoolen | ecological pool and water landscape</target>
+      </trans-unit>
+      <trans-unit id="home.ogDescription" datatype="html">
+        <source>Ekologisk pool, simdamm, fontän, koidamm och vattenfall för naturliga svenska trädgårdar.</source>
+        <target>Ecological pool, swimming pond, fountain, koi pond, and waterfall for natural Swedish gardens.</target>
+      </trans-unit>
+      <trans-unit id="about.title" datatype="html">
+        <source>Om Faunapoolen | Ekologiska pooler och vattenlandskap</source>
+        <target>About Faunapoolen | ecological pools and water landscapes</target>
+      </trans-unit>
+      <trans-unit id="about.keywords" datatype="html">
+        <source>ekologisk pool, organisk pool, pool utan klor, vattenlandskap, miljövänlig pool, naturlig trädgårdsdesign</source>
+        <target>ecological pool, organic pool, chlorine-free pool, water landscape, eco-friendly pool, natural garden design</target>
+      </trans-unit>
+      <trans-unit id="about.description" datatype="html">
+        <source>Lär känna Faunapoolen och vårt arbete med ekologisk pool, organisk pool och hållbara vattenlandskap utan klor i svenska trädgårdar.</source>
+        <target>Get to know Faunapoolen and our work with ecological pools, organic pools, and sustainable water landscapes without chlorine in Swedish gardens.</target>
+      </trans-unit>
+      <trans-unit id="about.ogTitle" datatype="html">
+        <source>Om Faunapoolen</source>
+        <target>About Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="about.ogDescription" datatype="html">
+        <source>Faunapoolen skapar ekologiska pooler, organiska pooler och naturliga vattenlandskap utan klor.</source>
+        <target>Faunapoolen creates ecological pools, organic pools, and natural water landscapes without chlorine.</target>
+      </trans-unit>
+      <trans-unit id="services.title" datatype="html">
+        <source>Tjänster | Naturpool, koidamm, fontän och vattenfall</source>
+        <target>Services | natural pool, koi pond, fountain, and waterfall</target>
+      </trans-unit>
+      <trans-unit id="services.keywords" datatype="html">
+        <source>ekologisk pool, koidamm, fontän, vattenfall trädgård, regnvatteninsamling, trädgårdsskötsel, vattenlandskap</source>
+        <target>ecological pool, koi pond, fountain, garden waterfall, rainwater collection, garden maintenance, water landscapes</target>
+      </trans-unit>
+      <trans-unit id="services.description" datatype="html">
+        <source>Utforska våra tjänster för ekologisk pool, koidamm, fontän, vattenfall i trädgård, regnvatteninsamling och trädgårdsskötsel.</source>
+        <target>Explore our services for ecological pools, koi ponds, fountains, garden waterfalls, rainwater collection, and garden maintenance.</target>
+      </trans-unit>
+      <trans-unit id="services.ogTitle" datatype="html">
+        <source>Faunapoolens tjänster</source>
+        <target>Faunapoolen's services</target>
+      </trans-unit>
+      <trans-unit id="services.ogDescription" datatype="html">
+        <source>Ekologisk pool, koidamm, fontän, vattenfall, regnvatteninsamling och trädgårdsskötsel.</source>
+        <target>Ecological pool, koi pond, fountain, waterfall, rainwater collection, and garden maintenance.</target>
+      </trans-unit>
+      <trans-unit id="pricing.title" datatype="html">
+        <source>Priser | Ekologisk pool, fontän, koidamm och vattenfall</source>
+        <target>Prices | ecological pool, fountain, koi pond, and waterfall</target>
+      </trans-unit>
+      <trans-unit id="pricing.keywords" datatype="html">
+        <source>ekologisk pool pris, fontän pris, koidamm, vattenfall trädgård, regnvatteninsamling, trädgårdsskötsel, simdamm</source>
+        <target>ecological pool price, fountain price, koi pond, waterfall garden, rainwater collection, garden maintenance, swimming pond</target>
+      </trans-unit>
+      <trans-unit id="pricing.description" datatype="html">
+        <source>Se prisnivåer för ekologisk pool, fontän, koidamm, vattenfall, regnvatteninsamling och trädgårdsskötsel från Faunapoolen.</source>
+        <target>See price levels for ecological pools, fountains, koi ponds, waterfalls, rainwater collection, and garden maintenance from Faunapoolen.</target>
+      </trans-unit>
+      <trans-unit id="pricing.ogTitle" datatype="html">
+        <source>Priser från Faunapoolen</source>
+        <target>Prices from Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="pricing.ogDescription" datatype="html">
+        <source>Prisnivåer för ekologisk pool, fontän, koidamm, vattenfall och hållbara vattenlandskap.</source>
+        <target>Price levels for ecological pools, fountains, koi ponds, waterfalls, and sustainable water landscapes.</target>
+      </trans-unit>
+      <trans-unit id="contact.title" datatype="html">
+        <source>Kontakta Faunapoolen | Ekologisk pool och vattenlandskap</source>
+        <target>Contact Faunapoolen | ecological pool and water landscape</target>
+      </trans-unit>
+      <trans-unit id="contact.keywords" datatype="html">
+        <source>ekologisk pool, simdamm, pool utan klor, vattenlandskap, fontän, koidamm, naturlig trädgårdsdesign</source>
+        <target>ecological pool, swimming pond, chlorine-free pool, water landscape, fountain, koi pond, natural garden design</target>
+      </trans-unit>
+      <trans-unit id="contact.description" datatype="html">
+        <source>Kontakta Faunapoolen för rådgivning om ekologisk pool, simdamm, vattenlandskap, fontän, koidamm och pool utan klor.</source>
+        <target>Contact Faunapoolen for advice on ecological pools, swimming ponds, water landscapes, fountains, koi ponds, and chlorine-free pools.</target>
+      </trans-unit>
+      <trans-unit id="contact.ogTitle" datatype="html">
+        <source>Kontakta Faunapoolen</source>
+        <target>Contact Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="contact.ogDescription" datatype="html">
+        <source>Rådgivning om ekologisk pool, simdamm, vattenlandskap, fontän, koidamm och pool utan klor.</source>
+        <target>Advice on ecological pools, swimming ponds, water landscapes, fountains, koi ponds, and chlorine-free pools.</target>
+      </trans-unit>
+      <trans-unit id="suppliers.title" datatype="html">
+        <source>Leverantörer | Hållbara vattenlandskap och natursten</source>
+        <target>Suppliers | sustainable water landscapes and natural stone</target>
+      </trans-unit>
+      <trans-unit id="suppliers.keywords" datatype="html">
+        <source>vattenlandskap, naturlig trädgårdsdesign, vattenväxter, natursten, koidamm, vattenfall trädgård, fontän</source>
+        <target>water landscape, natural garden design, aquatic plants, natural stone, koi pond, waterfall garden, fountain</target>
+      </trans-unit>
+      <trans-unit id="suppliers.description" datatype="html">
+        <source>Våra leverantörer hjälper oss skapa hållbara vattenlandskap med natursten, vattenväxter, Aquascape-system och naturlig trädgårdsdesign.</source>
+        <target>Our suppliers help us create sustainable water landscapes with natural stone, aquatic plants, Aquascape systems, and natural garden design.</target>
+      </trans-unit>
+      <trans-unit id="suppliers.ogTitle" datatype="html">
+        <source>Faunapoolens leverantörer</source>
+        <target>Faunapoolen's suppliers</target>
+      </trans-unit>
+      <trans-unit id="suppliers.ogDescription" datatype="html">
+        <source>Hållbara leverantörer för vattenlandskap, natursten, vattenväxter och naturlig trädgårdsdesign.</source>
+        <target>Sustainable suppliers for water landscapes, natural stone, aquatic plants, and natural garden design.</target>
+      </trans-unit>
+      <trans-unit id="sweden_expert_naturpooler_biopooler_ecopooler_kemikaliefria_pooler_baddammar.title" datatype="html">
+        <source>Expert på naturpool, biopool och baddamm i Sverige | Faunapoolen</source>
+        <target>Expert on natural pools | ecological pool and chlorine-free pool</target>
+      </trans-unit>
+      <trans-unit id="sweden_expert_naturpooler_biopooler_ecopooler_kemikaliefria_pooler_baddammar.keywords" datatype="html">
+        <source>ekologisk pool, pool utan klor, miljövänlig pool, organisk pool, simdamm, vattenlandskap, biopool</source>
+        <target>ecological pool, chlorine-free pool, environmentally friendly pool, organic pool, swimming pond, water landscape, bio pool</target>
+      </trans-unit>
+      <trans-unit id="sweden_expert_naturpooler_biopooler_ecopooler_kemikaliefria_pooler_baddammar.description" datatype="html">
+        <source>Sveriges expert på naturpool, biopool och baddamm. Vi designar och bygger kemikaliefria pooler och vattenlandskap utan klor för hållbara trädgårdar.</source>
+        <target>Faunapoolen designs natural pools, bio pools, ecological pools, and chlorine-free water landscapes for sustainable gardens in Sweden.</target>
+      </trans-unit>
+      <trans-unit id="sweden_expert_naturpooler_biopooler_ecopooler_kemikaliefria_pooler_baddammar.ogTitle" datatype="html">
+        <source>Expert på naturpooler i Sverige</source>
+        <target>Expert on natural pools in Sweden</target>
+      </trans-unit>
+      <trans-unit id="sweden_expert_naturpooler_biopooler_ecopooler_kemikaliefria_pooler_baddammar.ogDescription" datatype="html">
+        <source>Naturpooler, biopooler, ekologisk pool och vattenlandskap utan klor för svenska trädgårdar.</source>
+        <target>Natural pools, bio pools, ecological pools, and chlorine-free water landscapes for Swedish gardens.</target>
+      </trans-unit>
+      <trans-unit id="nature_pools.title" datatype="html">
+        <source>Naturpool utan klor – skräddarsydd och byggd av oss | Faunapoolen</source>
+        <target>Natural pool | ecological pool and chlorine-free pool</target>
+      </trans-unit>
+      <trans-unit id="nature_pools.keywords" datatype="html">
+        <source>ekologisk pool, pool utan klor, miljövänlig pool, organisk pool, simdamm, vattenlandskap, naturlig trädgårdsdesign</source>
+        <target>ecological pool, chlorine-free pool, environmentally friendly pool, organic pool, swimming pond, water landscape, natural garden design</target>
+      </trans-unit>
+      <trans-unit id="nature_pools.description" datatype="html">
+        <source>Vi bygger din naturpool utan klor – skräddarsydd design, biologisk filtrering och rent, klart vatten. Få offert och personlig rådgivning hela vägen.</source>
+        <target>See how an ecological pool can be integrated into the garden with clean, clear water without chlorine, biological filtration, and natural design.</target>
+      </trans-unit>
+      <trans-unit id="nature_pools.ogTitle" datatype="html">
+        <source>Naturpool och ekologisk pool</source>
+        <target>Natural pool and ecological pool</target>
+      </trans-unit>
+      <trans-unit id="nature_pools.ogDescription" datatype="html">
+        <source>Ekologisk pool med klart vatten utan klor, biologisk filtrering och naturlig trädgårdsdesign.</source>
+        <target>Ecological pool with clear water without chlorine, biological filtration, and natural garden design.</target>
+      </trans-unit>
+      <trans-unit id="koi_pond_series.title" datatype="html">
+        <source>Koidamm | Levande vattenlandskap för trädgården</source>
+        <target>Koi pond | living water landscape for the garden</target>
+      </trans-unit>
+      <trans-unit id="koi_pond_series.keywords" datatype="html">
+        <source>koidamm, vattenlandskap, naturlig trädgårdsdesign, miljövänlig pool, damm, biologisk filtrering</source>
+        <target>koi pond, water landscape, natural garden design, eco-friendly pool, pond, biological filtration</target>
+      </trans-unit>
+      <trans-unit id="koi_pond_series.description" datatype="html">
+        <source>Skapa en frisk koidamm med klart vatten, biologisk balans och naturlig design som ger liv åt trädgården året runt.</source>
+        <target>Create a healthy koi pond with clear water, biological balance, and a natural design that brings life to the garden year-round.</target>
+      </trans-unit>
+      <trans-unit id="koi_pond_series.ogTitle" datatype="html">
+        <source>Koidamm från Faunapoolen</source>
+        <target>Koi pond from Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="koi_pond_series.ogDescription" datatype="html">
+        <source>Koidamm med klart vatten, biologisk balans och naturlig design för trädgården.</source>
+        <target>Koi pond with clear water, biological balance, and natural design for the garden.</target>
+      </trans-unit>
+      <trans-unit id="swim_series.title" datatype="html">
+        <source>Swim-serien | Simdamm och pool utan klor</source>
+        <target>Swim series | swimming pond and chlorine-free pool</target>
+      </trans-unit>
+      <trans-unit id="swim_series.keywords" datatype="html">
+        <source>simdamm, pool utan klor, ekologisk pool, organisk pool, miljövänlig pool, vattenlandskap, naturlig pool</source>
+        <target>swimming pond, chlorine-free pool, ecological pool, organic pool, environmentally friendly pool, water landscape, natural pool</target>
+      </trans-unit>
+      <trans-unit id="swim_series.description" datatype="html">
+        <source>Swim-serien är en simdamm för dig som vill ha en riktig simtur i kristallklart vatten utan klor, kemikalier eller traditionell poolkänsla.</source>
+        <target>The Swim series is a swimming pond for those who want a real swim in crystal-clear water without chlorine, chemicals, or the traditional pool feel.</target>
+      </trans-unit>
+      <trans-unit id="swim_series.ogTitle" datatype="html">
+        <source>Swim-serien från Faunapoolen</source>
+        <target>Swim series from Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="swim_series.ogDescription" datatype="html">
+        <source>Simdamm och pool utan klor för en naturlig simupplevelse i trädgården.</source>
+        <target>Swimming pond and chlorine-free pool for a natural swimming experience in the garden.</target>
+      </trans-unit>
+      <trans-unit id="waterfront_series.title" datatype="html">
+        <source>Waterfront-serien | Storskalig simdamm utan klor</source>
+        <target>Waterfront series | large-scale chlorine-free swimming pond</target>
+      </trans-unit>
+      <trans-unit id="waterfront_series.keywords" datatype="html">
+        <source>simdamm, ekologisk pool, pool utan klor, vattenlandskap, organisk pool, miljövänlig pool</source>
+        <target>swimming pond, ecological pool, chlorine-free pool, water landscape, organic pool, environmentally friendly pool</target>
+      </trans-unit>
+      <trans-unit id="waterfront_series.description" datatype="html">
+        <source>Waterfront-serien skapar en exklusiv simdamm och ekologisk pool med biologisk filtrering, naturligt vatten och storskaligt vattenlandskap.</source>
+        <target>The Waterfront Series creates an exclusive swimming pond and ecological pool with biological filtration, natural water, and large-scale water landscapes.</target>
+      </trans-unit>
+      <trans-unit id="waterfront_series.ogTitle" datatype="html">
+        <source>Waterfront-serien från Faunapoolen</source>
+        <target>Waterfront series from Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="waterfront_series.ogDescription" datatype="html">
+        <source>Storskalig simdamm och ekologisk pool med naturligt vatten utan klor.</source>
+        <target>Large-scale swimming pond and ecological pool with natural water without chlorine.</target>
+      </trans-unit>
+      <trans-unit id="plunge_series.title" datatype="html">
+        <source>Plunge-serien | Organisk pool och naturligt dopp</source>
+        <target>Plunge series | organic pool and natural dip</target>
+      </trans-unit>
+      <trans-unit id="plunge_series.keywords" datatype="html">
+        <source>organisk pool, pool utan klor, ekologisk pool, simdamm, miljövänlig pool, vattenlandskap</source>
+        <target>organic pool, chlorine-free pool, ecological pool, swimming pond, environmentally friendly pool, water landscape</target>
+      </trans-unit>
+      <trans-unit id="plunge_series.description" datatype="html">
+        <source>Plunge-serien är en kompakt organisk pool för kalla dopp, avkoppling och naturligt vatten utan klor i trädgården.</source>
+        <target>The Plunge series is a compact organic pool for cold dips, relaxation, and natural chlorine-free water in the garden.</target>
+      </trans-unit>
+      <trans-unit id="plunge_series.ogTitle" datatype="html">
+        <source>Plunge-serien från Faunapoolen</source>
+        <target>The Plunge series from Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="plunge_series.ogDescription" datatype="html">
+        <source>Kompakt organisk pool för kalla dopp, avkoppling och naturligt vatten utan klor.</source>
+        <target>Compact organic pool for cold dips, relaxation, and natural chlorine-free water.</target>
+      </trans-unit>
+      <trans-unit id="pond_packages_landing.title" datatype="html">
+        <source>Naturpoolpaket | Simdamm och ekologisk pool utan klor</source>
+        <target>Natural pool packages | swimming pond and ecological pool without chlorine</target>
+      </trans-unit>
+      <trans-unit id="pond_packages_landing.keywords" datatype="html">
+        <source>simdamm, ekologisk pool, organisk pool, pool utan klor, miljövänlig pool, naturpoolpaket, vattenlandskap</source>
+        <target>swimming pond, ecological pool, organic pool, chlorine-free pool, eco-friendly pool, natural pool packages, water landscape</target>
+      </trans-unit>
+      <trans-unit id="pond_packages_landing.description" datatype="html">
+        <source>Upptäck Faunapoolens naturpoolpaket för simdamm, ekologisk pool och organisk pool med klart vatten utan klor eller starka kemikalier.</source>
+        <target>Discover Faunapoolen's natural pool packages for swimming ponds, ecological pools, and organic pools with clear water without chlorine or harsh chemicals.</target>
+      </trans-unit>
+      <trans-unit id="pond_packages_landing.ogTitle" datatype="html">
+        <source>Naturpoolpaket från Faunapoolen</source>
+        <target>Natural pool packages from Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="pond_packages_landing.ogDescription" datatype="html">
+        <source>Simdamm, ekologisk pool och organisk pool med klart vatten utan klor.</source>
+        <target>Swimming pond, ecological pool, and organic pool with clear water without chlorine.</target>
+      </trans-unit>
+      <trans-unit id="blog_index.title" datatype="html">
+        <source>Blogg | Ekologisk pool, vattenlandskap och trädgård</source>
+        <target>Blog | ecological pool, water landscape, and garden</target>
+      </trans-unit>
+      <trans-unit id="blog_index.keywords" datatype="html">
+        <source>ekologisk pool, pool utan klor, simdamm, koidamm, vattenfall trädgård, fontän, regnvatteninsamling, vattenlandskap</source>
+        <target>ecological pool, chlorine-free pool, swimming pond, koi pond, waterfall garden, fountain, rainwater collection, water landscape</target>
+      </trans-unit>
+      <trans-unit id="blog_index.description" datatype="html">
+        <source>Läs guider om ekologisk pool, pool utan klor, simdamm, vattenfall, fontän, koidamm, regnvatteninsamling och naturlig trädgårdsdesign.</source>
+        <target>Read guides on ecological pools, chlorine-free pools, swimming ponds, waterfalls, fountains, koi ponds, rainwater collection, and natural garden design.</target>
+      </trans-unit>
+      <trans-unit id="blog_index.ogTitle" datatype="html">
+        <source>Faunapoolens blogg</source>
+        <target>Faunapoolen's blog</target>
+      </trans-unit>
+      <trans-unit id="blog_index.ogDescription" datatype="html">
+        <source>Guider om ekologisk pool, pool utan klor, koidamm, vattenfall, fontän och vattenlandskap.</source>
+        <target>Guides on ecological pools, chlorine-free pools, koi ponds, waterfalls, fountains, and water landscapes.</target>
+      </trans-unit>
+      <trans-unit id="5_common_problems_installing_a_nature_pool.title" datatype="html">
+        <source>Problem med naturpool | Så lyckas du med ekologisk pool</source>
+        <target>Nature pool problems | how to succeed with an ecological pool</target>
+      </trans-unit>
+      <trans-unit id="5_common_problems_installing_a_nature_pool.keywords" datatype="html">
+        <source>ekologisk pool, pool utan klor, miljövänlig pool, organisk pool, simdamm, naturpool problem, vattenlandskap</source>
+        <target>ecological pool, chlorine-free pool, eco-friendly pool, organic pool, swimming pond, nature pool problems, water landscape</target>
+      </trans-unit>
+      <trans-unit id="5_common_problems_installing_a_nature_pool.description" datatype="html">
+        <source>Undvik vanliga misstag när du planerar ekologisk pool eller pool utan klor: balans, placering, tätning, cirkulation och rätt växter.</source>
+        <target>Avoid common mistakes when planning an ecological pool or chlorine-free pool: balance, placement, sealing, circulation, and the right plants.</target>
+      </trans-unit>
+      <trans-unit id="5_common_problems_installing_a_nature_pool.ogTitle" datatype="html">
+        <source>Vanliga problem med naturpool</source>
+        <target>Common problems with nature pools</target>
+      </trans-unit>
+      <trans-unit id="5_common_problems_installing_a_nature_pool.ogDescription" datatype="html">
+        <source>Undvik misstag med ekologisk pool och pool utan klor: balans, placering, tätning och cirkulation.</source>
+        <target>Avoid mistakes with ecological pools and chlorine-free pools: balance, placement, sealing, and circulation.</target>
+      </trans-unit>
+      <trans-unit id="algae_control_and_maintenance_tips.title" datatype="html">
+        <source>Algkontroll | Skötsel av koidamm och vattenlandskap</source>
+        <target>Algae control | maintenance of koi ponds and water landscapes</target>
+      </trans-unit>
+      <trans-unit id="algae_control_and_maintenance_tips.keywords" datatype="html">
+        <source>koidamm, vattenlandskap, trädgårdsskötsel, fontän, algkontroll, biologisk filtrering, naturlig trädgårdsdesign</source>
+        <target>koi pond, water landscape, garden maintenance, fountain, algae control, biological filtration, natural garden design</target>
+      </trans-unit>
+      <trans-unit id="algae_control_and_maintenance_tips.description" datatype="html">
+        <source>Få råd om algkontroll, biologisk balans och trädgårdsskötsel för koidamm, fontän och hållbara vattenlandskap.</source>
+        <target>Get advice on algae control, biological balance, and garden maintenance for koi ponds, fountains, and sustainable water landscapes.</target>
+      </trans-unit>
+      <trans-unit id="algae_control_and_maintenance_tips.ogTitle" datatype="html">
+        <source>Algkontroll och trädgårdsskötsel</source>
+        <target>Algae control and garden maintenance</target>
+      </trans-unit>
+      <trans-unit id="algae_control_and_maintenance_tips.ogDescription" datatype="html">
+        <source>Råd om algkontroll, biologisk balans och skötsel för koidamm, fontän och vattenlandskap.</source>
+        <target>Advice on algae control, biological balance, and maintenance for koi ponds, fountains, and water landscapes.</target>
+      </trans-unit>
+      <trans-unit id="build_your_own_nature_pool.title" datatype="html">
+        <source>Faunapoolen | Naturpooler, biopooler, ecopooler och kemikaliefria pooler - design och konstruktion av experter i Sverige</source>
+        <target>Faunapoolen | nature pools, bio pools, eco pools, and chemical-free pools - design and construction by experts in Sweden</target>
+      </trans-unit>
+      <trans-unit id="build_your_own_nature_pool.keywords" datatype="html">
+        <source>naturpool, skräddarsydda pooler, bygga naturpool, kemikaliefri pool, naturlig pool, ekologisk pool, vattenlandskap, hållbar pool, pooldesign, poolinstallation, trädgårdsdesign, poolunderhåll, kemikaliefria vattenlandskap, fontäner, aquascape, aquascape pooler</source>
+        <target>nature pool, custom pools, build nature pool, chemical-free pool, natural pool, organic pool, water landscape, sustainable pool, pool design, pool installation, garden design, pool maintenance, chemical-free water landscapes, fountains, aquascape, aquascape pools</target>
+      </trans-unit>
+      <trans-unit id="build_your_own_nature_pool.description" datatype="html">
+        <source>Vi designar och bygger naturpooler, biopooler, ekopooler, kemikaliefria pooler och baddammar.</source>
+        <target>We design and build nature pools, bio pools, eco pools, chemical-free pools, and swimming ponds.</target>
+      </trans-unit>
+      <trans-unit id="build_your_own_nature_pool.ogTitle" datatype="html">
+        <source>Faunapoolen</source>
+        <target>Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="build_your_own_nature_pool.ogDescription" datatype="html">
+        <source>Vi designar och bygger naturpooler, biopooler, ekopooler, kemikaliefria pooler och baddammar.</source>
+        <target>We design and build nature pools, bio pools, eco pools, chemical-free pools, and swimming ponds.</target>
+      </trans-unit>
+      <trans-unit id="can_i_use_water_storage_solutions_when_traditional_wells_arent_an_option.title" datatype="html">
+        <source>Regnvatteninsamling | Vattenlagring för hållbar trädgård</source>
+        <target>Rainwater harvesting | water storage for sustainable gardens</target>
+      </trans-unit>
+      <trans-unit id="can_i_use_water_storage_solutions_when_traditional_wells_arent_an_option.keywords" datatype="html">
+        <source>regnvatteninsamling, vattenlandskap, naturlig trädgårdsdesign, miljövänlig pool, damm, vattenlagring</source>
+        <target>rainwater harvesting, water landscape, natural garden design, eco-friendly pool, pond, water storage</target>
+      </trans-unit>
+      <trans-unit id="can_i_use_water_storage_solutions_when_traditional_wells_arent_an_option.description" datatype="html">
+        <source>Lär dig hur regnvatteninsamling och vattenlagring kan försörja trädgård, damm och vattenlandskap när traditionella brunnar inte räcker.</source>
+        <target>Learn how rainwater harvesting and water storage can supply gardens, ponds, and water landscapes when traditional wells are not sufficient.</target>
+      </trans-unit>
+      <trans-unit id="can_i_use_water_storage_solutions_when_traditional_wells_arent_an_option.ogTitle" datatype="html">
+        <source>Regnvatteninsamling och vattenlagring</source>
+        <target>Rainwater harvesting and water storage</target>
+      </trans-unit>
+      <trans-unit id="can_i_use_water_storage_solutions_when_traditional_wells_arent_an_option.ogDescription" datatype="html">
+        <source>Vattenlagring och regnvatteninsamling för trädgård, damm och hållbara vattenlandskap.</source>
+        <target>Water storage and rainwater harvesting for gardens, ponds, and sustainable water landscapes.</target>
+      </trans-unit>
+      <trans-unit id="creating_harmony_intergrating_water_features_with_your_landscape.title" datatype="html">
+        <source>Vattenlandskap | Vattenfall, koidamm och fontän</source>
+        <target>Water landscaping | waterfalls, koi ponds, and fountains</target>
+      </trans-unit>
+      <trans-unit id="creating_harmony_intergrating_water_features_with_your_landscape.keywords" datatype="html">
+        <source>vattenlandskap, vattenfall trädgård, koidamm, fontän, naturlig trädgårdsdesign, miljövänlig pool</source>
+        <target>water landscaping, waterfall garden, koi pond, fountain, natural garden design, eco-friendly pool</target>
+      </trans-unit>
+      <trans-unit id="creating_harmony_intergrating_water_features_with_your_landscape.description" datatype="html">
+        <source>Så integrerar du vattenfall i trädgård, koidamm och fontän i en naturlig trädgårdsdesign med ekologisk balans.</source>
+        <target>How to integrate waterfalls, koi ponds, and fountains into a natural garden design with ecological balance.</target>
+      </trans-unit>
+      <trans-unit id="creating_harmony_intergrating_water_features_with_your_landscape.ogTitle" datatype="html">
+        <source>Vattenlandskap i trädgården</source>
+        <target>Water landscapes in the garden</target>
+      </trans-unit>
+      <trans-unit id="creating_harmony_intergrating_water_features_with_your_landscape.ogDescription" datatype="html">
+        <source>Integrera vattenfall, koidamm och fontän i en naturlig trädgårdsdesign.</source>
+        <target>Integrate waterfalls, koi ponds, and fountains into a natural garden design.</target>
+      </trans-unit>
+      <trans-unit id="difference_between_normal_pool_and_natural_pool.title" datatype="html">
+        <source>Faunapoolen | Naturpooler, biopooler, ecopooler och kemikaliefria pooler - design och konstruktion av experter i Sverige</source>
+        <target>Faunapoolen | nature pools, bio pools, eco pools, and chemical-free pools - design and construction by experts in Sweden</target>
+      </trans-unit>
+      <trans-unit id="difference_between_normal_pool_and_natural_pool.keywords" datatype="html">
+        <source>naturpool, skräddarsydda pooler, bygga naturpool, kemikaliefri pool, naturlig pool, ekologisk pool, vattenlandskap, hållbar pool, pooldesign, poolinstallation, trädgårdsdesign, poolunderhåll, kemikaliefria vattenlandskap, fontäner, aquascape, aquascape pooler</source>
+        <target>nature pool, custom pools, build nature pool, chemical-free pool, natural pool, organic pool, water landscape, sustainable pool, pool design, pool installation, garden design, pool maintenance, chemical-free water landscapes, fountains, aquascape, aquascape pools</target>
+      </trans-unit>
+      <trans-unit id="difference_between_normal_pool_and_natural_pool.description" datatype="html">
+        <source>Vi designar och bygger naturpooler, biopooler, ekopooler, kemikaliefria pooler och baddammar.</source>
+        <target>We design and build nature pools, bio pools, eco pools, chemical-free pools, and swimming ponds.</target>
+      </trans-unit>
+      <trans-unit id="difference_between_normal_pool_and_natural_pool.ogTitle" datatype="html">
+        <source>Faunapoolen</source>
+        <target>Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="difference_between_normal_pool_and_natural_pool.ogDescription" datatype="html">
+        <source>Vi designar och bygger naturpooler, biopooler, ekopooler, kemikaliefria pooler och baddammar.</source>
+        <target>We design and build nature pools, bio pools, eco pools, chemical-free pools, and swimming ponds.</target>
+      </trans-unit>
+      <trans-unit id="how_faunapoolen_helps_golf_clubs_manage_ponds_lakes_and_streams.title" datatype="html">
+        <source>Vattenlandskap för golfbanor | Dammar, sjöar och bäckar</source>
+        <target>Water landscapes for golf courses | ponds, lakes, and streams</target>
+      </trans-unit>
+      <trans-unit id="how_faunapoolen_helps_golf_clubs_manage_ponds_lakes_and_streams.keywords" datatype="html">
+        <source>vattenlandskap, damm, regnvatteninsamling, naturlig trädgårdsdesign, vattenhantering, miljövänlig pool</source>
+        <target>water landscapes, pond, rainwater collection, natural garden design, water management, eco-friendly pool</target>
+      </trans-unit>
+      <trans-unit id="how_faunapoolen_helps_golf_clubs_manage_ponds_lakes_and_streams.description" datatype="html">
+        <source>Faunapoolen hjälper golfklubbar med vattenlandskap, dammar, sjöar, bäckar och hållbar vattenhantering för funktion och estetik.</source>
+        <target>Faunapoolen helps golf clubs with water landscapes, ponds, lakes, streams, and sustainable water management for function and aesthetics.</target>
+      </trans-unit>
+      <trans-unit id="how_faunapoolen_helps_golf_clubs_manage_ponds_lakes_and_streams.ogTitle" datatype="html">
+        <source>Vattenlandskap för golfbanor</source>
+        <target>Water landscapes for golf courses</target>
+      </trans-unit>
+      <trans-unit id="how_faunapoolen_helps_golf_clubs_manage_ponds_lakes_and_streams.ogDescription" datatype="html">
+        <source>Hållbar skötsel och design av dammar, sjöar, bäckar och vattenlandskap på golfbanor.</source>
+        <target>Sustainable maintenance and design of ponds, lakes, streams, and water landscapes on golf courses.</target>
+      </trans-unit>
+      <trans-unit id="how_filtering_works_with_nature_pools.title" datatype="html">
+        <source>Så filtreras en ekologisk pool utan klor</source>
+        <target>How an ecological pool is filtered without chlorine</target>
+      </trans-unit>
+      <trans-unit id="how_filtering_works_with_nature_pools.keywords" datatype="html">
+        <source>ekologisk pool, pool utan klor, simdamm, organisk pool, biologisk filtrering, miljövänlig pool</source>
+        <target>ecological pool, chlorine-free pool, swimming pond, organic pool, biological filtration, environmentally friendly pool</target>
+      </trans-unit>
+      <trans-unit id="how_filtering_works_with_nature_pools.description" datatype="html">
+        <source>Förstå hur biologisk filtrering renar en ekologisk pool, simdamm eller organisk pool utan klor och starka kemikalier.</source>
+        <target>Understand how biological filtration purifies an ecological pool, swimming pond, or organic pool without chlorine and strong chemicals.</target>
+      </trans-unit>
+      <trans-unit id="how_filtering_works_with_nature_pools.ogTitle" datatype="html">
+        <source>Filtrering i ekologisk pool</source>
+        <target>Filtration in ecological pool</target>
+      </trans-unit>
+      <trans-unit id="how_filtering_works_with_nature_pools.ogDescription" datatype="html">
+        <source>Så renas ekologisk pool, simdamm och organisk pool med biologisk filtrering utan klor.</source>
+        <target>This is how ecological pools, swimming ponds, and organic pools are purified with biological filtration without chlorine.</target>
+      </trans-unit>
+      <trans-unit id="pool_conversions.title" datatype="html">
+        <source>Konvertera pool | Från klorpool till organisk pool</source>
+        <target>Pool conversion | from chlorine pool to organic pool.</target>
+      </trans-unit>
+      <trans-unit id="pool_conversions.keywords" datatype="html">
+        <source>organisk pool, pool utan klor, ekologisk pool, simdamm, poolkonvertering, miljövänlig pool</source>
+        <target>organic pool, chlorine-free pool, ecological pool, swimming pond, pool conversion, environmentally friendly pool</target>
+      </trans-unit>
+      <trans-unit id="pool_conversions.description" datatype="html">
+        <source>Se hur en traditionell pool kan konverteras till organisk pool, simdamm eller ekologisk pool med naturlig filtrering utan klor.</source>
+        <target>See how a traditional pool can be converted into an organic pool, swimming pond, or ecological pool with natural filtration without chlorine.</target>
+      </trans-unit>
+      <trans-unit id="pool_conversions.ogTitle" datatype="html">
+        <source>Konvertera pool till organisk pool</source>
+        <target>Convert pool to organic pool</target>
+      </trans-unit>
+      <trans-unit id="pool_conversions.ogDescription" datatype="html">
+        <source>Från klorpool till organisk pool, simdamm eller ekologisk pool med naturlig filtrering.</source>
+        <target>From chlorine pool to organic pool, swimming pond, or ecological pool with natural filtration.</target>
+      </trans-unit>
+      <trans-unit id="small_features_for_small_spaces.title" datatype="html">
+        <source>Vattenfall och fontän för liten trädgård</source>
+        <target>Waterfalls and fountains for small gardens</target>
+      </trans-unit>
+      <trans-unit id="small_features_for_small_spaces.keywords" datatype="html">
+        <source>vattenfall trädgård, fontän, koidamm, regnvatteninsamling, naturlig trädgårdsdesign, vattenlandskap</source>
+        <target>waterfall garden, fountain, koi pond, rainwater collection, natural garden design, water landscape</target>
+      </trans-unit>
+      <trans-unit id="small_features_for_small_spaces.description" datatype="html">
+        <source>Små trädgårdar kan rymma vattenfall, fontän, minidamm och regnvatteninsamling med smart naturlig trädgårdsdesign.</source>
+        <target>Small gardens can accommodate waterfalls, fountains, mini-ponds, and rainwater collection with smart natural garden design.</target>
+      </trans-unit>
+      <trans-unit id="small_features_for_small_spaces.ogTitle" datatype="html">
+        <source>Vattenfall och fontän för små ytor</source>
+        <target>Waterfalls and fountains for small spaces</target>
+      </trans-unit>
+      <trans-unit id="small_features_for_small_spaces.ogDescription" datatype="html">
+        <source>Vattenfall, fontän, minidamm och regnvatteninsamling för liten trädgård.</source>
+        <target>Waterfalls, fountains, mini-ponds, and rainwater collection for small gardens.</target>
+      </trans-unit>
+      <trans-unit id="sports_stars_natural_ponds.title" datatype="html">
+        <source>Simdamm för återhämtning | Pool utan klor</source>
+        <target>Natural pond for recovery | chlorine-free pool</target>
+      </trans-unit>
+      <trans-unit id="sports_stars_natural_ponds.keywords" datatype="html">
+        <source>simdamm, pool utan klor, ekologisk pool, organisk pool, miljövänlig pool, kallbad</source>
+        <target>natural pond, chlorine-free pool, ecological pool, organic pool, eco-friendly pool, cold bath</target>
+      </trans-unit>
+      <trans-unit id="sports_stars_natural_ponds.description" datatype="html">
+        <source>Därför väljer idrottare simdamm och pool utan klor för återhämtning, kallbad och naturligt vatten i hemmiljö.</source>
+        <target>That's why athletes choose natural ponds and chlorine-free pools for recovery, cold baths, and natural water at home.</target>
+      </trans-unit>
+      <trans-unit id="sports_stars_natural_ponds.ogTitle" datatype="html">
+        <source>Simdamm för återhämtning</source>
+        <target>Natural pond for recovery</target>
+      </trans-unit>
+      <trans-unit id="sports_stars_natural_ponds.ogDescription" datatype="html">
+        <source>Simdamm och pool utan klor för återhämtning, kallbad och naturligt vatten hemma.</source>
+        <target>Natural pond and chlorine-free pool for recovery, cold baths, and natural water at home.</target>
+      </trans-unit>
+      <trans-unit id="why_you_should_get_a_natural_pool.title" datatype="html">
+        <source>Varför välja ekologisk pool och pool utan klor</source>
+        <target>Why choose an ecological pool and chlorine-free pool</target>
+      </trans-unit>
+      <trans-unit id="why_you_should_get_a_natural_pool.keywords" datatype="html">
+        <source>ekologisk pool, pool utan klor, miljövänlig pool, organisk pool, simdamm, naturlig trädgårdsdesign</source>
+        <target>ecological pool, chlorine-free pool, environmentally friendly pool, organic pool, swimming pond, natural garden design</target>
+      </trans-unit>
+      <trans-unit id="why_you_should_get_a_natural_pool.description" datatype="html">
+        <source>En ekologisk pool ger bad utan klor, låg kemikalieanvändning, naturlig design och en miljövänlig pool som smälter in i trädgården.</source>
+        <target>An ecological pool provides swimming without chlorine, low chemical use, natural design, and an environmentally friendly pool that blends into the garden.</target>
+      </trans-unit>
+      <trans-unit id="why_you_should_get_a_natural_pool.ogTitle" datatype="html">
+        <source>Varför välja ekologisk pool</source>
+        <target>Why choose an ecological pool</target>
+      </trans-unit>
+      <trans-unit id="why_you_should_get_a_natural_pool.ogDescription" datatype="html">
+        <source>Bad utan klor, låg kemikalieanvändning och naturlig design med en miljövänlig pool.</source>
+        <target>Swimming without chlorine, low chemical use, and natural design with an environmentally friendly pool.</target>
+      </trans-unit>
+      <trans-unit id="notfound.title" datatype="html">
+        <source>Sidan kunde inte hittas | Faunapoolen</source>
+        <target>Page not found | Faunapoolen</target>
+      </trans-unit>
+      <trans-unit id="notfound.description" datatype="html">
+        <source>Sidan kunde inte hittas.</source>
+        <target>The page could not be found.</target>
+      </trans-unit>
+      <trans-unit id="notfound.h1" datatype="html">
+        <source>Sidan kunde inte hittas</source>
+        <target>Page not found</target>
+      </trans-unit>
+      <trans-unit id="notfound.home" datatype="html">
+        <source>Till startsidan</source>
+        <target>Back to the homepage</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

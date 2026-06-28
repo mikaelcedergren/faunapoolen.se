@@ -1,33 +1,38 @@
 # faunapoolen.se
 
-A **carbon copy** of the public [Faunapoolen](https://faunapoolen.se) website, served as plain
-static files by a small Express server on the Mac mini — **no CodeKit needed to run**. Same
-always-on service pattern as bitsize.me / blinkdrop.
-
-`site/` holds the exact CodeKit-generated output of the source project (`../faunapoolen`). This repo
-serves it; it does not rebuild it.
+The [Faunapoolen](https://faunapoolen.se) website as an **Angular 22 SSG app** — prerendered to
+static HTML and served by a small Express server on the Mac mini. Same always-on architecture as
+bitsize.me / blinkdrop. Swedish at the root, English under `/en/`. CodeKit is retired.
 
 ## Run
 
 ```bash
-pnpm install     # express + compression
-pnpm start       # serve site/ at http://127.0.0.1:3040   (health: /api/health)
-pnpm refresh     # re-sync site/ from ../faunapoolen after a CodeKit regenerate
+pnpm install     # Angular 22 + express + compression
+pnpm dev         # ng serve (Swedish) at http://127.0.0.1:4240
+pnpm build       # prerender (sv + en) → dist/browser, then flatten literal .html URLs
+pnpm start       # serve dist/browser at http://127.0.0.1:3040   (health: /healthz)
 pnpm e2e         # Playwright smoke test
 ```
 
-Always-on on this machine via launchd (`launchd/com.faunapoolen.server.plist`, port 3040), fronted
-by nginx — see [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Full notes in [`AGENTS.md`](AGENTS.md).
+Always-on via launchd (`launchd/com.faunapoolen.server.plist`, port 3040), fronted by nginx — see
+[`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Rebuild + reload:
+
+```bash
+pnpm build && sudo launchctl kickstart -k system/com.faunapoolen.server
+```
 
 ## Layout
 
 ```
-site/              the carbon copy (generated static site) — served as-is, never hand-edited
-server/index.mjs   Express static server (caching, security headers, /api/health, 404)
-scripts/refresh.sh rsync ../faunapoolen → site/
-launchd/ · ops/    macOS service + nginx example
-e2e/               Playwright smoke test
+src/app/pages/**   one component per page; locale-gated body (@if (en){…}@else{…})
+src/app/shared/seo.ts   per-page title/description/canonical/hreflang/OG/JSON-LD
+src/locale/        English SEO translations (@angular/localize)
+public/assets/**   images, compiled CSS, scripts.js (served verbatim)
+scripts/flatten.mjs   <route>.html/index.html → flat <route>.html
+server/index.mjs   Express static server (dist/browser)
 ```
 
-The authoring sources (`.kit`, `.scss`, images) live in `../faunapoolen` (a CodeKit project) — the
-content & SEO source of truth. Don't hand-edit `site/`; regenerate at the source and `pnpm refresh`.
+The Angular app (`src/`) is the source of truth. Pages were bulk-imported from the last CodeKit
+output (`site/`) via `scripts/gen-pages.mjs`; edit the Angular templates going forward. `site/` is the
+legacy baseline the `verify-*` scripts diff against — see [`AGENTS.md`](AGENTS.md) for full notes,
+the URL scheme, i18n, and the protected pages.

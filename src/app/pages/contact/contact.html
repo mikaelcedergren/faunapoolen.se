@@ -1,0 +1,108 @@
+@if (en) {
+<div class="background-image">
+<img alt="Water landscape with natural stone and clear water" decoding="async" fetchpriority="high" src="/assets/images/header-background-4.jpg">
+</div>
+<header>
+<h1>Contact us</h1>
+<p>Get in touch with us! We offer a free phone consultation where we can discuss your ideas and needs.</p>
+</header>
+<section>
+<div class="section-content">
+<div class="grid-row">
+<div class="grid-cell">
+<p class="hidden-responsive">We can assist you nationwide. Feel free to send an email, call us, or use our contact form. We will get back to you within 48 hours.</p>
+<table class="mt-2">
+<tbody>
+<tr>
+<td class="text-discreet" width="1%">Phone</td>
+<td><a href="tel:+460735406757">0735 - 40 67 57</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="grid-cell">
+<form action="https://formspree.io/f/xnnaekgl" method="POST">
+<select id="category" name="kategori" required="">
+<option disabled="" selected="" value="">Select category...</option>
+<option>Natural pool</option>
+<option>Koi pond</option>
+<option>Waterfall</option>
+<option>Rainwater collection</option>
+<option>Garden maintenance</option>
+<option>Other</option>
+</select>
+<select id="budget" name="budget" required="">
+<option disabled="" selected="" value="">Select your budget...</option>
+<option value="1000000-2000000">1,000,000 – 1,999,000 kr</option>
+<option value="2000000-4000000">2,000,000 – 3,999,000 kr</option>
+<option value="4000000-8000000">4,000,000 – 7,999,000 kr</option>
+<option value="8000000+">8,000,000 kr or more</option>
+</select>
+<input id="location" name="plats" placeholder="Location / postal code..." required="" type="text">
+<input name="firstName" placeholder="Your name..." required="required" type="text">
+<input name="email" placeholder="Your email..." required="required" type="email">
+<input name="phone" placeholder="Your phone number (optional)..." type="text">
+<textarea name="message" placeholder="Tell us more about your project..." required="required"></textarea>
+<!-- your other form fields go here -->
+<button type="submit">Send</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+} @else {
+<div class="background-image">
+  <img src="/assets/images/header-background-4.jpg" alt="Vattenlandskap med natursten och klart vatten" decoding="async" fetchpriority="high">
+</div>
+
+<header>
+
+  <h1>Kontakta oss</h1>
+  <p>Hör av dig till oss! Vi erbjuder en kostnadsfri telefonkonsultation där vi kan diskutera dina idéer och behov.</p>
+</header>
+
+<section>
+  <div class="section-content">
+    <div class="grid-row">
+      <div class="grid-cell">
+        <p class="hidden-responsive">Vi kan hjälpa dig över hela landet. Tveka inte att skicka ett e-postmeddelande, ring oss, eller använd vårt kontaktformulär. Vi återkommer inom 48 timmar.</p>
+        <table class="mt-2">
+          <tbody>
+            <tr>
+              <td width="1%" class="text-discreet">Telefon</td>
+              <td><a href="tel:+460735406757">0735 - 40 67 57</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-cell">
+        <form action="https://formspree.io/f/xnnaekgl" method="POST">
+          <select id="category" name="kategori" required="">
+            <option value="" disabled="" selected="">Välj kategori...</option>
+            <option>Naturpool</option>
+            <option>Koidamm</option>
+            <option>Vattenfall</option>
+            <option>Regnvatteninsamling</option>
+            <option>Trädgårdsskötsel</option>
+            <option>Annat</option>
+          </select>
+          <select id="budget" name="budget" required="">
+            <option value="" disabled="" selected="">Välj din budget...</option>
+            <option value="1000000-2000000">1 000 000 – 1 999 000 kr</option>
+            <option value="2000000-4000000">2 000 000 – 3 999 000 kr</option>
+            <option value="4000000-8000000">4 000 000 – 7 999 000 kr</option>
+            <option value="8000000+">8 000 000 kr eller mer</option>
+          </select>
+          <input id="location" name="plats" type="text" placeholder="Plats / postnummer..." required="">
+          <input type="text" name="firstName" placeholder="Ditt namn..." required="required">
+          <input type="email" name="email" placeholder="Din e-post..." required="required">
+          <input type="text" name="phone" placeholder="Ditt telefonnummer (valfritt)...">
+          <textarea name="message" placeholder="Berätta mer om ditt projekt..." required="required"></textarea>
+          <!-- your other form fields go here -->
+          <button type="submit">Skicka</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+TEMPLATE="$REPO_ROOT/launchd/com.faunapoolen.server.plist"
+TARGET="/Library/LaunchDaemons/com.faunapoolen.server.plist"
+TARGET_USER="${TARGET_USER:-${SUDO_USER:-cortex}}"
+USER_UID="$(id -u "$TARGET_USER")"
+USER_HOME="$(dscl . -read "/Users/$TARGET_USER" NFSHomeDirectory | awk '{print $2}')"
+USER_AGENT="$USER_HOME/Library/LaunchAgents/com.faunapoolen.server.plist"
+
+if [[ ! -f "$TEMPLATE" ]]; then
+  echo "FATAL: template missing: $TEMPLATE" >&2
+  exit 1
+fi
+
+mkdir -p "$REPO_ROOT/.run"
+sudo cp "$TEMPLATE" "$TARGET"
+sudo chown root:wheel "$TARGET"
+sudo chmod 644 "$TARGET"
+
+launchctl bootout "gui/$USER_UID/com.faunapoolen.server" 2>/dev/null || true
+sudo launchctl bootout system "$TARGET" 2>/dev/null || true
+sudo launchctl bootstrap system "$TARGET"
+
+if [[ -f "$USER_AGENT" ]]; then
+  mv "$USER_AGENT" "$USER_AGENT.disabled"
+fi
+
+echo "INSTALLED: com.faunapoolen.server (-> $TARGET)"

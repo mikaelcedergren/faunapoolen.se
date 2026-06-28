@@ -5,6 +5,11 @@
     <key>Label</key>
     <string>com.faunapoolen.server</string>
 
+    <key>UserName</key>
+    <string>cortex</string>
+    <key>GroupName</key>
+    <string>staff</string>
+
     <key>ProgramArguments</key>
     <array>
       <string>/opt/homebrew/bin/node</string>
@@ -24,6 +29,7 @@
       <string>3040</string>
       <key>NODE_ENV</key>
       <string>production</string>
+
     </dict>
 
     <key>RunAtLoad</key>
@@ -36,7 +42,18 @@
     </dict>
 
     <key>ThrottleInterval</key>
-    <integer>5</integer>
+    <integer>10</integer>
+
+    <key>SoftResourceLimits</key>
+    <dict>
+      <key>NumberOfFiles</key>
+      <integer>8192</integer>
+    </dict>
+    <key>HardResourceLimits</key>
+    <dict>
+      <key>NumberOfFiles</key>
+      <integer>16384</integer>
+    </dict>
 
     <key>StandardOutPath</key>
     <string>/Users/cortex/Development/faunapoolen.se/.run/server.out.log</string>

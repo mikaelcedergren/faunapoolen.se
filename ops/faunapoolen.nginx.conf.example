@@ -1,17 +1,17 @@
+# faunapoolen.se prelaunch HTTP config.
+# Requires shared nginx rate-limit and proxy snippets from /Users/cortex/Development/server-ops/templates.
+
 server {
   listen 80;
   server_name faunapoolen.se www.faunapoolen.se;
 
+  location ^~ /.well-known/acme-challenge/ {
+    root /opt/homebrew/var/www/letsencrypt;
+    default_type "text/plain";
+  }
+
   location / {
     proxy_pass http://127.0.0.1:3040;
-    proxy_http_version 1.1;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_connect_timeout 5s;
-    proxy_read_timeout 60s;
+    include snippets/project-proxy-common.conf;
   }
 }

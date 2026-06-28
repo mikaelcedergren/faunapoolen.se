@@ -1,63 +1,121 @@
 # faunapoolen.se
 
-A **carbon copy** of the public **Faunapoolen** website, served as plain static files by a small
-Express server on the Mac mini — **no CodeKit needed to run**. The HTML/CSS/JS in `site/` is the
-exact CodeKit-generated output of the source project; this repo just serves it, as an always-on
-service (same pattern as **bitsize.me** / **blinkdrop**).
-
-> **What this is — and isn't.** `site/` is a byte-for-byte copy of the generated site (Swedish at
-> the root, English under `/en/`). It is **not** rebuilt here. The authoring sources (`.kit`,
-> `.scss`, images) live in **`../faunapoolen`** (a CodeKit project) — that's still the content & SEO
-> source of truth. To update: regenerate there, then `pnpm refresh` to re-sync `site/`. Do **not**
-> hand-edit files under `site/` — they're generated output and get overwritten on the next refresh.
+The **Faunapoolen** website, rebuilt as an **Angular 22 SSG app** — prerendered to fully static HTML
+and served by a small Express server on the Mac mini, the same architecture as **bitsize.me** /
+**blinkdrop**. Swedish at the root, English under `/en/`. **CodeKit is retired**; this repo builds
+and serves the site.
 
 ## Run
 
 ```bash
-pnpm install            # just express + compression
-pnpm start              # serve site/ at http://127.0.0.1:3040  (HOST/PORT env; health: /api/health)
-pnpm refresh            # re-sync site/ from ../faunapoolen after a CodeKit regenerate
+pnpm install            # Angular 22 + express + compression (+ @mikaelcedergren/cx-framework, unused)
+pnpm dev                # ng serve (Swedish) at http://127.0.0.1:4240
+pnpm build              # ng build (prerender sv + en) → dist/browser, then flatten
+pnpm start              # serve dist/browser at http://127.0.0.1:3040  (HOST/PORT env; health: /healthz)
 pnpm e2e                # Playwright smoke test (serves on :4341)
 ```
 
-Always-on service on this Mac mini: `launchd/com.faunapoolen.server.plist` (port `3040`), fronted by
-nginx — see [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Restart after a refresh:
+Always-on service on this Mac mini: `launchd/com.faunapoolen.server.plist` (port `3040`,
+RunAtLoad + KeepAlive), fronted by nginx — see [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Rebuild + reload
+after content changes:
 
 ```bash
-launchctl kickstart -k gui/$(id -u)/com.faunapoolen.server
+pnpm build && sudo launchctl kickstart -k system/com.faunapoolen.server
 ```
 
-## URLs (exactly the live site's)
+## Architecture
 
-- Sections: `/about/`, `/pricing/`, `/services/`, `/contact/`, `/suppliers/`, `/blog/` — served from
-  `<dir>/index.html`.
-- Product / blog pages: literal `*.html` — `/koi-pond-series.html`, `/nature-pools.html`,
-  `/blog/posts/<slug>.html`, etc.
-- English mirror under `/en/`. `robots.txt` + `sitemap.xml` are copied from the source.
-
-## Layout
+Angular 22 standalone, prerendered to static HTML (`angular.json` → `outputMode: "static"`; every
+route `RenderMode.Prerender` in `app.routes.server.ts`), served as plain files by Express — no SSR at
+runtime. Client hydration reuses the prerendered DOM so the static `scripts.js` keeps working.
 
 ```
-site/                generated static site (the carbon copy) — served as-is, never hand-edited
-server/index.mjs     Express static server (caching, security headers, /api/health, 404)
-scripts/refresh.sh   rsync ../faunapoolen → site/ (excludes .kit/.scss sources, codekit, docs)
-launchd/ · ops/      macOS launchd service + nginx reverse-proxy example (DOMAIN_SETUP.md)
-e2e/                 Playwright smoke test
+src/
+  index.html             <head>: GA tags, fonts, the reused compiled CSS, scripts.js; <fp-root>
+  app/
+    app.component.*       shared chrome (nav + footer), locale-gated, rendered inside <main>
+    app.routes.ts         GENERATED route table ($localize SEO per page) — see scripts/gen-pages.mjs
+    app.routes.server.ts  { path: '**', renderMode: Prerender }
+    app.config.ts         router + client hydration + SeoTitleStrategy
+    shared/seo.ts         SeoTitleStrategy: per-page title/desc/keywords/canonical/hreflang/OG/JSON-LD
+    pages/**              one component per page; template = locale-gated body (@if (en){…}@else{…})
+  locale/messages.en.xlf  English translations of the SEO strings (@angular/localize)
+public/assets/**          images, compiled styles.css + normalize.css, scripts.js — copied verbatim
+public/{robots.txt,sitemap.xml}
+scripts/flatten.mjs       post-build: <route>.html/index.html → flat <route>.html (literal .html URLs)
+scripts/gen-pages.mjs     one-time migration importer (site/** → Angular pages); see "source of truth"
+scripts/verify-seo.mjs    per-page <head> SEO diff (new vs legacy site/)
+scripts/verify-ui.mjs     screenshots new-vs-old + interactivity (accordion/menu)
+server/index.mjs          Express static server (dist/browser; caching, security headers, /healthz, 404)
 ```
 
-## Source of truth & SEO
+### URLs (unchanged from the live site)
 
-`../faunapoolen` is the content/SEO source. Protected, top-ranking pages — **never change**:
+- **Sections** served from `<dir>/index.html`: `/about/`, `/pricing/`, `/services/`, `/contact/`,
+  `/suppliers/`, `/blog/`, `/sweden-expert-…-baddammar/`.
+- **Product / blog pages** are **literal `.html`** files: `/koi-pond-series.html`,
+  `/nature-pools.html`, `/blog/posts/<slug>.html`, … Angular prerenders `<route>/index.html`, and
+  `scripts/flatten.mjs` rewrites every `.html`-named directory into a flat file (the route paths
+  literally end in `.html`).
+- **English mirror** under `/en/` via `@angular/localize` `subPath` (sv = root `""`, en = `"en"`).
+
+### i18n (@angular/localize)
+
+- Swedish is the source locale (root); English builds under `/en/` (`angular.json` → `i18n`,
+  `"localize": true` in the prod config).
+- **SEO strings** (title, description, keywords, og:title/description) are translated via `$localize`
+  with custom `@@ids` → `src/locale/messages.en.xlf`.
+- **Chrome + page bodies** are **locale-gated** (`@if (en) {…} @else {…}`, driven by `LOCALE_ID`) —
+  the English nav differs structurally (no "Nature pools" link) and the page copy is wholesale-
+  different prose, so per-string xlf there is impractical. Canonical / hreflang / `<html lang>` /
+  og:url are derived from `LOCALE_ID` in `SeoTitleStrategy`.
+- To edit English copy: edit the `@if (en)` branch of the page template; for SEO strings edit the
+  `<target>` in `messages.en.xlf`.
+
+## Content source of truth
+
+The **Angular app (`src/`) is the source of truth.** The pages were bulk-imported from the last
+CodeKit output (`site/`) by `scripts/gen-pages.mjs` — a one-time migration tool that extracts each
+page's body (between `<main>` and the nav), normalizes it through the HTML5 parser, and harvests the
+`<head>` SEO into `app.routes.ts` + `messages.en.xlf`. **Going forward, edit the Angular templates
+directly** (`src/app/pages/**`). `src/app/pages`, `app.routes.ts` and `src/locale` are prettier-
+ignored to preserve exact inline-whitespace rendering.
+
+`site/` is the **legacy CodeKit output**, kept only as the migration/verification baseline (the
+`verify-*` scripts diff against it). It is no longer built or served and can be deleted once you're
+comfortable — that also drops the duplicated `assets/` (~70 MB). The old CodeKit project
+`../faunapoolen` is no longer used.
+
+### Protected, top-ranking pages — never regress
 
 - `/blog/posts/difference-between-normal-pool-and-natural-pool.html`
 - `/blog/posts/build-your-own-nature-pool.html`
 
-Swedish is the primary language; headings use European sentence case. `CNAME` is intentionally
-omitted from `site/` so this local/test instance can't hijack the live domain — add it at go-live.
+Swedish is primary; headings use European sentence case. `CNAME` is intentionally omitted from the
+output so this local/test instance can't hijack the live domain — add it at go-live.
+
+## Verify zero SEO / visual impact
+
+```bash
+node scripts/verify-seo.mjs dist/browser/<page> site/<page>   # per-page <head> SEO diff
+node scripts/verify-ui.mjs                                     # new-vs-old screenshots + interactivity
+```
+
+After a full build every page matches the legacy site: identical URL set, identical `<head>` SEO
+(Swedish exact; English exact apart from two intentional cosmetic JSON-LD normalizations — clean
+`WebPage.name` casing and no stray `@id` slash, both zero-impact auto-translation artifacts), and
+pixel-identical rendering. `scripts.js` (accordion, mobile menu, language switcher, sticky header)
+keeps working because client hydration reuses the prerendered DOM.
+
+## cx-framework (staged, not yet used)
+
+`@mikaelcedergren/cx-framework` is installed but **not imported** — adopting its components would
+change the visual chrome, which this migration deliberately preserved. It is wired/available for a
+later restyle. `.npmrc` relaxes peer-deps so it pulls no Angular peers it doesn't need here.
 
 ## Toolchain (shared machine)
 
-Runs alongside **cortex**, **bitsize.me**, **blinkdrop** on the Mac mini. pnpm `10.7.1` via corepack;
-Playwright pinned to `1.60.0` (chromium only, default shared cache `~/Library/Caches/ms-playwright` —
-never set `PLAYWRIGHT_BROWSERS_PATH`; bump in lockstep with the siblings). Ports: serve `3040`,
-e2e `4341` (chosen to avoid bitsize `3020/4319` and blinkdrop `4400/4419`).
+Runs alongside **cortex**, **bitsize.me**, **blinkdrop**. pnpm `10.7.1` via corepack; Node 24;
+Angular `22` + `@angular/localize`; Playwright pinned `1.60.0` (chromium only, default shared cache
+`~/Library/Caches/ms-playwright` — never set `PLAYWRIGHT_BROWSERS_PATH`). Ports: dev `4240`, serve
+`3040`, e2e `4341` (chosen to avoid bitsize `3020/4319` and blinkdrop `4400/4419`).
