@@ -2,7 +2,7 @@
   "name": "faunapoolen.se",
   "version": "2.0.0",
   "private": true,
-  "description": "Faunapoolen — Angular 22 SSG site (prerendered to dist/browser, served by Express on the Mac mini).",
+  "description": "Faunapoolen — Angular 22 SSG site (prerendered to dist/browser, served by Express). Public site runs on its existing host; this repo is prepared on the Mac mini in HTTP prelaunch (DNS not yet cut over).",
   "author": "Mikael Cedergren <michael@wargr.com>",
   "license": "UNLICENSED",
   "homepage": "https://faunapoolen.se",

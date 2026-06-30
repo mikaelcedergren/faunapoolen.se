@@ -4,6 +4,10 @@ The [Faunapoolen](https://faunapoolen.se) website as an **Angular 22 SSG app** â
 static HTML and served by a small Express server on the Mac mini. Same always-on architecture as
 bitsize.me / blinkdrop. Swedish at the root, English under `/en/`. CodeKit is retired.
 
+> The public site currently runs on its **existing host**; `faunapoolen.se` is its canonical address.
+> This repo is prepared on the Mac mini in **HTTP prelaunch** â€” public DNS is not yet cut over, so the
+> Mac-mini deployment is not live. See [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md).
+
 ## Run
 
 ```bash

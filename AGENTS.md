@@ -107,11 +107,16 @@ After a full build every page matches the legacy site: identical URL set, identi
 pixel-identical rendering. `scripts.js` (accordion, mobile menu, language switcher, sticky header)
 keeps working because client hydration reuses the prerendered DOM.
 
-## cx-framework (staged, not yet used)
+## cx-framework (installed for admin only — public skin is a permanent exception)
 
-`@mikaelcedergren/cx-framework` is installed but **not imported** — adopting its components would
-change the visual chrome, which this migration deliberately preserved. It is wired/available for a
-later restyle. `.npmrc` relaxes peer-deps so it pulls no Angular peers it doesn't need here.
+`@mikaelcedergren/cx-framework` is installed but **not imported into the public site**, and never
+will be. faunapoolen.se keeps its **own public visual skin permanently**: the existing site ranks
+exceptionally well in Google, and adopting the framework's chrome would risk that ranking. This is a
+deliberate, permanent visual exception — not a deferred restyle. The framework stays installed only
+for **future admin/internal screens**, never the public skin. Everything else here follows the exact
+same code philosophy, architecture, structure, and engineering standard as every other repo — only
+the public visual skin is the exception. `.npmrc` relaxes peer-deps so it pulls no Angular peers it
+doesn't need here.
 
 ## Toolchain (shared machine)
 

@@ -46,17 +46,17 @@ It is intentionally in HTTP prelaunch mode until DNS is moved and a real certifi
 
 ## Go-live (do not do until approved)
 
-The domain `faunapoolen.se` currently remains on the existing public host by design. Cutover steps:
+The domain `faunapoolen.se` currently remains on the existing public host by design. The cutover
+follows the shared procedure — see [`../GO-LIVE.md`](../GO-LIVE.md) and
+[`../SERVER-STANDARD.md`](../SERVER-STANDARD.md). Apply it with these faunapoolen-specific values:
 
-1. In GoDaddy, keep the domain on GoDaddy/domaincontrol nameservers unless a deliberate exception is documented.
-2. Set `@` to an `A` record pointing at `81.170.132.41`.
-3. Set `www` to a `CNAME` pointing at `faunapoolen.se`.
-4. Wait until public DNS resolves to this Mac mini.
-5. Issue a Let's Encrypt certificate for `faunapoolen.se` and `www.faunapoolen.se` using the shared certbot/nginx setup.
-6. Enable the prepared HTTPS nginx block, validate nginx, and reload.
-7. Verify local health, public HTTP redirect, public HTTPS, canonical/hreflang/sitemap, legacy `.html` URLs, and 301'd trailing-slash URLs.
+- **Domains:** `faunapoolen.se` and `www.faunapoolen.se`.
+- **Local target:** `127.0.0.1:3040`, daemon `com.faunapoolen.server`.
+- **Health endpoint:** `http://127.0.0.1:3040/healthz`.
+- **Status:** intentional HTTP prelaunch — DNS not cut over, HTTP/ACME route ready, prepared HTTPS
+  block enabled only after certificate issuance.
 
-Add a `public/CNAME` containing `faunapoolen.se` **only if** deploying via GitHub Pages
-   instead of the local server (omitted by default so a test deploy can't hijack the domain).
+Add a `public/CNAME` containing `faunapoolen.se` **only if** deploying via GitHub Pages instead of
+the local server (omitted by default so a test deploy can't hijack the domain).
 
-Cloudflared is not used for this future cutover; the standard path is direct DNS/static IP/router/nginx.
+Cloudflared is not used for this cutover; the standard path is direct DNS/static IP/router/nginx.
