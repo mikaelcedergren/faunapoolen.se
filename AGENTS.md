@@ -118,6 +118,13 @@ same code philosophy, architecture, structure, and engineering standard as every
 the public visual skin is the exception. `.npmrc` relaxes peer-deps so it pulls no Angular peers it
 doesn't need here.
 
+The **Cortex -> cx-framework -> projects** loop still applies. Cortex authors reusable components,
+tokens, AI skills, guidelines, and framework decisions; `cx-framework` packages them; faunapoolen.se
+may consume the package for future admin/internal UI only. Do not reference Cortex directly through
+imports, package deps, scripts, styles, local paths, or copied source. If future internal UI exposes
+a reusable framework gap, fix it in Cortex, package/push `cx-framework`, then update this repo from
+the package.
+
 ## Toolchain (shared machine)
 
 Runs alongside **cortex**, **bitsize.me**, **blinkdrop**. pnpm `10.7.1` via corepack; Node 24;
