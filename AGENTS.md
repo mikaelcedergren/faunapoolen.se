@@ -101,11 +101,23 @@ node scripts/verify-seo.mjs dist/browser/<page> site/<page>   # per-page <head> 
 node scripts/verify-ui.mjs                                     # new-vs-old screenshots + interactivity
 ```
 
-After a full build every page matches the legacy site: identical URL set, identical `<head>` SEO
-(Swedish exact; English exact apart from two intentional cosmetic JSON-LD normalizations — clean
-`WebPage.name` casing and no stray `@id` slash, both zero-impact auto-translation artifacts), and
-pixel-identical rendering. `scripts.js` (accordion, mobile menu, language switcher, sticky header)
-keeps working because client hydration reuses the prerendered DOM.
+The migration itself was verified byte-exact against `site/` (identical URL set and `<head>` SEO;
+English exact apart from two cosmetic JSON-LD normalizations). Since 2026-07 the site intentionally
+extends beyond that baseline, so `verify-seo.mjs` now reports these expected diffs and nothing else:
+
+- blog posts (except the two protected ones) are `BlogPosting`/`og:type article` with
+  `article:published_time`/`modified_time` and a per-post social card under `/assets/images/og/`
+- product pages carry per-page social cards from the same `og/` directory
+- the Organization JSON-LD node is typed `["Organization", "LocalBusiness"]` with
+  `areaServed: Sweden` (service-area business, deliberately no address) — the **only** diff on the
+  two protected posts
+- heavy referenced photos are `.webp` (originals kept on disk so old URLs never 404); `styles.css`
+  references one, hence the bumped `?v=` in `index.html`
+- `index.html`: zoomable viewport (no `user-scalable=no`) and one consolidated gtag.js load
+  configuring both GA4 and Google Ads
+
+`scripts.js` (accordion, mobile menu, language switcher, sticky header) keeps working because
+client hydration reuses the prerendered DOM.
 
 ## cx-framework (installed for admin only — public skin is a permanent exception)
 

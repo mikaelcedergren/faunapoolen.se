@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "faunapoolen",
+      "runtimeExecutable": "corepack",
+      "runtimeArgs": ["pnpm", "start"],
+      "port": 3040
+    }
+  ]
+}

@@ -18,6 +18,10 @@ export interface PageSeo {
   ogImage?: string;
   /** og:type — 'website' (default) or 'article' for blog posts. */
   ogType?: string;
+  /** Blog posts only: publish date (ISO 8601; date-only is fine). */
+  datePublished?: string;
+  /** Blog posts only: last content change; falls back to datePublished. */
+  dateModified?: string;
   noindex?: boolean;
   /** Extra JSON-LD @graph nodes (e.g. a BlogPosting) appended after Org/WebSite/WebPage. */
   graph?: object[];
@@ -88,6 +92,16 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:description', content: ogDescription });
     this.meta.updateTag({ property: 'og:image:width', content: '1200' });
     this.meta.updateTag({ property: 'og:image:height', content: '630' });
+    if (seo.ogType === 'article' && seo.datePublished) {
+      this.meta.updateTag({ property: 'article:published_time', content: seo.datePublished });
+      this.meta.updateTag({
+        property: 'article:modified_time',
+        content: seo.dateModified ?? seo.datePublished,
+      });
+    } else {
+      this.meta.removeTag("property='article:published_time'");
+      this.meta.removeTag("property='article:modified_time'");
+    }
 
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: ogTitle });
@@ -97,15 +111,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.setCanonical(canonical);
     this.setAlternates(svUrl, enUrl);
     this.setJsonLd(
-      this.buildGraph(
-        canonical,
-        title,
-        seo.description,
-        inLanguage,
-        ogImage,
-        siteBase,
-        seo.graph ?? [],
-      ),
+      this.buildGraph(canonical, title, seo.description, inLanguage, ogImage, siteBase, seo),
     );
   }
 
@@ -142,17 +148,47 @@ export class SeoTitleStrategy extends TitleStrategy {
     inLanguage: string,
     image: string,
     siteBase: string,
-    extra: object[],
+    seo: PageSeo,
   ): object {
+    const isArticle = seo.ogType === 'article';
+    // Blog posts are typed BlogPosting with the Organization as author plus dates; every other
+    // page keeps the plain WebPage node unchanged.
+    const page: Record<string, unknown> = {
+      '@type': isArticle ? 'BlogPosting' : 'WebPage',
+      '@id': `${canonical}#webpage`,
+      url: canonical,
+      name: title,
+      ...(isArticle ? { headline: title } : {}),
+      description,
+      inLanguage,
+      isPartOf: { '@id': `${siteBase}#website` },
+      ...(isArticle ? { author: { '@id': `${SITE_ORIGIN}/#organization` } } : {}),
+      publisher: { '@id': `${SITE_ORIGIN}/#organization` },
+      ...(isArticle
+        ? {
+            mainEntityOfPage: canonical,
+            image,
+            ...(seo.datePublished
+              ? {
+                  datePublished: seo.datePublished,
+                  dateModified: seo.dateModified ?? seo.datePublished,
+                }
+              : {}),
+          }
+        : {}),
+    };
     const graph: object[] = [
       {
-        '@type': 'Organization',
+        // Service-area business: designs and builds across Sweden with no public premises, so an
+        // address is deliberately absent.
+        '@type': ['Organization', 'LocalBusiness'],
         '@id': `${SITE_ORIGIN}/#organization`,
         name: 'Faunapoolen AB',
         url: `${SITE_ORIGIN}/`,
         logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/assets/images/logo.png` },
         image,
         telephone: '+46735406757',
+        areaServed: { '@type': 'Country', name: 'Sweden' },
       },
       {
         '@type': 'WebSite',
@@ -162,17 +198,8 @@ export class SeoTitleStrategy extends TitleStrategy {
         inLanguage,
         publisher: { '@id': `${SITE_ORIGIN}/#organization` },
       },
-      {
-        '@type': 'WebPage',
-        '@id': `${canonical}#webpage`,
-        url: canonical,
-        name: title,
-        description,
-        inLanguage,
-        isPartOf: { '@id': `${siteBase}#website` },
-        publisher: { '@id': `${SITE_ORIGIN}/#organization` },
-      },
-      ...extra,
+      page,
+      ...(seo.graph ?? []),
     ];
     return { '@context': 'https://schema.org', '@graph': graph };
   }

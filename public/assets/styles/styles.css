@@ -784,7 +784,7 @@ section.suppliers .section-content {
 }
 section.cta {
   padding: 12rem 0;
-  background: #001e29 url("/assets/images/background-texture-leafs.jpg") no-repeat;
+  background: #001e29 url("/assets/images/background-texture-leafs.webp") no-repeat;
   background-size: cover;
   margin: 5rem -2rem 0 -2rem;
   width: calc(100% + 4rem);
