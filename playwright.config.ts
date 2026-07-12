@@ -16,7 +16,7 @@ export default defineConfig({
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: `PORT=${PORT} node server/index.mjs`,
-    url: `http://localhost:${PORT}/api/health`,
+    url: `http://localhost:${PORT}/healthz`,
     reuseExistingServer: !process.env['CI'],
     timeout: 60_000,
   },
