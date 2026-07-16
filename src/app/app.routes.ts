@@ -6,6 +6,19 @@ import { PageSeo } from './shared/seo';
 // Page body content + chrome are locale-gated by LOCALE_ID in the components/templates.
 export const routes: Routes = [
   {
+    path: 'admin',
+    loadComponent: () =>
+      import('./pages/admin/admin.component').then((m) => m.AdminComponent),
+    title: 'Admin | Faunapoolen',
+    data: {
+      seo: {
+        path: '/admin/',
+        description: 'Sign in to Faunapoolen admin.',
+        noindex: true,
+      } satisfies PageSeo,
+    },
+  },
+  {
     path: '',
     loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
     title: $localize`:@@home.title:Faunapoolen | Ekologisk pool och vattenlandskap utan klor`,
@@ -190,6 +203,21 @@ export const routes: Routes = [
         ogTitle: $localize`:@@pond_packages_landing.ogTitle:Naturpoolpaket från Faunapoolen`,
         ogDescription: $localize`:@@pond_packages_landing.ogDescription:Simdamm, ekologisk pool och organisk pool med klart vatten utan klor.`,
         ogImage: 'https://faunapoolen.se/assets/images/og/pond-packages-landing-og.jpg',
+      } satisfies PageSeo,
+    },
+  },
+  {
+    path: 'campaigns/pond-packages',
+    loadComponent: () => import('./pages/campaigns/pond-packages/pond-packages.component').then((m) => m.PondPackagesCampaignComponent),
+    title: 'Bada i klart, naturligt vatten hemma | Naturpool',
+    data: {
+      seo: {
+        path: '/campaigns/pond-packages/',
+        description: 'Få en naturpool med biologisk rening, anpassad till din trädgård. Lämna dina uppgifter så svarar Faunapoolen inom 48 timmar.',
+        ogTitle: 'Bada i klart, naturligt vatten hemma.',
+        ogDescription: 'Naturpool med biologisk rening, anpassad till din trädgård och svenska årstider.',
+        ogImage: 'https://faunapoolen.se/assets/images/og/pond-packages-landing-og.jpg',
+        noindex: true,
       } satisfies PageSeo,
     },
   },

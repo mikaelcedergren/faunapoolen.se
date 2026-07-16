@@ -1,0 +1,227 @@
+@if (authenticated()) {
+  <section class="fp-admin-workspace" aria-label="Faunapoolen admin">
+    <button
+      class="fp-admin-workspace__scrim"
+      [class.fp-admin-workspace__scrim--visible]="mobileNavOpen()"
+      type="button"
+      aria-label="Dismiss tools menu"
+      (click)="closeMobileNav()"
+    ></button>
+
+    <div
+      class="fp-admin-workspace__nav"
+      [class.fp-admin-workspace__nav--visible]="mobileNavOpen()"
+    >
+      <cx-side-nav [groups]="navGroups" (itemSelect)="closeMobileNav()">
+        <div header class="fp-admin-brand">
+          <cx-icon name="ai" size="24" mood="primary" shape="square-subtle" />
+          <span>Faunapoolen</span>
+          <cx-icon-button
+            class="fp-admin-brand__close"
+            icon="sidebar-left"
+            variant="transparent"
+            ariaLabel="Close tools menu"
+            (pressed)="closeMobileNav()"
+          />
+        </div>
+
+        <cx-account-control
+          footer
+          username="Admin"
+          [disabled]="submitting()"
+          (logout)="signOut()"
+        />
+      </cx-side-nav>
+    </div>
+
+    <section class="fp-admin-workspace__main cx-page">
+      <cx-top-bar
+        heading="Ad builder"
+        description="Turn any webpage into five focused Facebook and Instagram ads."
+      >
+        <cx-icon-button
+          actions
+          class="fp-admin-workspace__nav-toggle"
+          icon="sidebar-left"
+          ariaLabel="Open tools menu"
+          [selected]="mobileNavOpen()"
+          [ariaPressed]="mobileNavOpen()"
+          (pressed)="toggleMobileNav()"
+        />
+      </cx-top-bar>
+
+      <div class="cx-page__content fp-admin-content">
+        <cx-card
+          heading="Create ads from a page"
+          icon="link"
+          padding="large"
+          background
+          border
+        >
+          <cx-stack gap="lg" gapMobile="md">
+            <p class="fp-admin-content__intro">
+              Paste the page you want to advertise. We’ll read the offer, find the customer’s
+              desired outcome, and build five distinct angles.
+            </p>
+
+            @if (generationError()) {
+              <cx-alert mood="danger" [text]="generationError()" />
+            } @else if (generating()) {
+              <cx-alert
+                mood="info"
+                text="Reading the page and writing five distinct angles. This can take a moment."
+              />
+            }
+
+            <div
+              class="fp-admin-source-form"
+              role="form"
+              aria-label="Generate social ads"
+              (keydown.enter)="onSourceUrlEnter($event)"
+            >
+              <cx-text-field
+                #sourceUrlField
+                label="Web address"
+                name="sourceUrl"
+                autocomplete="url"
+                prependIcon="website"
+                hint="For example: https://faunapoolen.se/nature-pools.html"
+                [clearable]="true"
+                [value]="sourceUrl()"
+                [validation]="sourceUrlValidation()"
+                [loading]="generating()"
+                [disabled]="generating()"
+                (valueChange)="updateSourceUrl($event)"
+              />
+
+              <cx-button
+                class="fp-admin-source-form__submit"
+                text="Generate ads"
+                mood="primary"
+                icon="bolt"
+                type="button"
+                [loading]="generating()"
+                [disabled]="generating()"
+                (pressed)="generateAds()"
+              />
+            </div>
+          </cx-stack>
+        </cx-card>
+
+        @if (source(); as generatedSource) {
+          <section class="fp-admin-results" aria-labelledby="fp-admin-results-heading">
+            <div class="fp-admin-results__heading">
+              <div>
+                <h2 id="fp-admin-results-heading">Five ad directions</h2>
+                <p>{{ sourceLabel(generatedSource) }}</p>
+              </div>
+              <cx-status-tag mood="success" icon="check" text="Ready to review" />
+            </div>
+
+            <cx-stack gap="lg" gapMobile="md">
+              @for (ad of ads(); track $index) {
+                <cx-card
+                  class="fp-admin-result"
+                  [heading]="'Suggestion ' + ($index + 1)"
+                  icon="text"
+                  padding="large"
+                  border
+                >
+                  <cx-button
+                    slot="meta"
+                    size="small"
+                    [transparent]="true"
+                    [text]="copiedIndex() === $index ? 'Copied' : 'Copy ad'"
+                    [icon]="copiedIndex() === $index ? 'check' : 'copy'"
+                    [mood]="copiedIndex() === $index ? 'success' : 'default'"
+                    (pressed)="copyAd(ad, $index)"
+                  />
+
+                  <cx-stack gap="md">
+                    <cx-labeled-row
+                      size="small"
+                      [label]="fieldLabel('Headline', ad.headline, limits().headline)"
+                      [content]="textRow(ad.headline)"
+                    />
+                    <cx-labeled-row
+                      size="small"
+                      [label]="fieldLabel('Text', ad.text, limits().text)"
+                      [content]="textRow(ad.text)"
+                    />
+                    <cx-labeled-row
+                      size="small"
+                      [label]="
+                        fieldLabel('Call to action', ad.callToAction, limits().callToAction)
+                      "
+                      [content]="textRow(ad.callToAction)"
+                    />
+
+                    <cx-divider [discreet]="true" />
+                    <cx-markdown
+                      align="start"
+                      [markdown]="whyItWorksMarkdown(ad.whyItWorks)"
+                    />
+                  </cx-stack>
+                </cx-card>
+              }
+            </cx-stack>
+          </section>
+        }
+      </div>
+    </section>
+  </section>
+} @else {
+  <section class="fp-admin-login" aria-label="Faunapoolen admin">
+    <cx-card
+      class="fp-admin-login__panel"
+      heading="Faunapoolen admin"
+      icon="lock"
+      padding="large"
+      shadow
+    >
+      <cx-stack gap="lg">
+        <p class="fp-admin-login__intro">Sign in to open your tools.</p>
+
+        <div role="form" aria-label="Sign in" (keydown.enter)="onFieldEnter($event)">
+          <cx-stack gap="md">
+            @if (requestError()) {
+              <cx-alert mood="danger" [text]="requestError()" />
+            }
+
+            <cx-text-field
+              #usernameField
+              label="Username"
+              name="username"
+              autocomplete="username"
+              prependIcon="user"
+              [value]="username()"
+              [validation]="usernameValidation()"
+              [disabled]="submitting()"
+              (valueChange)="updateUsername($event)"
+            />
+
+            <cx-password-field
+              label="Password"
+              name="password"
+              autocomplete="current-password"
+              [value]="password()"
+              [validation]="passwordValidation()"
+              [disabled]="submitting()"
+              (valueChange)="updatePassword($event)"
+            />
+
+            <cx-button
+              class="fp-admin-login__submit"
+              text="Sign in"
+              mood="primary"
+              icon="lock-open"
+              type="button"
+              [loading]="submitting()"
+              (pressed)="signIn()"
+            />
+          </cx-stack>
+        </div>
+      </cx-stack>
+    </cx-card>
+  </section>
+}

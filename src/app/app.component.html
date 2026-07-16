@@ -1,7 +1,7 @@
-<main>
+<main [class.fp-admin-shell]="admin()">
   <router-outlet />
 
-  @if (en) {
+  @if (en && !admin()) {
     <nav class="navigation">
       <div class="nav-container">
         <div class="nav-menu">
@@ -72,7 +72,7 @@
         </div>
       </div>
     </footer>
-  } @else {
+  } @else if (!admin()) {
     <nav class="navigation">
       <div class="nav-container">
         <div class="nav-menu">
