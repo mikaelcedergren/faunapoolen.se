@@ -1,0 +1,54 @@
+# faunapoolen.se live HTTPS config.
+# Activate only after certbot has issued a certificate covering the apex and www names.
+
+server {
+  listen 80;
+  server_name faunapoolen.se www.faunapoolen.se;
+
+  location ^~ /.well-known/acme-challenge/ {
+    root /opt/homebrew/var/www/letsencrypt;
+    default_type "text/plain";
+  }
+
+  location / {
+    return 301 https://faunapoolen.se$request_uri;
+  }
+}
+
+server {
+  listen 443 ssl;
+  http2 on;
+  server_name www.faunapoolen.se;
+
+  ssl_certificate     /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/fullchain.pem;
+  ssl_certificate_key /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/privkey.pem;
+  include snippets/project-ssl-hardening.conf;
+
+  return 301 https://faunapoolen.se$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  http2 on;
+  server_name faunapoolen.se;
+
+  ssl_certificate     /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/fullchain.pem;
+  ssl_certificate_key /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/privkey.pem;
+  include snippets/project-ssl-hardening.conf;
+
+  location = /healthz {
+    proxy_pass http://127.0.0.1:3040;
+    include snippets/project-proxy-common.conf;
+  }
+
+  location ^~ /admin-auth/ {
+    proxy_pass http://127.0.0.1:3040;
+    include snippets/project-proxy-common.conf;
+  }
+
+  location / {
+    proxy_pass http://127.0.0.1:3040;
+    include snippets/project-proxy-common.conf;
+    include snippets/project-proxy-cache.conf;
+  }
+}

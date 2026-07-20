@@ -42,7 +42,11 @@ The active nginx config lives at:
 /opt/homebrew/etc/nginx/servers/faunapoolen.se.conf
 ```
 
-It is intentionally in HTTP prelaunch mode until DNS is moved and a real certificate is issued. The HTTP ACME route is ready, and the prepared HTTPS block should be enabled only after certificate issuance.
+It is intentionally in HTTP prelaunch mode until DNS is moved and a real certificate is issued. The HTTP ACME route is ready, and the prepared HTTPS configuration should be installed only after certificate issuance.
+
+Public static pages use the shared 60-second nginx micro-cache. `/healthz` and `/admin-auth/` have
+dedicated uncached proxy locations so health checks are live and authentication responses can never
+inherit page caching.
 
 ## Go-live (do not do until approved)
 
@@ -54,7 +58,7 @@ follows the shared procedure — see [`../GO-LIVE.md`](../GO-LIVE.md) and
 - **Local target:** `127.0.0.1:3040`, daemon `com.faunapoolen.server`.
 - **Health endpoint:** `http://127.0.0.1:3040/healthz`.
 - **Status:** intentional HTTP prelaunch — DNS not cut over, HTTP/ACME route ready, prepared HTTPS
-  block enabled only after certificate issuance.
+  configuration installed only after certificate issuance.
 
 Add a `public/CNAME` containing `faunapoolen.se` **only if** deploying via GitHub Pages instead of
 the local server (omitted by default so a test deploy can't hijack the domain).
@@ -71,40 +75,74 @@ Pages, and the www DNS record points at a third-party GitHub account
 
 ### Parity baseline — what the live host does today (probed 2026-07-06)
 
-| Behaviour | GitHub Pages today | Mac mini after cutover | Action |
-| --- | --- | --- | --- |
-| `https://` apex | 200, valid cert | 200 after certbot | — |
-| `http://` | **200, no redirect** | 301 → https | Intentional improvement, keep |
-| `https://www` | 301 → apex | **must replicate** | Check the prepared 443 block does `www → apex 301`. Note: the wargr conf serves www directly (200) — do NOT copy that pattern here |
-| `/about` (no slash) | 301 → `/about/` | 200, no redirect | Acceptable — canonicals point to `/about/`; optional nginx tidy later |
-| Unknown path | real 404 | real 404 | — |
-| HTML caching | `max-age=600` | `no-cache` | Fine (fresher after deploys) |
-| Compression | gzip | gzip | — |
-| `access-control-allow-origin: *` | present (GH default) | absent | Nothing consumes assets cross-origin — no action |
-| HSTS | absent | per server standard after HTTPS | Fine |
+| Behaviour                        | GitHub Pages today   | Mac mini after cutover         | Action                                                                                                                             |
+| -------------------------------- | -------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `https://` apex                  | 200, valid cert      | 200 after certbot              | —                                                                                                                                  |
+| `http://`                        | **200, no redirect** | 301 → https                    | Intentional improvement, keep                                                                                                      |
+| `https://www`                    | 301 → apex           | **must replicate**             | Check the prepared 443 block does `www → apex 301`. Note: the wargr conf serves www directly (200) — do NOT copy that pattern here |
+| `/about` (no slash)              | 301 → `/about/`      | 200, no redirect               | Acceptable — canonicals point to `/about/`; optional nginx tidy later                                                              |
+| Unknown path                     | real 404             | real 404                       | —                                                                                                                                  |
+| HTML caching                     | `max-age=600`        | `no-cache`                     | Fine (fresher after deploys)                                                                                                       |
+| Compression                      | gzip                 | gzip                           | —                                                                                                                                  |
+| `access-control-allow-origin: *` | present (GH default) | absent                         | Nothing consumes assets cross-origin — no action                                                                                   |
+| HSTS                             | absent               | enable after HTTPS is verified | Do not pin browsers until the new certificate and both names are proven                                                            |
 
 ### Pre-flight (on the Mac mini, before touching DNS)
 
-1. Pull this repo, `pnpm build`, `sudo launchctl kickstart -k system/com.faunapoolen.server`;
-   verify `/healthz` and that a blog post's `<head>` carries `article:published_time` (proves the
-   2026-07 build is what's serving, not an older dist).
-2. Inspect `/opt/homebrew/etc/nginx/servers/faunapoolen.se.conf`: prepared 443 block covers BOTH
-   `faunapoolen.se` and `www.faunapoolen.se`, and 301s www → apex. `nginx -t` passes.
+1. Pull this repo, install the locked dependencies, build, run tests, and restart the daemon:
+
+   ```bash
+   corepack pnpm install --frozen-lockfile
+   corepack pnpm build
+   corepack pnpm test:admin
+   corepack pnpm e2e
+   sudo launchctl kickstart -k system/com.faunapoolen.server
+   ```
+
+   Verify `/healthz` and that a blog post's `<head>` carries `article:published_time` (proves the
+   2026-07 build is what's serving, not an older dist). Never restart after a pull before the
+   dependency install: server-side dependencies may have changed even when the static build passes.
+
+2. Inspect `/opt/homebrew/etc/nginx/servers/faunapoolen.se.conf`: the prepared HTTPS configuration
+   has separate blocks for the apex proxy and the `www` → apex 301. `nginx -t` passes.
 3. `launchctl print system/com.cortex.cert-renewal` — renewal job loaded; certbot webroot matches
    the ACME location root (`/opt/homebrew/var/www/letsencrypt`).
 4. Router still forwards TCP 80/443 (true for the six live domains — just confirm unchanged).
-5. At the registrar: lower TTL on `faunapoolen.se` A and `www` records to 300 at least an hour
-   before cutover. Record the current records (also captured below) before changing anything.
+5. At the registrar, confirm the one.com renewal invoice/payment. Registry WHOIS reported an expiry
+   date of **2026-08-14** on 2026-07-20; do not cut over without confirming renewal.
+6. Lower TTL on the apex A/AAAA and `www` records to 300 at least one full current TTL (currently
+   3600 seconds) before cutover. The old GitHub Pages AAAA records may be deleted at this point:
+   IPv6 clients will safely fall back to the still-live GitHub Pages A records.
 
 ### Cutover day (ordered; pick a low-traffic hour)
 
-1. Registrar: apex `A` → `81.170.132.41`; `www` → replace the `benjaminrehmie.github.io` CNAME
-   with a CNAME to `faunapoolen.se` (or an A record to the same IP).
-2. Wait until `dig @1.1.1.1 faunapoolen.se A` and `dig @8.8.8.8 faunapoolen.se A` return the
-   static IP.
+1. In the existing one.com DNS zone — **do not change nameservers or DNSSEC**:
+   - replace all four apex GitHub Pages A records with one `A` record to `81.170.132.41`
+   - delete all four apex GitHub Pages AAAA records; this origin is IPv4-only
+   - replace the `www` CNAME to `benjaminrehmie.github.io` with a CNAME to `faunapoolen.se`
+   - leave MX, TXT, CAA, NS, DS/DNSSEC, and every non-web record untouched
+2. Wait until both `@1.1.1.1` and `@8.8.8.8` return only `81.170.132.41` for the apex A, no apex
+   AAAA answer, and `faunapoolen.se` for the `www` CNAME. Leaving the old AAAA records can send
+   IPv6 visitors and Let's Encrypt validation to GitHub Pages indefinitely.
 3. → GO-LIVE.md activation steps 1–2 (nginx -t, external HTTP check).
-4. → GO-LIVE.md step 3: `certbot certonly -d faunapoolen.se -d www.faunapoolen.se`.
-5. → GO-LIVE.md step 4: enable the 443 block + http→https redirect, `nginx -t`, reload.
+4. Issue the certificate through the already prepared ACME webroot:
+
+   ```bash
+   /opt/homebrew/bin/certbot certonly \
+     --webroot -w /opt/homebrew/var/www/letsencrypt \
+     -d faunapoolen.se -d www.faunapoolen.se
+   ```
+
+5. Install the fully prepared live config. It keeps the ACME location, redirects all HTTP and
+   `www` traffic to the canonical apex HTTPS URL, and proxies only the HTTPS apex to the app:
+
+   ```bash
+   cp ops/faunapoolen.nginx.live.conf.example \
+     /opt/homebrew/etc/nginx/servers/faunapoolen.se.conf
+   /opt/homebrew/bin/nginx -t
+   /opt/homebrew/bin/nginx -s reload
+   ```
+
 6. External verification (below).
 
 **The cert gap:** between step 1 and step 5, visitors whose resolver already switched get a
@@ -135,6 +173,8 @@ serving the NEW build from minute one.
 Restore the DNS records captured 2026-07-06:
 
 - apex `A`: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+- apex `AAAA`: `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`,
+  `2606:50c0:8003::153`
 - `www` `CNAME`: `benjaminrehmie.github.io`
 
 This resurrects the pre-cutover site (without the 2026-07 SEO improvements). For HTTPS-only
@@ -142,6 +182,9 @@ problems, prefer the nginx-level rollback in GO-LIVE.md and leave DNS alone.
 
 ### After 1–2 weeks stable
 
+- Restore the web-record TTL from the temporary 300 seconds to the previous 3600 seconds.
+- After confirming there are no intentionally HTTP-only subdomains, enable HSTS for this domain,
+  validate nginx, and reload. Do not enable `includeSubDomains` before that inventory.
 - Keep the GitHub Pages deployment while it is the rollback target; once confident, have its
   custom-domain binding removed so a stale mirror can't linger.
 - Revisit deferred items at leisure: Search Console, the `/about` trailing-slash 301 parity.

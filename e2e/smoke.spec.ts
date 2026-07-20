@@ -52,7 +52,7 @@ test('admin signs in and builds five explained ad suggestions', async ({ page })
   await expect(page.getByText('Sign in to open your tools.')).toBeVisible();
 
   await page.getByLabel('Username').fill('dev');
-  await page.getByLabel('Password').fill('dev');
+  await page.getByLabel('Password', { exact: true }).fill('dev');
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page.getByRole('heading', { name: 'Ad builder' })).toBeVisible();
