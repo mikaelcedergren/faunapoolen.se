@@ -65,11 +65,11 @@
             </p>
 
             @if (generationError()) {
-              <cx-alert mood="danger" [text]="generationError()" />
+              <cx-alert mood="danger" [heading]="generationError()" />
             } @else if (generating()) {
               <cx-alert
                 mood="info"
-                text="Reading the page and writing five distinct angles. This can take a moment."
+                heading="Reading the page and writing five distinct angles. This can take a moment."
               />
             }
 
@@ -185,7 +185,7 @@
         <div role="form" aria-label="Sign in" (keydown.enter)="onFieldEnter($event)">
           <cx-stack gap="md">
             @if (requestError()) {
-              <cx-alert mood="danger" [text]="requestError()" />
+              <cx-alert mood="danger" [heading]="requestError()" />
             }
 
             <cx-text-field
