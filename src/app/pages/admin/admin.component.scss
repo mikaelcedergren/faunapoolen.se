@@ -1,4 +1,5 @@
 @use '@mikaelcedergren/cx-framework/tokens';
+@use '@mikaelcedergren/cx-framework/tokens/breakpoints-scale' as bp;
 @use '@mikaelcedergren/cx-framework/styles/fonts';
 @use '@mikaelcedergren/cx-framework/styles/page';
 
@@ -62,7 +63,7 @@ fp-admin {
 
 .fp-admin-workspace__nav {
   position: relative;
-  z-index: calc(var(--z-index-sticky) + 1);
+  z-index: var(--z-index-nav-overlay);
   width: 240px;
   height: 100dvh;
   min-height: 0;
@@ -159,15 +160,11 @@ fp-admin .fp-admin-workspace__nav-toggle {
   line-height: var(--line-height-body);
 }
 
-.fp-admin-result .cx-labeled-row__plain-text {
-  white-space: pre-wrap;
-}
-
 .fp-admin-result cx-markdown {
   width: 100%;
 }
 
-@media (max-width: 800px) {
+@media (max-width: #{bp.$mobile - 1px}) {
   .fp-admin-workspace {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -193,12 +190,12 @@ fp-admin .fp-admin-workspace__nav-toggle {
 
   .fp-admin-workspace__scrim {
     position: fixed;
-    z-index: var(--z-index-sticky);
+    z-index: var(--z-index-nav-overlay-backdrop);
     inset: 0;
     display: block;
     padding: 0;
     border: 0;
-    background: rgb(0 0 0 / 56%);
+    background: var(--overlay-backdrop);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--motion-base) ease;
@@ -208,9 +205,7 @@ fp-admin .fp-admin-workspace__nav-toggle {
     opacity: 1;
     pointer-events: auto;
   }
-}
 
-@media (max-width: 560px) {
   .fp-admin-source-form {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -227,13 +222,6 @@ fp-admin .fp-admin-workspace__nav-toggle {
     gap: var(--space-sm);
   }
 
-  fp-admin .fp-admin-result .cx-labeled-row {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--space-2xs);
-  }
-}
-
-@media (max-width: 479px) {
   .fp-admin-login {
     align-items: start;
     padding: var(--space-md);
