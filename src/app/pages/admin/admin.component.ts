@@ -26,6 +26,7 @@ import {
   CxStatusTagComponent,
   CxTextFieldComponent,
   CxTopBarComponent,
+  installCxKeyboardFocus,
   type CxFieldValidation,
   type CxLabeledRowContent,
   type CxSideNavGroup,
@@ -99,6 +100,9 @@ const DEFAULT_COPY_LIMITS: CopyLimits = {
 export class AdminComponent implements OnInit, OnDestroy {
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly releaseKeyboardFocus = this.browser
+    ? installCxKeyboardFocus(this.document)
+    : () => {};
   private readonly publicStylesheet = this.findPublicStylesheet();
   private readonly publicStylesheetMedia = this.originalPublicStylesheetMedia();
   private copyResetTimer?: ReturnType<typeof setTimeout>;
@@ -157,6 +161,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.releaseKeyboardFocus();
     this.document.documentElement.classList.remove('theme-night');
     if (this.publicStylesheet) {
       if (this.publicStylesheetMedia === null) {
