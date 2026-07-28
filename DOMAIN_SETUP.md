@@ -5,7 +5,7 @@ The site runs as a local always-on Express server on this Mac mini (same pattern
 kept alive by a system LaunchDaemon and fronted by nginx.
 
 ```
-visitor -> DNS -> 81.170.132.41 -> router TCP 80/443 -> nginx -> Express (127.0.0.1:3040) -> dist/browser
+visitor -> DNS -> 81.170.132.41 -> router TCP 80/443 -> nginx -> Express (127.0.0.1:3040) -> current release
 ```
 
 Important current state: the local service and nginx route are prepared on this Mac, but public DNS is intentionally not cut over yet. The existing public domain should keep serving the old/live site until the owner explicitly approves the move.
@@ -24,15 +24,18 @@ sudo cp launchd/com.faunapoolen.server.plist /Library/LaunchDaemons/
 sudo chown root:wheel /Library/LaunchDaemons/com.faunapoolen.server.plist
 sudo chmod 644 /Library/LaunchDaemons/com.faunapoolen.server.plist
 sudo launchctl bootstrap system /Library/LaunchDaemons/com.faunapoolen.server.plist  # install + start
-sudo launchctl kickstart -k system/com.faunapoolen.server   # restart after a new build
+sudo launchctl kickstart -k system/com.faunapoolen.server   # restart after server-side code changes
 sudo launchctl bootout system/com.faunapoolen.server         # stop
 ```
 
-Rebuild + restart after content changes:
+Publish content changes without restarting the service:
 
 ```bash
-pnpm build && sudo launchctl kickstart -k system/com.faunapoolen.server
+node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
 ```
+
+Restart the daemon after server-side code or dependency changes. The shared release and rollback
+behavior is owned by the root [`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
 ## nginx
 
@@ -89,13 +92,19 @@ Pages, and the www DNS record points at a third-party GitHub account
 
 ### Pre-flight (on the Mac mini, before touching DNS)
 
-1. Pull this repo, install the locked dependencies, build, run tests, and restart the daemon:
+1. Pull this repo, install the locked dependencies, publish a release, run tests, and restart the
+   daemon if server-side code or dependencies changed:
 
    ```bash
    corepack pnpm install --frozen-lockfile
-   corepack pnpm build
+   node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
    corepack pnpm test:admin
    corepack pnpm e2e
+   ```
+
+   Only when server-side code or dependencies changed, restart the service after those checks:
+
+   ```bash
    sudo launchctl kickstart -k system/com.faunapoolen.server
    ```
 

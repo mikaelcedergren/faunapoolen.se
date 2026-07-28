@@ -18,6 +18,8 @@ const app = createStaticSiteServer({
   compression,
   appName: 'faunapoolen.se',
   browserDir: join(ROOT, 'dist', 'browser'),
+  releaseRepoRoot: ROOT,
+  browserDirOverride: process.env.SITE_BROWSER_DIR,
   host: process.env.HOST ?? '127.0.0.1',
   port: Number.parseInt(process.env.PORT ?? '3040', 10),
   frameOptions: 'SAMEORIGIN',

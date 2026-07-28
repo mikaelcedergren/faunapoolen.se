@@ -15,10 +15,11 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'node server/index.mjs',
+    command: 'corepack pnpm build && node server/index.mjs',
     env: {
       ...process.env,
       PORT: String(PORT),
+      SITE_BROWSER_DIR: 'dist/browser',
       ADMIN_USERNAME: 'dev',
       ADMIN_PASSWORD: 'dev',
       ADMIN_COOKIE_SECURE: 'false',

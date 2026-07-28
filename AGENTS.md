@@ -11,17 +11,21 @@ and serves the site.
 pnpm install            # Angular 22 + express + compression (+ @mikaelcedergren/cx-framework, unused)
 pnpm dev                # ng serve (Swedish) at http://127.0.0.1:4240
 pnpm build              # ng build (prerender sv + en) → dist/browser, then flatten
-pnpm start              # serve dist/browser at http://127.0.0.1:3040  (HOST/PORT env; health: /healthz)
+pnpm build:release      # internal staged build used by the shared release command
+pnpm start              # release-aware server at http://127.0.0.1:3040 (HOST/PORT env; health: /healthz)
 pnpm e2e                # Playwright smoke test (serves on :4341)
 ```
 
 Always-on service on this Mac mini: `launchd/com.faunapoolen.server.plist` (port `3040`,
-RunAtLoad + KeepAlive), fronted by nginx — see [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Rebuild + reload
-after content changes:
+RunAtLoad + KeepAlive), fronted by nginx — see [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Publish a
+production build with:
 
 ```bash
-pnpm build && sudo launchctl kickstart -k system/com.faunapoolen.server
+node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
 ```
+
+The release and rollback behavior is owned by the root
+[`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
 ## Architecture
 
@@ -42,11 +46,11 @@ src/
   locale/messages.en.xlf  English translations of the SEO strings (@angular/localize)
 public/assets/**          images, compiled styles.css + normalize.css, scripts.js — copied verbatim
 public/{robots.txt,sitemap.xml}
-scripts/flatten.mjs       post-build: <route>.html/index.html → flat <route>.html (literal .html URLs)
+scripts/flatten.mjs       post-build: <route>.html/index.html → flat <route>.html (local or staged output)
 scripts/gen-pages.mjs     one-time migration importer (site/** → Angular pages); see "source of truth"
 scripts/verify-seo.mjs    per-page <head> SEO diff (new vs legacy site/)
 scripts/verify-ui.mjs     screenshots new-vs-old + interactivity (accordion/menu)
-server/index.mjs          Express static server (dist/browser; caching, security headers, /healthz, 404)
+server/index.mjs          release-aware static server (caching, /healthz, retained chunks, 404)
 ```
 
 ### URLs (unchanged from the live site)

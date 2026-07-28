@@ -14,16 +14,20 @@ bitsize.me / blinkdrop. Swedish at the root, English under `/en/`. CodeKit is re
 pnpm install     # Angular 22 + express + compression
 pnpm dev         # ng serve (Swedish) at http://127.0.0.1:4240
 pnpm build       # prerender (sv + en) → dist/browser, then flatten literal .html URLs
-pnpm start       # serve dist/browser at http://127.0.0.1:3040   (health: /healthz)
+pnpm start       # release-aware server at http://127.0.0.1:3040 (health: /healthz)
 pnpm e2e         # Playwright smoke test
 ```
 
 Always-on via launchd (`launchd/com.faunapoolen.server.plist`, port 3040), fronted by nginx — see
-[`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Rebuild + reload:
+[`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). `pnpm build` remains the local build; publish production
+content atomically with:
 
 ```bash
-pnpm build && sudo launchctl kickstart -k system/com.faunapoolen.server
+node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
 ```
+
+The shared release and rollback contract is documented in
+[`../SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
 ## Layout
 
@@ -33,7 +37,7 @@ src/app/shared/seo.ts   per-page title/description/canonical/hreflang/OG/JSON-LD
 src/locale/        English SEO translations (@angular/localize)
 public/assets/**   images, compiled CSS, scripts.js (served verbatim)
 scripts/flatten.mjs   <route>.html/index.html → flat <route>.html
-server/index.mjs   Express static server (dist/browser)
+server/index.mjs   release-aware Express static server
 ```
 
 The Angular app (`src/`) is the source of truth. Pages were bulk-imported from the last CodeKit

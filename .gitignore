@@ -159,8 +159,8 @@ out-tsc/
 /playwright-report/
 /blob-report/
 
-# launchd service logs
-.run/*.log
+# Generated local runtime and release state
+.run/
 
 # macOS
 .DS_Store
