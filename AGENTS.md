@@ -53,6 +53,13 @@ scripts/verify-ui.mjs     screenshots new-vs-old + interactivity (accordion/menu
 server/index.mjs          release-aware static server (caching, /healthz, retained chunks, 404)
 ```
 
+The admin server's process-local state is bounded in its owning modules. `admin-auth.mjs` caps admin
+sessions at 64 with oldest-first eviction, an eight-hour default, and a hard 24-hour lifetime
+maximum; it also sweeps failed-login entries after 15 minutes and caps them at 10,000 clients,
+failing closed at capacity. `admin-ad-builder.mjs` sweeps completed generation state after 10
+minutes and caps it at 1,000 sessions while preserving in-flight work. Never replace these stores
+with uncapped module-level maps.
+
 ### URLs (unchanged from the live site)
 
 - **Sections** served from `<dir>/index.html`: `/about/`, `/pricing/`, `/services/`, `/contact/`,

@@ -29,6 +29,12 @@ node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
 The shared release and rollback contract is documented in
 [`../SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
+Admin-only runtime state is memory-bounded. Login sessions default to eight hours, can never exceed
+24 hours, and cap at 64 live sessions with oldest-first eviction. Failed-login entries expire after
+15 minutes and cap at 10,000 clients; campaign-generation entries expire after 10 minutes and cap
+at 1,000 admin sessions. Capacity rejects new tracking/generation state instead of allowing either
+map to grow without a limit, and in-flight campaign work is retained until it finishes.
+
 ## Layout
 
 ```

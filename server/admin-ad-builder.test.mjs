@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   CAMPAIGN_LIMITS,
+  createGenerationStateStore,
   imageDataUrl,
+  MAX_GENERATION_STATES,
   MAX_IDEA_CHARACTERS,
   normalizeIdea,
   validateCampaignOutput,
@@ -102,4 +104,66 @@ test('rejects missing platforms, wrong visual formats, and copy beyond limits', 
 test('builds private in-memory image data URLs for admin downloads', () => {
   assert.equal(imageDataUrl('YWJj\n', 'image/webp'), 'data:image/webp;base64,YWJj');
   assert.equal(imageDataUrl(''), '');
+});
+
+test('campaign generation state has a fixed production cardinality ceiling', () => {
+  assert.equal(MAX_GENERATION_STATES, 1_000);
+});
+
+test('campaign generation state sweeps expired sessions and rejects new state at capacity', () => {
+  let currentTime = 1_000;
+  const store = createGenerationStateStore({
+    windowMs: 100,
+    maxEntries: 2,
+    sweepIntervalMs: 10,
+    now: () => currentTime,
+  });
+
+  assert.ok(store.get('session-a'));
+  assert.ok(store.get('session-b'));
+  assert.equal(store.get('session-c'), undefined);
+  assert.equal(store.size(), 2);
+
+  currentTime += 101;
+  assert.ok(store.get('session-c'));
+  assert.equal(store.size(), 1);
+});
+
+test('campaign state keeps in-flight work until it finishes, even after TTL', () => {
+  let currentTime = 1_000;
+  const store = createGenerationStateStore({
+    windowMs: 100,
+    maxEntries: 1,
+    sweepIntervalMs: 10,
+    now: () => currentTime,
+  });
+  const active = store.get('session-a');
+  active.inFlight = true;
+
+  currentTime += 101;
+  store.sweep();
+  assert.equal(store.size(), 1);
+  assert.equal(store.get('session-b'), undefined);
+
+  active.inFlight = false;
+  store.sweep();
+  assert.equal(store.size(), 0);
+  assert.ok(store.get('session-b'));
+});
+
+test('scheduled sweeps remove completed campaign state while the server is otherwise idle', async (t) => {
+  let currentTime = 1_000;
+  const store = createGenerationStateStore({
+    windowMs: 10,
+    maxEntries: 2,
+    sweepIntervalMs: 5,
+    now: () => currentTime,
+  });
+  t.after(store.stopSweep);
+  store.get('session-a');
+  currentTime += 11;
+  store.startSweep();
+
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.equal(store.size(), 0);
 });

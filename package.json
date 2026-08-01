@@ -25,7 +25,7 @@
     "serve": "node server/index.mjs",
     "e2e": "playwright test",
     "e2e:install": "playwright install chromium",
-    "test:admin": "node --test server/admin-ad-builder.test.mjs",
+    "test:admin": "node --test server/admin-auth.test.mjs server/admin-ad-builder.test.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

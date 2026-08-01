@@ -5,11 +5,14 @@ const MAX_IDEA_CHARACTERS = 3_000;
 const MIN_IDEA_CHARACTERS = 8;
 const GENERATION_WINDOW_MS = 10 * 60 * 1000;
 const MAX_GENERATIONS_PER_WINDOW = 10;
+const GENERATION_SWEEP_INTERVAL_MS = 60 * 1000;
+export const MAX_GENERATION_STATES = 1_000;
 const DEFAULT_MODEL = 'gpt-5.6-terra';
 const DEFAULT_IMAGE_MODEL = 'gpt-image-2';
 const DEFAULT_IMAGE_QUALITY = 'medium';
 
-const generationStates = new Map();
+const generationStateStore = createGenerationStateStore();
+generationStateStore.startSweep();
 
 const CAMPAIGN_LIMITS = Object.freeze({
   name: 72,
@@ -260,7 +263,11 @@ export function registerAdminAdBuilderEndpoint(app, express) {
 
   app.post('/admin-auth/ad-builder', noStore, requireAdminSession, json, async (req, res) => {
     const sessionKey = res.locals.adminSessionKey;
-    const state = generationState(sessionKey);
+    const state = generationStateStore.get(sessionKey);
+    if (!state) {
+      res.status(429).json({ error: 'Too many active campaign sessions. Try again shortly.' });
+      return;
+    }
     if (state.inFlight) {
       res.status(429).json({ error: 'A campaign is already being created.' });
       return;
@@ -319,14 +326,71 @@ function noStore(_req, res, next) {
   next();
 }
 
-function generationState(sessionKey) {
-  const now = Date.now();
-  let state = generationStates.get(sessionKey);
-  if (!state || state.resetAt <= now) {
-    state = { count: 0, inFlight: false, resetAt: now + GENERATION_WINDOW_MS };
-    generationStates.set(sessionKey, state);
+export function createGenerationStateStore({
+  windowMs = GENERATION_WINDOW_MS,
+  maxEntries = MAX_GENERATION_STATES,
+  sweepIntervalMs = GENERATION_SWEEP_INTERVAL_MS,
+  now = Date.now,
+} = {}) {
+  for (const [name, value] of Object.entries({ windowMs, maxEntries, sweepIntervalMs })) {
+    if (!Number.isSafeInteger(value) || value <= 0) {
+      throw new TypeError(`${name} must be a positive integer.`);
+    }
   }
-  return state;
+
+  const states = new Map();
+  let nextSweepAt = 0;
+  let sweepTimer;
+
+  function sweep(currentTime = now(), force = false) {
+    if (!force && currentTime < nextSweepAt) return 0;
+    let removed = 0;
+    for (const [sessionKey, state] of states) {
+      if (!state.inFlight && state.resetAt <= currentTime) {
+        states.delete(sessionKey);
+        removed += 1;
+      }
+    }
+    nextSweepAt = currentTime + sweepIntervalMs;
+    return removed;
+  }
+
+  function get(sessionKey) {
+    const currentTime = now();
+    sweep(currentTime);
+    let state = states.get(sessionKey);
+    if (state && !state.inFlight && state.resetAt <= currentTime) {
+      states.delete(sessionKey);
+      state = undefined;
+    }
+    if (state) return state;
+
+    if (states.size >= maxEntries) return undefined;
+
+    state = { count: 0, inFlight: false, resetAt: currentTime + windowMs };
+    states.set(sessionKey, state);
+    return state;
+  }
+
+  function startSweep() {
+    if (sweepTimer) return;
+    sweepTimer = setInterval(() => sweep(now(), true), sweepIntervalMs);
+    sweepTimer.unref();
+  }
+
+  function stopSweep() {
+    if (!sweepTimer) return;
+    clearInterval(sweepTimer);
+    sweepTimer = undefined;
+  }
+
+  return {
+    get,
+    sweep: (force = true) => sweep(now(), force),
+    size: () => states.size,
+    startSweep,
+    stopSweep,
+  };
 }
 
 export function normalizeIdea(value) {
