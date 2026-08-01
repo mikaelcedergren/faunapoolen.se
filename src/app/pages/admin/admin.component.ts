@@ -7,6 +7,7 @@ import {
   PLATFORM_ID,
   ViewChild,
   ViewEncapsulation,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -18,18 +19,19 @@ import {
   CxDividerComponent,
   CxIconButtonComponent,
   CxIconComponent,
-  CxLabeledRowComponent,
-  CxMarkdownComponent,
   CxPasswordFieldComponent,
   CxSideNavComponent,
   CxStackComponent,
   CxStatusTagComponent,
+  CxTabsComponent,
+  CxTagComponent,
   CxTextFieldComponent,
+  CxTextareaComponent,
   CxTopBarComponent,
   installCxKeyboardFocus,
   type CxFieldValidation,
-  type CxLabeledRowContent,
   type CxSideNavGroup,
+  type CxTabItem,
 } from '@mikaelcedergren/cx-framework';
 
 type AuthResponse = {
@@ -38,40 +40,122 @@ type AuthResponse = {
   ok?: boolean;
 };
 
-type AdSuggestion = {
-  headline: string;
-  text: string;
+type PlatformId = 'facebook' | 'instagram' | 'linkedin' | 'reels';
+type ImageVariantId = 'feed' | 'vertical';
+
+type StoryMap = {
+  hero: string;
+  externalProblem: string;
+  internalProblem: string;
+  guide: string;
+  plan: string[];
   callToAction: string;
-  whyItWorks: string;
+  failure: string;
+  success: string;
 };
 
-type AdSource = {
-  url: string;
-  finalUrl: string;
-  title: string;
-  language: string;
+type CoachNote = {
+  principle: string;
+  appliedText: string;
+  explanation: string;
 };
 
-type CopyLimits = {
-  headline: number;
-  text: number;
-  callToAction: number;
-  whyItWorks: number;
+type PlatformAd = {
+  id: PlatformId;
+  placement: string;
+  hook: string;
+  body: string;
+  callToAction: string;
+  hashtags: string[];
+  imageVariant: ImageVariantId;
+  platformFit: string;
+  coachNotes: CoachNote[];
+};
+
+type Campaign = {
+  name: string;
+  coreIdea: string;
+  audience: string;
+  desiredOutcome: string;
+  singleMessage: string;
+  assumptions: string[];
+  story: StoryMap;
+  visual: {
+    concept: string;
+    imagePrompt: string;
+    altText: string;
+  };
+  platforms: PlatformAd[];
+};
+
+type CampaignVisual = {
+  id: ImageVariantId;
+  label: string;
+  aspectRatio: string;
+  mimeType: string;
+  dataUrl: string;
+  altText: string;
 };
 
 type AdBuilderResponse = {
-  source?: AdSource;
-  limits?: CopyLimits;
-  ads?: AdSuggestion[];
+  idea?: string;
+  campaign?: Campaign;
+  visuals?: CampaignVisual[];
+  imageError?: string;
   error?: string;
 };
 
-const DEFAULT_COPY_LIMITS: CopyLimits = {
-  headline: 40,
-  text: 180,
-  callToAction: 24,
-  whyItWorks: 320,
+type PlatformMeta = {
+  label: string;
+  bodyLabel: string;
+  previewLabel: string;
 };
+
+type StoryLesson = {
+  number: number;
+  label: string;
+  value: string;
+};
+
+const MAX_IDEA_CHARACTERS = 3_000;
+const EXAMPLE_IDEA =
+  'Jag vill berätta att en naturpool kan kännas som en del av trädgården, inte som en blå plastpool. Det ska kännas lugnt och möjligt att börja, även om man inte vet exakt vad man behöver.';
+const GENERATION_MESSAGES = [
+  'Finding the customer’s real goal…',
+  'Building one clear StoryBrand story…',
+  'Adapting the idea for each platform…',
+  'Creating the feed and vertical visuals…',
+] as const;
+
+const PLATFORM_META: Record<PlatformId, PlatformMeta> = {
+  facebook: {
+    label: 'Facebook',
+    bodyLabel: 'Primary text',
+    previewLabel: 'Sponsored post',
+  },
+  instagram: {
+    label: 'Instagram',
+    bodyLabel: 'Caption',
+    previewLabel: 'Sponsored post',
+  },
+  linkedin: {
+    label: 'LinkedIn',
+    bodyLabel: 'Introductory text',
+    previewLabel: 'Promoted post',
+  },
+  reels: {
+    label: 'Reels & TikTok',
+    bodyLabel: '15–20 second script',
+    previewLabel: 'Vertical short-form',
+  },
+};
+
+const PLATFORM_TABS: CxTabItem[] = [
+  { id: 'facebook', label: 'Facebook' },
+  { id: 'instagram', label: 'Instagram' },
+  { id: 'linkedin', label: 'LinkedIn' },
+  { id: 'reels', label: 'Reels / TikTok' },
+];
 
 @Component({
   selector: 'fp-admin',
@@ -83,13 +167,14 @@ const DEFAULT_COPY_LIMITS: CopyLimits = {
     CxDividerComponent,
     CxIconButtonComponent,
     CxIconComponent,
-    CxLabeledRowComponent,
-    CxMarkdownComponent,
     CxPasswordFieldComponent,
     CxSideNavComponent,
     CxStackComponent,
     CxStatusTagComponent,
+    CxTabsComponent,
+    CxTagComponent,
     CxTextFieldComponent,
+    CxTextareaComponent,
     CxTopBarComponent,
   ],
   templateUrl: './admin.component.html',
@@ -106,6 +191,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   private readonly publicStylesheet = this.findPublicStylesheet();
   private readonly publicStylesheetMedia = this.originalPublicStylesheetMedia();
   private copyResetTimer?: ReturnType<typeof setTimeout>;
+  private downloadResetTimer?: ReturnType<typeof setTimeout>;
+  private generationProgressTimer?: ReturnType<typeof setInterval>;
 
   @ViewChild('usernameField')
   private readonly usernameField?: CxTextFieldComponent;
@@ -113,8 +200,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   @ViewChild(CxPasswordFieldComponent)
   private readonly passwordField?: CxPasswordFieldComponent;
 
-  @ViewChild('sourceUrlField')
-  private readonly sourceUrlField?: CxTextFieldComponent;
+  @ViewChild('roughIdeaField')
+  private readonly roughIdeaField?: CxTextareaComponent;
 
   protected readonly authenticated = signal(false);
   protected readonly submitting = signal(false);
@@ -124,15 +211,60 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly passwordValidation = signal<CxFieldValidation | undefined>(undefined);
   protected readonly requestError = signal('');
 
-  protected readonly sourceUrl = signal('');
-  protected readonly sourceUrlValidation = signal<CxFieldValidation | undefined>(undefined);
+  protected readonly roughIdea = signal('');
+  protected readonly roughIdeaValidation = signal<CxFieldValidation | undefined>(undefined);
   protected readonly generating = signal(false);
+  protected readonly generationStep = signal(0);
   protected readonly generationError = signal('');
-  protected readonly ads = signal<AdSuggestion[]>([]);
-  protected readonly source = signal<AdSource | undefined>(undefined);
-  protected readonly limits = signal<CopyLimits>(DEFAULT_COPY_LIMITS);
-  protected readonly copiedIndex = signal<number | undefined>(undefined);
+  protected readonly campaign = signal<Campaign | undefined>(undefined);
+  protected readonly visuals = signal<CampaignVisual[]>([]);
+  protected readonly imageError = signal('');
+  protected readonly selectedPlatformId = signal<PlatformId>('facebook');
+  protected readonly copiedPlatformId = signal<PlatformId | undefined>(undefined);
+  protected readonly downloadedVisualId = signal<ImageVariantId | undefined>(undefined);
   protected readonly mobileNavOpen = signal(false);
+
+  protected readonly platformTabs = PLATFORM_TABS;
+  protected readonly maxIdeaCharacters = MAX_IDEA_CHARACTERS;
+  protected readonly generationMessage = computed(
+    () => GENERATION_MESSAGES[this.generationStep()] ?? GENERATION_MESSAGES.at(-1)!,
+  );
+  protected readonly selectedPlatform = computed(() => {
+    const campaign = this.campaign();
+    if (!campaign) {
+      return undefined;
+    }
+    return (
+      campaign.platforms.find(platform => platform.id === this.selectedPlatformId()) ??
+      campaign.platforms[0]
+    );
+  });
+  protected readonly selectedPlatformMeta = computed(
+    () => PLATFORM_META[this.selectedPlatform()?.id ?? this.selectedPlatformId()],
+  );
+  protected readonly selectedVisual = computed(() => {
+    const visualId = this.selectedPlatform()?.imageVariant;
+    return this.visuals().find(visual => visual.id === visualId);
+  });
+  protected readonly storyLessons = computed<StoryLesson[]>(() => {
+    const story = this.campaign()?.story;
+    if (!story) {
+      return [];
+    }
+    return [
+      { number: 1, label: 'Character', value: story.hero },
+      {
+        number: 2,
+        label: 'Problem',
+        value: `${story.externalProblem} ${story.internalProblem}`,
+      },
+      { number: 3, label: 'Guide', value: story.guide },
+      { number: 4, label: 'Plan', value: story.plan.join(' → ') },
+      { number: 5, label: 'Call to action', value: story.callToAction },
+      { number: 6, label: 'Failure', value: story.failure },
+      { number: 7, label: 'Success', value: story.success },
+    ];
+  });
 
   protected readonly navGroups: CxSideNavGroup[] = [
     {
@@ -140,9 +272,9 @@ export class AdminComponent implements OnInit, OnDestroy {
       label: 'Tools',
       items: [
         {
-          id: 'ad-builder',
-          label: 'Ad builder',
-          icon: 'text',
+          id: 'campaign-studio',
+          label: 'Campaign studio',
+          icon: 'ai',
           routerLink: ['/admin'],
         },
       ],
@@ -170,9 +302,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.publicStylesheet.setAttribute('media', this.publicStylesheetMedia);
       }
     }
-    if (this.copyResetTimer) {
-      clearTimeout(this.copyResetTimer);
-    }
+    this.clearTimers();
   }
 
   protected updateUsername(value: string): void {
@@ -231,7 +361,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
       this.authenticated.set(true);
       this.password.set('');
-      queueMicrotask(() => this.sourceUrlField?.focus());
+      queueMicrotask(() => this.roughIdeaField?.focus());
     } catch {
       this.requestError.set('Admin login cannot be reached right now. Try again.');
     } finally {
@@ -252,47 +382,47 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.username.set('');
       this.password.set('');
       this.requestError.set('');
-      this.resetAdBuilder();
+      this.resetCampaignStudio();
       this.submitting.set(false);
       queueMicrotask(() => this.usernameField?.focus());
     }
   }
 
-  protected updateSourceUrl(value: string): void {
-    this.sourceUrl.set(value);
-    this.sourceUrlValidation.set(undefined);
+  protected updateRoughIdea(value: string): void {
+    this.roughIdea.set(value);
+    this.roughIdeaValidation.set(undefined);
     this.generationError.set('');
   }
 
-  protected onSourceUrlEnter(event: Event): void {
-    if (event.target instanceof HTMLInputElement) {
-      event.preventDefault();
-      void this.generateAds();
-    }
+  protected useExampleIdea(): void {
+    this.roughIdea.set(EXAMPLE_IDEA);
+    this.roughIdeaValidation.set(undefined);
+    this.generationError.set('');
+    queueMicrotask(() => this.roughIdeaField?.focus());
   }
 
-  protected async generateAds(): Promise<void> {
+  protected async generateCampaign(): Promise<void> {
     if (this.generating()) {
       return;
     }
 
-    const url = this.normalizedSourceUrl(this.sourceUrl());
-    if (!url) {
-      this.sourceUrlValidation.set('Enter a valid web address.');
-      queueMicrotask(() => this.sourceUrlField?.focus());
+    const idea = this.roughIdea().trim();
+    if (idea.length < 8) {
+      this.roughIdeaValidation.set('Add a little more detail so the campaign has something to work with.');
+      queueMicrotask(() => this.roughIdeaField?.focus());
       return;
     }
 
-    this.sourceUrl.set(url);
-    this.sourceUrlValidation.set(undefined);
+    this.roughIdeaValidation.set(undefined);
     this.generationError.set('');
-    this.ads.set([]);
-    this.source.set(undefined);
-    this.copiedIndex.set(undefined);
+    this.imageError.set('');
+    this.copiedPlatformId.set(undefined);
+    this.downloadedVisualId.set(undefined);
     this.generating.set(true);
+    this.startGenerationProgress();
 
     try {
-      const response = await this.post('/admin-auth/ad-builder', { url });
+      const response = await this.post('/admin-auth/ad-builder', { idea });
       const payload = (await response.json().catch(() => ({}))) as AdBuilderResponse;
       if (!response.ok) {
         if (response.status === 401) {
@@ -304,36 +434,87 @@ export class AdminComponent implements OnInit, OnDestroy {
         return;
       }
 
-      if (!payload.source || !payload.ads || payload.ads.length !== 5) {
-        this.generationError.set('The suggestions came back incomplete. Try again.');
+      if (!payload.campaign || payload.campaign.platforms.length !== PLATFORM_TABS.length) {
+        this.generationError.set('The campaign came back incomplete. Try again.');
         return;
       }
 
-      this.source.set(payload.source);
-      this.limits.set(payload.limits ?? DEFAULT_COPY_LIMITS);
-      this.ads.set(payload.ads);
+      this.campaign.set(payload.campaign);
+      this.visuals.set(payload.visuals ?? []);
+      this.imageError.set(payload.imageError ?? '');
+      this.selectedPlatformId.set('facebook');
     } catch {
-      this.generationError.set('Ad builder cannot be reached right now. Try again.');
+      this.generationError.set('Campaign studio cannot be reached right now. Try again.');
     } finally {
+      this.stopGenerationProgress();
       this.generating.set(false);
     }
   }
 
-  protected async copyAd(ad: AdSuggestion, index: number): Promise<void> {
-    if (!this.browser) {
+  protected selectPlatform(id: string): void {
+    if (this.isPlatformId(id)) {
+      this.selectedPlatformId.set(id);
+      this.copiedPlatformId.set(undefined);
+      this.downloadedVisualId.set(undefined);
+    }
+  }
+
+  protected async copySelectedAd(): Promise<void> {
+    const platform = this.selectedPlatform();
+    if (!this.browser || !platform) {
       return;
     }
-    const copy = `${ad.headline}\n\n${ad.text}\n\n${ad.callToAction}`;
+
+    const sections = [platform.hook, platform.body];
+    if (platform.hashtags.length > 0) {
+      sections.push(platform.hashtags.join(' '));
+    }
+    sections.push(platform.callToAction);
+
     try {
-      await navigator.clipboard.writeText(copy);
-      this.copiedIndex.set(index);
+      await navigator.clipboard.writeText(sections.join('\n\n'));
+      this.copiedPlatformId.set(platform.id);
       if (this.copyResetTimer) {
         clearTimeout(this.copyResetTimer);
       }
-      this.copyResetTimer = setTimeout(() => this.copiedIndex.set(undefined), 2_000);
+      this.copyResetTimer = setTimeout(() => this.copiedPlatformId.set(undefined), 2_000);
     } catch {
       this.generationError.set('Copying failed. Select the text and copy it manually.');
     }
+  }
+
+  protected downloadSelectedImage(): void {
+    const visual = this.selectedVisual();
+    const campaign = this.campaign();
+    if (!this.browser || !visual || !campaign) {
+      return;
+    }
+
+    const link = this.document.createElement('a');
+    link.href = visual.dataUrl;
+    link.download = `faunapoolen-${this.slug(campaign.name)}-${visual.id}.webp`;
+    link.hidden = true;
+    this.document.body.append(link);
+    link.click();
+    link.remove();
+    this.downloadedVisualId.set(visual.id);
+    if (this.downloadResetTimer) {
+      clearTimeout(this.downloadResetTimer);
+    }
+    this.downloadResetTimer = setTimeout(() => this.downloadedVisualId.set(undefined), 2_000);
+  }
+
+  protected newIdea(): void {
+    this.roughIdea.set('');
+    this.roughIdeaValidation.set(undefined);
+    this.generationError.set('');
+    this.imageError.set('');
+    this.campaign.set(undefined);
+    this.visuals.set([]);
+    this.selectedPlatformId.set('facebook');
+    this.copiedPlatformId.set(undefined);
+    this.downloadedVisualId.set(undefined);
+    queueMicrotask(() => this.roughIdeaField?.focus());
   }
 
   protected closeMobileNav(): void {
@@ -344,24 +525,20 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.mobileNavOpen.update(open => !open);
   }
 
-  protected textRow(text: string): CxLabeledRowContent {
-    return { kind: 'text', text };
+  protected platformLabel(id: PlatformId): string {
+    return PLATFORM_META[id].label;
   }
 
-  protected fieldLabel(label: string, value: string, limit: number): string {
-    return `${label} · ${value.length}/${limit}`;
+  protected hashtagLine(platform: PlatformAd): string {
+    return platform.hashtags.join(' ');
   }
 
-  protected whyItWorksMarkdown(value: string): string {
-    return `> **Why this works**\n>\n> ${this.escapeMarkdown(value)}`;
+  protected copyButtonText(platform: PlatformAd): string {
+    return this.copiedPlatformId() === platform.id ? 'Copied' : 'Copy ad';
   }
 
-  protected sourceLabel(source: AdSource): string {
-    try {
-      return `${source.title} · ${new URL(source.finalUrl).hostname}`;
-    } catch {
-      return source.title;
-    }
+  protected downloadButtonText(visual: CampaignVisual | undefined): string {
+    return visual && this.downloadedVisualId() === visual.id ? 'Downloaded' : 'Download image';
   }
 
   private async restoreSession(): Promise<void> {
@@ -373,42 +550,55 @@ export class AdminComponent implements OnInit, OnDestroy {
       const payload = (await response.json()) as AuthResponse;
       this.authenticated.set(payload.authenticated === true);
       if (payload.authenticated) {
-        queueMicrotask(() => this.sourceUrlField?.focus());
+        queueMicrotask(() => this.roughIdeaField?.focus());
       }
     } catch {
       // The login form remains available when the development auth server is not running.
     }
   }
 
-  private normalizedSourceUrl(value: string): string | undefined {
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return undefined;
-    }
-    const candidate = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-    try {
-      const url = new URL(candidate);
-      if (!['http:', 'https:'].includes(url.protocol) || !url.hostname) {
-        return undefined;
-      }
-      return url.href;
-    } catch {
-      return undefined;
+  private startGenerationProgress(): void {
+    this.stopGenerationProgress();
+    this.generationStep.set(0);
+    this.generationProgressTimer = setInterval(() => {
+      this.generationStep.update(step => Math.min(step + 1, GENERATION_MESSAGES.length - 1));
+    }, 7_000);
+  }
+
+  private stopGenerationProgress(): void {
+    if (this.generationProgressTimer) {
+      clearInterval(this.generationProgressTimer);
+      this.generationProgressTimer = undefined;
     }
   }
 
   private generationErrorFor(status: number): string {
     if (status === 429) {
-      return 'Ad builder is busy right now. Try again shortly.';
+      return 'Campaign studio is busy right now. Try again shortly.';
     }
     if (status === 503) {
       return 'OpenAI is not connected yet. Add the API key in .env and restart the server.';
     }
-    return 'The ad could not be generated right now. Try again.';
+    if (status === 504) {
+      return 'The campaign took too long to create. Try again.';
+    }
+    return 'The campaign could not be created right now. Try again.';
   }
 
-  private escapeMarkdown(value: string): string {
-    return value.replace(/([\\`*_{}\[\]()<>#+.!|-])/g, '\\$1').replace(/\r?\n/g, ' ');
+  private isPlatformId(value: string): value is PlatformId {
+    return value === 'facebook' || value === 'instagram' || value === 'linkedin' || value === 'reels';
+  }
+
+  private slug(value: string): string {
+    return (
+      value
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 48) || 'campaign'
+    );
   }
 
   private findPublicStylesheet(): HTMLLinkElement | undefined {
@@ -422,16 +612,32 @@ export class AdminComponent implements OnInit, OnDestroy {
     return media === 'not all' ? null : media;
   }
 
-  private resetAdBuilder(): void {
-    this.sourceUrl.set('');
-    this.sourceUrlValidation.set(undefined);
+  private resetCampaignStudio(): void {
+    this.roughIdea.set('');
+    this.roughIdeaValidation.set(undefined);
     this.generationError.set('');
+    this.imageError.set('');
     this.generating.set(false);
-    this.ads.set([]);
-    this.source.set(undefined);
-    this.limits.set(DEFAULT_COPY_LIMITS);
-    this.copiedIndex.set(undefined);
+    this.generationStep.set(0);
+    this.campaign.set(undefined);
+    this.visuals.set([]);
+    this.selectedPlatformId.set('facebook');
+    this.copiedPlatformId.set(undefined);
+    this.downloadedVisualId.set(undefined);
     this.mobileNavOpen.set(false);
+    this.clearTimers();
+  }
+
+  private clearTimers(): void {
+    this.stopGenerationProgress();
+    if (this.copyResetTimer) {
+      clearTimeout(this.copyResetTimer);
+      this.copyResetTimer = undefined;
+    }
+    if (this.downloadResetTimer) {
+      clearTimeout(this.downloadResetTimer);
+      this.downloadResetTimer = undefined;
+    }
   }
 
   private post(path: string, body?: object): Promise<Response> {

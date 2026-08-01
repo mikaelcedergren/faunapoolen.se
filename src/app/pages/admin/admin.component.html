@@ -36,8 +36,8 @@
 
     <section class="fp-admin-workspace__main cx-page">
       <cx-top-bar
-        heading="Ad builder"
-        description="Turn any webpage into five focused Facebook and Instagram ads."
+        heading="Campaign studio"
+        description="Turn one rough idea into a clear, ready-to-use social campaign."
       >
         <cx-icon-button
           actions
@@ -51,78 +51,321 @@
       </cx-top-bar>
 
       <div class="cx-page__content fp-admin-content">
-        <cx-card
-          heading="Create ads from a page"
-          icon="link"
-          padding="large"
-          background
-          border
-        >
-          <cx-stack gap="lg" gapMobile="md">
-            <p class="fp-admin-content__intro">
-              Paste the page you want to advertise. We’ll read the offer, find the customer’s
-              desired outcome, and build five distinct angles.
-            </p>
+        @if (!campaign()) {
+          <div class="fp-campaign-layout fp-campaign-layout--start">
+            <div class="fp-campaign-start">
+              <cx-card
+                class="fp-campaign-idea-card"
+                heading="Start with the messy version"
+                icon="edit"
+                padding="large"
+                background
+                border
+              >
+                <cx-stack gap="lg" gapMobile="md">
+                  <div class="fp-campaign-start__intro">
+                    <p>
+                      Write it exactly as it comes to you—fragments, worries and half-formed
+                      thoughts are welcome. The studio will find the useful idea and do the
+                      marketing work.
+                    </p>
+                    <div class="fp-low-authority-note">
+                      <cx-icon name="guide" size="18" mood="info" />
+                      <div>
+                        <strong>Your idea is a starting point, not a claim source.</strong>
+                        <span>
+                          We keep the intent, remove unsupported claims and make any necessary
+                          assumptions visible.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-            @if (generationError()) {
-              <cx-alert mood="danger" [heading]="generationError()" />
-            } @else if (generating()) {
-              <cx-alert
-                mood="info"
-                heading="Reading the page and writing five distinct angles. This can take a moment."
-              />
-            }
+                  @if (generationError()) {
+                    <cx-alert mood="danger" [heading]="generationError()" />
+                  }
 
-            <div
-              class="fp-admin-source-form"
-              role="form"
-              aria-label="Generate social ads"
-              (keydown.enter)="onSourceUrlEnter($event)"
-            >
-              <cx-text-field
-                #sourceUrlField
-                label="Web address"
-                name="sourceUrl"
-                autocomplete="url"
-                prependIcon="website"
-                hint="For example: https://faunapoolen.se/nature-pools.html"
-                [clearable]="true"
-                [value]="sourceUrl()"
-                [validation]="sourceUrlValidation()"
-                [loading]="generating()"
-                [disabled]="generating()"
-                (valueChange)="updateSourceUrl($event)"
-              />
+                  @if (generating()) {
+                    <cx-alert mood="info" [loading]="true" [heading]="generationMessage()" />
+                  }
 
-              <cx-button
-                class="fp-admin-source-form__submit"
-                text="Generate ads"
-                mood="primary"
-                icon="bolt"
-                type="button"
-                [loading]="generating()"
-                [disabled]="generating()"
-                (pressed)="generateAds()"
-              />
+                  <cx-textarea
+                    #roughIdeaField
+                    label="Your rough idea"
+                    ariaLabel="Your rough campaign idea"
+                    hint="Example: what you want people to understand, who it might help, or what feels hard to explain."
+                    size="large"
+                    sizing="fixed"
+                    [minLines]="9"
+                    [maxLength]="maxIdeaCharacters"
+                    [value]="roughIdea()"
+                    [validation]="roughIdeaValidation()"
+                    [disabled]="generating()"
+                    (valueChange)="updateRoughIdea($event)"
+                  />
+
+                  <div class="fp-campaign-idea-card__footer">
+                    <span class="fp-character-count">
+                      {{ roughIdea().length }}/{{ maxIdeaCharacters }}
+                    </span>
+                    <cx-button
+                      size="small"
+                      text="Show me an example"
+                      icon="chat"
+                      [transparent]="true"
+                      [disabled]="generating()"
+                      (pressed)="useExampleIdea()"
+                    />
+                  </div>
+
+                  <cx-button
+                    class="fp-campaign-generate"
+                    text="Create my campaign"
+                    mood="primary"
+                    icon="bolt"
+                    type="button"
+                    [loading]="generating()"
+                    [disabled]="generating()"
+                    (pressed)="generateCampaign()"
+                  />
+                </cx-stack>
+              </cx-card>
+
+              <section class="fp-campaign-deliverables" aria-labelledby="deliverables-heading">
+                <div class="fp-section-heading">
+                  <span class="fp-section-heading__eyebrow">One click, one coherent idea</span>
+                  <h2 id="deliverables-heading">What comes back</h2>
+                </div>
+
+                <div class="fp-deliverable-grid">
+                  <div class="fp-deliverable">
+                    <cx-icon name="text" size="20" mood="primary" shape="square-subtle" />
+                    <div>
+                      <strong>Four ready ads</strong>
+                      <span>Facebook, Instagram, LinkedIn and Reels/TikTok.</span>
+                    </div>
+                  </div>
+                  <div class="fp-deliverable">
+                    <cx-icon name="image" size="20" mood="primary" shape="square-subtle" />
+                    <div>
+                      <strong>Matching visuals</strong>
+                      <span>A square feed image and a vertical 9:16 image.</span>
+                    </div>
+                  </div>
+                  <div class="fp-deliverable">
+                    <cx-icon name="books" size="20" mood="primary" shape="square-subtle" />
+                    <div>
+                      <strong>Plain-language coaching</strong>
+                      <span>See why the message works while you use it.</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
             </div>
-          </cx-stack>
-        </cx-card>
 
-        @if (source(); as generatedSource) {
-          <section class="fp-admin-results" aria-labelledby="fp-admin-results-heading">
-            <div class="fp-admin-results__heading">
-              <div>
-                <h2 id="fp-admin-results-heading">Five ad directions</h2>
-                <p>{{ sourceLabel(generatedSource) }}</p>
+            <aside class="fp-campaign-coach fp-campaign-coach--welcome" aria-label="How it works">
+              <div class="fp-coach-kicker">
+                <cx-icon name="guide" size="20" mood="primary" shape="square-subtle" />
+                <span>Your marketing guide</span>
               </div>
-              <cx-status-tag mood="success" icon="check" text="Ready to review" />
-            </div>
+              <h2>You bring the thought. We turn it into something useful.</h2>
+              <p class="fp-coach-lead">
+                You do not need to know the framework, choose an angle or write like a marketer.
+                The studio handles that and shows its work afterward.
+              </p>
 
-            <cx-stack gap="lg" gapMobile="md">
-              @for (ad of ads(); track $index) {
+              <ol class="fp-coach-process" aria-label="Campaign creation steps">
+                <li
+                  [class.fp-coach-process__item--active]="generating() && generationStep() === 0"
+                  [class.fp-coach-process__item--done]="generating() && generationStep() > 0"
+                >
+                  <span>1</span>
+                  <div>
+                    <strong>Find the customer</strong>
+                    <small>Who needs this and what do they really want?</small>
+                  </div>
+                </li>
+                <li
+                  [class.fp-coach-process__item--active]="generating() && generationStep() === 1"
+                  [class.fp-coach-process__item--done]="generating() && generationStep() > 1"
+                >
+                  <span>2</span>
+                  <div>
+                    <strong>Build the story</strong>
+                    <small>Customer as hero, Faunapoolen as guide.</small>
+                  </div>
+                </li>
+                <li
+                  [class.fp-coach-process__item--active]="generating() && generationStep() === 2"
+                  [class.fp-coach-process__item--done]="generating() && generationStep() > 2"
+                >
+                  <span>3</span>
+                  <div>
+                    <strong>Fit each platform</strong>
+                    <small>One message, adapted to how people use each feed.</small>
+                  </div>
+                </li>
+                <li [class.fp-coach-process__item--active]="generating() && generationStep() === 3">
+                  <span>4</span>
+                  <div>
+                    <strong>Create the visuals</strong>
+                    <small>Two useful formats that support the same promise.</small>
+                  </div>
+                </li>
+              </ol>
+
+              <div class="fp-coach-reassurance">
+                <cx-icon name="check" size="16" mood="success" />
+                <span>No marketing homework. Review, copy, download and use.</span>
+              </div>
+            </aside>
+          </div>
+        } @else if (campaign(); as generatedCampaign) {
+          <section class="fp-campaign-result-heading" aria-labelledby="campaign-name">
+            <div>
+              <div class="fp-campaign-result-heading__meta">
+                <cx-status-tag mood="success" icon="check" text="Campaign ready" />
+                <span>Built from your rough idea</span>
+              </div>
+              <h1 id="campaign-name">{{ generatedCampaign.name }}</h1>
+              <p>{{ generatedCampaign.singleMessage }}</p>
+            </div>
+            <div class="fp-campaign-result-heading__actions">
+              <cx-button
+                text="New idea"
+                icon="new"
+                [transparent]="true"
+                (pressed)="newIdea()"
+              />
+              <cx-button
+                text="Create again"
+                icon="bolt"
+                mood="primary"
+                [loading]="generating()"
+                [disabled]="generating()"
+                (pressed)="generateCampaign()"
+              />
+            </div>
+          </section>
+
+          @if (generationError()) {
+            <cx-alert mood="danger" [heading]="generationError()" />
+          }
+          @if (generating()) {
+            <cx-alert mood="info" [loading]="true" [heading]="generationMessage()" />
+          }
+          @if (imageError()) {
+            <cx-alert mood="warning" [heading]="imageError()" />
+          }
+
+          <div class="fp-campaign-layout fp-campaign-layout--result">
+            <div class="fp-campaign-workbench">
+              <cx-card class="fp-platform-card" padding="none" border>
+                <div class="fp-platform-card__tabs">
+                  <cx-tabs
+                    ariaLabel="Social platform"
+                    controlsId="fp-platform-panel"
+                    [items]="platformTabs"
+                    [selectedId]="selectedPlatformId()"
+                    [equalWidth]="true"
+                    (selectedIdChange)="selectPlatform($event)"
+                  />
+                </div>
+
+                @if (selectedPlatform(); as platform) {
+                  <div
+                    id="fp-platform-panel"
+                    role="tabpanel"
+                    class="fp-platform-panel"
+                    [class.fp-platform-panel--vertical]="platform.imageVariant === 'vertical'"
+                  >
+                    <div class="fp-platform-panel__bar">
+                      <div>
+                        <span class="fp-platform-panel__eyebrow">
+                          {{ selectedPlatformMeta().previewLabel }}
+                        </span>
+                        <strong>{{ platform.placement }}</strong>
+                      </div>
+                      <cx-status-tag
+                        mood="info"
+                        icon="image"
+                        [text]="platform.imageVariant === 'vertical' ? '9:16 visual' : '1:1 visual'"
+                      />
+                    </div>
+
+                    <div class="fp-preview-stage">
+                      <article
+                        class="fp-social-preview"
+                        [class.fp-social-preview--vertical]="platform.imageVariant === 'vertical'"
+                        [attr.aria-label]="platformLabel(platform.id) + ' ad preview'"
+                      >
+                        <header class="fp-social-preview__account">
+                          <span class="fp-social-preview__avatar" aria-hidden="true">F</span>
+                          <div>
+                            <strong>Faunapoolen</strong>
+                            <span>{{ selectedPlatformMeta().previewLabel }}</span>
+                          </div>
+                          <span class="fp-social-preview__more" aria-hidden="true">•••</span>
+                        </header>
+
+                        @if (platform.imageVariant !== 'vertical') {
+                          <p class="fp-social-preview__lead">{{ platform.body }}</p>
+                        }
+
+                        <figure class="fp-social-preview__visual">
+                          @if (selectedVisual(); as visual) {
+                            <img [src]="visual.dataUrl" [alt]="visual.altText" />
+                          } @else {
+                            <div class="fp-social-preview__missing">
+                              <cx-icon name="image" size="28" />
+                              <span>Visual unavailable</span>
+                            </div>
+                          }
+
+                          @if (platform.imageVariant === 'vertical') {
+                            <figcaption class="fp-social-preview__overlay">
+                              <strong>{{ platform.hook }}</strong>
+                              <p>{{ platform.body }}</p>
+                              <span>{{ platform.callToAction }}</span>
+                            </figcaption>
+                          }
+                        </figure>
+
+                        @if (platform.imageVariant !== 'vertical') {
+                          <footer class="fp-social-preview__footer">
+                            <div>
+                              <span>FAUNAPOOLEN.SE</span>
+                              <strong>{{ platform.hook }}</strong>
+                            </div>
+                            <span class="fp-social-preview__cta">{{ platform.callToAction }}</span>
+                          </footer>
+                        }
+                      </article>
+                    </div>
+
+                    <div class="fp-platform-card__actions">
+                      <cx-button
+                        [text]="copyButtonText(platform)"
+                        [icon]="copiedPlatformId() === platform.id ? 'check' : 'copy'"
+                        [mood]="copiedPlatformId() === platform.id ? 'success' : 'default'"
+                        (pressed)="copySelectedAd()"
+                      />
+                      <cx-button
+                        [text]="downloadButtonText(selectedVisual())"
+                        [icon]="downloadedVisualId() === selectedVisual()?.id ? 'check' : 'download'"
+                        [mood]="downloadedVisualId() === selectedVisual()?.id ? 'success' : 'default'"
+                        [disabled]="!selectedVisual()"
+                        (pressed)="downloadSelectedImage()"
+                      />
+                    </div>
+                  </div>
+                }
+              </cx-card>
+
+              @if (selectedPlatform(); as platform) {
                 <cx-card
-                  class="fp-admin-result"
-                  [heading]="'Suggestion ' + ($index + 1)"
+                  class="fp-copy-card"
+                  [heading]="platformLabel(platform.id) + ' copy'"
                   icon="text"
                   padding="large"
                   border
@@ -130,42 +373,132 @@
                   <cx-button
                     slot="meta"
                     size="small"
+                    [text]="copyButtonText(platform)"
+                    [icon]="copiedPlatformId() === platform.id ? 'check' : 'copy'"
+                    [mood]="copiedPlatformId() === platform.id ? 'success' : 'default'"
                     [transparent]="true"
-                    [text]="copiedIndex() === $index ? 'Copied' : 'Copy ad'"
-                    [icon]="copiedIndex() === $index ? 'check' : 'copy'"
-                    [mood]="copiedIndex() === $index ? 'success' : 'default'"
-                    (pressed)="copyAd(ad, $index)"
+                    (pressed)="copySelectedAd()"
                   />
 
-                  <cx-stack gap="md">
-                    <cx-labeled-row
-                      size="small"
-                      [label]="fieldLabel('Headline', ad.headline, limits().headline)"
-                      [content]="textRow(ad.headline)"
-                    />
-                    <cx-labeled-row
-                      size="small"
-                      [label]="fieldLabel('Text', ad.text, limits().text)"
-                      [content]="textRow(ad.text)"
-                    />
-                    <cx-labeled-row
-                      size="small"
-                      [label]="
-                        fieldLabel('Call to action', ad.callToAction, limits().callToAction)
-                      "
-                      [content]="textRow(ad.callToAction)"
-                    />
-
-                    <cx-divider [discreet]="true" />
-                    <cx-markdown
-                      align="start"
-                      [markdown]="whyItWorksMarkdown(ad.whyItWorks)"
-                    />
-                  </cx-stack>
+                  <div class="fp-copy-fields">
+                    <div class="fp-copy-field">
+                      <span>Hook</span>
+                      <strong>{{ platform.hook }}</strong>
+                    </div>
+                    <div class="fp-copy-field">
+                      <span>{{ selectedPlatformMeta().bodyLabel }}</span>
+                      <p>{{ platform.body }}</p>
+                    </div>
+                    @if (platform.hashtags.length > 0) {
+                      <div class="fp-copy-field">
+                        <span>Hashtags</span>
+                        <p class="fp-copy-field__hashtags">{{ hashtagLine(platform) }}</p>
+                      </div>
+                    }
+                    <div class="fp-copy-field fp-copy-field--cta">
+                      <span>Call to action</span>
+                      <strong>{{ platform.callToAction }}</strong>
+                    </div>
+                  </div>
                 </cx-card>
               }
-            </cx-stack>
-          </section>
+
+              <cx-card
+                class="fp-direction-card"
+                heading="Campaign direction"
+                icon="guide"
+                padding="large"
+                border
+              >
+                <div class="fp-direction-grid">
+                  <div>
+                    <span>Useful idea we kept</span>
+                    <p>{{ generatedCampaign.coreIdea }}</p>
+                  </div>
+                  <div>
+                    <span>Customer</span>
+                    <p>{{ generatedCampaign.audience }}</p>
+                  </div>
+                  <div>
+                    <span>Desired outcome</span>
+                    <p>{{ generatedCampaign.desiredOutcome }}</p>
+                  </div>
+                  <div>
+                    <span>Visual concept</span>
+                    <p>{{ generatedCampaign.visual.concept }}</p>
+                  </div>
+                </div>
+              </cx-card>
+            </div>
+
+            <aside class="fp-campaign-coach fp-campaign-coach--result" aria-label="StoryBrand coach">
+              @if (selectedPlatform(); as platform) {
+                <div class="fp-coach-result__header">
+                  <div class="fp-coach-kicker">
+                    <cx-icon name="books" size="20" mood="primary" shape="square-subtle" />
+                    <span>StoryBrand coach</span>
+                  </div>
+                  <cx-tag [text]="platformLabel(platform.id)" color="blue" [outline]="true" />
+                </div>
+                <h2>Why this version is written this way</h2>
+                <p class="fp-coach-lead">
+                  You do not need to memorize this. The notes simply show which choices are worth
+                  reusing next time.
+                </p>
+
+                <div class="fp-platform-fit">
+                  <span>Why it fits {{ platformLabel(platform.id) }}</span>
+                  <p>{{ platform.platformFit }}</p>
+                </div>
+
+                <div class="fp-coach-notes">
+                  @for (note of platform.coachNotes; track $index) {
+                    <article class="fp-coach-note">
+                      <div>
+                        <span>{{ $index + 1 }}</span>
+                        <strong>{{ note.principle }}</strong>
+                      </div>
+                      <blockquote>“{{ note.appliedText }}”</blockquote>
+                      <p>{{ note.explanation }}</p>
+                    </article>
+                  }
+                </div>
+
+                <cx-divider [discreet]="true" />
+
+                <section class="fp-story-map" aria-labelledby="story-map-heading">
+                  <div class="fp-story-map__heading">
+                    <span>Under every platform version</span>
+                    <h3 id="story-map-heading">The same seven-part story</h3>
+                  </div>
+                  <ol>
+                    @for (lesson of storyLessons(); track lesson.number) {
+                      <li>
+                        <span>{{ lesson.number }}</span>
+                        <div>
+                          <strong>{{ lesson.label }}</strong>
+                          <p>{{ lesson.value }}</p>
+                        </div>
+                      </li>
+                    }
+                  </ol>
+                </section>
+
+                @if (generatedCampaign.assumptions.length > 0) {
+                  <cx-divider [discreet]="true" />
+                  <section class="fp-assumptions" aria-labelledby="assumptions-heading">
+                    <h3 id="assumptions-heading">Assumptions we made</h3>
+                    <p>These came from the rough idea, so check them before publishing.</p>
+                    <ul>
+                      @for (assumption of generatedCampaign.assumptions; track $index) {
+                        <li>{{ assumption }}</li>
+                      }
+                    </ul>
+                  </section>
+                }
+              }
+            </aside>
+          </div>
         }
       </div>
     </section>

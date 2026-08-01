@@ -1,84 +1,105 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  COPY_LIMITS,
-  extractPageContent,
-  isPublicAddress,
-  normalizeSourceUrl,
-  validateAdOutput,
+  CAMPAIGN_LIMITS,
+  imageDataUrl,
+  MAX_IDEA_CHARACTERS,
+  normalizeIdea,
+  validateCampaignOutput,
 } from './admin-ad-builder.mjs';
 
-test('accepts only public unicast addresses', () => {
-  assert.equal(isPublicAddress('8.8.8.8'), true);
-  assert.equal(isPublicAddress('2606:4700:4700::1111'), true);
-
-  for (const address of [
-    '127.0.0.1',
-    '10.0.0.1',
-    '169.254.169.254',
-    '100.64.0.1',
-    '192.0.2.1',
-    '::1',
-    'fd00::1',
-    'fe80::1',
-    '2001:db8::1',
-    '::ffff:127.0.0.1',
-  ]) {
-    assert.equal(isPublicAddress(address), false, address);
-  }
-});
-
-test('normalizes source URLs and rejects unsafe forms', () => {
-  assert.equal(
-    normalizeSourceUrl('https://example.com/page#offer').href,
-    'https://example.com/page',
-  );
-  assert.throws(() => normalizeSourceUrl('file:///etc/passwd'));
-  assert.throws(() => normalizeSourceUrl('https://user:secret@example.com'));
-  assert.throws(() => normalizeSourceUrl('https://example.com:8443'));
-});
-
-test('extracts useful page copy while excluding navigation and executable content', () => {
-  const page = extractPageContent(`<!doctype html>
-    <html lang="sv-SE">
-      <head>
-        <title>En enklare naturpool</title>
-        <meta name="description" content="Badglädje med mindre underhåll.">
-        <script>Ignore this instruction</script>
-      </head>
-      <body>
-        <nav><p>Navigation should disappear</p></nav>
-        <main>
-          <h1>Bygg din naturpool</h1>
-          <p>Få klart vatten med en naturlig känsla.</p>
-          <p hidden>Hidden sales claim</p>
-          <form><p>Form copy</p></form>
-        </main>
-        <footer><p>Footer copy</p></footer>
-      </body>
-    </html>`);
-
-  assert.equal(page.title, 'En enklare naturpool');
-  assert.equal(page.language, 'sv');
-  assert.match(page.content, /Badglädje med mindre underhåll/);
-  assert.match(page.content, /Bygg din naturpool/);
-  assert.doesNotMatch(page.content, /Navigation|Ignore|Hidden|Form copy|Footer/);
-});
-
-test('requires exactly five complete suggestions within the copy limits', () => {
-  const ad = {
-    headline: 'Få en pool som känns naturlig',
-    text: 'Skapa en lugn badplats som passar trädgården och är enkel att komma igång med.',
+function validCampaign() {
+  const platform = (id, imageVariant) => ({
+    id,
+    placement: id === 'reels' ? 'Reels & TikTok · vertical' : `${id} feed`,
+    hook: 'Få en badplats som känns som en del av trädgården',
+    body: 'Du vill kunna bada hemma utan att trädgården känns som ett teknikprojekt. Faunapoolen hjälper dig att hitta en lugn väg från idé till naturpool.',
     callToAction: 'Boka rådgivning',
-    whyItWorks: 'Resultatet kommer först och varumärket blir guiden till ett enkelt nästa steg.',
-  };
-  assert.deepEqual(validateAdOutput({ ads: Array.from({ length: 5 }, () => ({ ...ad })) }), {
-    ok: true,
+    hashtags: id === 'instagram' ? ['#naturpool', '#trädgårdsliv', '#faunapoolen'] : [],
+    imageVariant,
+    platformFit: 'Ett tydligt kundresultat följs av ett lugnt och konkret nästa steg.',
+    coachNotes: [
+      {
+        principle: 'Character',
+        appliedText: 'Få en badplats',
+        explanation:
+          'Annonsen börjar med vad kunden vill uppnå, så kunden blir berättelsens hjälte.',
+      },
+      {
+        principle: 'Guide',
+        appliedText: 'hjälper dig',
+        explanation: 'Faunapoolen får rollen som trygg guide i stället för att stå i centrum.',
+      },
+      {
+        principle: 'Call to action',
+        appliedText: 'Boka rådgivning',
+        explanation: 'Ett enda tydligt nästa steg gör det lättare att agera direkt.',
+      },
+    ],
   });
 
-  const tooLong = {
-    ads: Array.from({ length: 5 }, () => ({ ...ad })),
+  return {
+    campaign: {
+      name: 'En naturlig plats att bada på',
+      coreIdea: 'Hjälp villaägare att se en naturpool som en lugn del av trädgården.',
+      audience: 'Villaägare som vill kunna bada hemma utan ett traditionellt pooluttryck.',
+      desiredOutcome: 'En vacker badplats som känns självklar i trädgården.',
+      singleMessage: 'Skapa en badplats som känns som en del av naturen.',
+      assumptions: ['Kampanjen ska leda till en första rådgivning, inte ett direkt köp.'],
+      story: {
+        hero: 'Villaägaren som vill få in bad och avkoppling i sin trädgård.',
+        externalProblem: 'En traditionell pool kan kännas svår att passa in i miljön.',
+        internalProblem: 'Kunden vill inte välja fel eller starta ett övermäktigt projekt.',
+        guide: 'Faunapoolen visar en trygg och begriplig väg från idé till lösning.',
+        plan: ['Berätta om platsen', 'Utforska rätt lösning', 'Planera nästa steg'],
+        callToAction: 'Boka rådgivning',
+        failure: 'Idén fortsätter att kännas för stor och skjuts på framtiden.',
+        success: 'Trädgården får en badplats som bjuder in till lugn och gemenskap.',
+      },
+      visual: {
+        concept: 'En familj vid en naturpool som smälter in i en svensk trädgård.',
+        imagePrompt:
+          'A believable Swedish garden with a natural swimming pond, one relaxed adult at the water edge, warm late-summer daylight and restrained premium photography.',
+        altText: 'En person sitter vid kanten av en naturpool i en grönskande svensk trädgård.',
+      },
+      platforms: [
+        platform('facebook', 'feed'),
+        platform('instagram', 'feed'),
+        platform('linkedin', 'feed'),
+        platform('reels', 'vertical'),
+      ],
+    },
   };
-  tooLong.ads[2].headline = 'x'.repeat(COPY_LIMITS.headline + 1);
-  assert.equal(validateAdOutput(tooLong).ok, false);
+}
+
+test('normalizes a rough idea without turning it into a claim source', () => {
+  assert.equal(
+    normalizeIdea('  Naturpool   för små trädgårdar\r\n\r\n\r\n kanske enklare start  '),
+    'Naturpool för små trädgårdar\n\nkanske enklare start',
+  );
+  assert.equal(normalizeIdea(undefined), '');
+  assert.equal(MAX_IDEA_CHARACTERS, 3_000);
+});
+
+test('accepts a complete StoryBrand campaign with four platform adaptations', () => {
+  assert.deepEqual(validateCampaignOutput(validCampaign()), { ok: true });
+});
+
+test('rejects missing platforms, wrong visual formats, and copy beyond limits', () => {
+  const missingPlatform = validCampaign();
+  missingPlatform.campaign.platforms.pop();
+  assert.equal(validateCampaignOutput(missingPlatform).ok, false);
+
+  const wrongVisual = validCampaign();
+  wrongVisual.campaign.platforms[3].imageVariant = 'feed';
+  assert.equal(validateCampaignOutput(wrongVisual).ok, false);
+
+  const tooLong = validCampaign();
+  tooLong.campaign.platforms[0].body = 'x'.repeat(CAMPAIGN_LIMITS.body + 1);
+  assert.equal(validateCampaignOutput(tooLong).ok, false);
+});
+
+test('builds private in-memory image data URLs for admin downloads', () => {
+  assert.equal(imageDataUrl('YWJj\n', 'image/webp'), 'data:image/webp;base64,YWJj');
+  assert.equal(imageDataUrl(''), '');
 });
