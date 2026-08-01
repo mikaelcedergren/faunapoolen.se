@@ -26,7 +26,7 @@ import {
   CxTabsComponent,
   CxTagComponent,
   CxTextFieldComponent,
-  CxTextareaComponent,
+  CxTextAreaComponent,
   CxTopBarComponent,
   installCxKeyboardFocus,
   type CxFieldValidation,
@@ -174,7 +174,7 @@ const PLATFORM_TABS: CxTabItem[] = [
     CxTabsComponent,
     CxTagComponent,
     CxTextFieldComponent,
-    CxTextareaComponent,
+    CxTextAreaComponent,
     CxTopBarComponent,
   ],
   templateUrl: './admin.component.html',
@@ -201,7 +201,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   private readonly passwordField?: CxPasswordFieldComponent;
 
   @ViewChild('roughIdeaField')
-  private readonly roughIdeaField?: CxTextareaComponent;
+  private readonly roughIdeaField?: CxTextAreaComponent;
 
   protected readonly authenticated = signal(false);
   protected readonly submitting = signal(false);

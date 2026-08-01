@@ -9,13 +9,15 @@ const resetMenuStateOnDesktop = () => {
   }
 };
 
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 100) {
-    headerEl.classList.add('header-scrolled');
-  } else if (window.scrollY <= 100) {
-    headerEl.classList.remove('header-scrolled');
-  }
-});
+if (headerEl) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      headerEl.classList.add('header-scrolled');
+    } else if (window.scrollY <= 100) {
+      headerEl.classList.remove('header-scrolled');
+    }
+  });
+}
 
 window.addEventListener('resize', resetMenuStateOnDesktop);
 window.addEventListener('pageshow', resetMenuStateOnDesktop);
