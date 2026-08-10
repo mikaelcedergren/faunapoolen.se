@@ -23,6 +23,11 @@ const app = createStaticSiteServer({
   host: process.env.HOST ?? '127.0.0.1',
   port: Number.parseInt(process.env.PORT ?? '3040', 10),
   frameOptions: 'SAMEORIGIN',
+  // The campaigns studio and its API are login-gated and must never reach a search index. Three
+  // layers say so: robots.txt keeps compliant crawlers off these paths, the prerendered login page
+  // carries `noindex, nofollow` and no other indexing signal, and this header repeats it on every
+  // response — including the JSON replies, which have no <head> to carry a meta tag.
+  noindexPaths: ['/admin', '/en/admin', '/admin-auth'],
 });
 
 // The shared static server reserves /api; these POST-only auth routes are deliberately separate

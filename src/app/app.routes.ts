@@ -14,7 +14,7 @@ export const routes: Routes = [
       seo: {
         path: '/admin/',
         description: 'Sign in to Faunapoolen admin.',
-        noindex: true,
+        private: true,
       } satisfies PageSeo,
     },
   },

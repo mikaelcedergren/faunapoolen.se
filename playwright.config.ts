@@ -23,6 +23,8 @@ export default defineConfig({
       ADMIN_USERNAME: 'dev',
       ADMIN_PASSWORD: 'dev',
       ADMIN_COOKIE_SECURE: 'false',
+      // Never read or write the real campaign store from a test run.
+      CAMPAIGN_DATA_DIR: '.run/e2e-campaigns',
     },
     url: `http://localhost:${PORT}/healthz`,
     reuseExistingServer: !process.env['CI'],

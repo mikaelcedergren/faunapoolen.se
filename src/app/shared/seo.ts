@@ -23,9 +23,32 @@ export interface PageSeo {
   /** Blog posts only: last content change; falls back to datePublished. */
   dateModified?: string;
   noindex?: boolean;
+  /**
+   * A login-gated page (the admin studio). Supersedes `noindex`: the page is sent as
+   * `noindex, nofollow` and stripped of every other indexing signal. `noindex` alone keeps a page
+   * out of results while still describing it to crawlers — this leaves nothing to describe.
+   */
+  private?: boolean;
   /** Extra JSON-LD @graph nodes (e.g. a BlogPosting) appended after Org/WebSite/WebPage. */
   graph?: object[];
 }
+
+// Every social tag this strategy emits, so a private page can be stripped of exactly what the
+// public path sets. Keep these lists in step with `updateTitle` when a tag is added there.
+const OG_PROPERTIES = [
+  'og:type',
+  'og:url',
+  'og:site_name',
+  'og:locale',
+  'og:image',
+  'og:title',
+  'og:description',
+  'og:image:width',
+  'og:image:height',
+  'article:published_time',
+  'article:modified_time',
+];
+const TWITTER_NAMES = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image'];
 
 /**
  * Sets title + per-route description, canonical, hreflang alternates (sv/en/x-default),
@@ -57,6 +80,11 @@ export class SeoTitleStrategy extends TitleStrategy {
     const isEn = this.isEnglish;
     const lang = isEn ? 'en' : 'sv';
     const inLanguage = isEn ? 'en-US' : 'sv-SE';
+
+    if (seo.private) {
+      this.renderPrivatePage(title, lang);
+      return;
+    }
 
     const svPath = seo.path;
     const enPath = svPath === '/' ? '/en/' : `/en${svPath}`;
@@ -113,6 +141,31 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.setJsonLd(
       this.buildGraph(canonical, title, seo.description, inLanguage, ogImage, siteBase, seo),
     );
+  }
+
+  /**
+   * A login-gated page describes itself to nobody: `noindex, nofollow` and not one other indexing
+   * signal — no canonical, no hreflang pair linking the two locale copies, no social card, no
+   * JSON-LD node joining it to the site graph. Tags are removed rather than merely skipped, so a
+   * client-side navigation in from a public page cannot leave that page's metadata behind.
+   */
+  private renderPrivatePage(title: string, lang: string): void {
+    this.document.documentElement.setAttribute('lang', lang);
+    this.titleService.setTitle(title);
+    this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    for (const property of OG_PROPERTIES) {
+      this.meta.removeTag(`property='${property}'`);
+    }
+    for (const name of TWITTER_NAMES) {
+      this.meta.removeTag(`name='${name}'`);
+    }
+    this.document.head.querySelector("link[rel='canonical']")?.remove();
+    this.document.head
+      .querySelectorAll("link[rel='alternate'][hreflang]")
+      .forEach((link) => link.remove());
+    this.setJsonLd(null);
   }
 
   private setCanonical(url: string): void {

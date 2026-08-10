@@ -8,7 +8,7 @@ and serves the site.
 ## Run
 
 ```bash
-pnpm install            # Angular 22 + express + compression (+ @mikaelcedergren/cx-framework, unused)
+pnpm install            # Angular 22 + express + compression + openai (+ cx-framework, admin only)
 pnpm dev                # ng serve (Swedish) at http://127.0.0.1:4240
 pnpm build              # ng build (prerender sv + en) → dist/browser, then flatten
 pnpm build:release      # internal staged build used by the shared release command
@@ -51,14 +51,59 @@ scripts/gen-pages.mjs     one-time migration importer (site/** → Angular pages
 scripts/verify-seo.mjs    per-page <head> SEO diff (new vs legacy site/)
 scripts/verify-ui.mjs     screenshots new-vs-old + interactivity (accordion/menu)
 server/index.mjs          release-aware static server (caching, /healthz, retained chunks, 404)
+server/admin-*.mjs        the admin campaigns tool — see below
 ```
+
+### Campaigns (`/admin`)
+
+One rough idea becomes **one** campaign, written once to the strictest limit every network imposes,
+in Swedish and English. The admin UI is English; only the campaign copy is bilingual. It produces
+**image prompts**, not images — the owner pastes them into an image generator of their choice.
+
+| Module                 | Owns                                                              |
+| ---------------------- | ----------------------------------------------------------------- |
+| `copy-budgets.mjs`     | per-field character budgets, resolved as `min()` across networks  |
+| `marketing-rules.mjs`  | the 14 id'd rules the studio writes by and teaches from           |
+| `image-style.mjs`      | the fixed non-HDR photographic house style and the 3 prompt slots |
+| `brand-palette.mjs`    | brand hexes mirrored from `public/assets/styles/_variables.scss`  |
+| `campaign-store.mjs`   | file-backed campaigns in `.run/campaigns/`, capped at 200         |
+| `admin-ad-builder.mjs` | the three generation stages, schemas, validators, routes          |
+
+Four rules govern changes here:
+
+- **Never name a network in anything the user sees.** `copy-budgets.mjs` names them internally so the
+  numbers stay auditable; the API returns only the resolved budget and a neutral reason. Re-check the
+  table against current ad specifications and bump `LIMITS_VERIFIED_ON` when you do. Only
+  `NETWORK_LIMITS` may be described to the user as a platform constraint — `HOUSE_LIMITS` are our own
+  editorial choices and their `reason` copy says so.
+- **`teaches` text is authored in `marketing-rules.mjs`, never by the model.** The model only cites
+  rule ids and explains this campaign. That is what makes the studio teach the same lessons twice.
+- **Every route is POST.** The shared static-site server registers a `GET /.*` catch-all before this
+  module runs, so a GET route added here would never be reached.
+- **The admin is reachable only through the login, and is never indexable.** Every campaign route
+  sits behind `requireAdminSession`, and the studio renders inside `@if (authenticated())` so the
+  prerendered page is the sign-in form and nothing else. Three layers keep it out of search and must
+  stay in step: `public/robots.txt` disallows `/admin` and `/en/admin`; the route's `seo.private`
+  flag strips the login page down to `noindex, nofollow` with no canonical, hreflang, social card or
+  JSON-LD; and `noindexPaths` in `server/index.mjs` answers `X-Robots-Tag: noindex, nofollow` on
+  every response beneath those paths — the only one of the three that reaches a JSON reply, an error
+  page, or a request whose casing (`/ADMIN/`) a case-sensitive robots.txt rule would miss. A new
+  admin path belongs in all three. The public pages are indexed exactly as before: they keep
+  `Allow: /`, carry no robots meta, and are the only URLs in `sitemap.xml`.
+
+Generation runs as three requests — strategy, copy (both languages in parallel), image prompts — so
+the screen reports work that genuinely finished instead of animating a timer, and a failed stage
+leaves the saved campaign intact for a targeted retry. Only the strategy crosses from stage one into
+the later stages: the untrusted rough idea is consumed and rewritten there, so nothing pasted into
+the studio reaches the copywriter verbatim.
 
 The admin server's process-local state is bounded in its owning modules. `admin-auth.mjs` caps admin
 sessions at 64 with oldest-first eviction, an eight-hour default, and a hard 24-hour lifetime
 maximum; it also sweeps failed-login entries after 15 minutes and caps them at 10,000 clients,
 failing closed at capacity. `admin-ad-builder.mjs` sweeps completed generation state after 10
-minutes and caps it at 1,000 sessions while preserving in-flight work. Never replace these stores
-with uncapped module-level maps.
+minutes and caps it at 1,000 sessions while preserving in-flight work. `campaign-store.mjs` caps
+saved campaigns at 200 with oldest-first eviction and writes each one atomically. Never replace
+these stores with uncapped module-level maps.
 
 ### URLs (unchanged from the live site)
 
@@ -135,18 +180,23 @@ client hydration reuses the prerendered DOM.
 `@mikaelcedergren/cx-framework` is installed but **not imported into the public site**, and never
 will be. faunapoolen.se keeps its **own public visual skin permanently**: the existing site ranks
 exceptionally well in Google, and adopting the framework's chrome would risk that ranking. This is a
-deliberate, permanent visual exception — not a deferred restyle. The framework stays installed only
-for **future admin/internal screens**, never the public skin. Everything else here follows the exact
-same code philosophy, architecture, structure, and engineering standard as every other repo — only
-the public visual skin is the exception. `.npmrc` relaxes peer-deps so it pulls no Angular peers it
-doesn't need here.
+deliberate, permanent visual exception — not a deferred restyle. The framework is used **only for
+admin/internal screens** — today that is the campaigns tool at `/admin` — and never for the public
+skin. Everything else here follows the exact same code philosophy, architecture, structure, and
+engineering standard as every other repo — only the public visual skin is the exception. `.npmrc`
+relaxes peer-deps so it pulls no Angular peers it doesn't need here.
+
+Admin work follows the framework's own AI design package and skills, shipped inside the package at
+`node_modules/@mikaelcedergren/cx-framework/ai/` (`design/00-start-here.md` first, then the smallest
+relevant rule file; `skills/designer` and `skills/developer` define the roles). Compose admin screens
+from `cx-*` components and the layout primitives — `admin.component.scss` styles page composition
+only and never reaches into component internals.
 
 The **Cortex -> cx-framework -> projects** loop still applies. Cortex authors reusable components,
 tokens, AI skills, guidelines, and framework decisions; `cx-framework` packages them; faunapoolen.se
-may consume the package for future admin/internal UI only. Do not reference Cortex directly through
-imports, package deps, scripts, styles, local paths, or copied source. If future internal UI exposes
-a reusable framework gap, fix it in Cortex, package/push `cx-framework`, then update this repo from
-the package.
+consumes the package for admin/internal UI only. Do not reference Cortex directly through imports,
+package deps, scripts, styles, local paths, or copied source. If internal UI exposes a reusable
+framework gap, fix it in Cortex, package/push `cx-framework`, then update this repo from the package.
 
 ## Toolchain (shared machine)
 

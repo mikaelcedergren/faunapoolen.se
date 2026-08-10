@@ -51,6 +51,11 @@ Public static pages use the shared 60-second nginx micro-cache. `/healthz` and `
 dedicated uncached proxy locations so health checks are live and authentication responses can never
 inherit page caching.
 
+The `X-Robots-Tag: noindex, nofollow` that the Express server sets on `/admin`, `/en/admin` and
+`/admin-auth` needs no nginx configuration — `proxy_pass` forwards upstream response headers as they
+are. Keep it that way when the prepared HTTPS config is installed: nothing in nginx may strip or
+override that header.
+
 ## Go-live (do not do until approved)
 
 The domain `faunapoolen.se` currently remains on the existing public host by design. The cutover
