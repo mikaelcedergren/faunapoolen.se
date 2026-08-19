@@ -36,8 +36,11 @@
 
     <section class="fp-admin-workspace__main cx-page">
       <cx-top-bar
-        [heading]="topBarHeading()"
-        [description]="topBarDescription()"
+        [pageTitle]="{
+          kind: 'heading',
+          heading: topBarHeading(),
+          description: topBarDescription()
+        }"
         [menuItems]="view() === 'campaign' ? deleteMenu : undefined"
         menuAriaLabel="Campaign actions"
         (menuItemSelect)="onOpenCampaignMenu($event)"
