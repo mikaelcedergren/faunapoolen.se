@@ -174,27 +174,31 @@ before creating the target, imports everything in one transaction, and seals phy
 aggregate receipts. Production web and worker startup use the framework-owned SQLite opener,
 require the database to exist, and verify that immutable receipt read-only on the exact connection
 before it becomes writable; a missing or replaced path fails without materialising an empty
-authority. The framework owns private ancestry, main/sidecar identity, WAL recovery, and statement
+authority. Before any pending migration, the product proves the full applied ledger as an exact
+compiled prefix, canonical application times, and the complete schema produced by precisely that
+prefix. The framework owns private ancestry, main/sidecar identity, WAL recovery, and statement
 guards; Faunapoolen owns only its schema, receipt, migration, and capacity rules. Interrupted-import
-recovery is intent-owned, bounded, and allowed only after its importer process is proven stopped. See
-[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md); never run the importer against a live writer, manually
-delete recovery artifacts, or skip a corrupt/ambiguous campaign.
+recovery is intent-owned, bounded, and allowed only after its importer process is proven stopped.
+See [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md); never run the importer against a live writer,
+manually delete recovery artifacts, or skip a corrupt/ambiguous campaign.
 
 The compiled `verify-campaign-import` command is the operator-facing boundary for the existing
 product-owned pre-activation verifier. Given an explicit database and the exact captured importer
 receipt file, it opens SQLite read-only, runs full integrity and foreign-key checks, verifies the
-canonical migration history and immutable marker, and recomputes ordered campaign IDs, source
-hashes, and canonical record hashes. Use it on both the just-imported target and the database
-extracted from the first required `sqlite-online` backup. It must reproduce the same receipt and
-leave database identity, bytes, digest, and sidecar inventory unchanged.
+exact current compiled migration ledger (including fingerprints and canonical application times),
+the complete product `sqlite_schema`, and the immutable marker, then recomputes ordered campaign
+IDs, source hashes, and canonical record hashes. Use it on both the just-imported target and the
+database extracted from the first required `sqlite-online` backup. It must reproduce the same
+receipt and leave database identity, bytes, digest, and sidecar inventory unchanged.
 
 If a stopped operational database has WAL/SHM after a supported online snapshot, never remove the
 sidecars manually. Run the compiled `quiesce-campaign-database` command through the authenticated
 inactive-candidate boundary with the exact database and importer receipt, then run the immutable
-verifier. The quiescer verifies full logical import parity before gaining write authority, requires
-one exact idle `wal_checkpoint(TRUNCATE)`, verifies parity again, closes through SQLite, requires
-all journal/WAL/SHM names absent, preserves the main file allocation, and finishes with the same
-immutable verifier. It is a one-shot stopped-service operator, never a runtime opening mode.
+verifier. The quiescer verifies that same exact ledger, complete schema, and logical import parity
+before gaining write authority, requires one exact idle `wal_checkpoint(TRUNCATE)`, repeats the
+whole proof, closes through SQLite, requires all journal/WAL/SHM names absent, preserves the main
+file allocation through the descriptor-pinned immutable proof, and finishes with the same verifier.
+It is a one-shot stopped-service operator, never a runtime opening mode.
 
 The one-time pre-activation aggregate verifier uses a direct immutable read-only SQLite connection
 as a bounded cutover-only exception: it must not create WAL/SHM, closes before either runtime role

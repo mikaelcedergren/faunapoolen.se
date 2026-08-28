@@ -344,9 +344,10 @@ reachable from web or worker startup.
   read-only inputs across execution.
 
 - [ ] Prove the target is an owned private single-link regular file, all SQLite sidecars remain
-      absent, full SQLite integrity and foreign keys pass, migration history is canonical, the
-      immutable import marker matches the receipt, and every imported campaign ID, sequence, record
-      hash, and aggregate hash matches.
+      absent, full SQLite integrity and foreign keys pass, every compiled migration ledger row
+      (including fingerprint and canonical application time) and every product `sqlite_schema`
+      object match exactly, the immutable import marker matches the receipt, and every imported
+      campaign ID, sequence, record hash, and aggregate hash matches.
 - [ ] Prove the legacy directory remains byte- and identity-equivalent to the frozen source.
 
 No malformed record may be removed to make this gate pass. Correct the owning source problem or
@@ -593,9 +594,10 @@ Admin access remains blocked until this gate passes.
   Run `sudo -v` immediately before apply; the non-root Node operator accepts only a cached
   non-interactive sudo session. It crosses privilege only for the exact launchctl bootstrap calls,
   starts the web role before the jobs worker, and bootouts every role started by a partial attempt
-  in reverse order. Both roles must prove their sealed release identity and immutable import marker
-  before writable startup. Keep `CAMPAIGN_GENERATION_ENABLED=0`; first bootstrap is not permission
-  to add the worker key or enable paid generation.
+  in reverse order. Both roles must prove their sealed release identity, immutable import marker,
+  exact applied migration prefix, canonical ledger times, and the complete schema for that prefix
+  before writable startup or any pending migration. Keep `CAMPAIGN_GENERATION_ENABLED=0`; first
+  bootstrap is not permission to add the worker key or enable paid generation.
 
 - [ ] Verify `/healthz`, `/cx-server.json`, worker readiness, one listener on port `3040`, private
       database ownership, and clean startup diagnostics. Record that the worker's current lease is

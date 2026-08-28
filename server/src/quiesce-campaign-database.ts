@@ -12,7 +12,7 @@ import {
 import type { CampaignImportReceipt } from './campaign-repository.js';
 import {
   verifyLegacyCampaignImportLogicalState,
-  verifyLegacyCampaignImportPreActivation,
+  verifyLegacyCampaignImportPreActivationProof,
 } from './legacy-cutover.js';
 import { readCampaignImportReceiptEvidence } from './verify-campaign-import.js';
 
@@ -57,6 +57,8 @@ export interface CampaignDatabaseQuiesceReceipt {
   readonly sidecarsAfter: readonly string[];
 }
 
+export type CampaignDatabaseQuiescenceCheckpoint = 'immutable_opening';
+
 export function parseCampaignDatabaseQuiesceArguments(
   arguments_: readonly string[],
 ): QuiesceArguments {
@@ -95,6 +97,7 @@ export function parseCampaignDatabaseQuiesceArguments(
 export function quiesceCampaignDatabase(
   databasePath: string,
   expected: CampaignImportReceipt,
+  onCheckpoint?: (checkpoint: CampaignDatabaseQuiescenceCheckpoint) => unknown,
 ): CampaignDatabaseQuiesceReceipt {
   const initial = capturePrivateDatabaseSnapshot(databasePath);
   const sidecarsBefore = inspectSidecarInventory(databasePath);
@@ -154,7 +157,10 @@ export function quiesceCampaignDatabase(
   assertSidecarsAbsent(databasePath);
   const checkpointed = capturePrivateDatabaseSnapshot(databasePath);
   assertSameDatabaseAllocation(initial.stats, checkpointed.stats);
-  const finalReceipt = verifyLegacyCampaignImportPreActivation(databasePath, expected);
+  emitQuiescenceCheckpoint(onCheckpoint, 'immutable_opening');
+  const finalProof = verifyLegacyCampaignImportPreActivationProof(databasePath, expected);
+  assertSameDatabaseAllocation(initial.stats, finalProof.allocation);
+  const finalReceipt = finalProof.campaignImport;
   assertSameCampaignImportReceipt(expected, finalReceipt);
   const stable = capturePrivateDatabaseSnapshot(databasePath);
   assertSameDatabaseSnapshot(checkpointed, stable);
@@ -327,6 +333,21 @@ function assertSameCampaignImportReceipt(
     expected.orderedCampaignsSha256 !== actual.orderedCampaignsSha256
   ) {
     throw new Error('Campaign database quiescence changed its sealed import receipt.');
+  }
+}
+
+function emitQuiescenceCheckpoint(
+  callback: ((checkpoint: CampaignDatabaseQuiescenceCheckpoint) => unknown) | undefined,
+  checkpoint: CampaignDatabaseQuiescenceCheckpoint,
+): void {
+  const result = callback?.(checkpoint);
+  if (
+    result !== undefined &&
+    result !== null &&
+    (typeof result === 'object' || typeof result === 'function') &&
+    'then' in result
+  ) {
+    throw new Error('Campaign database quiescence checkpoints must be synchronous.');
   }
 }
 

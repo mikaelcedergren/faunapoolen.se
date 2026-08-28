@@ -114,6 +114,147 @@ test('campaign database quiescer recovers a crash-left WAL through SQLite and le
   );
 });
 
+test('campaign database quiescer closes the observed empty WAL and 32-KiB SHM incident through SQLite', (t) => {
+  const root = privateTempDirectory(t);
+  const databasePath = path.join(root, 'data', 'faunapoolen.db');
+  const seeded = openFaunapoolenDatabase({ databasePath, operationalRoot: root });
+  insertCampaignImportReceipt(seeded.sqlite, EMPTY_IMPORT_RECEIPT);
+  seeded.close();
+  fs.writeFileSync(`${databasePath}-wal`, Buffer.alloc(0), { flag: 'wx', mode: 0o600 });
+  fs.writeFileSync(`${databasePath}-shm`, Buffer.alloc(32 * 1_024), {
+    flag: 'wx',
+    mode: 0o600,
+  });
+
+  const result = quiesceCampaignDatabase(databasePath, EMPTY_IMPORT_RECEIPT);
+
+  assert.deepEqual(result.checkpoint, { busy: 0, checkpointed: 0, log: 0 });
+  assert.deepEqual(result.sidecarsBefore, ['shm', 'wal']);
+  assert.deepEqual(result.sidecarsAfter, []);
+  for (const suffix of ['-journal', '-shm', '-wal']) {
+    assert.equal(fs.existsSync(`${databasePath}${suffix}`), false);
+  }
+  assert.deepEqual(
+    verifyLegacyCampaignImportPreActivation(databasePath, EMPTY_IMPORT_RECEIPT),
+    EMPTY_IMPORT_RECEIPT,
+  );
+});
+
+test('campaign database quiescer rejects compiled migration ledger drift before write authority', async (t) => {
+  const cases = [
+    {
+      label: 'fingerprint',
+      parameters: ['f'.repeat(64), 4] as const,
+      statement: 'UPDATE cx_schema_migrations SET fingerprint = ? WHERE version = ?',
+    },
+    {
+      label: 'applied_at',
+      parameters: ['2026-08-01T00:00:00Z', 4] as const,
+      statement: 'UPDATE cx_schema_migrations SET applied_at = ? WHERE version = ?',
+    },
+  ] as const;
+
+  for (const drift of cases) {
+    await t.test(drift.label, (context) => {
+      const root = privateTempDirectory(context);
+      const databasePath = path.join(root, 'data', 'faunapoolen.db');
+      const seeded = openFaunapoolenDatabase({ databasePath, operationalRoot: root });
+      insertCampaignImportReceipt(seeded.sqlite, EMPTY_IMPORT_RECEIPT);
+      seeded.sqlite.run(drift.statement, drift.parameters);
+      seeded.close();
+      const bytesBefore = fs.readFileSync(databasePath);
+
+      assert.throws(
+        () => quiesceCampaignDatabase(databasePath, EMPTY_IMPORT_RECEIPT),
+        /current migration ledger row 4 does not match its compiled definition/,
+      );
+      assert.deepEqual(fs.readFileSync(databasePath), bytesBefore);
+      assert.throws(
+        () => verifyLegacyCampaignImportPreActivation(databasePath, EMPTY_IMPORT_RECEIPT),
+        /current migration ledger row 4 does not match its compiled definition/,
+      );
+    });
+  }
+});
+
+test('campaign database quiescer rejects non-foundation trigger drift before write authority', (t) => {
+  const root = privateTempDirectory(t);
+  const databasePath = path.join(root, 'data', 'faunapoolen.db');
+  const seeded = openFaunapoolenDatabase({ databasePath, operationalRoot: root });
+  insertCampaignImportReceipt(seeded.sqlite, EMPTY_IMPORT_RECEIPT);
+  seeded.sqlite.execute('DROP TRIGGER campaigns_capacity_guard');
+  seeded.close();
+  const bytesBefore = fs.readFileSync(databasePath);
+
+  assert.throws(
+    () => quiesceCampaignDatabase(databasePath, EMPTY_IMPORT_RECEIPT),
+    /current sqlite_schema/,
+  );
+  assert.deepEqual(fs.readFileSync(databasePath), bytesBefore);
+  for (const suffix of ['-journal', '-shm', '-wal']) {
+    assert.equal(fs.existsSync(`${databasePath}${suffix}`), false);
+  }
+});
+
+test('campaign database quiescer rejects an inode replacement at immutable opening', (t) => {
+  const root = privateTempDirectory(t);
+  const databasePath = path.join(root, 'data', 'faunapoolen.db');
+  const displacedPath = `${databasePath}.displaced`;
+  const seeded = openFaunapoolenDatabase({ databasePath, operationalRoot: root });
+  insertCampaignImportReceipt(seeded.sqlite, EMPTY_IMPORT_RECEIPT);
+  seeded.close();
+  let raced = false;
+
+  assert.throws(
+    () =>
+      quiesceCampaignDatabase(databasePath, EMPTY_IMPORT_RECEIPT, (checkpoint) => {
+        assert.equal(checkpoint, 'immutable_opening');
+        assert.equal(raced, false);
+        raced = true;
+        fs.renameSync(databasePath, displacedPath);
+        fs.writeFileSync(databasePath, fs.readFileSync(displacedPath), {
+          flag: 'wx',
+          mode: 0o600,
+        });
+      }),
+    /allocation changed during offline quiescence/,
+  );
+  assert.equal(raced, true);
+});
+
+test('immutable campaign import verification rejects every non-foundation schema drift class', async (t) => {
+  const cases = [
+    {
+      label: 'trigger removed',
+      statement: 'DROP TRIGGER campaigns_capacity_guard',
+    },
+    {
+      label: 'index removed',
+      statement: 'DROP INDEX cx_jobs_claim_order',
+    },
+    {
+      label: 'extra schema object',
+      statement: 'CREATE TABLE unregistered_campaign_state (id INTEGER PRIMARY KEY) STRICT',
+    },
+  ] as const;
+
+  for (const drift of cases) {
+    await t.test(drift.label, (context) => {
+      const root = privateTempDirectory(context);
+      const databasePath = path.join(root, 'data', 'faunapoolen.db');
+      const seeded = openFaunapoolenDatabase({ databasePath, operationalRoot: root });
+      insertCampaignImportReceipt(seeded.sqlite, EMPTY_IMPORT_RECEIPT);
+      seeded.sqlite.execute(drift.statement);
+      seeded.close();
+
+      assert.throws(
+        () => verifyLegacyCampaignImportPreActivation(databasePath, EMPTY_IMPORT_RECEIPT),
+        /current sqlite_schema/,
+      );
+    });
+  }
+});
+
 test('campaign database quiescer refuses a receipt mismatch before checkpoint authority', (t) => {
   const root = privateTempDirectory(t);
   const databasePath = path.join(root, 'data', 'faunapoolen.db');

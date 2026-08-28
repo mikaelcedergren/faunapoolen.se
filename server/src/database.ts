@@ -1,3 +1,5 @@
+import { DatabaseSync } from 'node:sqlite';
+
 import {
   DURABLE_JOB_SCHEMA_MIGRATIONS,
   type DurableJobStore,
@@ -5,6 +7,7 @@ import {
 import {
   SQLITE_MIGRATION_LEDGER_TABLE,
   applySqliteMigrations,
+  createPreparedSyncSqliteAdapter,
   openOwnedSqliteDatabase,
   verifySqliteIntegrity,
   type ReadonlySyncSqliteDatabase,
@@ -85,21 +88,6 @@ const CAMPAIGN_RECEIPT_SEALED_DELETE_TRIGGER_SQL = `CREATE TRIGGER campaign_impo
   BEGIN
     SELECT RAISE(ABORT, 'campaign import receipt is sealed and immutable');
   END`;
-
-const MIGRATION_LEDGER_TABLE_SQL = `CREATE TABLE cx_schema_migrations (
-  version INTEGER PRIMARY KEY,
-  name TEXT NOT NULL UNIQUE,
-  fingerprint TEXT NOT NULL,
-  applied_at TEXT NOT NULL
-) STRICT`;
-
-const CAMPAIGN_RECEIPT_FOUNDATION_OBJECTS = Object.freeze([
-  SQLITE_MIGRATION_LEDGER_TABLE,
-  'campaign_import_receipts',
-  'campaign_import_receipts_sealed_delete',
-  'campaign_import_receipts_sealed_insert',
-  'campaign_import_receipts_sealed_update',
-] as const);
 
 const OWNER_SESSION_TABLE_SQL = `CREATE TABLE owner_sessions (
   session_id_hash TEXT PRIMARY KEY
@@ -473,11 +461,14 @@ interface MigrationLedgerRow extends MigrationIdentityRow {
   readonly fingerprint: string;
 }
 
-interface SchemaRow extends SqliteRow {
+interface FullSchemaRow extends SqliteRow {
   readonly name: string;
   readonly sql: string | null;
+  readonly tbl_name: string;
   readonly type: string;
 }
+
+const canonicalSchemaByMigrationCount = new Map<number, readonly FullSchemaRow[]>();
 
 interface OpenFaunapoolenDatabaseBaseOptions {
   readonly databasePath: string;
@@ -592,20 +583,24 @@ export function migrateFaunapoolenDatabase(
 
 export function verifyFaunapoolenDatabase(database: ReadonlySyncSqliteDatabase): void {
   verifySqliteIntegrity(database);
+  verifyFaunapoolenCurrentMigrationLedger(database);
+  verifyFaunapoolenCurrentSchema(database);
   verifyFaunapoolenDatabaseReadiness(database);
 }
 
 /**
- * Prove only the immutable foundation needed before a sealed runtime authority may migrate. The
- * ledger may be an older exact prefix of the current definitions, but the import receipt table and
- * every trigger that seals it must already match the migration that established that authority.
+ * Prove the complete immutable authority before a sealed runtime database may migrate. The ledger
+ * may be an older exact prefix of the current definitions; its canonical application times and the
+ * entire schema produced by precisely that compiled prefix must match before any pending statement.
  */
 export function verifyFaunapoolenMigrationFoundation(database: ReadonlySyncSqliteDatabase): void {
   verifySqliteIntegrity(database);
   const ledger = database.all<MigrationLedgerRow>(
     `SELECT version, name, fingerprint, applied_at
      FROM ${SQLITE_MIGRATION_LEDGER_TABLE}
-     ORDER BY version`,
+     ORDER BY version
+     LIMIT ?`,
+    [FAUNAPOOLEN_MIGRATIONS.length + 1],
   );
   if (ledger.length < 1 || ledger.length > FAUNAPOOLEN_MIGRATIONS.length) {
     throw new Error('Faunapoolen migration foundation is not a known non-empty prefix.');
@@ -617,40 +612,12 @@ export function verifyFaunapoolenMigrationFoundation(database: ReadonlySyncSqlit
       sqliteInteger(row.version, 'migration foundation version') !== migration.version ||
       row.name !== migration.name ||
       row.fingerprint !== migrationFingerprint(migration) ||
-      !isMigrationTimestamp(row.applied_at)
+      !isCanonicalMigrationTimestamp(row.applied_at)
     ) {
       throw new Error('Faunapoolen migration foundation is not the canonical contiguous prefix.');
     }
   }
-
-  const schemaRows = database.all<SchemaRow>(
-    `SELECT type, name, sql
-     FROM sqlite_schema
-     WHERE name IN (${CAMPAIGN_RECEIPT_FOUNDATION_OBJECTS.map(() => '?').join(', ')})
-     ORDER BY name`,
-    CAMPAIGN_RECEIPT_FOUNDATION_OBJECTS,
-  );
-  const schema = new Map(schemaRows.map((row) => [row.name, row]));
-  assertSchemaObject(schema, SQLITE_MIGRATION_LEDGER_TABLE, 'table', MIGRATION_LEDGER_TABLE_SQL);
-  assertSchemaObject(schema, 'campaign_import_receipts', 'table', CAMPAIGN_RECEIPT_TABLE_SQL);
-  assertSchemaObject(
-    schema,
-    'campaign_import_receipts_sealed_insert',
-    'trigger',
-    CAMPAIGN_RECEIPT_SEALED_INSERT_TRIGGER_SQL,
-  );
-  assertSchemaObject(
-    schema,
-    'campaign_import_receipts_sealed_update',
-    'trigger',
-    CAMPAIGN_RECEIPT_SEALED_UPDATE_TRIGGER_SQL,
-  );
-  assertSchemaObject(
-    schema,
-    'campaign_import_receipts_sealed_delete',
-    'trigger',
-    CAMPAIGN_RECEIPT_SEALED_DELETE_TRIGGER_SQL,
-  );
+  verifyFaunapoolenSchema(database, ledger.length, 'migration foundation');
 }
 
 /**
@@ -693,25 +660,149 @@ export function verifyFaunapoolenDatabaseReadiness(database: ReadonlySyncSqliteD
   }
 }
 
-function assertSchemaObject(
-  schema: ReadonlyMap<string, SchemaRow>,
-  name: string,
-  type: string,
-  sql: string,
-): void {
-  const row = schema.get(name);
-  if (
-    !row ||
-    row.type !== type ||
-    typeof row.sql !== 'string' ||
-    normalizeSql(row.sql) !== normalizeSql(sql)
-  ) {
-    throw new Error(`Faunapoolen schema object ${name} does not match its canonical definition.`);
+/**
+ * Prove every row of the exact current compiled migration ledger. Historical application times are
+ * data rather than compiled constants, but they must retain the one canonical UTC representation
+ * emitted by the product migration clock.
+ */
+function verifyFaunapoolenCurrentMigrationLedger(database: ReadonlySyncSqliteDatabase): void {
+  const ledger = database.all<MigrationLedgerRow>(
+    `SELECT version, name, fingerprint, applied_at
+     FROM ${SQLITE_MIGRATION_LEDGER_TABLE}
+     ORDER BY version
+     LIMIT ?`,
+    [FAUNAPOOLEN_MIGRATIONS.length + 1],
+  );
+  if (ledger.length !== FAUNAPOOLEN_MIGRATIONS.length) {
+    throw new Error('Faunapoolen current migration ledger length is not canonical.');
+  }
+  for (const [index, migration] of FAUNAPOOLEN_MIGRATIONS.entries()) {
+    const row = ledger[index];
+    if (
+      !row ||
+      sqliteInteger(row.version, 'current migration version') !== migration.version ||
+      row.name !== migration.name ||
+      row.fingerprint !== migrationFingerprint(migration) ||
+      !isCanonicalMigrationTimestamp(row.applied_at)
+    ) {
+      throw new Error(
+        `Faunapoolen current migration ledger row ${migration.version} does not match its compiled definition.`,
+      );
+    }
   }
 }
 
-function normalizeSql(value: string): string {
-  return value.replace(/\s+/gu, ' ').trim();
+/**
+ * Compare the complete main-schema catalogue with a disposable in-memory database produced by the
+ * same compiled migration set and SQLite engine. This includes every product table, index,
+ * trigger, and the migration ledger while rejecting missing, altered, or extra product objects.
+ * SQLite's engine-owned `sqlite_*` implementation objects are deliberately outside this contract.
+ */
+function verifyFaunapoolenCurrentSchema(database: ReadonlySyncSqliteDatabase): void {
+  verifyFaunapoolenSchema(database, FAUNAPOOLEN_MIGRATIONS.length, 'current');
+}
+
+function verifyFaunapoolenSchema(
+  database: ReadonlySyncSqliteDatabase,
+  migrationCount: number,
+  scope: 'current' | 'migration foundation',
+): void {
+  const expected = getCanonicalSchema(migrationCount);
+  const actual = readCurrentSchema(database, expected.length + 1);
+  if (actual.length !== expected.length) {
+    throw new Error(`Faunapoolen ${scope} sqlite_schema object set is not canonical.`);
+  }
+  for (const [index, expectedRow] of expected.entries()) {
+    const actualRow = actual[index];
+    if (
+      !actualRow ||
+      actualRow.type !== expectedRow.type ||
+      actualRow.name !== expectedRow.name ||
+      actualRow.tbl_name !== expectedRow.tbl_name ||
+      actualRow.sql !== expectedRow.sql
+    ) {
+      throw new Error(
+        `Faunapoolen ${scope} sqlite_schema differs from its compiled definition at ${expectedRow.type} ${expectedRow.name}.`,
+      );
+    }
+  }
+}
+
+function getCanonicalSchema(migrationCount: number): readonly FullSchemaRow[] {
+  const existing = canonicalSchemaByMigrationCount.get(migrationCount);
+  if (existing) return existing;
+  if (migrationCount < 1 || migrationCount > FAUNAPOOLEN_MIGRATIONS.length) {
+    throw new Error('Faunapoolen schema proof requires one known compiled migration prefix.');
+  }
+  const native = new DatabaseSync(':memory:');
+  try {
+    const database = createPreparedSyncSqliteAdapter(native);
+    applySqliteMigrations(database, FAUNAPOOLEN_MIGRATIONS.slice(0, migrationCount), {
+      fingerprint: sha256Hex,
+      now: () => '2000-01-01T00:00:00.000Z',
+    });
+    const schema = readCurrentSchema(database);
+    canonicalSchemaByMigrationCount.set(migrationCount, schema);
+    return schema;
+  } finally {
+    native.close();
+  }
+}
+
+function readCurrentSchema(
+  database: ReadonlySyncSqliteDatabase,
+  limit?: number,
+): readonly FullSchemaRow[] {
+  const rows = database.all<FullSchemaRow>(
+    `SELECT type, name, tbl_name, sql
+     FROM sqlite_schema
+     WHERE name NOT GLOB 'sqlite_*'
+     ORDER BY type, name, tbl_name
+     ${limit === undefined ? '' : 'LIMIT ?'}`,
+    limit === undefined ? [] : [limit],
+  );
+  return Object.freeze(
+    rows.map((row) =>
+      Object.freeze({
+        ...row,
+        sql: row.sql === null ? null : normalizeSchemaSql(row.sql),
+      }),
+    ),
+  );
+}
+
+function normalizeSchemaSql(value: string): string {
+  let result = '';
+  let quotedBy: "'" | '"' | '`' | '[' | undefined;
+  let whitespace = false;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (!character) continue;
+    if (quotedBy) {
+      result += character;
+      const closing = quotedBy === '[' ? ']' : quotedBy;
+      if (character === closing) {
+        if (value[index + 1] === closing) {
+          result += closing;
+          index += 1;
+        } else {
+          quotedBy = undefined;
+        }
+      }
+      continue;
+    }
+    if (/\s/u.test(character)) {
+      whitespace = result.length > 0;
+      continue;
+    }
+    if (whitespace) result += ' ';
+    whitespace = false;
+    result += character;
+    if (character === "'" || character === '"' || character === '`' || character === '[') {
+      quotedBy = character;
+    }
+  }
+  return result;
 }
 
 function migrationFingerprint(migration: SqliteMigration): string {
@@ -724,13 +815,12 @@ function migrationFingerprint(migration: SqliteMigration): string {
   );
 }
 
-function isMigrationTimestamp(value: string): boolean {
-  return (
-    value.length > 0 &&
-    value.length <= 128 &&
-    value === value.trim() &&
-    !/[\u0000-\u001f\u007f]/u.test(value)
-  );
+function isCanonicalMigrationTimestamp(value: string): boolean {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/u.test(value)) {
+    return false;
+  }
+  const parsed = new Date(value);
+  return !Number.isNaN(parsed.valueOf()) && parsed.toISOString() === value;
 }
 
 function sqliteInteger(value: number | bigint, label: string): number {

@@ -18,8 +18,14 @@ import { verifyFaunapoolenDatabase, verifyFaunapoolenMigrationFoundation } from 
 export interface LegacyCampaignCutoverExpectation extends CampaignImportReceipt {}
 
 interface ImmutableDatabaseProof {
+  readonly allocation: fs.BigIntStats;
   readonly database: ReadonlySyncSqliteDatabase;
   closeAndVerify(): void;
+}
+
+export interface LegacyCampaignImportPreActivationProof {
+  readonly allocation: fs.BigIntStats;
+  readonly campaignImport: CampaignImportReceipt;
 }
 
 const PRIVATE_FILE_MODE = 0o600;
@@ -34,6 +40,17 @@ export function verifyLegacyCampaignImportPreActivation(
   databasePath: string,
   expected: LegacyCampaignCutoverExpectation,
 ): CampaignImportReceipt {
+  return verifyLegacyCampaignImportPreActivationProof(databasePath, expected).campaignImport;
+}
+
+/**
+ * Return the verified receipt together with the exact descriptor-pinned allocation that supplied
+ * it. The proof is returned only after the immutable semantic read and stable close both succeed.
+ */
+export function verifyLegacyCampaignImportPreActivationProof(
+  databasePath: string,
+  expected: LegacyCampaignCutoverExpectation,
+): LegacyCampaignImportPreActivationProof {
   const proof = openImmutableDatabaseProof(databasePath);
   let result: CampaignImportReceipt | undefined;
   let primaryError: unknown;
@@ -57,7 +74,10 @@ export function verifyLegacyCampaignImportPreActivation(
   if (primaryError) throw primaryError;
   if (closeError) throw closeError;
   if (!result) throw new Error('Faunapoolen import verification produced no receipt.');
-  return result;
+  return Object.freeze({
+    allocation: proof.allocation,
+    campaignImport: result,
+  });
 }
 
 /**
@@ -194,6 +214,7 @@ function openImmutableDatabaseProof(databasePath: string): ImmutableDatabaseProo
     const database = createPreparedSyncSqliteAdapter(native);
     let closed = false;
     return Object.freeze({
+      allocation: descriptorBefore,
       database,
       closeAndVerify() {
         if (closed) return;

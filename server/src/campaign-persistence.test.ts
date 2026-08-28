@@ -3,6 +3,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { test, type TestContext } from 'node:test';
 import { pathToFileURL } from 'node:url';
 
@@ -84,6 +85,46 @@ function privateTempDirectory(prefix: string): string {
   const directory = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), prefix)));
   fs.chmodSync(directory, 0o700);
   return directory;
+}
+
+function captureMigrationAuthority(databasePath: string): Readonly<{
+  readonly bytes: Buffer;
+  readonly ledger: string;
+  readonly schema: string;
+}> {
+  const immutable = pathToFileURL(databasePath);
+  immutable.searchParams.set('immutable', '1');
+  const native = new DatabaseSync(immutable, { readOnly: true });
+  let ledger: string;
+  let schema: string;
+  try {
+    ledger = JSON.stringify(
+      native
+        .prepare(
+          `SELECT version, name, fingerprint, applied_at
+           FROM cx_schema_migrations
+           ORDER BY version`,
+        )
+        .all(),
+    );
+    schema = JSON.stringify(
+      native
+        .prepare(
+          `SELECT type, name, tbl_name, sql
+           FROM sqlite_schema
+           WHERE name NOT GLOB 'sqlite_*'
+           ORDER BY type, name, tbl_name`,
+        )
+        .all(),
+    );
+  } finally {
+    native.close();
+  }
+  return Object.freeze({
+    bytes: fs.readFileSync(databasePath),
+    ledger,
+    schema,
+  });
 }
 
 function campaignId(index: number): string {
@@ -447,6 +488,88 @@ test('a sealed canonical migration prefix is verified before pending runtime mig
     );
   } finally {
     upgraded.close();
+  }
+});
+
+test('an old migration prefix rejects ledger and complete-schema drift before pending migrations', async (t) => {
+  const cases = [
+    {
+      expected: /migration foundation is not the canonical contiguous prefix/,
+      label: 'malformed application timestamp',
+      statements: [
+        `UPDATE cx_schema_migrations
+         SET applied_at = '2026-08-01T00:00:00Z'
+         WHERE version = 1`,
+      ],
+    },
+    {
+      expected: /migration foundation sqlite_schema/,
+      label: 'missing schema object',
+      statements: ['DROP INDEX campaigns_updated_idx'],
+    },
+    {
+      expected: /migration foundation sqlite_schema/,
+      label: 'altered schema object',
+      statements: [
+        'DROP TRIGGER campaigns_capacity_guard',
+        `CREATE TRIGGER campaigns_capacity_guard
+         BEFORE INSERT ON campaigns
+         BEGIN
+           SELECT RAISE(ABORT, 'altered campaign capacity');
+         END`,
+      ],
+    },
+    {
+      expected: /migration foundation sqlite_schema/,
+      label: 'extra schema object',
+      statements: ['CREATE TABLE unregistered_prefix_state (id INTEGER PRIMARY KEY) STRICT'],
+    },
+  ] as const;
+
+  for (const drift of cases) {
+    await t.test(drift.label, (context) => {
+      const directory = privateTempDirectory('faunapoolen-prefix-drift-test-');
+      const databasePath = path.join(directory, 'faunapoolen.db');
+      context.after(() => fs.rmSync(directory, { force: true, recursive: true }));
+      const seed = openOwnedSqliteDatabase({
+        configuration: { busyTimeoutMs: 5_000, journalMode: 'wal' },
+        databasePath,
+        operationalRoot: directory,
+      });
+      applySqliteMigrations(seed.database, FAUNAPOOLEN_MIGRATIONS.slice(0, 1), {
+        fingerprint: sha256Hex,
+        now: () => '2026-08-01T00:00:00.000Z',
+      });
+      insertCampaignImportReceipt(seed.database, {
+        campaignCount: 0,
+        formatVersion: 1,
+        orderedCampaignsSha256: 'd'.repeat(64),
+        sourceBytes: 0,
+        sourceSha256: 'e'.repeat(64),
+      });
+      for (const statement of drift.statements) seed.database.execute(statement);
+      seed.close();
+      const before = captureMigrationAuthority(databasePath);
+
+      assert.throws(
+        () =>
+          openFaunapoolenDatabase({
+            databasePath,
+            operationalRoot: directory,
+            requireExisting: true,
+            verifyBeforeWrite(database) {
+              verifyLegacyCampaignRuntimeMarker(database);
+            },
+          }),
+        drift.expected,
+      );
+
+      assert.deepEqual(captureMigrationAuthority(databasePath), before);
+      assert.equal(JSON.parse(before.ledger).length, 1);
+      for (const suffix of ['-journal', '-shm', '-wal']) {
+        assert.equal(fs.existsSync(`${databasePath}${suffix}`), false);
+      }
+    });
   }
 });
 
