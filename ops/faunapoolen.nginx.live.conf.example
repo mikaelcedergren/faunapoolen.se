@@ -47,7 +47,14 @@ server {
     include snippets/project-proxy-common.conf;
   }
 
-  location ^~ /admin-auth/ {
+  # Express routing and the product's noindex policy are case-insensitive. Keep every exact
+  # private-prefix case variant outside the public micro-cache without matching lookalike paths.
+  location ~* ^/api/admin(?:/|$) {
+    proxy_pass http://127.0.0.1:3040;
+    include snippets/project-proxy-common.conf;
+  }
+
+  location ~* ^/admin-auth(?:/|$) {
     proxy_pass http://127.0.0.1:3040;
     include snippets/project-proxy-common.conf;
   }
