@@ -38,58 +38,7 @@ export function verifyLegacyCampaignImportPreActivation(
   let result: CampaignImportReceipt | undefined;
   let primaryError: unknown;
   try {
-    const database = proof.database;
-    verifyFaunapoolenDatabase(database);
-    const receipt = requireRuntimeMarker(database);
-    if (
-      receipt.formatVersion !== expected.formatVersion ||
-      receipt.sourceBytes !== expected.sourceBytes ||
-      receipt.sourceSha256 !== expected.sourceSha256 ||
-      receipt.campaignCount !== expected.campaignCount ||
-      receipt.orderedCampaignsSha256 !== expected.orderedCampaignsSha256
-    ) {
-      throw new Error(
-        'Faunapoolen legacy campaign import receipt does not match cutover evidence.',
-      );
-    }
-    const campaigns = readAllStoredCampaigns(database);
-    if (campaigns.length !== receipt.campaignCount) {
-      throw new Error('Faunapoolen campaign rows do not match the sealed cutover receipt.');
-    }
-    const physical = createHash('sha256');
-    const semantic = createHash('sha256');
-    let sourceBytes = 0;
-    let previousFileName: string | undefined;
-    for (const [index, campaign] of campaigns.entries()) {
-      if (
-        !campaign.source ||
-        campaign.sequence !== index + 1 ||
-        campaign.source.fileName !== `${campaign.record.id}.json` ||
-        (previousFileName !== undefined && previousFileName >= campaign.source.fileName)
-      ) {
-        throw new Error('Pre-activation campaign rows must all come from the sealed import.');
-      }
-      previousFileName = campaign.source.fileName;
-      sourceBytes += campaign.source.bytes;
-      physical.update(campaign.source.fileName, 'utf8');
-      physical.update('\0');
-      physical.update(String(campaign.source.bytes), 'ascii');
-      physical.update('\0');
-      physical.update(campaign.source.sha256, 'ascii');
-      physical.update('\n');
-      semantic.update(campaign.source.fileName, 'utf8');
-      semantic.update('\0');
-      semantic.update(sha256Hex(canonicalCampaignBytes(campaign.record)), 'ascii');
-      semantic.update('\n');
-    }
-    if (
-      sourceBytes !== receipt.sourceBytes ||
-      physical.digest('hex') !== receipt.sourceSha256 ||
-      semantic.digest('hex') !== receipt.orderedCampaignsSha256
-    ) {
-      throw new Error('Faunapoolen imported campaign rows fail sealed aggregate parity.');
-    }
-    result = receipt;
+    result = verifyLegacyCampaignImportLogicalState(proof.database, expected);
   } catch (error) {
     primaryError = error;
   }
@@ -109,6 +58,66 @@ export function verifyLegacyCampaignImportPreActivation(
   if (closeError) throw closeError;
   if (!result) throw new Error('Faunapoolen import verification produced no receipt.');
   return result;
+}
+
+/**
+ * Full logical proof shared by the immutable verifier and the one-shot offline WAL quiescer. The
+ * caller owns connection immutability: this function performs only bounded read statements and
+ * never retains the supplied connection.
+ */
+export function verifyLegacyCampaignImportLogicalState(
+  database: ReadonlySyncSqliteDatabase,
+  expected: LegacyCampaignCutoverExpectation,
+): CampaignImportReceipt {
+  verifyFaunapoolenDatabase(database);
+  const receipt = requireRuntimeMarker(database);
+  if (
+    receipt.formatVersion !== expected.formatVersion ||
+    receipt.sourceBytes !== expected.sourceBytes ||
+    receipt.sourceSha256 !== expected.sourceSha256 ||
+    receipt.campaignCount !== expected.campaignCount ||
+    receipt.orderedCampaignsSha256 !== expected.orderedCampaignsSha256
+  ) {
+    throw new Error('Faunapoolen legacy campaign import receipt does not match cutover evidence.');
+  }
+  const campaigns = readAllStoredCampaigns(database);
+  if (campaigns.length !== receipt.campaignCount) {
+    throw new Error('Faunapoolen campaign rows do not match the sealed cutover receipt.');
+  }
+  const physical = createHash('sha256');
+  const semantic = createHash('sha256');
+  let sourceBytes = 0;
+  let previousFileName: string | undefined;
+  for (const [index, campaign] of campaigns.entries()) {
+    if (
+      !campaign.source ||
+      campaign.sequence !== index + 1 ||
+      campaign.source.fileName !== `${campaign.record.id}.json` ||
+      (previousFileName !== undefined && previousFileName >= campaign.source.fileName)
+    ) {
+      throw new Error('Pre-activation campaign rows must all come from the sealed import.');
+    }
+    previousFileName = campaign.source.fileName;
+    sourceBytes += campaign.source.bytes;
+    physical.update(campaign.source.fileName, 'utf8');
+    physical.update('\0');
+    physical.update(String(campaign.source.bytes), 'ascii');
+    physical.update('\0');
+    physical.update(campaign.source.sha256, 'ascii');
+    physical.update('\n');
+    semantic.update(campaign.source.fileName, 'utf8');
+    semantic.update('\0');
+    semantic.update(sha256Hex(canonicalCampaignBytes(campaign.record)), 'ascii');
+    semantic.update('\n');
+  }
+  if (
+    sourceBytes !== receipt.sourceBytes ||
+    physical.digest('hex') !== receipt.sourceSha256 ||
+    semantic.digest('hex') !== receipt.orderedCampaignsSha256
+  ) {
+    throw new Error('Faunapoolen imported campaign rows fail sealed aggregate parity.');
+  }
+  return receipt;
 }
 
 /**

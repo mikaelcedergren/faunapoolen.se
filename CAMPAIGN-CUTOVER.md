@@ -454,6 +454,57 @@ artifact fails closed and requires review; it is not permission to clean around 
 - [ ] Run the product-owned verifier against the extracted
       `products/faunapoolen/faunapoolen.db` and the original private import receipt:
 
+  First return the still-stopped operational database to one immutable main file through SQLite;
+  never unlink WAL/SHM manually. Preview and apply the registered quiescer with a new missing
+  evidence output, then rerun the existing immutable target verifier with another new output:
+
+  ```bash
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool quiesce-campaign-database \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-quiescence-receipt.json
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool quiesce-campaign-database \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-quiescence-receipt.json \
+    --expected-identity <quiescence-preview-identity> \
+    --apply
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool verify-campaign-import \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-post-backup-target-verification-receipt.json
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool verify-campaign-import \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-post-backup-target-verification-receipt.json \
+    --expected-identity <post-backup-target-verification-preview-identity> \
+    --apply
+  ```
+
+  Require the quiescer's receipt to report an idle truncated checkpoint, no sidecars after close,
+  an allocation-stable main file, and the exact sealed campaign-import receipt. Require the
+  following target verifier output to be byte-identical to both importer receipts. Then verify the
+  extracted database separately:
+
   ```bash
   node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
     --site faunapoolen \

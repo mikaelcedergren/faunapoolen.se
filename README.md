@@ -24,6 +24,7 @@ pnpm check        # canonical format, platform, typecheck, test, and production-
 pnpm start:web    # compiled release-aware web process (health: /healthz)
 pnpm start:worker # compiled listener-free campaign worker
 pnpm import:campaigns -- --source <stopped-dir> --database <new-db>
+pnpm quiesce:campaign-database -- --database <stopped-db> --receipt <receipt-json-file>
 pnpm verify:campaign-import -- --database <restored-db> --receipt <receipt-json-file>
 pnpm e2e          # isolated Chromium journeys against synthetic data
 ```
@@ -97,6 +98,7 @@ server/src/index.ts   compiled web entrypoint; loads only `.env.web`
 server/src/worker.ts  compiled worker entrypoint; loads only `.env.worker`
 server/src/*-runtime.ts  injectable web/worker lifecycle composition
 server/src/import-campaigns.ts  explicit, one-time stopped-directory importer
+server/src/quiesce-campaign-database.ts  stopped WAL checkpoint and immutable close proof
 server/src/verify-campaign-import.ts  read-only import/restore semantic verifier
 server/src/**         strict TypeScript routes, services, repositories, and provider adapter
 server/dist/**        generated production JavaScript; never edit directly

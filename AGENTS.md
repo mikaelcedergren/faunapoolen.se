@@ -17,6 +17,7 @@ pnpm build:server:release # internal self-contained web/worker server-artifact b
 pnpm start:web          # compiled release-aware web process (HOST/PORT env; health: /healthz)
 pnpm start:worker       # compiled listener-free durable campaign worker
 pnpm import:campaigns -- --source <stopped-dir> --database <new-db>
+pnpm quiesce:campaign-database -- --database <stopped-db> --receipt <receipt-json-file>
 pnpm verify:campaign-import -- --database <restored-db> --receipt <receipt-json-file>
 pnpm typecheck          # strict application and NodeNext server TypeScript verification
 pnpm test               # target server suite, importer contract, and isolated runtime contracts
@@ -95,6 +96,8 @@ server/src/environment-files.ts
                           pinned private web/worker role-only configuration loading
 server/src/import-campaigns.ts
                           explicit one-time stopped-directory importer
+server/src/quiesce-campaign-database.ts
+                          offline identity-pinned WAL checkpoint and immutable close proof
 server/src/verify-campaign-import.ts
                           read-only imported/restored database semantic verifier
 server/dist/**            generated production JavaScript; never edit directly
@@ -184,6 +187,14 @@ canonical migration history and immutable marker, and recomputes ordered campaig
 hashes, and canonical record hashes. Use it on both the just-imported target and the database
 extracted from the first required `sqlite-online` backup. It must reproduce the same receipt and
 leave database identity, bytes, digest, and sidecar inventory unchanged.
+
+If a stopped operational database has WAL/SHM after a supported online snapshot, never remove the
+sidecars manually. Run the compiled `quiesce-campaign-database` command through the authenticated
+inactive-candidate boundary with the exact database and importer receipt, then run the immutable
+verifier. The quiescer verifies full logical import parity before gaining write authority, requires
+one exact idle `wal_checkpoint(TRUNCATE)`, verifies parity again, closes through SQLite, requires
+all journal/WAL/SHM names absent, preserves the main file allocation, and finishes with the same
+immutable verifier. It is a one-shot stopped-service operator, never a runtime opening mode.
 
 The one-time pre-activation aggregate verifier uses a direct immutable read-only SQLite connection
 as a bounded cutover-only exception: it must not create WAL/SHM, closes before either runtime role

@@ -29,6 +29,7 @@
     "start:worker": "node server/dist/worker.js",
     "serve": "pnpm run start:web",
     "import:campaigns": "node server/dist/import-campaigns.js",
+    "quiesce:campaign-database": "node server/dist/quiesce-campaign-database.js",
     "verify:campaign-import": "node server/dist/verify-campaign-import.js",
     "typecheck": "pnpm run typecheck:app && pnpm run typecheck:server",
     "typecheck:app": "tsc -p tsconfig.app.json --noEmit",
