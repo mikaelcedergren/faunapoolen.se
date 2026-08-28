@@ -2,10 +2,18 @@
 
 ## Status
 
-This is a prepared runbook, not an active migration. The legacy `server/index.mjs` process and its
-campaign directory remain authoritative on the Mac mini. The compiled web process, jobs worker,
-SQLite database, backup registration, service definitions, and server-release selection must not be
-activated until the owner explicitly authorises a maintenance window.
+This is a prepared runbook, not an active migration. The legacy `server/index.mjs` process is
+already stopped; its stopped campaign directory remains the sole campaign authority on the Mac
+mini. The compiled web process, jobs worker, SQLite database, backup registration, service
+definitions, and server-release selection must not be activated until the owner explicitly
+authorises a maintenance window.
+
+As of 2026-08-28, both `com.faunapoolen.server` and `com.faunapoolen.jobs` return exact unloaded
+status `113`, both conventional files under `/Library/LaunchDaemons` are absent, and port `3040` has
+no listener. Re-prove all three conditions at the maintenance boundary. Git history retains a
+legacy plist template, but neither a byte-exact copy nor the digest of the last installed legacy
+definition was captured. The historical template is context, not an authenticated restart or
+rollback artifact.
 
 The current source-safe preflight has two recorded facts that must still be re-proved at the start
 of the maintenance window:
@@ -20,9 +28,17 @@ Shared publication, backup, restart, health, and rollback mechanics are owned by
 [`../SERVER-STANDARD.md`](../SERVER-STANDARD.md). This document owns only Faunapoolen's one-time
 campaign-data and process-role transition.
 
+All retained cutover receipts, proof databases, and extracted backup roots belong under the
+current-user-owned private parent
+`/Users/cortex/Development/.run/web-architecture-migration/faunapoolen`, never inside the product's
+operational repo. At the maintenance boundary, create or re-prove that parent as a canonical
+mode-`0700` real directory. Every operator that requires a new root receives its own missing child
+under that parent; never reuse an earlier proof destination.
+
 ## Non-negotiable invariants
 
-- Stop the legacy writer and confirm no generation is active before reading its campaign directory.
+- Keep the legacy writer stopped and confirm no generation was active before reading its campaign
+  directory. Process absence alone is not cancellation proof.
 - Back up and extract-verify the complete stopped directory before creating the SQLite target.
 - Import every valid historical writer record or import nothing. Corrupt, extra, duplicate, linked,
   special, changed, or ambiguous input blocks the migration.
@@ -41,12 +57,12 @@ campaign-data and process-role transition.
 
 ## Authority transition
 
-| State                  | Web role                  | Worker role                          | Campaign authority                       | Backup authority                            |
-| ---------------------- | ------------------------- | ------------------------------------ | ---------------------------------------- | ------------------------------------------- |
-| Legacy active          | legacy `server/index.mjs` | embedded/process-local               | live legacy campaign directory           | not activated for that live directory       |
-| Frozen                 | stopped                   | stopped                              | stopped legacy campaign directory        | extracted and verified directory bundle     |
-| Imported, not selected | stopped                   | stopped                              | imported private SQLite; legacy retained | both proofs retained; no live selection yet |
-| After cutover          | supervised compiled web   | independently supervised jobs worker | `data/faunapoolen.db` only               | registered `sqlite-online` snapshot         |
+| State                  | Web role                | Worker role                          | Campaign authority                       | Backup authority                            |
+| ---------------------- | ----------------------- | ------------------------------------ | ---------------------------------------- | ------------------------------------------- |
+| Current stopped        | stopped                 | stopped                              | stopped legacy campaign directory        | not yet proved                              |
+| Frozen and proved      | stopped                 | stopped                              | stopped legacy campaign directory        | extracted and verified directory bundle     |
+| Imported, not selected | stopped                 | stopped                              | imported private SQLite; legacy retained | both proofs retained; no live selection yet |
+| After cutover          | supervised compiled web | independently supervised jobs worker | `data/faunapoolen.db` only               | registered `sqlite-online` snapshot         |
 
 `.run/` remains purge-class logs/runtime noise. It is never product-data authority after cutover.
 
@@ -96,10 +112,14 @@ campaign-data and process-role transition.
 - [ ] Confirm the shared backup implementation and independent security audit are green, then add
       and validate the explicitly reviewed Faunapoolen registry declarations. Do not manufacture a
       temporary config outside the canonical registry.
-- [ ] Record the current service identity, PID, command, port, health result, legacy campaign count,
-      and current browser build identity without printing secrets or campaign content.
-- [ ] In the authenticated studio, confirm no campaign stage is running and wait for any active
-      provider request to reach a durable terminal result. A process stop is not cancellation proof.
+- [ ] Record the current stopped topology: exact unloaded status `113` for both labels, absent
+      conventional plist files, no listener on port `3040`, and the current browser build identity.
+      Preserve any already captured prior legacy process, health, and campaign-count evidence, but
+      do not invent missing historical facts or print secrets or campaign content.
+- [ ] Require retained pre-stop evidence that no campaign stage or provider request was active. If
+      that evidence was not captured, record the uncertainty explicitly; process absence is not
+      cancellation proof, and the strict source inventory and importer must still reject any
+      partial or ambiguous record rather than repair or skip it.
 - [ ] Confirm production secrets exist with correct ownership and modes without displaying their
       values. Provision an owned mode-`0600` `.env.web` containing only `ADMIN_USERNAME`,
       `ADMIN_PASSWORD`, and `SESSION_SECRET`, plus an empty owned mode-`0600` `.env.worker` reserved
@@ -108,31 +128,103 @@ campaign-data and process-role transition.
       `CAMPAIGN_GENERATION_ENABLED=0` explicit in both tracked service definitions throughout
       validation.
 
-Failure leaves the current legacy service and data authority unchanged.
+Failure leaves the stopped legacy data authority and absent service topology unchanged.
 
 ## Gate 2 — freeze and prove the legacy source
 
-- [ ] Stop the legacy service using the shared privileged-service procedure. Do not start either
-      compiled role yet.
-- [ ] Prove both registered launchd labels return exact unloaded status `113`, port `3040` has no
-      listener, and the recorded legacy PID has exited. Move the installed legacy web plist to
-      reviewed rollback storage outside `/Library/LaunchDaemons`; prove both conventional web and
-      worker plist paths are absent. Do not destroy or repurpose the legacy definition.
+- [ ] Re-prove the already stopped state; do not start either compiled role. Both registered launchd
+      labels must return exact unloaded status `113`, port `3040` must have no listener, and both
+      conventional web and worker plist paths must remain absent.
+- [ ] Record that no installed legacy plist is available to move into rollback storage. The legacy
+      template retained in Git history does not prove the bytes of the definition that was actually
+      installed, so do not copy it into `/Library/LaunchDaemons` or describe it as a byte-exact
+      rollback.
 - [ ] Pin the stopped campaign-directory inventory, file count, aggregate byte count, and aggregate
       digest. Do not log individual campaign content.
 - [ ] Confirm the canonical registry still names the literal stopped `.run/campaigns` directory as
       required `legacy-campaigns` storage with `directory-snapshot`; do not substitute a copied or
       temporary source.
-- [ ] Preview and apply the registry-driven backup. Capture the resulting bundle ID, verify its
-      complete manifest, extract that exact archive to a new canonical current-user-owned
-      mode-`0700` temporary root, and run the shared whole-bundle verifier:
+- [ ] Ensure cleanup and backup select the same reviewed immutable `server-ops` release containing
+      the exact canonical registry. Install that pair together if needed. Choose one new evidence ID
+      and bind every backup and extraction preview/apply result to its own missing file below the
+      canonical private evidence root. These are exclusive no-replace evidence targets, never
+      terminal-only output or reusable log files:
 
   ```bash
-  node ../server-ops/bin/backup-state.mjs
-  node ../server-ops/bin/backup-state.mjs --apply
-  node ../server-ops/bin/verify-backup-restore.mjs \
-    --root <canonical-absolute-mode-0700-extracted-backup-root>
+  FAUNAPOOLEN_EVIDENCE=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen
+  FAUNAPOOLEN_LEGACY_EVIDENCE_ID='<unique-evidence-id>'
+  FAUNAPOOLEN_LEGACY_BACKUP_PREVIEW="$FAUNAPOOLEN_EVIDENCE/$FAUNAPOOLEN_LEGACY_EVIDENCE_ID-backup-preview.txt"
+  FAUNAPOOLEN_LEGACY_BACKUP_APPLY="$FAUNAPOOLEN_EVIDENCE/$FAUNAPOOLEN_LEGACY_EVIDENCE_ID-backup-apply.txt"
+  FAUNAPOOLEN_LEGACY_RESTORE_ROOT="$FAUNAPOOLEN_EVIDENCE/$FAUNAPOOLEN_LEGACY_EVIDENCE_ID-registry-restore"
+  FAUNAPOOLEN_LEGACY_EXTRACTION_PREVIEW="$FAUNAPOOLEN_EVIDENCE/$FAUNAPOOLEN_LEGACY_EVIDENCE_ID-extraction-preview.txt"
+  FAUNAPOOLEN_LEGACY_EXTRACTION_APPLY="$FAUNAPOOLEN_EVIDENCE/$FAUNAPOOLEN_LEGACY_EVIDENCE_ID-extraction-apply.json"
+  readonly FAUNAPOOLEN_EVIDENCE FAUNAPOOLEN_LEGACY_EVIDENCE_ID
+  readonly FAUNAPOOLEN_LEGACY_BACKUP_PREVIEW FAUNAPOOLEN_LEGACY_BACKUP_APPLY
+  readonly FAUNAPOOLEN_LEGACY_RESTORE_ROOT FAUNAPOOLEN_LEGACY_EXTRACTION_PREVIEW
+  readonly FAUNAPOOLEN_LEGACY_EXTRACTION_APPLY
+
+  for FAUNAPOOLEN_LEGACY_EVIDENCE_PATH in \
+    "$FAUNAPOOLEN_LEGACY_BACKUP_PREVIEW" \
+    "$FAUNAPOOLEN_LEGACY_BACKUP_APPLY" \
+    "$FAUNAPOOLEN_LEGACY_RESTORE_ROOT" \
+    "$FAUNAPOOLEN_LEGACY_EXTRACTION_PREVIEW" \
+    "$FAUNAPOOLEN_LEGACY_EXTRACTION_APPLY"; do
+    if [[ -e "$FAUNAPOOLEN_LEGACY_EVIDENCE_PATH" || -L "$FAUNAPOOLEN_LEGACY_EVIDENCE_PATH" ]]; then
+      echo "Faunapoolen legacy evidence path already exists: $FAUNAPOOLEN_LEGACY_EVIDENCE_PATH" >&2
+      exit 1
+    fi
+  done
+
+  /Users/cortex/Development/server-ops/bin/install-system-jobs
+  (umask 077; set -C; /opt/homebrew/bin/node \
+    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+    --selected-backup-preview \
+    >"$FAUNAPOOLEN_LEGACY_BACKUP_PREVIEW")
+
+  FAUNAPOOLEN_LEGACY_BACKUP_IDENTITY='<exact-selectionIdentity-from-first-preview-line>'
+  readonly FAUNAPOOLEN_LEGACY_BACKUP_IDENTITY
+
+  (umask 077; set -C; /opt/homebrew/bin/node \
+    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+    --selected-backup-apply \
+    --expected-selected-backup-identity "$FAUNAPOOLEN_LEGACY_BACKUP_IDENTITY" \
+    >"$FAUNAPOOLEN_LEGACY_BACKUP_APPLY")
+
+  FAUNAPOOLEN_LEGACY_BACKUP_ARCHIVE='<exact-final-archive-path-from-applied-output>'
+  readonly FAUNAPOOLEN_LEGACY_BACKUP_ARCHIVE
   ```
+
+  The selected preview's first JSON line must report operation `selected-system-job-backup`, state
+  `preview`, `releaseDigest`, and `selectionIdentity`; its plan must contain the required
+  Faunapoolen `legacy-campaigns` `directory-snapshot`. The selected apply must exit `0`; its final
+  output supplies the exact newly created archive path. Mutable-checkout `backup-state.mjs --apply`
+  and manual launchd kickstart are not accepted reviewed apply paths.
+
+- [ ] Choose a missing extraction destination under an existing canonical current-user-owned
+      mode-`0700` parent. Preview the exact new mode-`0600`, single-link archive, capture
+      `archiveIdentity`, then apply that reviewed identity:
+
+  ```bash
+  (umask 077; set -C; node /Users/cortex/Development/server-ops/bin/extract-backup-archive.mjs \
+    --archive "$FAUNAPOOLEN_LEGACY_BACKUP_ARCHIVE" \
+    --destination "$FAUNAPOOLEN_LEGACY_RESTORE_ROOT" \
+    >"$FAUNAPOOLEN_LEGACY_EXTRACTION_PREVIEW")
+
+  FAUNAPOOLEN_LEGACY_ARCHIVE_IDENTITY='<exact-archiveIdentity-from-preview>'
+  readonly FAUNAPOOLEN_LEGACY_ARCHIVE_IDENTITY
+
+  (umask 077; set -C; node /Users/cortex/Development/server-ops/bin/extract-backup-archive.mjs \
+    --archive "$FAUNAPOOLEN_LEGACY_BACKUP_ARCHIVE" \
+    --destination "$FAUNAPOOLEN_LEGACY_RESTORE_ROOT" \
+    --expected-archive-identity "$FAUNAPOOLEN_LEGACY_ARCHIVE_IDENTITY" \
+    --apply \
+    >"$FAUNAPOOLEN_LEGACY_EXTRACTION_APPLY")
+  ```
+
+  The extractor preview supplies `archiveBytes`, `archiveSha256`, and `archiveIdentity`; retain that
+  exact archive digest and identity. Require apply state `verified`, retain the whole-bundle receipt
+  and extracted root, and require its exact manifest verification. Never extract a backup with raw
+  `tar`.
 
 - [ ] Prove the manifest's `legacy-campaigns` storage identity, recursive inventory, file count,
       aggregate byte count, and root digest equal the frozen source proof, then recompute the same
@@ -141,8 +233,11 @@ Failure leaves the current legacy service and data authority unchanged.
 - [ ] Confirm the stopped source directory still has the same identity, inventory, and bytes after
       backup. Any change or incomplete archive aborts the cutover.
 
-If this gate fails, leave all evidence intact and restart the unchanged legacy service only after
-the failure is understood.
+If this gate fails, leave all evidence intact and keep the site stopped while the failure is
+understood. An unchanged legacy restart cannot currently be promised because the last installed
+definition was not captured byte-exactly. Do not reconstruct it from the historical Git template;
+restart requires a separately authenticated exact definition or a newly reviewed and authorised
+recovery definition.
 
 ## Gate 3 — one-time atomic import
 
@@ -155,32 +250,100 @@ reachable from web or worker startup.
       mode-`0700` real directory and prove its path, owner, mode, and single directory identity. The
       target `data/faunapoolen.db`, SQLite sidecars, and importer-owned recovery artifacts must not
       exist.
-- [ ] Run the compiled offline importer with both normalized absolute paths:
+- [ ] Run the registered offline importer only through the authenticated inactive-candidate
+      boundary, as the non-root `cortex` owner. Use the exact server ID prepared in Gate 1, the
+      stopped canonical source directory, the canonical target, and one missing receipt path below
+      the private evidence root. Preview, capture `identity`, then repeat every argument and apply:
 
   ```bash
-  node server/dist/import-campaigns.js \
-    --source <stopped-legacy-campaign-directory> \
-    --database <absolute-operational-root>/data/faunapoolen.db
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool import-campaigns \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path source=/Users/cortex/Development/faunapoolen.se/.run/campaigns \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool import-campaigns \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path source=/Users/cortex/Development/faunapoolen.se/.run/campaigns \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --expected-identity <preview-identity> \
+    --apply
   ```
 
-- [ ] With a private evidence directory and `umask 077`, capture the emitted single-line JSON
-      receipt as migration evidence: format version, campaign count, source bytes, physical
-      aggregate hash, and ordered semantic aggregate hash.
+  Require preview state `preview` and applied state `applied`. The applied result must bind the
+  candidate, current source, reviewed identity, and output path, byte count, and digest. The output
+  file itself—not the command wrapper—is the canonical product receipt: one new single-line JSON
+  file created mode `0600` with format version, campaign count, source bytes, physical aggregate
+  hash, and ordered semantic aggregate hash. Do not redirect stdout or execute a retained artifact
+  path directly.
+
 - [ ] Pin the published target's identity, mode, byte count, SHA-256, and absence of SQLite sidecars.
-      Run the identical compiled import command again with the same two absolute paths, capturing a
-      second receipt. It must take the exact-replay path, the receipt files must be byte-identical,
-      and the target identity, mode, bytes, hash, and sidecar absence must remain unchanged.
-- [ ] Run the product-owned read-only semantic verifier against the published target and the first
-      captured receipt. Its emitted receipt must be byte-identical too:
+      Preview and apply the same registered importer again with the same candidate, source, and
+      database but a second missing output file and its newly reviewed identity:
 
   ```bash
-  node server/dist/verify-campaign-import.js \
-    --database <absolute-operational-root>/data/faunapoolen.db \
-    --receipt <absolute-private-evidence-root>/import-receipt.json
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool import-campaigns \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path source=/Users/cortex/Development/faunapoolen.se/.run/campaigns \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-replay-receipt.json
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool import-campaigns \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path source=/Users/cortex/Development/faunapoolen.se/.run/campaigns \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-replay-receipt.json \
+    --expected-identity <replay-preview-identity> \
+    --apply
   ```
 
-  This proof recomputes the receipt, ordered campaign sequence, IDs, stored source hashes, and
-  canonical record hashes without creating WAL/SHM or changing the database.
+  It must take the exact-replay path, the two canonical product receipt files must be
+  byte-identical, and the target identity, mode, bytes, hash, and sidecar absence must remain
+  unchanged.
+
+- [ ] Run the product-owned read-only semantic verifier against the published target and the first
+      captured receipt through the same authenticated inactive candidate. Preview and apply with a
+      third missing output file:
+
+  ```bash
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool verify-campaign-import \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-verification-receipt.json
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool verify-campaign-import \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path database=/Users/cortex/Development/faunapoolen.se/data/faunapoolen.db \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-verification-receipt.json \
+    --expected-identity <verification-preview-identity> \
+    --apply
+  ```
+
+  Require its canonical output receipt to be byte-identical to both importer receipts. This proof
+  recomputes the receipt, ordered campaign sequence, IDs, stored source hashes, and canonical record
+  hashes without creating WAL/SHM or changing the database. The runner hashes and re-proves both
+  read-only inputs across execution.
 
 - [ ] Prove the target is an owned private single-link regular file, all SQLite sidecars remain
       absent, full SQLite integrity and foreign keys pass, migration history is canonical, the
@@ -193,10 +356,11 @@ abort; never edit migration input in place.
 
 The importer publishes a durable parent-level intent before any staging artifact. After an
 interruption, never delete or rename intent, preparation, staging, target, or sidecar paths by hand.
-First prove the recorded importer process has stopped, then rerun the identical compiled command
-with the same two paths. It either performs bounded recovery of its own identity-proven artifacts or
-takes exact replay. A live owner, mismatched intent, unexpected link, or unowned artifact fails
-closed and requires review; it is not permission to clean around the evidence.
+First prove the recorded importer process has stopped, then preview and apply the same registered
+candidate tool with the same server ID and two product paths but a new missing evidence output. It
+either performs bounded recovery of its own identity-proven artifacts or takes exact replay. A live
+owner, changed source/candidate/offline boundary, mismatched intent, unexpected link, or unowned
+artifact fails closed and requires review; it is not permission to clean around the evidence.
 
 ## Gate 4 — backup the new authority
 
@@ -209,17 +373,111 @@ closed and requires review; it is not permission to clean around the evidence.
       select the same new immutable release and its root-owned installed-authority record before
       running a backup. A registry edit in the mutable checkout does not update the already-sealed
       jobs and is not backup activation.
-- [ ] Run the backup preview from that exact selected server-ops release, inspect the required
-      `sqlite-online` plan, apply it, and capture the bundle ID. Extract the real archive to a new
-      owned mode-`0700` disposable root and run `verify-backup-restore.mjs` against the complete
-      extracted bundle.
+- [ ] Use a new evidence ID for the SQLite registry backup. Reserve distinct missing no-replace
+      output files and a distinct missing extraction root before previewing anything:
+
+  ```bash
+  FAUNAPOOLEN_SQLITE_EVIDENCE=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen
+  FAUNAPOOLEN_SQLITE_EVIDENCE_ID='<new-unique-evidence-id>'
+  FAUNAPOOLEN_SQLITE_BACKUP_PREVIEW="$FAUNAPOOLEN_SQLITE_EVIDENCE/$FAUNAPOOLEN_SQLITE_EVIDENCE_ID-backup-preview.txt"
+  FAUNAPOOLEN_SQLITE_BACKUP_APPLY="$FAUNAPOOLEN_SQLITE_EVIDENCE/$FAUNAPOOLEN_SQLITE_EVIDENCE_ID-backup-apply.txt"
+  FAUNAPOOLEN_SQLITE_RESTORE_ROOT="$FAUNAPOOLEN_SQLITE_EVIDENCE/$FAUNAPOOLEN_SQLITE_EVIDENCE_ID-registry-restore"
+  FAUNAPOOLEN_SQLITE_EXTRACTION_PREVIEW="$FAUNAPOOLEN_SQLITE_EVIDENCE/$FAUNAPOOLEN_SQLITE_EVIDENCE_ID-extraction-preview.txt"
+  FAUNAPOOLEN_SQLITE_EXTRACTION_APPLY="$FAUNAPOOLEN_SQLITE_EVIDENCE/$FAUNAPOOLEN_SQLITE_EVIDENCE_ID-extraction-apply.json"
+  FAUNAPOOLEN_POST_GATE_BACKUP_PREVIEW="$FAUNAPOOLEN_SQLITE_EVIDENCE/$FAUNAPOOLEN_SQLITE_EVIDENCE_ID-post-gate-backup-preview.txt"
+  readonly FAUNAPOOLEN_SQLITE_EVIDENCE FAUNAPOOLEN_SQLITE_EVIDENCE_ID
+  readonly FAUNAPOOLEN_SQLITE_BACKUP_PREVIEW FAUNAPOOLEN_SQLITE_BACKUP_APPLY
+  readonly FAUNAPOOLEN_SQLITE_RESTORE_ROOT FAUNAPOOLEN_SQLITE_EXTRACTION_PREVIEW
+  readonly FAUNAPOOLEN_SQLITE_EXTRACTION_APPLY FAUNAPOOLEN_POST_GATE_BACKUP_PREVIEW
+
+  for FAUNAPOOLEN_SQLITE_EVIDENCE_PATH in \
+    "$FAUNAPOOLEN_SQLITE_BACKUP_PREVIEW" \
+    "$FAUNAPOOLEN_SQLITE_BACKUP_APPLY" \
+    "$FAUNAPOOLEN_SQLITE_RESTORE_ROOT" \
+    "$FAUNAPOOLEN_SQLITE_EXTRACTION_PREVIEW" \
+    "$FAUNAPOOLEN_SQLITE_EXTRACTION_APPLY" \
+    "$FAUNAPOOLEN_POST_GATE_BACKUP_PREVIEW"; do
+    if [[ -e "$FAUNAPOOLEN_SQLITE_EVIDENCE_PATH" || -L "$FAUNAPOOLEN_SQLITE_EVIDENCE_PATH" ]]; then
+      echo "Faunapoolen SQLite evidence path already exists: $FAUNAPOOLEN_SQLITE_EVIDENCE_PATH" >&2
+      exit 1
+    fi
+  done
+  ```
+
+- [ ] Preview the selected immutable backup into the reserved file. Require the new sealed plan to
+      contain the required Faunapoolen `sqlite-online` storage at
+      `products/faunapoolen/faunapoolen.db`, capture `selectionIdentity`, then apply through that
+      exact selected authority:
+
+  ```bash
+  (umask 077; set -C; /opt/homebrew/bin/node \
+    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+    --selected-backup-preview \
+    >"$FAUNAPOOLEN_SQLITE_BACKUP_PREVIEW")
+
+  FAUNAPOOLEN_SQLITE_BACKUP_IDENTITY='<exact-selectionIdentity-from-first-preview-line>'
+  readonly FAUNAPOOLEN_SQLITE_BACKUP_IDENTITY
+
+  (umask 077; set -C; /opt/homebrew/bin/node \
+    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+    --selected-backup-apply \
+    --expected-selected-backup-identity "$FAUNAPOOLEN_SQLITE_BACKUP_IDENTITY" \
+    >"$FAUNAPOOLEN_SQLITE_BACKUP_APPLY")
+
+  FAUNAPOOLEN_SQLITE_BACKUP_ARCHIVE='<exact-final-archive-path-from-applied-output>'
+  readonly FAUNAPOOLEN_SQLITE_BACKUP_ARCHIVE
+  ```
+
+  The selected preview supplies `releaseDigest` and `selectionIdentity`; the selected apply's final
+  output supplies the real archive path.
+
+- [ ] Preview the exact archive into the reserved extraction evidence, capture its
+      `archiveIdentity`, and apply into the reserved missing root:
+
+  ```bash
+  (umask 077; set -C; node /Users/cortex/Development/server-ops/bin/extract-backup-archive.mjs \
+    --archive "$FAUNAPOOLEN_SQLITE_BACKUP_ARCHIVE" \
+    --destination "$FAUNAPOOLEN_SQLITE_RESTORE_ROOT" \
+    >"$FAUNAPOOLEN_SQLITE_EXTRACTION_PREVIEW")
+
+  FAUNAPOOLEN_SQLITE_ARCHIVE_IDENTITY='<exact-archiveIdentity-from-preview>'
+  readonly FAUNAPOOLEN_SQLITE_ARCHIVE_IDENTITY
+
+  (umask 077; set -C; node /Users/cortex/Development/server-ops/bin/extract-backup-archive.mjs \
+    --archive "$FAUNAPOOLEN_SQLITE_BACKUP_ARCHIVE" \
+    --destination "$FAUNAPOOLEN_SQLITE_RESTORE_ROOT" \
+    --expected-archive-identity "$FAUNAPOOLEN_SQLITE_ARCHIVE_IDENTITY" \
+    --apply \
+    >"$FAUNAPOOLEN_SQLITE_EXTRACTION_APPLY")
+  ```
+
+  The extractor preview supplies the real `archiveSha256` and `archiveIdentity`. Require apply state
+  `verified`, retain the whole-bundle receipt and extracted root, and never substitute raw `tar`
+  extraction.
+
 - [ ] Run the product-owned verifier against the extracted
       `products/faunapoolen/faunapoolen.db` and the original private import receipt:
 
   ```bash
-  node server/dist/verify-campaign-import.js \
-    --database <canonical-absolute-mode-0700-extracted-root>/products/faunapoolen/faunapoolen.db \
-    --receipt <absolute-private-evidence-root>/import-receipt.json
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool verify-campaign-import \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path "database=$FAUNAPOOLEN_SQLITE_RESTORE_ROOT/products/faunapoolen/faunapoolen.db" \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-restore-verification-receipt.json
+
+  node /Users/cortex/Development/server-ops/bin/server-candidate-tool.mjs \
+    --site faunapoolen \
+    --release-id <server-id> \
+    --tool verify-campaign-import \
+    --evidence-root /Users/cortex/Development/.run/web-architecture-migration/faunapoolen \
+    --path "database=$FAUNAPOOLEN_SQLITE_RESTORE_ROOT/products/faunapoolen/faunapoolen.db" \
+    --path receipt=/Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-import-receipt.json \
+    --output /Users/cortex/Development/.run/web-architecture-migration/faunapoolen/<evidence-id>-restore-verification-receipt.json \
+    --expected-identity <restore-verification-preview-identity> \
+    --apply
   ```
 
   Require its emitted receipt to be byte-identical to both importer receipts. This is the explicit
@@ -230,6 +488,20 @@ closed and requires review; it is not permission to clean around the evidence.
 
 - [ ] Retain both the pre-import legacy bundle and the first SQLite bundle. Do not delete or rewrite
       either proof.
+- [ ] Only after the imported-target and extracted-restore verifier outputs are byte-identical to
+      both importer receipts, remove the exact Faunapoolen `firstSelectionGate` from the canonical
+      registry. Run the complete `server-ops` source gate again, reinstall cleanup and backup
+      together, then write the selected immutable backup preview to its reserved no-replace file:
+
+  ```bash
+  (umask 077; set -C; /opt/homebrew/bin/node \
+    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+    --selected-backup-preview \
+    >"$FAUNAPOOLEN_POST_GATE_BACKUP_PREVIEW")
+  ```
+
+  Require that preview to show the same Faunapoolen `sqlite-online` entry. A source edit or gate
+  removal without that new sealed job pair is not final registry activation.
 
 Admin access remains blocked until this gate passes.
 
@@ -258,8 +530,27 @@ Admin access remains blocked until this gate passes.
       identity, both compiled entrypoints, private role-file metadata, and database metadata without
       reading private contents. It does not activate either role. Only the web role may listen on
       `127.0.0.1:3040`.
-- [ ] Start the web role, then the jobs worker, through the authorised privileged procedure. Both
-      must prove their sealed release identity and immutable import marker before writable startup.
+- [ ] As the non-root `cortex` owner, preview the authenticated selected server release, exact
+      root-owned installed definitions, and complete unloaded role family. Capture `identity`, then
+      apply that same reviewed first-bootstrap boundary:
+
+  ```bash
+  node /Users/cortex/Development/server-ops/bin/bootstrap-site-services.mjs \
+    --site faunapoolen
+  sudo -v
+  node /Users/cortex/Development/server-ops/bin/bootstrap-site-services.mjs \
+    --site faunapoolen \
+    --expected-identity <preview-identity> \
+    --apply
+  ```
+
+  Run `sudo -v` immediately before apply; the non-root Node operator accepts only a cached
+  non-interactive sudo session. It crosses privilege only for the exact launchctl bootstrap calls,
+  starts the web role before the jobs worker, and bootouts every role started by a partial attempt
+  in reverse order. Both roles must prove their sealed release identity and immutable import marker
+  before writable startup. Keep `CAMPAIGN_GENERATION_ENABLED=0`; first bootstrap is not permission
+  to add the worker key or enable paid generation.
+
 - [ ] Verify `/healthz`, `/cx-server.json`, worker readiness, one listener on port `3040`, private
       database ownership, and clean startup diagnostics. Record that the worker's current lease is
       process/release readiness while `CAMPAIGN_GENERATION_ENABLED=0`, with provider construction,
@@ -308,9 +599,12 @@ Before the first post-cutover admin mutation, take both compiled roles offline a
 installed target definitions. If selection was not finalized, use the paired `--abort` preview and
 apply forms. If it was finalized, use the paired `--revert` preview and apply forms. This first
 cutover records no old compiled server selection, so it restores the prior browser pointer and an
-unselected server state; restore the byte-exact legacy web plist separately, restart the unchanged
-legacy service, and verify its original directory and health. Never run independent browser/server
-rollbacks or delete the imported database; retain it as failure evidence.
+unselected server state. There is no authenticated byte-exact legacy web plist to restore: the
+historical Git template is not proof of the previously installed bytes. Keep the site stopped until
+an exact legacy definition is independently recovered and authenticated or the owner explicitly
+authorises a newly reviewed recovery definition. Never run independent browser/server rollbacks,
+recreate the old definition by assumption, or delete the imported database; retain it as failure
+evidence.
 
 The exact offline rollback commands are:
 

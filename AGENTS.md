@@ -26,16 +26,18 @@ pnpm check              # canonical format, platform, typecheck, test, and produ
 pnpm e2e                # isolated Chromium journeys on a runner-owned loopback port
 ```
 
-The current always-on Mac-mini service is still the legacy web process described in
-[`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). Do not select the compiled web/worker pair, import campaigns,
-or change its data authority except through the explicit stopped-service procedure in
+The legacy Mac-mini web process is already stopped; both registered labels are unloaded, their
+conventional installed plists are absent, and the stopped campaign directory remains the sole data
+authority. Do not select or start the compiled web/worker pair, import campaigns, or change that
+authority except through the explicit stopped-service procedure in
 [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md). Publish a change proved browser-only with:
 
-`pnpm test:legacy` launches the exact selected `server/index.mjs` entrypoint and is its removal
+`pnpm test:legacy` launches the exact retained `server/index.mjs` entrypoint and is its removal
 guard until that cutover. The wrapper's only source delta adds the
-`FAUNAPOOLEN_LOAD_ENV_FILE=false` test-isolation switch; the installed daemon does not set it, so
-normal startup and reboot behavior remain unchanged. Do not remove the wrapper or its legacy
-contracts before the stopped-service backup/import/selection gate retires them together.
+`FAUNAPOOLEN_LOAD_ENV_FILE=false` test-isolation switch; the historical installed daemon did not set
+it. No legacy plist is currently installed and no legacy process is running. Do not remove the
+wrapper or its legacy contracts before the stopped-service backup/import/selection gate retires
+them together.
 
 ```bash
 node ../server-ops/bin/site-release.mjs --site faunapoolen --browser-only --apply
