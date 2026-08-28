@@ -176,16 +176,14 @@ Failure leaves the stopped legacy data authority and absent service topology unc
   done
 
   /Users/cortex/Development/server-ops/bin/install-system-jobs
-  (umask 077; set -C; /opt/homebrew/bin/node \
-    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+  (umask 077; set -C; /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
     --selected-backup-preview \
     >"$FAUNAPOOLEN_LEGACY_BACKUP_PREVIEW")
 
   FAUNAPOOLEN_LEGACY_BACKUP_IDENTITY='<exact-selectionIdentity-from-first-preview-line>'
   readonly FAUNAPOOLEN_LEGACY_BACKUP_IDENTITY
 
-  (umask 077; set -C; /opt/homebrew/bin/node \
-    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+  (umask 077; set -C; /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
     --selected-backup-apply \
     --expected-selected-backup-identity "$FAUNAPOOLEN_LEGACY_BACKUP_IDENTITY" \
     >"$FAUNAPOOLEN_LEGACY_BACKUP_APPLY")
@@ -410,16 +408,14 @@ artifact fails closed and requires review; it is not permission to clean around 
       exact selected authority:
 
   ```bash
-  (umask 077; set -C; /opt/homebrew/bin/node \
-    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+  (umask 077; set -C; /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
     --selected-backup-preview \
     >"$FAUNAPOOLEN_SQLITE_BACKUP_PREVIEW")
 
   FAUNAPOOLEN_SQLITE_BACKUP_IDENTITY='<exact-selectionIdentity-from-first-preview-line>'
   readonly FAUNAPOOLEN_SQLITE_BACKUP_IDENTITY
 
-  (umask 077; set -C; /opt/homebrew/bin/node \
-    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+  (umask 077; set -C; /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
     --selected-backup-apply \
     --expected-selected-backup-identity "$FAUNAPOOLEN_SQLITE_BACKUP_IDENTITY" \
     >"$FAUNAPOOLEN_SQLITE_BACKUP_APPLY")
@@ -494,8 +490,7 @@ artifact fails closed and requires review; it is not permission to clean around 
       together, then write the selected immutable backup preview to its reserved no-replace file:
 
   ```bash
-  (umask 077; set -C; /opt/homebrew/bin/node \
-    /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
+  (umask 077; set -C; /Users/cortex/Development/server-ops/bin/system-job-launcher.mjs \
     --selected-backup-preview \
     >"$FAUNAPOOLEN_POST_GATE_BACKUP_PREVIEW")
   ```
