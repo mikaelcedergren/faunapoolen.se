@@ -262,6 +262,22 @@
         <source>Simdamm, ekologisk pool och organisk pool med klart vatten utan klor.</source>
         <target>Swimming pond, ecological pool, and organic pool with clear water without chlorine.</target>
       </trans-unit>
+      <trans-unit id="campaign_pond_packages.title" datatype="html">
+        <source>Bada i klart, naturligt vatten hemma | Naturpool</source>
+        <target>Swim in clear, natural water at home | Natural pool</target>
+      </trans-unit>
+      <trans-unit id="campaign_pond_packages.description" datatype="html">
+        <source>Få en naturpool med biologisk rening, anpassad till din trädgård. Lämna dina uppgifter så svarar Faunapoolen inom 48 timmar.</source>
+        <target>Get a natural pool with biological filtration, adapted to your garden. Leave your details and Faunapoolen will reply within 48 hours.</target>
+      </trans-unit>
+      <trans-unit id="campaign_pond_packages.ogTitle" datatype="html">
+        <source>Bada i klart, naturligt vatten hemma.</source>
+        <target>Swim in clear, natural water at home.</target>
+      </trans-unit>
+      <trans-unit id="campaign_pond_packages.ogDescription" datatype="html">
+        <source>Naturpool med biologisk rening, anpassad till din trädgård och svenska årstider.</source>
+        <target>A natural pool with biological filtration, adapted to your garden and the Swedish seasons.</target>
+      </trans-unit>
       <trans-unit id="blog_index.title" datatype="html">
         <source>Blogg | Ekologisk pool, vattenlandskap och trädgård</source>
         <target>Blog | ecological pool, water landscape, and garden</target>

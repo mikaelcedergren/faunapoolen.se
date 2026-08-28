@@ -209,13 +209,13 @@ export const routes: Routes = [
   {
     path: 'campaigns/pond-packages',
     loadComponent: () => import('./pages/campaigns/pond-packages/pond-packages.component').then((m) => m.PondPackagesCampaignComponent),
-    title: 'Bada i klart, naturligt vatten hemma | Naturpool',
+    title: $localize`:@@campaign_pond_packages.title:Bada i klart, naturligt vatten hemma | Naturpool`,
     data: {
       seo: {
         path: '/campaigns/pond-packages/',
-        description: 'Få en naturpool med biologisk rening, anpassad till din trädgård. Lämna dina uppgifter så svarar Faunapoolen inom 48 timmar.',
-        ogTitle: 'Bada i klart, naturligt vatten hemma.',
-        ogDescription: 'Naturpool med biologisk rening, anpassad till din trädgård och svenska årstider.',
+        description: $localize`:@@campaign_pond_packages.description:Få en naturpool med biologisk rening, anpassad till din trädgård. Lämna dina uppgifter så svarar Faunapoolen inom 48 timmar.`,
+        ogTitle: $localize`:@@campaign_pond_packages.ogTitle:Bada i klart, naturligt vatten hemma.`,
+        ogDescription: $localize`:@@campaign_pond_packages.ogDescription:Naturpool med biologisk rening, anpassad till din trädgård och svenska årstider.`,
         ogImage: 'https://faunapoolen.se/assets/images/og/pond-packages-landing-og.jpg',
         noindex: true,
       } satisfies PageSeo,

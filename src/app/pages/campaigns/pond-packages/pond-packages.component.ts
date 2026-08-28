@@ -5,8 +5,10 @@ import {
   Component,
   DestroyRef,
   Inject,
+  LOCALE_ID,
   PLATFORM_ID,
   ViewEncapsulation,
+  inject,
   signal,
 } from '@angular/core';
 
@@ -34,6 +36,7 @@ interface CampaignWindow extends Window {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PondPackagesCampaignComponent implements AfterViewInit {
+  protected readonly en = inject(LOCALE_ID).toLowerCase().startsWith('en');
   protected readonly attribution: CampaignAttribution;
   protected readonly showMobileCta = signal(false);
   protected readonly submissionState = signal<SubmissionState>('idle');
@@ -137,8 +140,12 @@ export class PondPackagesCampaignComponent implements AfterViewInit {
     } catch (error) {
       this.submissionError.set(
         error instanceof Error && error.message === 'rate-limit'
-          ? 'Det blev för många försök på kort tid. Vänta en stund och försök igen, eller mejla info@faunapoolen.se.'
-          : 'Det gick inte att skicka just nu. Försök igen eller mejla info@faunapoolen.se.',
+          ? this.en
+            ? 'Too many attempts in a short time. Wait a moment and try again, or email info@faunapoolen.se.'
+            : 'Det blev för många försök på kort tid. Vänta en stund och försök igen, eller mejla info@faunapoolen.se.'
+          : this.en
+            ? 'Your inquiry could not be sent right now. Try again or email info@faunapoolen.se.'
+            : 'Det gick inte att skicka just nu. Försök igen eller mejla info@faunapoolen.se.',
       );
       this.submissionState.set('error');
     }
