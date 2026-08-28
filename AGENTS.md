@@ -48,10 +48,10 @@ behavior is owned by the root
 ## Framework package boundary
 
 The target server consumes the published `@mikaelcedergren/cx-framework/server/*` entrypoints from
-GitHub `main`. This repository is locked to published package `0.9.5` at
-`ce40d80dd055ad5de53e5779393993b1fc82db42`; never replace it with a local path, tarball, sibling
-import, or compatibility wrapper. The root
-[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md) owns the exact rollout state;
+GitHub `main`, and `pnpm-lock.yaml` records the repository's exact immutable resolution. Never
+replace it with a local path, tarball, sibling import, or compatibility wrapper. The root
+[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md) owns mutable rollout versions,
+commit identities, and exact operational evidence;
 [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) owns the separate operational data/process transition.
 
 ## Architecture

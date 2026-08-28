@@ -48,10 +48,10 @@ authoritative until the separate, stopped-service migration in
 premature removal; its test-only environment-file opt-out is inactive in the installed daemon.
 
 The target source consumes the published `@mikaelcedergren/cx-framework/server/*` entrypoints from
-GitHub `main`. This repository is locked to package `0.9.5` at
-`ce40d80dd055ad5de53e5779393993b1fc82db42`; never substitute a local path, tarball, sibling import,
-or compatibility wrapper. The root
-[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md) owns the exact rollout state.
+GitHub `main`, and `pnpm-lock.yaml` records the repository's exact immutable resolution. Never
+substitute a local path, tarball, sibling import, or compatibility wrapper. The root
+[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md) owns mutable rollout versions,
+commit identities, and exact operational evidence.
 
 The protected campaign studio persists campaigns, signed owner sessions, login throttles,
 generation quotas, durable jobs, generation runs, and replay-safe provider receipts in
