@@ -54,9 +54,15 @@ import {
   isCxThemeMode,
 } from '@mikaelcedergren/cx-framework';
 
-type AuthResponse = { authenticated?: boolean; error?: string; ok?: boolean };
+type AuthResponse = { authenticated?: boolean; ok?: boolean };
 
 type Language = 'sv' | 'en';
+type EditableTextField =
+  | 'headline'
+  | 'description'
+  | 'primaryText'
+  | 'fullCaption'
+  | 'callToAction';
 type CampaignStage = 'strategy' | 'copy' | 'complete';
 type GenerationStep = 'strategy' | 'copy' | 'prompts';
 type StepStatus = 'waiting' | 'active' | 'done' | 'failed';
@@ -111,6 +117,7 @@ type Campaign = {
   id: string;
   createdAt: string;
   updatedAt: string;
+  revision: number;
   idea: string;
   name: string;
   stage: CampaignStage;
@@ -123,7 +130,8 @@ type CampaignSummary = {
   id: string;
   name: string;
   createdAt: string;
-  idea: string;
+  updatedAt: string;
+  revision: number;
   stage: CampaignStage;
 };
 
@@ -134,7 +142,36 @@ type ConfigResponse = {
   limitsVerifiedOn?: string;
 };
 
-type CampaignResponse = { campaign?: Campaign; copyError?: string; error?: string };
+type CampaignResponse = { campaign?: Campaign };
+
+type ApiError = {
+  error?: {
+    code?: string;
+    message?: string;
+    details?: { currentRevision?: number };
+  };
+};
+
+type GenerationState = 'queued' | 'running' | 'succeeded' | 'failed' | 'ambiguous';
+
+type GenerationAcceptance = {
+  campaignRevision: number;
+  campaignId: string;
+  jobId: string;
+  state: 'queued';
+};
+
+type GenerationStatus = {
+  campaignRevision: number;
+  campaignId: string;
+  jobId: string;
+  stage: GenerationStep;
+  state: GenerationState;
+  updatedAt: string;
+  error?: { code: string; message: string };
+};
+
+type RecoverableGenerationsResponse = { generations?: GenerationStatus[] };
 
 /** A copy field resolved for the selected language, ready to render as an editable control. */
 type ResolvedField = CopyFieldConfig & {
@@ -202,9 +239,9 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
   imports: [
     CxAccountControlComponent,
     CxAlertComponent,
-      CxButtonComponent,
+    CxButtonComponent,
     CxCardComponent,
-      CxDialogComponent,
+    CxDialogComponent,
     CxDividerComponent,
     CxExpansionPanelComponent,
     CxIconButtonComponent,
@@ -212,7 +249,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
     CxInlineComponent,
     CxItemCardComponent,
     CxLabeledRowComponent,
-      CxPasswordFieldComponent,
+    CxPasswordFieldComponent,
     CxSideNavComponent,
     CxStackComponent,
     CxStateMessageComponent,
@@ -235,6 +272,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   private readonly publicStylesheet = this.findPublicStylesheet();
   private readonly publicStylesheetMedia = this.originalPublicStylesheetMedia();
   private copyResetTimer?: ReturnType<typeof setTimeout>;
+  private generationPollSequence = 0;
+  private copySaveQueue: Promise<void> = Promise.resolve();
 
   @ViewChild('usernameField')
   private readonly usernameField?: CxTextFieldComponent;
@@ -266,6 +305,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly stepStatus = signal<Record<GenerationStep, StepStatus>>(idleSteps());
   protected readonly generationError = signal('');
   protected readonly copyError = signal('');
+  protected readonly generationCampaignId = signal('');
+  protected readonly generationRevision = signal(0);
+  protected readonly retryStage = signal<GenerationStep | undefined>(undefined);
   protected readonly language = signal<Language>(DEFAULT_LANGUAGE);
   protected readonly copiedId = signal('');
   protected readonly pendingDelete = signal<CampaignSummary | undefined>(undefined);
@@ -281,6 +323,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   };
   protected readonly writeCopyAction: CxStateMessageAction = {
     text: 'Write the campaign copy',
+    mood: 'primary',
+    icon: 'bolt',
+  };
+  protected readonly writePromptsAction: CxStateMessageAction = {
+    text: 'Write the image prompts',
     mood: 'primary',
     icon: 'bolt',
   };
@@ -501,6 +548,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.generationPollSequence += 1;
     this.document.documentElement.classList.remove(`theme-${this.theme()}`);
     if (this.publicStylesheet) {
       if (this.publicStylesheetMedia === null) {
@@ -552,7 +600,10 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     this.submitting.set(true);
     try {
-      const response = await this.post('/admin-auth/login', { username, password });
+      const response = await this.request('/api/admin/login', {
+        method: 'POST',
+        body: { username, password },
+      });
       if (!response.ok) {
         this.requestError.set(
           response.status === 401
@@ -581,8 +632,9 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     this.submitting.set(true);
     try {
-      await this.post('/admin-auth/logout');
+      await this.request('/api/admin/logout', { method: 'POST' });
     } finally {
+      this.generationPollSequence += 1;
       this.authenticated.set(false);
       this.username.set('');
       this.password.set('');
@@ -626,11 +678,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     queueMicrotask(() => this.roughIdeaField?.focus());
   }
 
-  /**
-   * The three stages run as three requests so the screen can show what has genuinely finished
-   * rather than a timer pretending to be progress. The strategy renders while the copy is still
-   * being written, and a stage that fails leaves the saved campaign intact for a targeted retry.
-   */
+  /** The server owns the durable three-stage pipeline; this request only accepts the work. */
   protected async createCampaign(): Promise<void> {
     if (this.generating()) {
       return;
@@ -651,76 +699,140 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.stepStatus.set({ strategy: 'active', copy: 'waiting', prompts: 'waiting' });
 
     try {
-      const created = await this.generate('/admin-auth/campaigns/create', { idea }, 'strategy');
-      if (!created) {
+      const response = await this.request('/api/admin/campaigns', {
+        method: 'POST',
+        body: { idea },
+      });
+      if (!response.ok) {
+        await this.handleGenerationFailure(response, 'strategy', false);
+        this.generating.set(false);
+        return;
+      }
+      const payload = (await response.json()) as { generation?: GenerationAcceptance };
+      if (!payload.generation) {
+        this.generationError.set('The campaign was not accepted. Try again.');
+        this.setStep('strategy', 'failed');
+        this.generating.set(false);
         return;
       }
       this.composeOpen.set(false);
       this.view.set('campaign');
-      await this.runRemainingStages(created.id);
-    } finally {
+      this.followGeneration(payload.generation);
+    } catch {
+      this.generationError.set('Campaigns cannot be reached right now. Try again.');
+      this.setStep('strategy', 'failed');
       this.generating.set(false);
-      await this.refreshCampaigns();
     }
   }
 
   protected async writeCopy(): Promise<void> {
-    const id = this.campaign()?.id;
-    if (!id || this.generating()) {
-      return;
-    }
+    await this.startTargetedGeneration('copy');
+  }
+
+  protected async writeImagePrompts(): Promise<void> {
+    await this.startTargetedGeneration('prompts');
+  }
+
+  protected async retryGeneration(): Promise<void> {
+    const stage = this.retryStage();
+    if (stage) await this.startTargetedGeneration(stage);
+  }
+
+  private async startTargetedGeneration(stage: GenerationStep): Promise<void> {
+    const campaignId = this.campaign()?.id || this.generationCampaignId();
+    const expectedRevision = this.campaign()?.revision ?? this.generationRevision();
+    if (!campaignId || this.generating()) return;
+
+    this.generationError.set('');
+    this.retryStage.set(undefined);
     this.generating.set(true);
-    this.stepStatus.set({ strategy: 'done', copy: 'active', prompts: 'waiting' });
+    this.setStep(stage, 'active');
     try {
-      await this.runRemainingStages(id);
-    } finally {
+      const response = await this.request(`/api/admin/campaigns/${campaignId}/retry`, {
+        method: 'POST',
+        body: { expectedRevision, stage },
+      });
+      if (!response.ok) {
+        await this.handleGenerationFailure(response, stage);
+        this.generating.set(false);
+        return;
+      }
+      const payload = (await response.json()) as { generation?: GenerationAcceptance };
+      if (!payload.generation) {
+        this.generationError.set('The generation was not accepted. Try again.');
+        this.setStep(stage, 'failed');
+        this.retryStage.set(stage);
+        this.generating.set(false);
+        return;
+      }
+      this.followGeneration(payload.generation);
+    } catch {
+      this.generationError.set('Campaigns cannot be reached right now. Try again.');
+      this.setStep(stage, 'failed');
+      this.retryStage.set(stage);
       this.generating.set(false);
     }
   }
 
-  private async runRemainingStages(id: string): Promise<void> {
-    const withCopy = await this.generate('/admin-auth/campaigns/copy', { id }, 'copy');
-    if (!withCopy) {
-      return;
-    }
-    await this.generate('/admin-auth/campaigns/prompts', { id }, 'prompts');
+  private followGeneration(accepted: GenerationAcceptance): void {
+    this.generationCampaignId.set(accepted.campaignId);
+    this.generationRevision.set(accepted.campaignRevision);
+    const sequence = ++this.generationPollSequence;
+    void this.pollGeneration(accepted.campaignId, sequence);
   }
 
-  private async generate(
-    path: string,
-    body: object,
-    step: GenerationStep,
-  ): Promise<Campaign | undefined> {
-    this.setStep(step, 'active');
-    try {
-      const response = await this.post(path, body);
-      const payload = (await response.json().catch(() => ({}))) as CampaignResponse;
-      if (!response.ok) {
+  private async pollGeneration(campaignId: string, sequence: number): Promise<void> {
+    while (sequence === this.generationPollSequence) {
+      try {
+        const response = await this.request(`/api/admin/campaigns/${campaignId}/status`);
+        if (sequence !== this.generationPollSequence) return;
         if (response.status === 401) {
-          this.authenticated.set(false);
-          this.requestError.set('Your session expired. Sign in again.');
-          this.setStep(step, 'failed');
-          return undefined;
+          this.expireSession();
+          return;
         }
-        this.generationError.set(payload.error || this.generationErrorFor(response.status));
-        this.setStep(step, 'failed');
-        return undefined;
-      }
+        if (!response.ok) {
+          this.generationError.set(
+            await this.apiErrorMessage(response, this.generationErrorFor(response.status)),
+          );
+          this.generating.set(false);
+          return;
+        }
 
-      if (!payload.campaign) {
-        this.generationError.set('The campaign came back incomplete. Try again.');
-        this.setStep(step, 'failed');
-        return undefined;
-      }
+        const payload = (await response.json()) as { status?: GenerationStatus };
+        const status = payload.status;
+        if (!status || status.campaignId !== campaignId) {
+          this.generationError.set('Campaign progress came back incomplete. Try again.');
+          this.generating.set(false);
+          return;
+        }
+        this.generationError.set('');
+        this.generationRevision.set(status.campaignRevision);
+        this.stepStatus.set(stepsForGeneration(status.stage, status.state));
 
-      this.campaign.set(payload.campaign);
-      this.copyError.set(payload.copyError ?? '');
-      this.setStep(step, 'done');
-      return payload.campaign;
-    } catch {
-      this.generationError.set('Campaigns cannot be reached right now. Try again.');
-      this.setStep(step, 'failed');
-      return undefined;
+        if (status.campaignRevision > 0) await this.refreshOpenCampaign(campaignId, sequence);
+
+        if (status.state === 'failed' || status.state === 'ambiguous') {
+          this.generationError.set(generationFailureMessage(status));
+          this.retryStage.set(status.stage);
+          this.generating.set(false);
+          await this.refreshCampaigns();
+          return;
+        }
+
+        if (status.state === 'succeeded' && status.stage === 'prompts') {
+          this.retryStage.set(undefined);
+          this.generating.set(false);
+          await Promise.all([
+            this.refreshOpenCampaign(campaignId, sequence),
+            this.refreshCampaigns(),
+          ]);
+          return;
+        }
+      } catch {
+        if (sequence !== this.generationPollSequence) return;
+        this.generationError.set('Campaign progress cannot be reached right now. Retrying…');
+      }
+      await pollDelay();
     }
   }
 
@@ -739,21 +851,38 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected async openCampaign(summary: CampaignSummary): Promise<void> {
+    const sequence = ++this.generationPollSequence;
     this.generationError.set('');
     this.copyError.set('');
     try {
-      const response = await this.post('/admin-auth/campaigns/open', { id: summary.id });
+      const response = await this.request(`/api/admin/campaigns/${summary.id}`);
+      if (sequence !== this.generationPollSequence) return;
+      if (!response.ok) {
+        const message = await this.apiErrorMessage(
+          response,
+          'That campaign could not be opened. Try again.',
+        );
+        if (sequence !== this.generationPollSequence) return;
+        this.generationError.set(message);
+        await this.refreshCampaigns();
+        return;
+      }
       const payload = (await response.json().catch(() => ({}))) as CampaignResponse;
-      if (!response.ok || !payload.campaign) {
-        this.generationError.set(payload.error || 'That campaign could not be opened. Try again.');
+      if (sequence !== this.generationPollSequence) return;
+      if (!payload.campaign) {
+        this.generationError.set('That campaign could not be opened. Try again.');
         await this.refreshCampaigns();
         return;
       }
       this.campaign.set(payload.campaign);
+      this.generationCampaignId.set(payload.campaign.id);
+      this.generationRevision.set(payload.campaign.revision);
       this.stepStatus.set(stepsForStage(payload.campaign.stage));
+      this.setCopyWarning(payload.campaign);
       this.language.set(DEFAULT_LANGUAGE);
       this.view.set('campaign');
     } catch {
+      if (sequence !== this.generationPollSequence) return;
       this.generationError.set('Campaigns cannot be reached right now. Try again.');
     }
   }
@@ -785,10 +914,23 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (!target) {
       return;
     }
+    let deleted = false;
     try {
-      await this.post('/admin-auth/campaigns/delete', { id: target.id });
+      const response = await this.request(`/api/admin/campaigns/${target.id}`, {
+        method: 'DELETE',
+        headers: { 'If-Match': `"${String(target.revision)}"` },
+      });
+      if (!response.ok) {
+        this.generationError.set(
+          await this.apiErrorMessage(response, 'That campaign could not be deleted.'),
+        );
+        return;
+      }
+      deleted = true;
+    } catch {
+      this.generationError.set('That campaign could not be deleted. Check the connection.');
     } finally {
-      if (this.campaign()?.id === target.id) {
+      if (deleted && this.campaign()?.id === target.id) {
         this.showCampaigns();
       }
       await this.refreshCampaigns();
@@ -822,18 +964,48 @@ export class AdminComponent implements OnInit, OnDestroy {
       return;
     }
     const value = fieldId === 'hashtags' ? copy.hashtags : copy[fieldKey(fieldId)];
+    this.copySaveQueue = this.copySaveQueue
+      .then(() => this.saveCopyField(campaign.id, this.language(), fieldId, value))
+      .catch(() => {
+        this.generationError.set('That change could not be saved. Check the connection.');
+      });
+    await this.copySaveQueue;
+  }
+
+  private async saveCopyField(
+    campaignId: string,
+    language: Language,
+    fieldId: string,
+    value: string | readonly string[],
+  ): Promise<void> {
+    const expectedRevision = this.campaign()?.revision;
+    if (!expectedRevision || this.campaign()?.id !== campaignId) return;
     try {
-      const response = await this.post('/admin-auth/campaigns/copy/save', {
-        id: campaign.id,
-        language: this.language(),
-        field: fieldId,
-        value,
+      const response = await this.request(`/api/admin/campaigns/${campaignId}/copy`, {
+        method: 'PATCH',
+        body: { expectedRevision, language, field: fieldId, value },
       });
       if (!response.ok) {
-        const payload = (await response.json().catch(() => ({}))) as CampaignResponse;
-        this.generationError.set(payload.error || 'That change could not be saved.');
+        this.generationError.set(
+          await this.apiErrorMessage(response, 'That change could not be saved.'),
+        );
+        if (response.status === 409) await this.refreshOpenCampaign(campaignId);
         return;
       }
+      const payload = (await response.json()) as { revision?: number; updatedAt?: string };
+      if (!Number.isSafeInteger(payload.revision) || (payload.revision ?? 0) < 1) {
+        throw new Error('The save response did not include a campaign revision.');
+      }
+      this.campaign.update(current =>
+        current?.id === campaignId
+          ? {
+              ...current,
+              revision: payload.revision as number,
+              updatedAt: payload.updatedAt ?? current.updatedAt,
+            }
+          : current,
+      );
+      this.generationRevision.set(payload.revision as number);
       this.generationError.set('');
     } catch {
       this.generationError.set('That change could not be saved. Check the connection.');
@@ -924,7 +1096,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private async restoreSession(): Promise<void> {
     try {
-      const response = await this.post('/admin-auth/session');
+      const response = await this.request('/api/admin/session');
       if (!response.ok) {
         return;
       }
@@ -940,11 +1112,55 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private async loadWorkspace(): Promise<void> {
     await Promise.all([this.loadConfig(), this.refreshCampaigns()]);
+    await this.recoverGenerationWork();
+  }
+
+  private async recoverGenerationWork(): Promise<void> {
+    const sequence = ++this.generationPollSequence;
+    try {
+      const response = await this.request('/api/admin/generations');
+      if (sequence !== this.generationPollSequence || !this.authenticated()) return;
+      if (response.status === 401) {
+        this.expireSession();
+        return;
+      }
+      if (!response.ok) return;
+
+      const payload = (await response.json()) as RecoverableGenerationsResponse;
+      if (sequence !== this.generationPollSequence || !this.authenticated()) return;
+      const statuses = payload.generations ?? [];
+      const status =
+        statuses.find(candidate => candidate.state === 'queued' || candidate.state === 'running') ??
+        statuses[0];
+      if (!status) return;
+
+      this.generationCampaignId.set(status.campaignId);
+      this.generationRevision.set(status.campaignRevision);
+      this.stepStatus.set(stepsForGeneration(status.stage, status.state));
+      this.view.set('campaign');
+      if (status.campaignRevision > 0) {
+        await this.refreshOpenCampaign(status.campaignId, sequence);
+      }
+      if (sequence !== this.generationPollSequence) return;
+
+      if (status.state === 'failed' || status.state === 'ambiguous') {
+        this.generationError.set(generationFailureMessage(status));
+        this.retryStage.set(status.stage);
+        this.generating.set(false);
+        return;
+      }
+      this.generationError.set('');
+      this.retryStage.set(undefined);
+      this.generating.set(true);
+      void this.pollGeneration(status.campaignId, sequence);
+    } catch {
+      // Durable work remains on the server. A later login or explicit refresh can recover it.
+    }
   }
 
   private async loadConfig(): Promise<void> {
     try {
-      const response = await this.post('/admin-auth/campaigns/config');
+      const response = await this.request('/api/admin/config');
       if (!response.ok) {
         return;
       }
@@ -959,7 +1175,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private async refreshCampaigns(): Promise<void> {
     try {
-      const response = await this.post('/admin-auth/campaigns/list');
+      const response = await this.request('/api/admin/campaigns');
       if (!response.ok) {
         return;
       }
@@ -970,12 +1186,74 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  private async refreshOpenCampaign(
+    campaignId: string,
+    generationSequence?: number,
+  ): Promise<void> {
+    const response = await this.request(`/api/admin/campaigns/${campaignId}`);
+    if (
+      generationSequence !== undefined &&
+      generationSequence !== this.generationPollSequence
+    ) {
+      return;
+    }
+    if (!response.ok) return;
+    const payload = (await response.json()) as CampaignResponse;
+    if (
+      generationSequence !== undefined &&
+      generationSequence !== this.generationPollSequence
+    ) {
+      return;
+    }
+    if (!payload.campaign) return;
+    this.campaign.set(payload.campaign);
+    this.generationRevision.set(payload.campaign.revision);
+    this.setCopyWarning(payload.campaign);
+  }
+
+  private setCopyWarning(campaign: Campaign): void {
+    const missing = (['en', 'sv'] as const).filter(language => !campaign.copy[language]);
+    this.copyError.set(
+      missing.length === 1
+        ? `The ${missing[0] === 'en' ? 'English' : 'Swedish'} copy is still missing. Retry campaign copy to create both languages.`
+        : '',
+    );
+  }
+
+  private async handleGenerationFailure(
+    response: Response,
+    stage: GenerationStep,
+    retryable = true,
+  ): Promise<void> {
+    if (response.status === 401) {
+      this.expireSession();
+      return;
+    }
+    this.generationError.set(
+      await this.apiErrorMessage(response, this.generationErrorFor(response.status)),
+    );
+    this.setStep(stage, 'failed');
+    this.retryStage.set(retryable ? stage : undefined);
+  }
+
+  private expireSession(): void {
+    this.generationPollSequence += 1;
+    this.authenticated.set(false);
+    this.requestError.set('Your session expired. Sign in again.');
+    this.resetStudio();
+  }
+
+  private async apiErrorMessage(response: Response, fallback: string): Promise<string> {
+    const payload = (await response.json().catch(() => ({}))) as ApiError;
+    return payload.error?.message || fallback;
+  }
+
   private generationErrorFor(status: number): string {
     if (status === 429) {
       return 'Campaigns is busy right now. Try again shortly.';
     }
     if (status === 503) {
-      return 'OpenAI is not connected yet. Add the API key in .env and restart the server.';
+      return 'OpenAI is not connected yet. Add the API key to the worker-owned .env.worker file and restart the jobs worker.';
     }
     if (status === 504) {
       return 'The campaign took too long to create. Try again.';
@@ -1004,6 +1282,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.copyError.set('');
     this.generating.set(false);
     this.stepStatus.set(idleSteps());
+    this.generationCampaignId.set('');
+    this.generationRevision.set(0);
+    this.retryStage.set(undefined);
     this.language.set(DEFAULT_LANGUAGE);
     this.copiedId.set('');
     this.pendingDelete.set(undefined);
@@ -1019,13 +1300,25 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  private post(path: string, body?: object): Promise<Response> {
-    return fetch(path, {
-      method: 'POST',
+  private request(
+    path: string,
+    options: {
+      body?: object;
+      headers?: Readonly<Record<string, string>>;
+      method?: 'DELETE' | 'GET' | 'PATCH' | 'POST';
+    } = {},
+  ): Promise<Response> {
+    const init: RequestInit = {
       credentials: 'same-origin',
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-      body: body ? JSON.stringify(body) : undefined,
-    });
+      method: options.method ?? 'GET',
+    };
+    if (options.body) {
+      init.body = JSON.stringify(options.body);
+      init.headers = { ...options.headers, 'Content-Type': 'application/json' };
+    } else if (options.headers) {
+      init.headers = options.headers;
+    }
+    return fetch(path, init);
   }
 }
 
@@ -1041,12 +1334,58 @@ function stepsForStage(stage: CampaignStage): Record<GenerationStep, StepStatus>
   };
 }
 
-function fieldKey(id: string): keyof LanguageCopy {
-  return id as keyof LanguageCopy;
+function stepsForGeneration(
+  stage: GenerationStep,
+  state: GenerationState,
+): Record<GenerationStep, StepStatus> {
+  const order: readonly GenerationStep[] = ['strategy', 'copy', 'prompts'];
+  const selected = order.indexOf(stage);
+  return {
+    strategy: generationStepState(0, selected, state),
+    copy: generationStepState(1, selected, state),
+    prompts: generationStepState(2, selected, state),
+  };
+}
+
+function generationStepState(
+  index: number,
+  selected: number,
+  state: GenerationState,
+): StepStatus {
+  if (index < selected) return 'done';
+  if (index > selected) return 'waiting';
+  if (state === 'succeeded') return 'done';
+  if (state === 'failed' || state === 'ambiguous') return 'failed';
+  return 'active';
+}
+
+function generationFailureMessage(status: GenerationStatus): string {
+  return (
+    status.error?.message ??
+    (status.state === 'ambiguous'
+      ? 'The provider may have received the request, so it was not sent again. Review and retry it manually.'
+      : 'The campaign stage failed. Try it again.')
+  );
+}
+
+function pollDelay(): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, 1_000));
+}
+
+function fieldKey(id: string): EditableTextField {
+  if (
+    id === 'headline' ||
+    id === 'description' ||
+    id === 'primaryText' ||
+    id === 'fullCaption' ||
+    id === 'callToAction'
+  ) {
+    return id;
+  }
+  throw new Error(`Unknown editable campaign copy field: ${id}`);
 }
 
 /** Code points, matching how the server counts against each budget. */
 function characterCount(value: string): number {
   return [...value].length;
 }
-

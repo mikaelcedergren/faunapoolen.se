@@ -24,6 +24,9 @@ server {
   ssl_certificate_key /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/privkey.pem;
   include snippets/project-ssl-hardening.conf;
 
+  # Per-site HSTS, no includeSubDomains — the shared snippet's global variant stays opt-in.
+  add_header Strict-Transport-Security "max-age=31536000" always;
+
   return 301 https://faunapoolen.se$request_uri;
 }
 
@@ -35,6 +38,9 @@ server {
   ssl_certificate     /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/fullchain.pem;
   ssl_certificate_key /opt/homebrew/etc/letsencrypt/live/faunapoolen.se/privkey.pem;
   include snippets/project-ssl-hardening.conf;
+
+  # Per-site HSTS, no includeSubDomains — the shared snippet's global variant stays opt-in.
+  add_header Strict-Transport-Security "max-age=31536000" always;
 
   location = /healthz {
     proxy_pass http://127.0.0.1:3040;
@@ -50,5 +56,7 @@ server {
     proxy_pass http://127.0.0.1:3040;
     include snippets/project-proxy-common.conf;
     include snippets/project-proxy-cache.conf;
+    # Repeated here: the cache snippet's add_header otherwise drops inherited headers.
+    add_header Strict-Transport-Security "max-age=31536000" always;
   }
 }

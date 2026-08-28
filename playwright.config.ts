@@ -1,33 +1,20 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
+import {
+  createHermeticPlaywrightUse,
+  validateOwnedE2ERuntime,
+} from '@mikaelcedergren/cx-framework/platform/e2e-runner';
+import path from 'node:path';
 
-// Smoke test against the static site, served on a DEDICATED port so it never collides with the
-// always-on server (:3040). Chromium only — shares the cortex/bitsize/blinkdrop browser cache.
-const PORT = 4341;
+// Smoke test uses the runner-selected app origin and runner-owned exact-origin proxy.
+const RUNTIME = validateOwnedE2ERuntime({ productId: 'faunapoolen' });
 
 export default defineConfig({
   testDir: './e2e',
+  outputDir: path.join(RUNTIME.root, 'playwright-output'),
   timeout: 30_000,
   fullyParallel: true,
-  forbidOnly: !!process.env['CI'],
+  forbidOnly: process.env.CI === '1',
   reporter: 'list',
-  use: {
-    baseURL: `http://localhost:${PORT}`,
-  },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-  webServer: {
-    command: 'corepack pnpm build && node server/index.mjs',
-    env: {
-      ...process.env,
-      PORT: String(PORT),
-      SITE_BROWSER_DIR: 'dist/browser',
-      ADMIN_USERNAME: 'dev',
-      ADMIN_PASSWORD: 'dev',
-      ADMIN_COOKIE_SECURE: 'false',
-      // Never read or write the real campaign store from a test run.
-      CAMPAIGN_DATA_DIR: '.run/e2e-campaigns',
-    },
-    url: `http://localhost:${PORT}/healthz`,
-    reuseExistingServer: !process.env['CI'],
-    timeout: 60_000,
-  },
+  use: createHermeticPlaywrightUse(RUNTIME),
+  projects: [{ name: 'chromium' }],
 });

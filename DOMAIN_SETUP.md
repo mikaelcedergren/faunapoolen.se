@@ -1,41 +1,73 @@
 # Domain & routing — faunapoolen.se
 
-The site runs as a local always-on Express server on this Mac mini (same pattern as
-**bitsize.me** and **blinkdrop**): prerendered SSG output served by `server/index.mjs`,
-kept alive by a system LaunchDaemon and fronted by nginx.
+The site is prepared as a local always-on service on this Mac mini (same public-gateway pattern as
+**bitsize.me** and **blinkdrop**): prerendered SSG output behind nginx, with a compiled Express web
+process and a separate listener-free campaign worker in the target architecture.
 
 ```
 visitor -> DNS -> 81.170.132.41 -> router TCP 80/443 -> nginx -> Express (127.0.0.1:3040) -> current release
 ```
 
-Important current state: the local service and nginx route are prepared on this Mac, but public DNS is intentionally not cut over yet. The existing public domain should keep serving the old/live site until the owner explicitly approves the move.
+Important current state: public DNS was cut over to this Mac on 2026-08-27 and HTTPS is live (see
+the go-live record below). The Mac-mini service still runs the legacy `server/index.mjs` process and
+its legacy campaign directory; the compiled web/worker pair and SQLite authority are checked-in
+source only. The local legacy runtime must remain unchanged until the owner separately approves the
+campaign-data migration in [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md).
+
+That frozen legacy entrypoint still reads the historical common `.env` file solely to preserve the
+currently selected service's restart contract. It is not part of the target role-separated
+architecture: do not extend or copy that loader. The stopped-service cutover retires it when the
+compiled entrypoints select `.env.web` and `.env.worker` instead. Its only source delta is an exact
+test-only opt-out from loading the historical file; the installed daemon does not set that switch,
+and `pnpm test:legacy` launches the wrapper directly so deletion fails before cutover.
 
 ## Local service
 
-- Service definition: [`launchd/com.faunapoolen.server.plist`](launchd/com.faunapoolen.server.plist)
-- Listens on `127.0.0.1:3040` (`HOST`/`PORT`), `NODE_ENV=production`.
-- Logs: `.run/server.out.log`, `.run/server.err.log`.
-- Health check: `http://127.0.0.1:3040/healthz`.
+The currently running legacy unit is operational state, not represented by the tracked target
+templates. It remains untouched. The checked-in target has two independently supervised roles from
+one sealed server artifact:
 
-Install / control (system LaunchDaemon — the server standard; needs sudo):
+- `server/dist/index.js`: the only listener, bound to `127.0.0.1:3040`.
+- `server/dist/worker.js`: no listener; owns durable campaign generation claims.
+- `data/faunapoolen.db`: private structured product state shared through SQLite, never `.run/`.
+- `.env.web`: owned mode-`0600` web secrets; `.env.worker`: owned mode-`0600` provider secret.
+- `launchd/com.faunapoolen.server.plist`: selected compiled web artifact plus sealed identity.
+- `launchd/com.faunapoolen.jobs.plist`: selected compiled worker artifact plus the same sealed
+  identity, with no `HOST` or `PORT`.
+- Web logs: `.run/server.out.log`, `.run/server.err.log`; worker logs:
+  `.run/jobs.out.log`, `.run/jobs.err.log`.
+- Health: `http://127.0.0.1:3040/healthz`; the worker proves readiness through its sealed
+  identity-file lease and has no HTTP endpoint. While `CAMPAIGN_GENERATION_ENABLED=0`, that lease
+  proves the selected process is current but the worker remains explicitly claim-disabled.
+
+Do not install or select target service definitions before the stopped-service import, backup
+activation, source-away artifact verification, and rollback proof in the cutover runbook.
+
+Source validation is safe before cutover and changes nothing:
 
 ```bash
-sudo cp launchd/com.faunapoolen.server.plist /Library/LaunchDaemons/
-sudo chown root:wheel /Library/LaunchDaemons/com.faunapoolen.server.plist
-sudo chmod 644 /Library/LaunchDaemons/com.faunapoolen.server.plist
-sudo launchctl bootstrap system /Library/LaunchDaemons/com.faunapoolen.server.plist  # install + start
-sudo launchctl kickstart -k system/com.faunapoolen.server   # restart after server-side code changes
-sudo launchctl bootout system/com.faunapoolen.server         # stop
+bin/install-server-daemon          # same as --check
+bin/install-server-daemon --check
 ```
 
-Publish content changes without restarting the service:
+After every earlier data, backup, selected-artifact, identity, role-file, and database gate in
+[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) passes, `bin/install-server-daemon --apply` installs both
+target plist files as one transaction. It validates only private-file metadata, never reads secret
+or database contents, requires both roles exactly unloaded, and accepts only an all-absent or
+all-exact target set. A failed later write rolls back definitions created earlier in the attempt.
+It does not load, stop, start, kick, or restart either role. Activation remains a separate explicitly
+authorised privileged step; never apply the installer as a shortcut around the cutover runbook.
+
+Publish a change proved browser-only without restarting the service:
 
 ```bash
-node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
+node ../server-ops/bin/site-release.mjs --site faunapoolen --browser-only --apply
 ```
 
-Restart the daemon after server-side code or dependency changes. The shared release and rollback
-behavior is owned by the root [`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
+Changes that can affect both sides use the paired transaction. After the target cutover, a change
+proved server-only may use the shared two-role server-only release/restart contract. Release and
+rollback behavior is owned by the root
+[`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
 ## nginx
 
@@ -45,35 +77,57 @@ The active nginx config lives at:
 /opt/homebrew/etc/nginx/servers/faunapoolen.se.conf
 ```
 
-It is intentionally in HTTP prelaunch mode until DNS is moved and a real certificate is issued. The HTTP ACME route is ready, and the prepared HTTPS configuration should be installed only after certificate issuance.
+Since the 2026-08-27 cutover it is the live HTTPS configuration — `ops/faunapoolen.nginx.live.conf.example` installed verbatim: the ACME location stays on port 80, all HTTP and `www` traffic 301s to the canonical apex HTTPS URL, and only the HTTPS apex proxies to the app. Certificate renewal is owned by the shared `com.cortex.cert-renewal` job.
 
-Public static pages use the shared 60-second nginx micro-cache. `/healthz` and `/admin-auth/` have
-dedicated uncached proxy locations so health checks are live and authentication responses can never
-inherit page caching.
+Public static pages use the shared 60-second nginx micro-cache. The current legacy configuration has
+uncached `/healthz` and `/admin-auth/` locations. At the compiled-runtime cutover, `/healthz` and the
+entire `/api/admin` prefix must be uncached; `/admin-auth` is removed as an API and remains only a
+noindexed 404 safety path. Do not cache authentication, generation status, or campaign mutations.
 
-The `X-Robots-Tag: noindex, nofollow` that the Express server sets on `/admin`, `/en/admin` and
-`/admin-auth` needs no nginx configuration — `proxy_pass` forwards upstream response headers as they
-are. Keep it that way when the prepared HTTPS config is installed: nothing in nginx may strip or
-override that header.
+The compiled Express server sets `X-Robots-Tag: noindex, nofollow` on `/admin`, `/en/admin`,
+`/api/admin`, and the retired `/admin-auth` prefix. `proxy_pass` forwards those headers; nothing in
+nginx may strip or override them.
 
-## Go-live (do not do until approved)
+## Go-live (completed 2026-08-27)
 
-The domain `faunapoolen.se` currently remains on the existing public host by design. The cutover
-follows the shared procedure — see [`../GO-LIVE.md`](../GO-LIVE.md) and
-[`../SERVER-STANDARD.md`](../SERVER-STANDARD.md). Apply it with these faunapoolen-specific values:
+The owner moved public DNS to this Mac on 2026-08-27, ahead of the runtime migration: the domain
+now serves the legacy `server/index.mjs` process through nginx. The cutover followed the shared
+procedure — see [`../GO-LIVE.md`](../GO-LIVE.md) and
+[`../SERVER-STANDARD.md`](../SERVER-STANDARD.md) — with these faunapoolen-specific values:
+
+The campaign-data/runtime migration in [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) remains a
+separate, still-pending gate; never combine an unproved first compiled-runtime start with further
+public changes.
 
 - **Domains:** `faunapoolen.se` and `www.faunapoolen.se`.
 - **Local target:** `127.0.0.1:3040`, daemon `com.faunapoolen.server`.
 - **Health endpoint:** `http://127.0.0.1:3040/healthz`.
-- **Status:** intentional HTTP prelaunch — DNS not cut over, HTTP/ACME route ready, prepared HTTPS
-  configuration installed only after certificate issuance.
+- **Status:** live since 2026-08-27 — DNS cut over, certificate issued for both names, live HTTPS
+  configuration installed and externally verified.
 
 Add a `public/CNAME` containing `faunapoolen.se` **only if** deploying via GitHub Pages instead of
 the local server (omitted by default so a test deploy can't hijack the domain).
 
 Cloudflared is not used for this cutover; the standard path is direct DNS/static IP/router/nginx.
 
-## Cutover runbook (prepared 2026-07-06)
+### Cutover record (2026-08-27)
+
+Executed per the baseline below with fresh same-day verification: apex A `81.170.132.41` and the
+`www` → apex CNAME confirmed on 1.1.1.1 and 8.8.8.8 with the GitHub Pages A/AAAA records gone; the
+public HTTP path and ACME route proven through the router; the certificate issued via the prepared
+webroot (`certbot certonly --webroot`, both names, expires 2026-11-25, auto-renewed by
+`com.cortex.cert-renewal`); the live nginx config installed verbatim, `nginx -t` clean, reloaded.
+External checks: apex 200 over HTTP/2 with a certificate valid for both names; HTTP and `www` 301
+to the apex preserving paths; sitemap, `/koi-pond-series.html`, a blog post carrying
+`article:published_time`, `/en/`, and a real 404 all correct; gzip active.
+
+Follow-ups from "After 1–2 weeks stable" — the owner waived the rollback window on 2026-08-27:
+HSTS is live since that day (per-site header in the nginx config and its `ops/` example,
+`max-age=31536000`, deliberately without `includeSubDomains`; the shared hardening snippet's global
+variant stays opt-in). Still with the owner: restore the web-record TTL to 3600 at one.com, and
+have the GitHub Pages custom-domain binding removed.
+
+## Historical public-cutover baseline (observed 2026-07-06)
 
 The generic activation procedure is [`../GO-LIVE.md`](../GO-LIVE.md) — this section adds only what
 is faunapoolen-specific. The stakes are different here: this domain ranks exceptionally well, so
@@ -81,49 +135,52 @@ the goal is that **Google notices nothing except the IP changing**. The current 
 Pages, and the www DNS record points at a third-party GitHub account
 (`benjaminrehmie.github.io`) — assume the old site's content cannot be updated, only pointed at.
 
-### Parity baseline — what the live host does today (probed 2026-07-06)
+Everything below is dated evidence, not current authority. Before any public move, freshly verify
+the live host, DNS/TTL records, registrar/WHOIS renewal state, TLS behavior, redirects, and nginx
+preparation, then record the new observation date. Do not execute a 2026-07 observation as a current
+runbook.
 
-| Behaviour                        | GitHub Pages today   | Mac mini after cutover         | Action                                                                                                                             |
-| -------------------------------- | -------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `https://` apex                  | 200, valid cert      | 200 after certbot              | —                                                                                                                                  |
-| `http://`                        | **200, no redirect** | 301 → https                    | Intentional improvement, keep                                                                                                      |
-| `https://www`                    | 301 → apex           | **must replicate**             | Check the prepared 443 block does `www → apex 301`. Note: the wargr conf serves www directly (200) — do NOT copy that pattern here |
-| `/about` (no slash)              | 301 → `/about/`      | 200, no redirect               | Acceptable — canonicals point to `/about/`; optional nginx tidy later                                                              |
-| Unknown path                     | real 404             | real 404                       | —                                                                                                                                  |
-| HTML caching                     | `max-age=600`        | `no-cache`                     | Fine (fresher after deploys)                                                                                                       |
-| Compression                      | gzip                 | gzip                           | —                                                                                                                                  |
-| `access-control-allow-origin: *` | present (GH default) | absent                         | Nothing consumes assets cross-origin — no action                                                                                   |
-| HSTS                             | absent               | enable after HTTPS is verified | Do not pin browsers until the new certificate and both names are proven                                                            |
+### Historical parity baseline — probed 2026-07-06
+
+| Behaviour                        | GitHub Pages observed 2026-07-06 | Mac mini after cutover         | Action                                                                                                                             |
+| -------------------------------- | -------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `https://` apex                  | 200, valid cert                  | 200 after certbot              | —                                                                                                                                  |
+| `http://`                        | **200, no redirect**             | 301 → https                    | Intentional improvement, keep                                                                                                      |
+| `https://www`                    | 301 → apex                       | **must replicate**             | Check the prepared 443 block does `www → apex 301`. Note: the wargr conf serves www directly (200) — do NOT copy that pattern here |
+| `/about` (no slash)              | 301 → `/about/`                  | 200, no redirect               | Acceptable — canonicals point to `/about/`; optional nginx tidy later                                                              |
+| Unknown path                     | real 404                         | real 404                       | —                                                                                                                                  |
+| HTML caching                     | `max-age=600`                    | `no-cache`                     | Fine (fresher after deploys)                                                                                                       |
+| Compression                      | gzip                             | gzip                           | —                                                                                                                                  |
+| `access-control-allow-origin: *` | present (GH default)             | absent                         | Nothing consumes assets cross-origin — no action                                                                                   |
+| HSTS                             | absent                           | enable after HTTPS is verified | Do not pin browsers until the new certificate and both names are proven                                                            |
 
 ### Pre-flight (on the Mac mini, before touching DNS)
 
-1. Pull this repo, install the locked dependencies, publish a release, run tests, and restart the
-   daemon if server-side code or dependencies changed:
+1. Pull this repo, install the locked dependencies, run the complete source gate, and publish a
+   change proved browser-only. This step assumes the separately authorised campaign/runtime
+   cutover has already selected and finalized the compiled browser/server pair:
 
    ```bash
    corepack pnpm install --frozen-lockfile
-   node ../server-ops/bin/site-release.mjs --site faunapoolen --apply
-   corepack pnpm test:admin
+   corepack pnpm check
+   node ../server-ops/bin/site-release.mjs --site faunapoolen --browser-only --apply
    corepack pnpm e2e
    ```
 
-   Only when server-side code or dependencies changed, restart the service after those checks:
-
-   ```bash
-   sudo launchctl kickstart -k system/com.faunapoolen.server
-   ```
-
-   Verify `/healthz` and that a blog post's `<head>` carries `article:published_time` (proves the
-   2026-07 build is what's serving, not an older dist). Never restart after a pull before the
-   dependency install: server-side dependencies may have changed even when the static build passes.
+   If server source or dependencies changed, prepare and select the source-identical pair through
+   the root paired-cutover contract; do not publish either half, start source files, or restart only
+   one role. Verify `/healthz`, `/cx-server.json`, worker readiness, and that a blog post's `<head>`
+   carries `article:published_time` (proves the expected browser build is serving). Never restart
+   after a pull before dependency and artifact validation.
 
 2. Inspect `/opt/homebrew/etc/nginx/servers/faunapoolen.se.conf`: the prepared HTTPS configuration
    has separate blocks for the apex proxy and the `www` → apex 301. `nginx -t` passes.
 3. `launchctl print system/com.cortex.cert-renewal` — renewal job loaded; certbot webroot matches
    the ACME location root (`/opt/homebrew/var/www/letsencrypt`).
 4. Router still forwards TCP 80/443 (true for the six live domains — just confirm unchanged).
-5. At the registrar, confirm the one.com renewal invoice/payment. Registry WHOIS reported an expiry
-   date of **2026-08-14** on 2026-07-20; do not cut over without confirming renewal.
+5. At the registrar, freshly confirm the one.com renewal state. Historical registry WHOIS observed
+   on 2026-07-20 reported an expiry date of **2026-08-14**, which has passed; it is not evidence of
+   current registration. Do not cut over without a new authoritative lookup and recorded result.
 6. Lower TTL on the apex A/AAAA and `www` records to 300 at least one full current TTL (currently
    3600 seconds) before cutover. The old GitHub Pages AAAA records may be deleted at this point:
    IPv6 clients will safely fall back to the still-live GitHub Pages A records.

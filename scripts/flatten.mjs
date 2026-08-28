@@ -5,7 +5,7 @@
 // dist/browser and flattens each such leaf directory into a flat file `koi-pond-series.html`,
 // leaving section/container dirs (about/, blog/, blog/posts/, en/, ...) untouched. Result:
 // dist/browser mirrors the live URL tree exactly, so plain static serving preserves every URL.
-import { existsSync, readdirSync, renameSync, rmdirSync } from 'node:fs';
+import { existsSync, readdirSync, renameSync, rmdirSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -45,4 +45,16 @@ function flatten(dir) {
 }
 
 flatten(BROWSER);
+
+// Staged releases are sealed to exactly `browser/` + `release.json`, but `ng build` also writes
+// license/route byproducts at the output root — staged mode must drop them before sealing.
+if (process.env.SITE_RELEASE_DIR) {
+  for (const name of ['3rdpartylicenses.txt', 'prerendered-routes.json']) {
+    const file = join(resolve(process.env.SITE_RELEASE_DIR), name);
+    if (existsSync(file)) {
+      rmSync(file);
+      console.log(`[flatten] removed staged build byproduct ${name}`);
+    }
+  }
+}
 console.log(`[flatten] done — ${count} file(s) flattened.`);

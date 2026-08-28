@@ -13,11 +13,11 @@
     <key>ProgramArguments</key>
     <array>
       <string>/opt/homebrew/bin/node</string>
-      <string>index.mjs</string>
+      <string>/Users/cortex/Development/faunapoolen.se/.run/site-releases/server/current-server/artifact/server/dist/index.js</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Users/cortex/Development/faunapoolen.se/server</string>
+    <string>/Users/cortex/Development/faunapoolen.se</string>
 
     <key>EnvironmentVariables</key>
     <dict>
@@ -29,7 +29,16 @@
       <string>3040</string>
       <key>NODE_ENV</key>
       <string>production</string>
-
+      <key>APP_BASE_URL</key>
+      <string>https://faunapoolen.se</string>
+      <key>DATA_DIR</key>
+      <string>data</string>
+      <key>DB_PATH</key>
+      <string>data/faunapoolen.db</string>
+      <key>CAMPAIGN_GENERATION_ENABLED</key>
+      <string>0</string>
+      <key>CX_SERVER_RELEASE_IDENTITY_FILE</key>
+      <string>/Users/cortex/Development/faunapoolen.se/.run/site-releases/server/current-server/server-release.json</string>
     </dict>
 
     <key>RunAtLoad</key>

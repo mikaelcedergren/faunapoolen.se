@@ -11,7 +11,9 @@ import { loadProjectEnv } from './load-env.mjs';
 // section directories (/about/) and literal *.html files (/koi-pond-series.html); the shared
 // clean-URL routing serves both. SAMEORIGIN: this marketing site may frame its own pages.
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
-loadProjectEnv(join(ROOT, '.env'));
+if (process.env.FAUNAPOOLEN_LOAD_ENV_FILE !== 'false') {
+  loadProjectEnv(join(ROOT, '.env'));
+}
 
 const app = createStaticSiteServer({
   express,

@@ -1,10 +1,27 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
 
+const developmentEnvironment = {
+  ...process.env,
+  APP_BASE_URL: 'http://127.0.0.1:4240',
+  DATA_DIR: '.run/dev/data',
+  DB_PATH: '.run/dev/data/faunapoolen.db',
+  HOST: '127.0.0.1',
+  NODE_ENV: 'development',
+  PORT: '4241',
+};
+
 const children = [
-  spawn(process.execPath, ['server/admin-dev.mjs'], { stdio: 'inherit' }),
+  spawn('server/node_modules/.bin/tsx', ['watch', 'server/src/index.ts'], {
+    env: developmentEnvironment,
+    stdio: 'inherit',
+  }),
+  spawn('server/node_modules/.bin/tsx', ['watch', 'server/src/worker.ts'], {
+    env: developmentEnvironment,
+    stdio: 'inherit',
+  }),
   spawn(
-    'ng',
+    'node_modules/.bin/ng',
     [
       'serve',
       '--configuration',
@@ -16,7 +33,7 @@ const children = [
       '--proxy-config',
       'proxy.conf.json',
     ],
-    { stdio: 'inherit' },
+    { env: developmentEnvironment, stdio: 'inherit' },
   ),
 ];
 

@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/@mikaelcedergren/cx-framework/platform/cx-product.schema.json",
+  "schemaVersion": 1,
+  "id": "faunapoolen",
+  "family": "web",
+  "profile": "hybrid-site",
+  "deployment": "mac-mini",
+  "frontend": {
+    "framework": "angular",
+    "rendering": "ssg",
+    "designSystem": "cx-framework",
+    "visualSystem": "product-skin"
+  },
+  "capabilities": {
+    "authentication": "owner",
+    "persistentData": "structured-records",
+    "backgroundWork": "durable",
+    "externalEffects": ["ai"]
+  }
+}

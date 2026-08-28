@@ -116,11 +116,27 @@
             @if (generationError()) {
               <cx-alert mood="danger" [heading]="generationError()" />
             }
+            @if (retryStage()) {
+              <cx-button
+                text="Retry this stage"
+                icon="reload"
+                mood="primary"
+                [loading]="generating()"
+                [disabled]="generating()"
+                (pressed)="retryGeneration()"
+              />
+            }
             @if (copyError()) {
               <cx-alert mood="warning" [heading]="copyError()" />
             }
 
-            @if (campaign(); as current) {
+            @if (generating() && !campaign()) {
+              <cx-state-message
+                state="pending"
+                heading="Building the campaign strategy"
+                description="The work is safely queued. You can leave this page while it continues."
+              />
+            } @else if (campaign(); as current) {
               <cx-stack gap="xl" gapMobile="lg">
                 <section class="fp-section" aria-label="Campaign copy">
                   @if (activeCopy()) {
@@ -242,10 +258,19 @@
                       description="Three scenes that carry the same promise."
                       layout="horizontal"
                     />
-                  } @else {
+                  } @else if (current.stage !== 'strategy') {
                     <cx-state-message
                       heading="No image prompts yet"
                       description="They are written after the campaign copy."
+                      icon="image"
+                      layout="horizontal"
+                      [action]="writePromptsAction"
+                      (action)="writeImagePrompts()"
+                    />
+                  } @else {
+                    <cx-state-message
+                      heading="No image prompts yet"
+                      description="Write the campaign copy first."
                       icon="image"
                       layout="horizontal"
                     />

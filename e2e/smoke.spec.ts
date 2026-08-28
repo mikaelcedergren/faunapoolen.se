@@ -1,5 +1,98 @@
 import { expect, test } from '@playwright/test';
 
+const TEST_ORIGIN = process.env['CX_E2E_BASE_URL'];
+if (!TEST_ORIGIN) throw new Error('Faunapoolen E2E requires its wrapper-owned origin.');
+const OWNED_E2E_PORT = Number(new URL(TEST_ORIGIN).port);
+const OTHER_E2E_ORIGIN = `http://127.0.0.1:${OWNED_E2E_PORT === 49_152 ? 49_153 : 49_152}`;
+const LOCALLY_FULFILLED_URLS = new Set([
+  'https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap',
+  'https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap',
+  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0',
+  'https://www.googletagmanager.com/gtag/js?id=G-E1BFSP43WZ',
+]);
+const unexpectedExternalRequests = new WeakMap<object, string[]>();
+
+test.beforeEach(async ({ context }) => {
+  const unexpected: string[] = [];
+  unexpectedExternalRequests.set(context, unexpected);
+  await context.route('**/*', async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+    if (url.origin === TEST_ORIGIN) {
+      await route.continue();
+      return;
+    }
+
+    if (request.method() === 'GET' && LOCALLY_FULFILLED_URLS.has(url.href)) {
+      await route.fulfill({
+        status: 200,
+        contentType: url.hostname === 'fonts.googleapis.com' ? 'text/css' : 'text/javascript',
+        body: '',
+      });
+      return;
+    }
+
+    unexpected.push(`${request.method()} ${url.href}`);
+    await route.abort('blockedbyclient');
+  });
+});
+
+test.afterEach(async ({ context }) => {
+  expect(unexpectedExternalRequests.get(context) ?? []).toEqual([]);
+});
+
+test('the browser records and blocks every origin except its exact E2E server', async ({
+  context,
+  page,
+}) => {
+  const blockedUrls = [
+    'http://127.0.0.1:3040/healthz',
+    `${OTHER_E2E_ORIGIN}/healthz`,
+    'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0&unexpected=1',
+    'https://cx-network-isolation.invalid/probe',
+  ];
+  for (const blockedUrl of blockedUrls) {
+    const failedRequest = page.waitForEvent(
+      'requestfailed',
+      (request) => request.url() === blockedUrl,
+    );
+    await page.goto(blockedUrl).catch(() => undefined);
+    expect((await failedRequest).failure()?.errorText).toBe('net::ERR_BLOCKED_BY_CLIENT');
+  }
+  const recorded = unexpectedExternalRequests.get(context);
+  expect(recorded).toEqual(blockedUrls.map((url) => `GET ${url}`));
+  recorded?.splice(0);
+});
+
+test('browser launch transport sends production through the owned proxy', async ({
+  context,
+  page,
+}) => {
+  await context.unroute('**/*');
+  const response = await page.goto('http://127.0.0.1:3040/cx-e2e-launch-proxy-proof');
+  expect(response?.status()).toBe(403);
+  expect(await response?.text()).toContain('E2E proxy denied this origin.');
+});
+
+test('API and test-process transports cannot reach another origin', async ({ request }) => {
+  for (const url of [
+    'http://127.0.0.1:3040/healthz',
+    `${OTHER_E2E_ORIGIN}/healthz`,
+    'http://cx-network-isolation.invalid/probe',
+    'https://cx-network-isolation.invalid/probe',
+  ]) {
+    const response = await request.get(url, {
+      failOnStatusCode: false,
+      maxRedirects: 0,
+    });
+    expect(response.url()).toBe(url);
+    expect(response.status()).toBe(403);
+  }
+  await expect(fetch('http://127.0.0.1:3040/healthz')).rejects.toThrow(
+    'E2E network isolation blocked',
+  );
+});
+
 test('home renders the real Faunapoolen site', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/Faunapoolen/i);
@@ -31,8 +124,8 @@ test('the admin is excluded from search and every public page stays indexable', 
   expect(rules).toContain('Disallow: /en/admin');
   expect(await (await request.get('/sitemap.xml')).text()).not.toContain('/admin');
 
-  for (const path of ['/admin/', '/en/admin/', '/admin-auth/session']) {
-    const res = await request.fetch(path, { method: path.endsWith('session') ? 'POST' : 'GET' });
+  for (const path of ['/admin/', '/en/admin/', '/admin-auth/legacy', '/api/admin/session']) {
+    const res = await request.get(path);
     expect(res.headers()['x-robots-tag'], path).toBe('noindex, nofollow');
   }
 
@@ -124,6 +217,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     id: '11111111-2222-4333-8444-555555555555',
     createdAt: '2026-08-08T09:00:00.000Z',
     updatedAt: '2026-08-08T09:00:00.000Z',
+    revision: 3,
     idea: roughIdea,
     name: strategy.name,
     stage: 'strategy',
@@ -133,69 +227,87 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   };
 
   let createPayload: unknown;
+  let saved: unknown;
 
-  await page.route('**/admin-auth/campaigns/create', async (route) => {
+  const completedCampaign = {
+    ...campaign,
+    stage: 'complete' as const,
+    copy: {
+      sv: languageCopy(
+        'En badplats som hör hemma',
+        'Bada hemma utan att trädgården blir ett byggprojekt.',
+        'Boka rådgivning',
+      ),
+      en: languageCopy(
+        'A garden you can swim in',
+        'Swim at home without turning the garden into a building site.',
+        'Book a consultation',
+      ),
+    },
+    imagePrompts: [
+      {
+        concept: 'photograph',
+        label: 'Straight photograph',
+        prompt:
+          'A documentary photograph of a natural swimming pond.\n\nPHOTOGRAPHIC STYLE\nNo HDR tone mapping.',
+        altText: 'A natural swimming pond in a Swedish garden.',
+        ruleIds: ['photo-not-poster'],
+        why: 'A believable photograph earns the attention a poster does not.',
+      },
+    ],
+  };
+
+  await page.route('**/api/admin/campaigns', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.continue();
+      return;
+    }
     createPayload = route.request().postDataJSON();
-    await route.fulfill({ contentType: 'application/json', json: { campaign } });
-  });
-
-  await page.route('**/admin-auth/campaigns/copy', async (route) => {
     await route.fulfill({
       contentType: 'application/json',
       json: {
-        campaign: {
-          ...campaign,
-          stage: 'copy',
-          copy: {
-            sv: languageCopy(
-              'En badplats som hör hemma',
-              'Bada hemma utan att trädgården blir ett byggprojekt.',
-              'Boka rådgivning',
-            ),
-            en: languageCopy(
-              'A garden you can swim in',
-              'Swim at home without turning the garden into a building site.',
-              'Book a consultation',
-            ),
-          },
+        generation: {
+          campaignId: campaign.id,
+          campaignRevision: 0,
+          jobId: 'synthetic-browser-job',
+          state: 'queued',
         },
       },
+      status: 202,
     });
   });
 
-  await page.route('**/admin-auth/campaigns/prompts', async (route) => {
-    await route.fulfill({
-      contentType: 'application/json',
-      json: {
-        campaign: {
-          ...campaign,
-          stage: 'complete',
-          copy: {
-            sv: languageCopy(
-              'En badplats som hör hemma',
-              'Bada hemma utan att trädgården blir ett byggprojekt.',
-              'Boka rådgivning',
-            ),
-            en: languageCopy(
-              'A garden you can swim in',
-              'Swim at home without turning the garden into a building site.',
-              'Book a consultation',
-            ),
+  await page.route(`**/api/admin/campaigns/${campaign.id}/**`, async (route) => {
+    const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/status')) {
+      await route.fulfill({
+        contentType: 'application/json',
+        json: {
+          status: {
+            campaignId: campaign.id,
+            campaignRevision: completedCampaign.revision,
+            jobId: 'synthetic-browser-job',
+            stage: 'prompts',
+            state: 'succeeded',
+            updatedAt: completedCampaign.updatedAt,
           },
-          imagePrompts: [
-            {
-              concept: 'photograph',
-              label: 'Straight photograph',
-              prompt:
-                'A documentary photograph of a natural swimming pond.\n\nPHOTOGRAPHIC STYLE\nNo HDR tone mapping.',
-              altText: 'A natural swimming pond in a Swedish garden.',
-              ruleIds: ['photo-not-poster'],
-              why: 'A believable photograph earns the attention a poster does not.',
-            },
-          ],
         },
-      },
-    });
+      });
+      return;
+    }
+    if (url.pathname.endsWith('/copy') && route.request().method() === 'PATCH') {
+      saved = route.request().postDataJSON();
+      await route.fulfill({
+        contentType: 'application/json',
+        json: { ok: true, revision: 4, updatedAt: '2026-08-08T09:01:00.000Z' },
+      });
+      return;
+    }
+    await route.fallback();
+  });
+
+  await page.route(`**/api/admin/campaigns/${campaign.id}`, async (route) => {
+    await route.fulfill({ contentType: 'application/json', json: { campaign: completedCampaign } });
   });
 
   await page.goto('/admin');
@@ -204,8 +316,8 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await expect(page.locator('nav.navigation')).toHaveCount(0);
   await expect(page.getByText('Sign in to open your tools.')).toBeVisible();
 
-  await page.getByRole('textbox', { name: 'Username' }).fill('dev');
-  await page.getByRole('textbox', { name: 'Password' }).fill('dev');
+  await page.getByRole('textbox', { name: 'Username' }).fill('faunapoolen-e2e-owner');
+  await page.getByRole('textbox', { name: 'Password' }).fill('faunapoolen-e2e-owner-password');
   await page.getByRole('button', { name: 'Sign in' }).click();
 
   await expect(page.getByRole('heading', { name: 'Campaigns' })).toBeVisible();
@@ -245,17 +357,12 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await expect(page.locator('cx-budget')).toHaveCount(0);
 
   // Editing saves on blur.
-  let saved: unknown;
-  await page.route('**/admin-auth/campaigns/copy/save', async (route) => {
-    saved = route.request().postDataJSON();
-    await route.fulfill({ contentType: 'application/json', json: { ok: true } });
-  });
   await headline.fill('A garden to swim in');
   await headline.blur();
   await expect
     .poll(() => saved)
     .toEqual({
-      id: campaign.id,
+      expectedRevision: 3,
       language: 'en',
       field: 'headline',
       value: 'A garden to swim in',
@@ -292,6 +399,77 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await page.getByText('Log out', { exact: true }).click();
   await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
   expect(browserErrors).toEqual([]);
+});
+
+test('a fresh browser session recovers failed work before its campaign row exists', async ({
+  page,
+}) => {
+  const campaignId = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+  let retryPayload: unknown;
+
+  await page.route('**/api/admin/generations', async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      json: {
+        generations: [
+          {
+            campaignId,
+            campaignRevision: 0,
+            error: {
+              code: 'provider_create_ambiguous',
+              message: 'The provider may have received the first request. Review and retry it.',
+            },
+            jobId: 'recovered-browser-job',
+            stage: 'strategy',
+            state: 'ambiguous',
+            updatedAt: '2026-08-25T11:00:00.000Z',
+          },
+        ],
+      },
+    });
+  });
+  await page.route(`**/api/admin/campaigns/${campaignId}/retry`, async (route) => {
+    retryPayload = route.request().postDataJSON();
+    await route.fulfill({
+      contentType: 'application/json',
+      json: {
+        generation: {
+          campaignId,
+          campaignRevision: 0,
+          jobId: 'retried-browser-job',
+          state: 'queued',
+        },
+      },
+      status: 202,
+    });
+  });
+  await page.route(`**/api/admin/campaigns/${campaignId}/status`, async (route) => {
+    await route.fulfill({
+      contentType: 'application/json',
+      json: {
+        status: {
+          campaignId,
+          campaignRevision: 0,
+          error: { code: 'synthetic_retry_failure', message: 'Synthetic retry stopped.' },
+          jobId: 'retried-browser-job',
+          stage: 'strategy',
+          state: 'failed',
+          updatedAt: '2026-08-25T11:01:00.000Z',
+        },
+      },
+    });
+  });
+
+  await page.goto('/admin');
+  await page.getByRole('textbox', { name: 'Username' }).fill('faunapoolen-e2e-owner');
+  await page.getByRole('textbox', { name: 'Password' }).fill('faunapoolen-e2e-owner-password');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+
+  await expect(
+    page.getByText('The provider may have received the first request. Review and retry it.'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Retry this stage' }).click();
+  await expect.poll(() => retryPayload).toEqual({ expectedRevision: 0, stage: 'strategy' });
 });
 
 test('unknown route returns 404', async ({ page }) => {

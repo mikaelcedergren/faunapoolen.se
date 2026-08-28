@@ -3,9 +3,16 @@
   "configurations": [
     {
       "name": "faunapoolen",
-      "runtimeExecutable": "corepack",
-      "runtimeArgs": ["pnpm", "start"],
-      "port": 3040
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server/dist/index.js"],
+      "port": 4241,
+      "autoPort": true,
+      "env": {
+        "CAMPAIGN_GENERATION_ENABLED": "0",
+        "FAUNAPOOLEN_LOAD_ENV_FILE": "false",
+        "HOST": "127.0.0.1",
+        "NODE_ENV": "development"
+      }
     }
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "name": "faunapoolen-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=26 <27"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "dev:web": "tsx watch src/index.ts",
+    "dev:worker": "tsx watch src/worker.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "node -e \"require('node:fs').rmSync('dist', { force: true, recursive: true })\" && tsc -p tsconfig.build.json",
+    "start": "pnpm run start:web",
+    "start:web": "cd .. && node server/dist/index.js",
+    "start:worker": "cd .. && node server/dist/worker.js",
+    "import:campaigns": "cd .. && node server/dist/import-campaigns.js",
+    "verify:campaign-import": "cd .. && node server/dist/verify-campaign-import.js",
+    "test": "node --import tsx --test \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@mikaelcedergren/cx-framework": "github:mikaelcedergren/cx-framework#main",
+    "compression": "^1.8.1",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.0.0",
+    "tsx": "^4.23.1",
+    "typescript": "~6.0.3"
+  }
+}
