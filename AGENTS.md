@@ -21,32 +21,32 @@ pnpm quiesce:campaign-database -- --database <stopped-db> --receipt <receipt-jso
 pnpm verify:campaign-import -- --database <restored-db> --receipt <receipt-json-file>
 pnpm typecheck          # strict application and NodeNext server TypeScript verification
 pnpm test               # target server suite, importer contract, and isolated runtime contracts
-pnpm test:legacy        # frozen characterization of the currently selected legacy runtime
+pnpm test:legacy        # frozen characterization of the retained legacy wrapper
 pnpm platform:check     # shared manifest, dependency, script, and entrypoint validation
 pnpm check              # canonical format, platform, typecheck, test, and production-build gate
 pnpm e2e                # isolated Chromium journeys on a runner-owned loopback port
 ```
 
-The legacy Mac-mini web process is already stopped; both registered labels are unloaded, their
-conventional installed plists are absent, and the stopped campaign directory remains the sole data
-authority. Do not select or start the compiled web/worker pair, import campaigns, or change that
-authority except through the explicit stopped-service procedure in
-[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md). Publish a change proved browser-only with:
+Exact selected and running release identities, service-definition state, migration evidence, and
+remaining operational work live only in the root
+[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md). Never infer current production
+state from this repository's durable documentation. [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md)
+preserves the historical one-time directory-to-SQLite transition procedure; it is not a current
+checklist.
 
-`pnpm test:legacy` launches the exact retained `server/index.mjs` entrypoint and is its removal
-guard until that cutover. The wrapper's only source delta adds the
-`FAUNAPOOLEN_LOAD_ENV_FILE=false` test-isolation switch; the historical installed daemon did not set
-it. No legacy plist is currently installed and no legacy process is running. Do not remove the
-wrapper or its legacy contracts before the stopped-service backup/import/selection gate retires
-them together.
+`pnpm test:legacy` launches the retained `server/index.mjs` entrypoint as frozen historical
+characterization and guards against accidentally changing that wrapper while it remains in the
+repository. Its only source delta is the `FAUNAPOOLEN_LOAD_ENV_FILE=false` test-isolation switch.
+
+Classify the complete releasable diff before publication. A change proved browser-only uses:
 
 ```bash
 node ../server-ops/bin/site-release.mjs --site faunapoolen --browser-only --apply
 ```
 
-Changes that can affect the target server use the paired transaction. The release and rollback
-behavior is owned by the root
-[`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
+A change proved server-only uses `server-release.mjs`; a change that affects both closures or whose
+closure is uncertain uses the paired transaction. The release and rollback behavior is owned by
+the root [`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
 ## Framework package boundary
 
@@ -55,7 +55,8 @@ GitHub `main`, and `pnpm-lock.yaml` records the repository's exact immutable res
 replace it with a local path, tarball, sibling import, or compatibility wrapper. The root
 [`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md) owns mutable rollout versions,
 commit identities, and exact operational evidence;
-[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) owns the separate operational data/process transition.
+[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) preserves the historical one-time data/process
+transition procedure.
 
 ## Architecture
 
@@ -160,7 +161,7 @@ that receipt is awaiting recovery and remains blocked for operator review if the
 exhausted. Keep the fake-provider worker regression proving the same run/effect identities, the
 next-stage handoff, and an unchanged provider POST count.
 
-`data/faunapoolen.db` is the sole target authority for campaigns, signed owner sessions, login
+`data/faunapoolen.db` is the sole product authority for campaigns, signed owner sessions, login
 windows, the global generation quota, durable jobs, generation runs, and provider effects. The
 repositories enforce a 200-campaign refusal limit, 64 owner sessions, 10,000 login windows, 2,000
 generation runs, 2,000 retained jobs, and explicit provider receipt bounds. Thirty-day terminal
@@ -209,23 +210,23 @@ WAL owner is activated. It must never become a selectable runtime opening path.
 Production role configuration is intentionally asymmetric. The web process loads only an owned
 mode-`0600` `.env.web`, whose fixed allowlist is `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and
 `SESSION_SECRET`. The worker loads only an owned mode-`0600` `.env.worker`, whose sole allowed value
-is `OPENAI_API_KEY`; that file remains empty through Gate 5 and receives the key only at the
-separately authorised Gate 6. Neither role reads legacy `.env` or the other role's file. The framework-owned
+is `OPENAI_API_KEY`. Neither role reads legacy `.env` or the other role's file. The framework-owned
 private-file loader rejects public modes, links, oversized or non-UTF-8 files, `NODE_OPTIONS`, and
 any value outside the fixed product-role allowlist. Each role removes inherited private values
 belonging to the other role before importing any runtime module. Non-secret origin, path, model,
 and exact `CAMPAIGN_GENERATION_ENABLED=0|1` values belong in explicit LaunchDaemon/source
-configuration. Keep that switch at `0` through cutover validation and enable `1` only as the
-separate owner-approved post-cutover action in the runbook. The web process must be able to admit
-durable work without possessing the provider secret.
+configuration. Paid generation is disabled by policy: keep the switch at `0` and do not provision
+or use the provider key unless the owner separately authorises enablement and that operation is
+recorded in the root migration ledger. The web process must be able to admit durable work without
+possessing the provider secret.
 
 Ordinary production worker readiness is a sealed release property: the worker starts its durable
 runtime first, then acquires the framework identity-file readiness lease for the declared worker
 role. Shutdown closes that lease before stopping claims or closing SQLite. Release validation stays
 IPC-only and never creates the ordinary lease. With `CAMPAIGN_GENERATION_ENABLED=0`, that real
 runtime is healthy but claim-disabled: it constructs no provider, claims no job, and performs no
-generation recovery, maintenance, timer, or paid effect. Gate 6 is the first point at which this
-process receives a provider key or may change generation state. Its current lease proves
+generation recovery, maintenance, timer, or paid effect. Only a separate owner-authorised
+enablement may provide a key or permit generation state to change. Its readiness lease proves
 process/release readiness only, not permission to generate.
 
 ### URLs (unchanged from the live site)
@@ -270,8 +271,9 @@ comfortable — that also drops the duplicated `assets/` (~70 MB). The old CodeK
 - `/blog/posts/difference-between-normal-pool-and-natural-pool.html`
 - `/blog/posts/build-your-own-nature-pool.html`
 
-Swedish is primary; headings use European sentence case. `CNAME` is intentionally omitted from the
-output so this local/test instance can't hijack the live domain — add it at go-live.
+Swedish is primary; headings use European sentence case. `public/CNAME` is omitted because the site
+is hosted on the Mac mini through nginx. Add it only for a deliberate GitHub Pages deployment after
+that hosting change is explicitly approved.
 
 ## Verify zero SEO / visual impact
 

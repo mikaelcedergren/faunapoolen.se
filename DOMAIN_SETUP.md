@@ -1,31 +1,28 @@
 # Domain & routing — faunapoolen.se
 
-The site is prepared as a local always-on service on this Mac mini (same public-gateway pattern as
+The site is a local always-on service on this Mac mini (same public-gateway pattern as
 **bitsize.me** and **blinkdrop**): prerendered SSG output behind nginx, with a compiled Express web
-process and a separate listener-free campaign worker in the target architecture.
+process and a separate listener-free campaign worker.
 
 ```
 visitor -> DNS -> 81.170.132.41 -> router TCP 80/443 -> nginx -> Express (127.0.0.1:3040) -> current release
 ```
 
-Important current state: public DNS was cut over to this Mac on 2026-08-27 and HTTPS is live (see
-the go-live record below). The Mac-mini service still runs the legacy `server/index.mjs` process and
-its legacy campaign directory; the compiled web/worker pair and SQLite authority are checked-in
-source only. The local legacy runtime must remain unchanged until the owner separately approves the
-campaign-data migration in [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md).
+Public DNS was cut over to this Mac on 2026-08-27 and HTTPS is live; the dated go-live record below
+owns that historical fact. Exact selected and running release identities, service-definition state,
+and migration evidence live only in the root
+[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md). Do not infer current runtime
+state from this durable routing document. [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) preserves the
+historical one-time data/process transition procedure.
 
-That frozen legacy entrypoint still reads the historical common `.env` file solely to preserve the
-currently selected service's restart contract. It is not part of the target role-separated
-architecture: do not extend or copy that loader. The stopped-service cutover retires it when the
-compiled entrypoints select `.env.web` and `.env.worker` instead. Its only source delta is an exact
-test-only opt-out from loading the historical file; the installed daemon does not set that switch,
-and `pnpm test:legacy` launches the wrapper directly so deletion fails before cutover.
+The retained legacy entrypoint's common `.env` loader is historical compatibility code, not part
+of the role-separated architecture; do not extend or copy it. `pnpm test:legacy` characterizes that
+wrapper while it remains in the repository.
 
 ## Local service
 
-The currently running legacy unit is operational state, not represented by the tracked target
-templates. It remains untouched. The checked-in target has two independently supervised roles from
-one sealed server artifact:
+The production architecture has two independently supervised roles from one sealed server
+artifact:
 
 - `server/dist/index.js`: the only listener, bound to `127.0.0.1:3040`.
 - `server/dist/worker.js`: no listener; owns durable campaign generation claims.
@@ -38,25 +35,21 @@ one sealed server artifact:
   `.run/jobs.out.log`, `.run/jobs.err.log`.
 - Health: `http://127.0.0.1:3040/healthz`; the worker proves readiness through its sealed
   identity-file lease and has no HTTP endpoint. While `CAMPAIGN_GENERATION_ENABLED=0`, that lease
-  proves the selected process is current but the worker remains explicitly claim-disabled.
+  proves process/release identity but the worker remains explicitly claim-disabled.
 
-Do not install or select target service definitions before the stopped-service import, backup
-activation, source-away artifact verification, and rollback proof in the cutover runbook.
-
-Source validation is safe before cutover and changes nothing:
+Source validation changes no service definition or running process:
 
 ```bash
 bin/install-server-daemon          # same as --check
 bin/install-server-daemon --check
 ```
 
-After every earlier data, backup, selected-artifact, identity, role-file, and database gate in
-[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) passes, `bin/install-server-daemon --apply` installs both
-target plist files as one transaction. It validates only private-file metadata, never reads secret
-or database contents, requires both roles exactly unloaded, and accepts only an all-absent or
-all-exact target set. A failed later write rolls back definitions created earlier in the attempt.
-It does not load, stop, start, kick, or restart either role. Activation remains a separate explicitly
-authorised privileged step; never apply the installer as a shortcut around the cutover runbook.
+`bin/install-server-daemon --apply` installs both plist files as one transaction. It validates only
+private-file metadata, never reads secret or database contents, requires both roles exactly
+unloaded, and accepts only an all-absent or all-exact target set. A failed later write rolls back
+definitions created earlier in the attempt. It does not load, stop, start, kick, or restart either
+role. Installation and activation remain separate authorised operations under the root server
+standard; never use the installer to bypass release or restart verification.
 
 Publish a change proved browser-only without restarting the service:
 
@@ -64,10 +57,9 @@ Publish a change proved browser-only without restarting the service:
 node ../server-ops/bin/site-release.mjs --site faunapoolen --browser-only --apply
 ```
 
-Changes that can affect both sides use the paired transaction. After the target cutover, a change
-proved server-only may use the shared two-role server-only release/restart contract. Release and
-rollback behavior is owned by the root
-[`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
+A change proved server-only uses `server-release.mjs`; a change that affects both closures or whose
+closure is uncertain uses the paired transaction. Release and rollback behavior is owned by the
+root [`SERVER-STANDARD.md`](../SERVER-STANDARD.md).
 
 ## nginx
 
@@ -79,10 +71,9 @@ The active nginx config lives at:
 
 Since the 2026-08-27 cutover it is the live HTTPS configuration — `ops/faunapoolen.nginx.live.conf.example` installed verbatim: the ACME location stays on port 80, all HTTP and `www` traffic 301s to the canonical apex HTTPS URL, and only the HTTPS apex proxies to the app. Certificate renewal is owned by the shared `com.cortex.cert-renewal` job.
 
-Public static pages use the shared 60-second nginx micro-cache. The current legacy configuration has
-uncached `/healthz` and `/admin-auth/` locations. At the compiled-runtime cutover, `/healthz` and the
-entire `/api/admin` prefix must be uncached; `/admin-auth` is removed as an API and remains only a
-noindexed 404 safety path. Do not cache authentication, generation status, or campaign mutations.
+Public static pages use the shared 60-second nginx micro-cache. `/healthz` and the entire
+`/api/admin` prefix remain uncached; `/admin-auth` is retired as an API and remains only a noindexed
+404 safety path. Do not cache authentication, generation status, or campaign mutations.
 
 The compiled Express server sets `X-Robots-Tag: noindex, nofollow` on `/admin`, `/en/admin`,
 `/api/admin`, and the retired `/admin-auth` prefix. `proxy_pass` forwards those headers; nothing in
@@ -90,14 +81,9 @@ nginx may strip or override them.
 
 ## Go-live (completed 2026-08-27)
 
-The owner moved public DNS to this Mac on 2026-08-27, ahead of the runtime migration: the domain
-now serves the legacy `server/index.mjs` process through nginx. The cutover followed the shared
+The owner moved public DNS to this Mac on 2026-08-27. The public-routing cutover followed the shared
 procedure — see [`../GO-LIVE.md`](../GO-LIVE.md) and
 [`../SERVER-STANDARD.md`](../SERVER-STANDARD.md) — with these faunapoolen-specific values:
-
-The campaign-data/runtime migration in [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) remains a
-separate, still-pending gate; never combine an unproved first compiled-runtime start with further
-public changes.
 
 - **Domains:** `faunapoolen.se` and `www.faunapoolen.se`.
 - **Local target:** `127.0.0.1:3040`, daemon `com.faunapoolen.server`.
@@ -105,8 +91,8 @@ public changes.
 - **Status:** live since 2026-08-27 — DNS cut over, certificate issued for both names, live HTTPS
   configuration installed and externally verified.
 
-Add a `public/CNAME` containing `faunapoolen.se` **only if** deploying via GitHub Pages instead of
-the local server (omitted by default so a test deploy can't hijack the domain).
+`public/CNAME` is omitted for Mac-mini nginx hosting. Add one containing `faunapoolen.se` only for
+a deliberate GitHub Pages deployment after that hosting change is explicitly approved.
 
 Cloudflared is not used for this cutover; the standard path is direct DNS/static IP/router/nginx.
 
@@ -121,19 +107,19 @@ External checks: apex 200 over HTTP/2 with a certificate valid for both names; H
 to the apex preserving paths; sitemap, `/koi-pond-series.html`, a blog post carrying
 `article:published_time`, `/en/`, and a real 404 all correct; gzip active.
 
-Follow-ups from "After 1–2 weeks stable" — the owner waived the rollback window on 2026-08-27:
-HSTS is live since that day (per-site header in the nginx config and its `ops/` example,
-`max-age=31536000`, deliberately without `includeSubDomains`; the shared hardening snippet's global
-variant stays opt-in). Still with the owner: restore the web-record TTL to 3600 at one.com, and
-have the GitHub Pages custom-domain binding removed.
+The owner waived the rollback window on 2026-08-27. HSTS has been live since that day (per-site
+header in the nginx config and its `ops/` example, `max-age=31536000`, deliberately without
+`includeSubDomains`; the shared hardening snippet's global variant stays opt-in). The dated record
+also noted restoring the web-record TTL to 3600 at one.com and removing the GitHub Pages
+custom-domain binding as follow-ups; their current status belongs in the root migration ledger.
 
 ## Historical public-cutover baseline (observed 2026-07-06)
 
 The generic activation procedure is [`../GO-LIVE.md`](../GO-LIVE.md) — this section adds only what
 is faunapoolen-specific. The stakes are different here: this domain ranks exceptionally well, so
-the goal is that **Google notices nothing except the IP changing**. The current host is GitHub
-Pages, and the www DNS record points at a third-party GitHub account
-(`benjaminrehmie.github.io`) — assume the old site's content cannot be updated, only pointed at.
+the goal was that **Google notices nothing except the IP changing**. At the observation date the
+host was GitHub Pages and the www DNS record pointed at a third-party GitHub account
+(`benjaminrehmie.github.io`).
 
 Everything below is dated evidence, not current authority. Before any public move, freshly verify
 the live host, DNS/TTL records, registrar/WHOIS renewal state, TLS behavior, redirects, and nginx
@@ -156,9 +142,9 @@ runbook.
 
 ### Pre-flight (on the Mac mini, before touching DNS)
 
-1. Pull this repo, install the locked dependencies, run the complete source gate, and publish a
-   change proved browser-only. This step assumes the separately authorised campaign/runtime
-   cutover has already selected and finalized the compiled browser/server pair:
+1. Pull this repo, install the locked dependencies, and run the complete source gate. Classify the
+   complete releasable diff: browser-only used `site-release`, server-only used `server-release`,
+   and both/uncertain used the paired transaction. The browser-only form was:
 
    ```bash
    corepack pnpm install --frozen-lockfile

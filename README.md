@@ -6,10 +6,10 @@ worker owns durable campaign jobs. It follows the same shared web architecture a
 blinkdrop while deliberately keeping its own public visual skin. Swedish is at the root, English
 under `/en/`. CodeKit is retired.
 
-> The public site has run from this Mac mini over HTTPS since 2026-08-27. Its currently selected
-> legacy web process remains intentionally separate from the pending compiled-runtime and campaign
-> storage migration. See [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md) and
-> [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md).
+> The public site has run from this Mac mini over HTTPS since 2026-08-27. See
+> [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md) for that dated public-routing record. Exact selected and
+> running releases, service state, and migration evidence live only in
+> [`../WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md).
 
 ## Run
 
@@ -29,24 +29,19 @@ pnpm verify:campaign-import -- --database <restored-db> --receipt <receipt-json-
 pnpm e2e          # isolated Chromium journeys against synthetic data
 ```
 
-The Mac mini still selects the existing legacy web process on port 3040; the checked-in web/worker
-LaunchDaemon templates describe the later compiled target and are not selected yet. See
-[`DOMAIN_SETUP.md`](DOMAIN_SETUP.md). `pnpm build` remains the local build; publish a production
-change proved browser-only atomically with:
+`pnpm build` remains the local build. Classify the complete releasable diff before publication. A
+change proved browser-only uses:
 
 ```bash
 node ../server-ops/bin/site-release.mjs --site faunapoolen --browser-only --apply
 ```
 
-Changes that can affect the target server use the paired transaction. The shared release and
-rollback contract is documented in
-[`../SERVER-STANDARD.md`](../SERVER-STANDARD.md). The checked-in target architecture uses compiled
-web and worker entrypoints plus private SQLite data under `data/`. It is intentionally not the
-currently selected Mac-mini runtime yet: the existing legacy service and campaign directory stay
-authoritative until the separate, stopped-service migration in
-[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) is explicitly authorised and verified.
-`pnpm test:legacy` launches the exact selected `server/index.mjs` wrapper and guards it from
-premature removal; its test-only environment-file opt-out is inactive in the installed daemon.
+A change proved server-only uses `server-release.mjs`; a change that affects browser and server
+closures, or whose closure is uncertain, uses the paired transaction. The shared release and
+rollback contract is documented in [`../SERVER-STANDARD.md`](../SERVER-STANDARD.md). The production
+architecture uses compiled web and worker entrypoints plus private SQLite data under `data/`.
+`pnpm test:legacy` retains frozen characterization of the historical `server/index.mjs` wrapper
+while that wrapper remains in the repository.
 
 The target source consumes the published `@mikaelcedergren/cx-framework/server/*` entrypoints from
 GitHub `main`, and `pnpm-lock.yaml` records the repository's exact immutable resolution. Never
@@ -66,25 +61,20 @@ the canonical recovery invariant is documented in [`AGENTS.md`](AGENTS.md).
 Production private configuration is role-separated. The web process loads only an owned
 mode-`0600` `.env.web` containing `ADMIN_USERNAME`, `ADMIN_PASSWORD`, and `SESSION_SECRET`; the
 worker loads only an owned mode-`0600` `.env.worker`, whose only permitted value is
-`OPENAI_API_KEY`. That file stays empty through Gate 5 and receives the provider key only at Gate 6.
-Each file rejects values belonging to the other role, and neither process loads legacy `.env`. Use
-[`.env.web.example`](.env.web.example) and [`.env.worker.example`](.env.worker.example) as shape
-references, never as real credentials. Non-secret paths, origins, models, and the
-`CAMPAIGN_GENERATION_ENABLED` switch remain explicit LaunchDaemon/source configuration.
-At the target cutover both roles pin that switch to `0`: the worker initializes and proves its
-selected release through the readiness lease without a provider key, constructs no provider, and
-accepts no claims.
-It also runs no generation recovery, maintenance, or timer, so Gate 6 is the first point generation
-state may change. Paid generation becomes processing-ready only after that separately authorised
-change.
+`OPENAI_API_KEY`. Each file rejects values belonging to the other role, and neither process loads
+legacy `.env`. Use [`.env.web.example`](.env.web.example) and
+[`.env.worker.example`](.env.worker.example) as shape references, never as real credentials.
+Non-secret paths, origins, models, and the `CAMPAIGN_GENERATION_ENABLED` switch remain explicit
+LaunchDaemon/source configuration. Paid generation is disabled by policy: keep the switch at `0`
+and do not provision or use the provider key unless the owner separately authorises enablement and
+the operation is recorded in the root migration ledger. In disabled mode the worker may prove
+release readiness, but it constructs no provider, accepts no claims, and performs no generation
+recovery, maintenance, timer, or paid effect.
 
-The one-time cutover currently protects `.run/campaigns` through the required registry-driven
-directory snapshot. After the stopped import and byte-identical replay are sealed, that declaration
-is replaced by required `sqlite-online` coverage for `data/faunapoolen.db`, and the immutable cleanup
-and backup jobs are reinstalled before the first SQLite backup. The compiled
-`verify:campaign-import` command then recomputes the complete imported campaign receipt read-only on
-both the published database and the database extracted from that real backup. The exact ordered
-procedure and rollback boundary live only in [`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md).
+[`CAMPAIGN-CUTOVER.md`](CAMPAIGN-CUTOVER.md) preserves the historical one-time directory-to-SQLite
+procedure and its rollback boundaries. It is not a current checklist and does not establish live
+authority or selection. Exact operational evidence and remaining work belong only in the root
+[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md).
 
 ## Layout
 

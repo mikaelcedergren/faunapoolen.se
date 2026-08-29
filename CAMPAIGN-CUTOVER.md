@@ -1,32 +1,22 @@
-# Campaign data and runtime cutover
+# Historical campaign data and runtime cutover procedure
 
-## Status
+## Historical scope
 
-This is a prepared runbook, not an active migration. The legacy `server/index.mjs` process is
-already stopped; its stopped campaign directory remains the sole campaign authority on the Mac
-mini. The compiled web process, jobs worker, SQLite database, backup registration, service
-definitions, and server-release selection must not be activated until the owner explicitly
-authorises a maintenance window.
+This document preserves the control sequence designed for Faunapoolen's one-time transition from
+the legacy MJS/directory runtime to compiled web and worker roles with product-owned SQLite. It is
+historical documentation, not a current checklist or operational authority. Its unchecked boxes
+record the required controls without asserting whether or when each one passed; do not execute or
+complete them from this document.
 
-As of 2026-08-28, both `com.faunapoolen.server` and `com.faunapoolen.jobs` return exact unloaded
-status `113`, both conventional files under `/Library/LaunchDaemons` are absent, and port `3040` has
-no listener. Re-prove all three conditions at the maintenance boundary. Git history retains a
-legacy plist template, but neither a byte-exact copy nor the digest of the last installed legacy
-definition was captured. The historical template is context, not an authenticated restart or
-rollback artifact.
+Exact selected and running release identities, process and plist state, backup selections,
+receipts, evidence IDs, completed gates, and remaining migration work live only in the root
+[`WEB-ARCHITECTURE-MIGRATION.md`](../WEB-ARCHITECTURE-MIGRATION.md). Never infer current state from
+the historical conditions or placeholder commands below, and never copy mutable evidence back into
+this repository.
 
-The current source-safe preflight has two recorded facts that must still be re-proved at the start
-of the maintenance window:
-
-- the read-only browser-history preview reports all five retained releases as schema v2, so
-  Faunapoolen requires no browser-history adoption at the current source state; and
-- the canonical server-ops registry deliberately requires a `directory-snapshot` of
-  `.run/campaigns`. That transient declaration protects the stopped legacy authority. It must not
-  become `sqlite-online` until the import and exact replay proofs in Gate 3 are sealed.
-
-Shared publication, backup, restart, health, and rollback mechanics are owned by
+Shared publication, backup, restart, health, and rollback mechanics remain owned by
 [`../SERVER-STANDARD.md`](../SERVER-STANDARD.md). This document owns only Faunapoolen's one-time
-campaign-data and process-role transition.
+campaign-data and process-role transition design.
 
 All retained cutover receipts, proof databases, and extracted backup roots belong under the
 current-user-owned private parent
@@ -55,16 +45,17 @@ under that parent; never reuse an earlier proof destination.
   owner action, never a migration probe.
 - Do not combine this data/runtime transition with DNS, nginx, TLS, or public-host cutover.
 
-## Authority transition
+## Historical authority transition
 
-| State                  | Web role                | Worker role                          | Campaign authority                       | Backup authority                            |
-| ---------------------- | ----------------------- | ------------------------------------ | ---------------------------------------- | ------------------------------------------- |
-| Current stopped        | stopped                 | stopped                              | stopped legacy campaign directory        | not yet proved                              |
-| Frozen and proved      | stopped                 | stopped                              | stopped legacy campaign directory        | extracted and verified directory bundle     |
-| Imported, not selected | stopped                 | stopped                              | imported private SQLite; legacy retained | both proofs retained; no live selection yet |
-| After cutover          | supervised compiled web | independently supervised jobs worker | `data/faunapoolen.db` only               | registered `sqlite-online` snapshot         |
+| Transition stage         | Web role                | Worker role                          | Campaign authority                       | Backup authority                        |
+| ------------------------ | ----------------------- | ------------------------------------ | ---------------------------------------- | --------------------------------------- |
+| Before transition        | stopped                 | stopped                              | frozen legacy campaign directory         | not yet proved                          |
+| Frozen and proved        | stopped                 | stopped                              | frozen legacy campaign directory         | extracted and verified directory bundle |
+| Imported, pre-activation | stopped                 | stopped                              | imported private SQLite; legacy retained | both proofs retained                    |
+| After transition         | supervised compiled web | independently supervised jobs worker | `data/faunapoolen.db` only               | registered `sqlite-online` snapshot     |
 
-`.run/` remains purge-class logs/runtime noise. It is never product-data authority after cutover.
+`data/faunapoolen.db` is the sole product authority. `.run/` is purge-class logs/runtime noise and
+must never regain product-data authority.
 
 ## Gate 1 — authorisation and preflight
 
@@ -75,8 +66,7 @@ under that parent; never reuse an earlier proof destination.
 - [ ] Confirm the source worktree contains only reviewed releasable changes, and run `pnpm check`,
       isolated browser E2E, SEO/UI comparison, the frozen importer contract, and two deterministic
       source-away server artifacts.
-- [ ] Run the non-mutating browser-history preview and record every retained release. The current
-      expected result is five `already-v2` releases and no adoption transaction:
+- [ ] Run the non-mutating browser-history preview and record every retained release:
 
   ```bash
   node ../server-ops/bin/adopt-browser-releases-v2.mjs --site faunapoolen
@@ -112,10 +102,10 @@ under that parent; never reuse an earlier proof destination.
 - [ ] Confirm the shared backup implementation and independent security audit are green, then add
       and validate the explicitly reviewed Faunapoolen registry declarations. Do not manufacture a
       temporary config outside the canonical registry.
-- [ ] Record the current stopped topology: exact unloaded status `113` for both labels, absent
-      conventional plist files, no listener on port `3040`, and the current browser build identity.
-      Preserve any already captured prior legacy process, health, and campaign-count evidence, but
-      do not invent missing historical facts or print secrets or campaign content.
+- [ ] Record the maintenance-boundary topology: service status, installed-definition inventory,
+      listeners, and browser build identity. Preserve any already captured prior legacy process,
+      health, and campaign-count evidence, but do not invent missing historical facts or print
+      secrets or campaign content.
 - [ ] Require retained pre-stop evidence that no campaign stage or provider request was active. If
       that evidence was not captured, record the uncertainty explicitly; process absence is not
       cancellation proof, and the strict source inventory and importer must still reject any
@@ -128,22 +118,21 @@ under that parent; never reuse an earlier proof destination.
       `CAMPAIGN_GENERATION_ENABLED=0` explicit in both tracked service definitions throughout
       validation.
 
-Failure leaves the stopped legacy data authority and absent service topology unchanged.
+Failure required stopping without advancing data authority or service topology; the exact outcome
+belongs in the root migration ledger.
 
 ## Gate 2 — freeze and prove the legacy source
 
-- [ ] Re-prove the already stopped state; do not start either compiled role. Both registered launchd
-      labels must return exact unloaded status `113`, port `3040` must have no listener, and both
-      conventional web and worker plist paths must remain absent.
-- [ ] Record that no installed legacy plist is available to move into rollback storage. The legacy
-      template retained in Git history does not prove the bytes of the definition that was actually
-      installed, so do not copy it into `/Library/LaunchDaemons` or describe it as a byte-exact
-      rollback.
+- [ ] Re-prove the stopped state captured for the maintenance execution; do not infer it from this
+      historical document or start either compiled role before that proof.
+- [ ] Inventory any installed legacy definition. Only a byte-exact authenticated copy may enter
+      rollback storage; a template retained in Git history does not prove the bytes of the
+      definition that was actually installed, so never describe it as a byte-exact rollback.
 - [ ] Pin the stopped campaign-directory inventory, file count, aggregate byte count, and aggregate
       digest. Do not log individual campaign content.
-- [ ] Confirm the canonical registry still names the literal stopped `.run/campaigns` directory as
-      required `legacy-campaigns` storage with `directory-snapshot`; do not substitute a copied or
-      temporary source.
+- [ ] Confirm the reviewed registry snapshot for this historical step names the literal frozen
+      `.run/campaigns` source as required `legacy-campaigns` storage with `directory-snapshot`; do
+      not substitute a copied or temporary source.
 - [ ] Ensure cleanup and backup select the same reviewed immutable `server-ops` release containing
       the exact canonical registry. Install that pair together if needed. Choose one new evidence ID
       and bind every backup and extraction preview/apply result to its own missing file below the
@@ -232,10 +221,9 @@ Failure leaves the stopped legacy data authority and absent service topology unc
       backup. Any change or incomplete archive aborts the cutover.
 
 If this gate fails, leave all evidence intact and keep the site stopped while the failure is
-understood. An unchanged legacy restart cannot currently be promised because the last installed
-definition was not captured byte-exactly. Do not reconstruct it from the historical Git template;
-restart requires a separately authenticated exact definition or a newly reviewed and authorised
-recovery definition.
+understood. If no byte-exact authenticated legacy definition was captured for that execution, do
+not reconstruct one from a historical Git template; restart requires a separately authenticated
+exact definition or a newly reviewed and authorised recovery definition.
 
 ## Gate 3 — one-time atomic import
 
@@ -623,7 +611,7 @@ Admin access remains blocked until this gate passes.
   ```
 
 Only after every check is green may normal non-generation admin access resume. This transition does
-not change Faunapoolen's already-live DNS, nginx, or HTTPS route; their current state is documented
+not change Faunapoolen's already-live DNS, nginx, or HTTPS route; their dated state is documented
 in [`DOMAIN_SETUP.md`](DOMAIN_SETUP.md).
 
 ## Gate 6 — separately enable paid generation
@@ -645,14 +633,13 @@ Generation may remain disabled indefinitely without invalidating the data/runtim
 
 Before the first post-cutover admin mutation, take both compiled roles offline and remove both
 installed target definitions. If selection was not finalized, use the paired `--abort` preview and
-apply forms. If it was finalized, use the paired `--revert` preview and apply forms. This first
-cutover records no old compiled server selection, so it restores the prior browser pointer and an
-unselected server state. There is no authenticated byte-exact legacy web plist to restore: the
-historical Git template is not proof of the previously installed bytes. Keep the site stopped until
-an exact legacy definition is independently recovered and authenticated or the owner explicitly
-authorises a newly reviewed recovery definition. Never run independent browser/server rollbacks,
-recreate the old definition by assumption, or delete the imported database; retain it as failure
-evidence.
+apply forms. If it was finalized, use the paired `--revert` preview and apply forms. Use the
+cutover journal to determine whether a prior compiled server selection or authenticated byte-exact
+legacy definition exists; never infer either from this historical document. If no authenticated
+legacy definition exists, keep the site stopped until one is independently recovered and
+authenticated or the owner explicitly authorises a newly reviewed recovery definition. Never run
+independent browser/server rollbacks, recreate an old definition by assumption, or delete the
+imported database; retain it as failure evidence.
 
 The exact offline rollback commands are:
 
