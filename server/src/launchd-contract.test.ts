@@ -38,7 +38,7 @@ test('LaunchDaemon source selects immutable web and listener-free worker roles',
   }
 });
 
-test('daemon installer keeps campaign cutover gated and never activates either service', (t) => {
+test('daemon installer preserves historical cutover evidence and never activates either service', (t) => {
   const source = readFileSync(installer, 'utf8');
   assert.match(source, /MODE="check"/);
   assert.match(source, /\.env\.web/);
@@ -63,7 +63,7 @@ test('daemon installer keeps campaign cutover gated and never activates either s
   assert.match(direct, /VALID: Faunapoolen web and jobs-worker LaunchDaemon templates/);
   assert.match(
     direct,
-    /Campaign import, backup\/restore, server selection, and activation remain gated/,
+    /CAMPAIGN-CUTOVER\.md is completed historical evidence; current runtime state belongs in the root migration ledger/,
   );
   const explicit = execFileSync(installer, ['--check'], { cwd: repoRoot, encoding: 'utf8' });
   assert.equal(explicit, direct);

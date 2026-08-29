@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Validate or install the Faunapoolen web and jobs-worker system LaunchDaemons. Installation never
-# loads or restarts either role and does not waive the campaign import/backup cutover runbook.
+# loads or restarts either role; the completed campaign cutover runbook remains historical evidence.
 set -euo pipefail
 
 SOURCE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -93,7 +93,7 @@ done
 if [[ "$MODE" == "check" ]]; then
   echo "VALID: Faunapoolen web and jobs-worker LaunchDaemon templates"
   echo "No service was installed, loaded, or restarted."
-  echo "Campaign import, backup/restore, server selection, and activation remain gated by CAMPAIGN-CUTOVER.md."
+  echo "CAMPAIGN-CUTOVER.md is completed historical evidence; current runtime state belongs in the root migration ledger."
   exit 0
 fi
 
@@ -160,4 +160,4 @@ fi
   --definition "${LABELS[1]}=$RENDER_DIR/${LABELS[1]}.plist"
 
 echo "No service was loaded or restarted."
-echo "Complete every CAMPAIGN-CUTOVER.md data/backup gate and obtain explicit restart authorisation before activating either role."
+echo "Any future activation requires separate restart authorisation and complete selected-release verification; CAMPAIGN-CUTOVER.md is historical evidence."
