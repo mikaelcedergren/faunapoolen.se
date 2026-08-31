@@ -242,7 +242,7 @@ test('readiness acquisition failure occurs before worker effects and nonproducti
 
 test('release-validation worker holds readiness until SIGTERM then exits through clean shutdown', async (t) => {
   const operationalRoot = temporaryOperationalRoot(t, 'faunapoolen-worker-validation-');
-  const entrypoint = 'server/index.mjs';
+  const entrypoint = 'server/dist/worker.js';
   const identity = releaseValidationIdentity(entrypoint);
   const identityFile = path.join(operationalRoot, 'server-release.json');
   fs.writeFileSync(identityFile, `${JSON.stringify(identity)}\n`, { mode: 0o600 });

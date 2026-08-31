@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -29,8 +28,6 @@ import {
   PersistenceRevisionConflictError,
   ProviderEffectReplayBlockedError,
   createFaunapoolenPersistence,
-  insertCampaignImportReceipt,
-  insertImportedCampaign,
   type CreateGenerationRunInput,
   type FaunapoolenPersistence,
   type GenerationRun,
@@ -51,6 +48,7 @@ import {
   MAX_GENERATION_RUNS,
   MAX_PROVIDER_RESPONSE_BYTES,
   openFaunapoolenDatabase,
+  verifyFaunapoolenDatabaseBeforeWrite,
   verifyFaunapoolenDatabase,
   verifyFaunapoolenDatabaseReadiness,
 } from './database.js';
@@ -62,16 +60,7 @@ import {
   createCampaignGenerationHandlers,
 } from './generation-handlers.js';
 import { createGenerationService } from './generation-service.js';
-import {
-  CampaignImportError,
-  importCampaignDirectory,
-  importCampaignDirectoryForTest,
-} from './campaign-import.js';
 import { IMAGE_CONCEPTS } from './image-style.js';
-import {
-  verifyLegacyCampaignImportPreActivation,
-  verifyLegacyCampaignRuntimeMarker,
-} from './legacy-cutover.js';
 import { createOpenAiResponsesProvider } from './openai-provider.js';
 
 const OWNER_HASH = 'a'.repeat(64);
@@ -256,7 +245,7 @@ function runInput(
 }
 
 type TestGenerationAdmission =
-  | { readonly kind: 'imported' | 'initial'; readonly run: CreateGenerationRunInput }
+  | { readonly kind: 'continuation' | 'initial'; readonly run: CreateGenerationRunInput }
   | {
       readonly kind: 'retry';
       readonly requiredCampaignRevision: number;
@@ -277,17 +266,11 @@ function admitRun(
   return result.run;
 }
 
-function insertSyntheticImport(
+function insertContinuationCampaign(
   persistence: FaunapoolenPersistence,
   campaign: CampaignRecord,
-  campaignSequence: number,
 ): void {
-  const bytes = canonicalCampaignBytes(campaign);
-  insertImportedCampaign(persistence.database.sqlite, campaign, campaignSequence, {
-    bytes,
-    fileName: `${campaign.id}.json`,
-    sha256: sha256Hex(bytes),
-  });
+  persistence.campaigns.create(campaign);
 }
 
 function insertTerminalGenerationRun(
@@ -325,45 +308,6 @@ function insertTerminalGenerationRun(
     ],
   );
   return Object.freeze({ jobId, runId });
-}
-
-function campaignImportFixture(t: TestContext, index: number) {
-  const directory = privateTempDirectory('faunapoolen-import-test-');
-  const sourceDirectory = path.join(directory, 'campaign-history');
-  fs.mkdirSync(sourceDirectory, { mode: 0o750 });
-  const campaign = record(index);
-  const filePath = path.join(sourceDirectory, `${campaign.id}.json`);
-  fs.writeFileSync(filePath, `${JSON.stringify(campaign, null, 2)}\n`, {
-    flag: 'wx',
-    mode: 0o640,
-  });
-  t.after(() => fs.rmSync(directory, { force: true, recursive: true }));
-  return Object.freeze({
-    databasePath: path.join(directory, 'faunapoolen.db'),
-    directory,
-    filePath,
-    intentPath: path.join(directory, '.faunapoolen.db.import-intent.json'),
-    sourceDirectory,
-    stagingDirectory: path.join(directory, '.faunapoolen.db.import-stage'),
-  });
-}
-
-function sourceFileProof(filePath: string) {
-  const stats = fs.statSync(filePath, { bigint: true });
-  return Object.freeze({
-    bytes: fs.readFileSync(filePath),
-    dev: stats.dev,
-    ino: stats.ino,
-    mode: stats.mode,
-  });
-}
-
-function assertSourceFileProof(filePath: string, expected: ReturnType<typeof sourceFileProof>) {
-  const current = sourceFileProof(filePath);
-  assert.equal(current.dev, expected.dev);
-  assert.equal(current.ino, expected.ino);
-  assert.equal(current.mode, expected.mode);
-  assert.deepEqual(current.bytes, expected.bytes);
 }
 
 function errorTreeMatches(error: unknown, pattern: RegExp): boolean {
@@ -442,7 +386,7 @@ test('the append-only product and durable-job migration ledger reopens and detec
   reopened.close();
 });
 
-test('a sealed canonical migration prefix is verified before pending runtime migrations', (t) => {
+test('the forward migration preserves campaigns and removes closed import evidence', (t) => {
   const directory = privateTempDirectory('faunapoolen-migration-prefix-test-');
   const databasePath = path.join(directory, 'faunapoolen.db');
   t.after(() => fs.rmSync(directory, { force: true, recursive: true }));
@@ -452,32 +396,80 @@ test('a sealed canonical migration prefix is verified before pending runtime mig
     databasePath,
     operationalRoot: directory,
   });
-  applySqliteMigrations(seed.database, FAUNAPOOLEN_MIGRATIONS.slice(0, 1), {
+  applySqliteMigrations(seed.database, FAUNAPOOLEN_MIGRATIONS.slice(0, -1), {
     fingerprint: sha256Hex,
     now: () => '2026-08-01T00:00:00.000Z',
   });
-  const receipt = Object.freeze({
-    campaignCount: 0,
-    formatVersion: 1 as const,
-    orderedCampaignsSha256: 'd'.repeat(64),
-    sourceBytes: 0,
-    sourceSha256: 'e'.repeat(64),
-  });
-  insertCampaignImportReceipt(seed.database, receipt);
+  const campaign = canonicalCampaign(record(401));
+  seed.database.run(
+    `INSERT INTO campaigns (
+       campaign_sequence, id, created_at, created_at_ms, updated_at, updated_at_ms,
+       name, stage, revision, source_filename, source_bytes, source_sha256,
+       record_sha256, record_json
+     ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)`,
+    [
+      campaign.record.id,
+      campaign.record.createdAt,
+      Date.parse(campaign.record.createdAt),
+      campaign.record.updatedAt,
+      Date.parse(campaign.record.updatedAt),
+      campaign.record.name,
+      campaign.record.stage,
+      `${campaign.record.id}.json`,
+      campaign.bytes.byteLength,
+      campaign.sha256,
+      campaign.sha256,
+      campaign.bytes,
+    ],
+  );
+  seed.database.run(
+    `INSERT INTO campaign_import_receipts (
+       receipt_key, format_version, source_bytes, source_sha256,
+       campaign_count, ordered_campaigns_sha256
+     ) VALUES ('legacy_campaign_directory_v1', 1, ?, ?, 1, ?)`,
+    [campaign.bytes.byteLength, campaign.sha256, campaign.sha256],
+  );
   seed.close();
 
-  let verified;
+  let verified = false;
   const upgraded = openFaunapoolenDatabase({
     databasePath,
     operationalRoot: directory,
     requireExisting: true,
     verifyBeforeWrite(database) {
-      verified = verifyLegacyCampaignRuntimeMarker(database);
+      verifyFaunapoolenDatabaseBeforeWrite(database);
+      verified = true;
     },
   });
   try {
-    assert.deepEqual(verified, receipt);
+    assert.equal(verified, true);
     assert.equal(upgraded.isReady(), true);
+    assert.equal(upgraded.sqlite.get('SELECT id FROM campaigns')?.['id'], campaign.record.id);
+    assert.equal(
+      upgraded.sqlite.get(
+        `SELECT 1 AS present FROM sqlite_schema
+         WHERE name = 'campaign_import_receipts'`,
+      ),
+      undefined,
+    );
+    assert.deepEqual(
+      upgraded.sqlite
+        .all<{ readonly name: string }>('PRAGMA table_info(campaigns)')
+        .map(({ name }) => name),
+      [
+        'campaign_sequence',
+        'id',
+        'created_at',
+        'created_at_ms',
+        'updated_at',
+        'updated_at_ms',
+        'name',
+        'stage',
+        'revision',
+        'record_sha256',
+        'record_json',
+      ],
+    );
     assert.deepEqual(
       upgraded.sqlite
         .all<{
@@ -540,13 +532,6 @@ test('an old migration prefix rejects ledger and complete-schema drift before pe
         fingerprint: sha256Hex,
         now: () => '2026-08-01T00:00:00.000Z',
       });
-      insertCampaignImportReceipt(seed.database, {
-        campaignCount: 0,
-        formatVersion: 1,
-        orderedCampaignsSha256: 'd'.repeat(64),
-        sourceBytes: 0,
-        sourceSha256: 'e'.repeat(64),
-      });
       for (const statement of drift.statements) seed.database.execute(statement);
       seed.close();
       const before = captureMigrationAuthority(databasePath);
@@ -558,7 +543,7 @@ test('an old migration prefix rejects ledger and complete-schema drift before pe
             operationalRoot: directory,
             requireExisting: true,
             verifyBeforeWrite(database) {
-              verifyLegacyCampaignRuntimeMarker(database);
+              verifyFaunapoolenDatabaseBeforeWrite(database);
             },
           }),
         drift.expected,
@@ -814,17 +799,17 @@ test('every owner and generation mutation advances global campaign activity unde
   assert.ok(tied);
   assert.ok(Date.parse(tied.record.updatedAt) > Date.parse(regressed.record.updatedAt));
 
-  const imported = validateCampaignRecord({
+  const continuation = validateCampaignRecord({
     ...record(215, 'strategy'),
     updatedAt: '2026-08-01T05:00:00.000Z',
   });
-  insertSyntheticImport(persistence, imported, 3);
+  insertContinuationCampaign(persistence, continuation);
   const admitted = admitRun(
     persistence,
     {
-      kind: 'imported',
+      kind: 'continuation',
       run: runInput(215, {
-        campaignId: imported.id,
+        campaignId: continuation.id,
         expectedCampaignRevision: 1,
         stage: 'copy',
       }),
@@ -851,10 +836,10 @@ test('every owner and generation mutation advances global campaign activity unde
     runId: running.runId,
   });
   assert.ok(generated.campaign);
-  assert.ok(Date.parse(generated.campaign.record.updatedAt) > Date.parse(imported.updatedAt));
+  assert.ok(Date.parse(generated.campaign.record.updatedAt) > Date.parse(continuation.updatedAt));
   assert.deepEqual(
     persistence.campaigns.list().map(({ id }) => id),
-    [imported.id, older.record.id, newer.record.id],
+    [continuation.id, older.record.id, newer.record.id],
   );
 });
 
@@ -1670,7 +1655,7 @@ test('retention survives restart, deletes whole old aggregates, and preserves la
   assert.equal(persistence.generations.getRun(recoverable.runId)?.strategyIdea?.length !== 0, true);
 });
 
-test('imported continuation derives work from sealed content and copy can finish without replaying prompts', (t) => {
+test('persisted continuation derives work from current content and copy can finish without replaying prompts', (t) => {
   let now = 1_800_000_000_000;
   const persistence = persistenceFixture(t, () => ++now);
   const completeMissingCopy = validateCampaignRecord({
@@ -1687,12 +1672,12 @@ test('imported continuation derives work from sealed content and copy can finish
     stage: 'copy',
   });
   const fullyComplete = record(319, 'complete');
-  [completeMissingCopy, copyWithoutPrompts, retryWithPrompts, fullyComplete].forEach(
-    (campaign, index) => insertSyntheticImport(persistence, campaign, index + 1),
+  [completeMissingCopy, copyWithoutPrompts, retryWithPrompts, fullyComplete].forEach((campaign) =>
+    insertContinuationCampaign(persistence, campaign),
   );
 
   const missingCopyRun = admitRun(persistence, {
-    kind: 'imported',
+    kind: 'continuation',
     run: runInput(316, {
       campaignId: completeMissingCopy.id,
       expectedCampaignRevision: 1,
@@ -1701,7 +1686,7 @@ test('imported continuation derives work from sealed content and copy can finish
   });
   assert.equal(missingCopyRun.stage, 'copy');
   const promptRun = admitRun(persistence, {
-    kind: 'imported',
+    kind: 'continuation',
     run: runInput(317, {
       campaignId: copyWithoutPrompts.id,
       expectedCampaignRevision: 1,
@@ -1710,7 +1695,7 @@ test('imported continuation derives work from sealed content and copy can finish
   });
   assert.equal(promptRun.stage, 'prompts');
   const retryRun = admitRun(persistence, {
-    kind: 'imported',
+    kind: 'continuation',
     run: runInput(318, {
       campaignId: retryWithPrompts.id,
       expectedCampaignRevision: 1,
@@ -1741,19 +1726,19 @@ test('imported continuation derives work from sealed content and copy can finish
   assert.throws(
     () =>
       admitRun(persistence, {
-        kind: 'imported',
+        kind: 'continuation',
         run: runInput(319, {
           campaignId: fullyComplete.id,
           expectedCampaignRevision: 1,
           stage: 'copy',
         }),
       }),
-    /sealed campaign stage/iu,
+    /persisted stage/iu,
   );
   assert.throws(
     () =>
       admitRun(persistence, {
-        kind: 'imported',
+        kind: 'continuation',
         run: runInput(320, {
           campaignId: completeMissingCopy.id,
           expectedCampaignRevision: 1,
@@ -1767,12 +1752,12 @@ test('imported continuation derives work from sealed content and copy can finish
 test('positive-revision generation retries retain campaign CAS and atomically enqueue runs', (t) => {
   let now = 1_800_000_000_000;
   const persistence = persistenceFixture(t, () => ++now);
-  const imported = record(320, 'strategy');
-  insertSyntheticImport(persistence, imported, 1);
+  const continuation = record(320, 'strategy');
+  insertContinuationCampaign(persistence, continuation);
   const initial = admitRun(persistence, {
-    kind: 'imported',
+    kind: 'continuation',
     run: runInput(320, {
-      campaignId: imported.id,
+      campaignId: continuation.id,
       expectedCampaignRevision: 1,
       stage: 'copy',
     }),
@@ -1794,7 +1779,7 @@ test('positive-revision generation retries retain campaign CAS and atomically en
     requiredCampaignRevision: 1,
     run: runInput(321, {
       attempt: 2,
-      campaignId: imported.id,
+      campaignId: continuation.id,
       expectedCampaignRevision: 1,
       stage: 'copy',
     }),
@@ -1807,7 +1792,7 @@ test('positive-revision generation retries retain campaign CAS and atomically en
         requiredCampaignRevision: 2,
         run: runInput(322, {
           attempt: 3,
-          campaignId: imported.id,
+          campaignId: continuation.id,
           expectedCampaignRevision: 2,
           stage: 'copy',
         }),
@@ -1864,11 +1849,11 @@ test('post-restart reconciliation closes max-attempt job orphans and restores de
   });
 
   const campaign = record(338, 'strategy');
-  insertSyntheticImport(persistence, campaign, 1);
+  insertContinuationCampaign(persistence, campaign);
   const run = admitRun(
     persistence,
     {
-      kind: 'imported',
+      kind: 'continuation',
       run: runInput(338, {
         campaignId: campaign.id,
         expectedCampaignRevision: 1,
@@ -2482,9 +2467,9 @@ test('campaign deletion removes its complete terminal job, run, effect, and resp
   let now = 1_800_000_000_000;
   const persistence = persistenceFixture(t, () => ++now);
   const campaign = record(345, 'strategy');
-  insertSyntheticImport(persistence, campaign, 1);
+  insertContinuationCampaign(persistence, campaign);
   const run = admitRun(persistence, {
-    kind: 'imported',
+    kind: 'continuation',
     run: runInput(345, {
       campaignId: campaign.id,
       expectedCampaignRevision: 1,
@@ -2551,412 +2536,8 @@ test('campaign deletion removes its complete terminal job, run, effect, and resp
   }
 });
 
-test('campaign import replay is immutable and a raced source change rolls back every target artifact', async (t) => {
-  const fixture = campaignImportFixture(t, 930);
-  const sourceBefore = sourceFileProof(fixture.filePath);
-  const receipt = await importCampaignDirectory({
-    databasePath: fixture.databasePath,
-    sourceDirectory: fixture.sourceDirectory,
-  });
-  assert.equal(receipt.campaignCount, 1);
-  assertSourceFileProof(fixture.filePath, sourceBefore);
-  const targetBefore = sourceFileProof(fixture.databasePath);
-
-  assert.deepEqual(
-    await importCampaignDirectory({
-      databasePath: fixture.databasePath,
-      sourceDirectory: fixture.sourceDirectory,
-    }),
-    receipt,
-  );
-  assertSourceFileProof(fixture.filePath, sourceBefore);
-  assertSourceFileProof(fixture.databasePath, targetBefore);
-
-  const race = campaignImportFixture(t, 931);
-  await assert.rejects(
-    importCampaignDirectoryForTest(
-      { databasePath: race.databasePath, sourceDirectory: race.sourceDirectory },
-      {
-        onCheckpoint(checkpoint) {
-          if (checkpoint === 'before_publish') fs.appendFileSync(race.filePath, ' ');
-        },
-      },
-    ),
-    (error: unknown) => error instanceof CampaignImportError && error.code === 'source_changed',
-  );
-  assert.equal(fs.existsSync(race.databasePath), false);
-  assert.equal(fs.existsSync(race.stagingDirectory), false);
-});
-
-test('campaign import requires the same private parent contract as ordinary persistence open', async (t) => {
-  const fixture = campaignImportFixture(t, 932);
-  const dataDirectory = path.join(fixture.directory, 'private-data');
-  fs.mkdirSync(dataDirectory, { mode: 0o700 });
-  fs.chmodSync(dataDirectory, 0o777);
-  const databasePath = path.join(dataDirectory, 'faunapoolen.db');
-  const stagingDirectory = path.join(dataDirectory, '.faunapoolen.db.import-stage');
-  const intentPath = path.join(dataDirectory, '.faunapoolen.db.import-intent.json');
-
-  await assert.rejects(
-    importCampaignDirectory({ databasePath, sourceDirectory: fixture.sourceDirectory }),
-    (error: unknown) => error instanceof CampaignImportError && error.code === 'invalid_options',
-  );
-  assert.equal(fs.existsSync(databasePath), false);
-  assert.equal(fs.existsSync(stagingDirectory), false);
-  assert.equal(fs.existsSync(intentPath), false);
-
-  fs.chmodSync(dataDirectory, 0o700);
-  const receipt = await importCampaignDirectory({
-    databasePath,
-    sourceDirectory: fixture.sourceDirectory,
-  });
-  let verified: ReturnType<typeof verifyLegacyCampaignRuntimeMarker> | undefined;
-  const persistence = createFaunapoolenPersistence({
-    databasePath,
-    operationalRoot: fixture.directory,
-    requireExisting: true,
-    verifyBeforeWrite(database) {
-      verified = verifyLegacyCampaignRuntimeMarker(database);
-    },
-  });
-  try {
-    assert.deepEqual(verified, receipt);
-    assert.equal(persistence.isReady(), true);
-    assert.equal(persistence.campaigns.list().length, 1);
-  } finally {
-    persistence.close();
-  }
-});
-
-test('campaign import preserves a live owner even before its intent bytes are written', async (t) => {
-  const fixture = campaignImportFixture(t, 939);
-  const importerUrl = pathToFileURL(path.join(import.meta.dirname, 'campaign-import.ts')).href;
-  const childProgram = String.raw`
-    const importer = await import(process.env.FAUNAPOOLEN_TEST_IMPORTER_URL);
-    await importer.importCampaignDirectoryForTest(
-      {
-        databasePath: process.env.FAUNAPOOLEN_TEST_DATABASE_PATH,
-        sourceDirectory: process.env.FAUNAPOOLEN_TEST_SOURCE_DIRECTORY,
-      },
-      {
-        onAllocationPhase(observed) {
-          if (observed === 'intent_allocated') {
-            process.stdout.write('INTENT_ALLOCATED\n');
-            Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30_000);
-          }
-        },
-        onCheckpoint() {},
-      },
-    );
-  `;
-  const child = spawn(
-    process.execPath,
-    ['--import', 'tsx', '--input-type=module', '--eval', childProgram],
-    {
-      cwd: import.meta.dirname,
-      env: {
-        ...process.env,
-        FAUNAPOOLEN_TEST_DATABASE_PATH: fixture.databasePath,
-        FAUNAPOOLEN_TEST_IMPORTER_URL: importerUrl,
-        FAUNAPOOLEN_TEST_SOURCE_DIRECTORY: fixture.sourceDirectory,
-      },
-      stdio: ['ignore', 'pipe', 'pipe'],
-    },
-  );
-  t.after(() => {
-    if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
-  });
-  let childStderr = '';
-  child.stderr.setEncoding('utf8');
-  child.stderr.on('data', (chunk: string) => {
-    childStderr += chunk;
-  });
-  await new Promise<void>((resolve, reject) => {
-    let stdout = '';
-    const timer = setTimeout(
-      () => reject(new Error(`Timed out waiting for live importer intent. ${childStderr}`)),
-      10_000,
-    );
-    child.stdout.setEncoding('utf8');
-    child.stdout.on('data', (chunk: string) => {
-      stdout += chunk;
-      if (!stdout.includes('INTENT_ALLOCATED\n')) return;
-      clearTimeout(timer);
-      resolve();
-    });
-    child.once('exit', (code, signal) => {
-      clearTimeout(timer);
-      reject(
-        new Error(
-          `Live importer exited before ownership proof (${String(code)}/${String(signal)}). ${childStderr}`,
-        ),
-      );
-    });
-  });
-
-  await assert.rejects(
-    importCampaignDirectory({
-      databasePath: fixture.databasePath,
-      sourceDirectory: fixture.sourceDirectory,
-    }),
-    (error: unknown) =>
-      error instanceof CampaignImportError &&
-      error.code === 'recovery_conflict' &&
-      /live process/iu.test(error.message),
-  );
-  assert.equal(fs.existsSync(fixture.databasePath), false);
-  assert.equal(fs.existsSync(fixture.stagingDirectory), false);
-  assert.equal(fs.existsSync(fixture.intentPath), false);
-  assert.equal(
-    fs
-      .readdirSync(fixture.directory)
-      .filter((name) => name.startsWith('.faunapoolen.db.import-intent.prepare-')).length,
-    1,
-  );
-
-  const childExitPromise = new Promise<{
-    readonly code: number | null;
-    readonly signal: string | null;
-  }>((resolve) => {
-    child.once('exit', (code, signal) => resolve({ code, signal }));
-  });
-  child.kill('SIGKILL');
-  const childExit = await childExitPromise;
-  assert.equal(childExit.code, null);
-  assert.equal(childExit.signal, 'SIGKILL');
-  const receipt = await importCampaignDirectory({
-    databasePath: fixture.databasePath,
-    sourceDirectory: fixture.sourceDirectory,
-  });
-  assert.equal(receipt.campaignCount, 1);
-  assert.equal(fs.existsSync(fixture.databasePath), true);
-  assert.equal(fs.existsSync(fixture.intentPath), false);
-  assert.deepEqual(
-    fs
-      .readdirSync(fixture.directory)
-      .filter((name) => name.startsWith('.faunapoolen.db.import-intent.prepare-')),
-    [],
-  );
-});
-
-test('campaign import recovers identity-proven private staging after process death', async (t) => {
-  const failurePoints = [
-    { kind: 'allocation', name: 'intent_allocated' },
-    { kind: 'allocation', name: 'intent_prepared' },
-    { kind: 'allocation', name: 'intent_linked' },
-    { kind: 'allocation', name: 'intent_durable' },
-    { kind: 'allocation', name: 'preparation_durable' },
-    { kind: 'allocation', name: 'stage_published' },
-    { kind: 'checkpoint', name: 'temporary_created' },
-    { kind: 'checkpoint', name: 'target_transaction_started' },
-    { kind: 'checkpoint', name: 'campaign_inserted' },
-    { kind: 'checkpoint', name: 'before_commit' },
-    { kind: 'checkpoint', name: 'target_reopened' },
-    { kind: 'checkpoint', name: 'marker_durable' },
-    { kind: 'checkpoint', name: 'before_publish' },
-    { kind: 'checkpoint', name: 'target_linked' },
-    { kind: 'checkpoint', name: 'target_published' },
-    { kind: 'checkpoint', name: 'final_source_verified' },
-  ] as const;
-  for (const [index, failurePoint] of failurePoints.entries()) {
-    await t.test(`${failurePoint.kind}:${failurePoint.name}`, async (t) => {
-      const fixture = campaignImportFixture(t, 940 + index);
-      const sourceBefore = sourceFileProof(fixture.filePath);
-      const importerUrl = pathToFileURL(path.join(import.meta.dirname, 'campaign-import.ts')).href;
-      const childProgram = String.raw`
-        const importer = await import(process.env.FAUNAPOOLEN_TEST_IMPORTER_URL);
-        await importer.importCampaignDirectoryForTest(
-          {
-            databasePath: process.env.FAUNAPOOLEN_TEST_DATABASE_PATH,
-            sourceDirectory: process.env.FAUNAPOOLEN_TEST_SOURCE_DIRECTORY,
-          },
-          {
-            onAllocationPhase(observed) {
-              if (
-                process.env.FAUNAPOOLEN_TEST_KILL_KIND === 'allocation' &&
-                observed === process.env.FAUNAPOOLEN_TEST_KILL_POINT
-              ) {
-                process.kill(process.pid, 'SIGKILL');
-              }
-            },
-            onCheckpoint(observed) {
-              if (
-                process.env.FAUNAPOOLEN_TEST_KILL_KIND === 'checkpoint' &&
-                observed === process.env.FAUNAPOOLEN_TEST_KILL_POINT
-              ) {
-                process.kill(process.pid, 'SIGKILL');
-              }
-            },
-          },
-        );
-      `;
-      const child = spawnSync(
-        process.execPath,
-        ['--import', 'tsx', '--input-type=module', '--eval', childProgram],
-        {
-          encoding: 'utf8',
-          env: {
-            ...process.env,
-            FAUNAPOOLEN_TEST_DATABASE_PATH: fixture.databasePath,
-            FAUNAPOOLEN_TEST_IMPORTER_URL: importerUrl,
-            FAUNAPOOLEN_TEST_KILL_KIND: failurePoint.kind,
-            FAUNAPOOLEN_TEST_KILL_POINT: failurePoint.name,
-            FAUNAPOOLEN_TEST_SOURCE_DIRECTORY: fixture.sourceDirectory,
-          },
-          timeout: 15_000,
-        },
-      );
-      assert.equal(child.error, undefined, child.error?.message ?? 'Importer child spawn failed.');
-      assert.equal(child.status, null, child.stderr || child.stdout);
-      assert.equal(child.signal, 'SIGKILL', child.stderr || child.stdout);
-      const preparedIntentNames = fs
-        .readdirSync(fixture.directory)
-        .filter((name) => name.startsWith('.faunapoolen.db.import-intent.prepare-'));
-      assert.equal(
-        fs.existsSync(fixture.intentPath),
-        !['intent_allocated', 'intent_prepared'].includes(failurePoint.name),
-      );
-      assert.equal(
-        preparedIntentNames.length,
-        ['intent_allocated', 'intent_prepared', 'intent_linked'].includes(failurePoint.name)
-          ? 1
-          : 0,
-      );
-      if (failurePoint.name === 'intent_linked') {
-        const temporaryStats = fs.statSync(
-          path.join(fixture.directory, preparedIntentNames[0] as string),
-        );
-        const canonicalStats = fs.statSync(fixture.intentPath);
-        assert.equal(temporaryStats.ino, canonicalStats.ino);
-        assert.equal(temporaryStats.nlink, 2);
-        assert.equal(canonicalStats.nlink, 2);
-      }
-      const preparationNames = fs
-        .readdirSync(fixture.directory)
-        .filter((name) => name.startsWith('.faunapoolen.db.import-stage.prepare-'));
-      if (
-        ['intent_allocated', 'intent_prepared', 'intent_linked', 'intent_durable'].includes(
-          failurePoint.name,
-        )
-      ) {
-        assert.equal(fs.existsSync(fixture.stagingDirectory), false);
-        assert.deepEqual(preparationNames, []);
-      } else if (failurePoint.name === 'preparation_durable') {
-        assert.equal(fs.existsSync(fixture.stagingDirectory), false);
-        assert.equal(preparationNames.length, 1);
-        assert.equal(
-          fs.existsSync(
-            path.join(fixture.directory, preparationNames[0] as string, 'operation.json'),
-          ),
-          true,
-        );
-      } else {
-        assert.equal(fs.existsSync(fixture.stagingDirectory), true);
-        assert.deepEqual(preparationNames, []);
-        const marker = JSON.parse(
-          fs.readFileSync(path.join(fixture.stagingDirectory, 'operation.json'), 'utf8'),
-        ) as { readonly state: string };
-        const building = new Set([
-          'stage_published',
-          'temporary_created',
-          'target_transaction_started',
-          'campaign_inserted',
-          'before_commit',
-          'target_reopened',
-        ]);
-        assert.equal(marker.state, building.has(failurePoint.name) ? 'building' : 'sealed');
-      }
-
-      const receipt = await importCampaignDirectory({
-        databasePath: fixture.databasePath,
-        sourceDirectory: fixture.sourceDirectory,
-      });
-      assert.equal(receipt.campaignCount, 1);
-      assert.equal(fs.existsSync(fixture.databasePath), true);
-      assert.equal(fs.statSync(fixture.databasePath).mode & 0o777, 0o600);
-      assert.equal(fs.existsSync(fixture.stagingDirectory), false);
-      assert.equal(fs.existsSync(fixture.intentPath), false);
-      assert.deepEqual(
-        fs
-          .readdirSync(fixture.directory)
-          .filter((name) => name.startsWith('.faunapoolen.db.import-intent.prepare-')),
-        [],
-      );
-      assert.deepEqual(
-        fs
-          .readdirSync(fixture.directory)
-          .filter((name) => name.startsWith('.faunapoolen.db.import-stage.prepare-')),
-        [],
-      );
-      assertSourceFileProof(fixture.filePath, sourceBefore);
-    });
-  }
-});
-
-test('legacy import parity is a one-time pre-activation proof while runtime checks only the sealed marker', async (t) => {
-  const fixture = campaignImportFixture(t, 950);
-  const receipt = await importCampaignDirectory({
-    databasePath: fixture.databasePath,
-    sourceDirectory: fixture.sourceDirectory,
-  });
-  const databaseBytesBeforeVerification = fs.readFileSync(fixture.databasePath);
-  const databaseBeforeVerification = fs.lstatSync(fixture.databasePath, { bigint: true });
-  const directoryBeforeVerification = fs.readdirSync(fixture.directory).toSorted();
-  assert.deepEqual(verifyLegacyCampaignImportPreActivation(fixture.databasePath, receipt), receipt);
-  const databaseAfterVerification = fs.lstatSync(fixture.databasePath, { bigint: true });
-  assert.deepEqual(fs.readFileSync(fixture.databasePath), databaseBytesBeforeVerification);
-  assert.deepEqual(fs.readdirSync(fixture.directory).toSorted(), directoryBeforeVerification);
-  assert.equal(databaseAfterVerification.ino, databaseBeforeVerification.ino);
-  assert.equal(databaseAfterVerification.mode, databaseBeforeVerification.mode);
-  assert.equal(databaseAfterVerification.size, databaseBeforeVerification.size);
-  assert.equal(databaseAfterVerification.mtimeNs, databaseBeforeVerification.mtimeNs);
-  assert.equal(databaseAfterVerification.ctimeNs, databaseBeforeVerification.ctimeNs);
-
-  let startupReceipt: ReturnType<typeof verifyLegacyCampaignRuntimeMarker> | undefined;
-  const persistence = createFaunapoolenPersistence({
-    databasePath: fixture.databasePath,
-    operationalRoot: fixture.directory,
-    requireExisting: true,
-    verifyBeforeWrite(database) {
-      startupReceipt = verifyLegacyCampaignRuntimeMarker(database);
-    },
-  });
-  try {
-    assert.deepEqual(startupReceipt, receipt);
-    const created = persistence.campaigns.create(record(951, 'strategy'));
-    assert.deepEqual(verifyLegacyCampaignRuntimeMarker(persistence.database.sqlite), receipt);
-    assert.throws(
-      () => verifyLegacyCampaignImportPreActivation(fixture.databasePath, receipt),
-      /SQLite sidecars make the database mutable/iu,
-    );
-    assert.equal(persistence.campaigns.delete(created.record.id, created.revision), true);
-    assert.deepEqual(verifyLegacyCampaignRuntimeMarker(persistence.database.sqlite), receipt);
-    const importedId = path.basename(fixture.filePath, '.json');
-    const imported = persistence.campaigns.get(importedId);
-    assert.ok(imported);
-    persistence.campaigns.updateCopy({
-      campaignId: importedId,
-      expectedRevision: imported.revision,
-      field: 'headline',
-      language: 'en',
-      value: 'A legitimate post-cutover owner edit',
-    });
-    assert.deepEqual(verifyLegacyCampaignRuntimeMarker(persistence.database.sqlite), receipt);
-    assert.throws(
-      () => verifyLegacyCampaignImportPreActivation(fixture.databasePath, receipt),
-      /SQLite sidecars make the database mutable/iu,
-    );
-  } finally {
-    persistence.close();
-  }
-  assert.throws(
-    () => verifyLegacyCampaignImportPreActivation(fixture.databasePath, receipt),
-    /aggregate parity/iu,
-  );
-});
-
-test('sealed runtime open neither materializes a missing target nor crosses a marker-to-write swap', async (t) => {
-  const root = privateTempDirectory('faunapoolen-sealed-open-test-');
+test('production open requires an existing verified database and detects a path swap', (t) => {
+  const root = privateTempDirectory('faunapoolen-production-open-test-');
   t.after(() => fs.rmSync(root, { force: true, recursive: true }));
   const missingPath = path.join(root, 'missing', 'faunapoolen.db');
   assert.throws(
@@ -2965,32 +2546,28 @@ test('sealed runtime open neither materializes a missing target nor crosses a ma
         databasePath: missingPath,
         operationalRoot: root,
         requireExisting: true,
-        verifyBeforeWrite: verifyLegacyCampaignRuntimeMarker,
+        verifyBeforeWrite: verifyFaunapoolenDatabaseBeforeWrite,
       }),
     /must already exist/iu,
   );
   assert.equal(fs.existsSync(path.dirname(missingPath)), false);
   assert.equal(fs.existsSync(missingPath), false);
 
-  const sourceDirectory = path.join(root, 'campaign-history');
-  fs.mkdirSync(sourceDirectory, { mode: 0o700 });
-  const campaign = record(952);
-  fs.writeFileSync(
-    path.join(sourceDirectory, `${campaign.id}.json`),
-    `${JSON.stringify(campaign)}\n`,
-    {
-      mode: 0o600,
-    },
-  );
   const selected = path.join(root, 'selected.db');
-  await importCampaignDirectory({ databasePath: selected, sourceDirectory });
+  const selectedDatabase = createFaunapoolenPersistence({
+    databasePath: selected,
+    operationalRoot: root,
+  });
+  selectedDatabase.campaigns.create(record(952));
+  selectedDatabase.close();
+
   const replacement = path.join(root, 'replacement.db');
-  const markerless = createFaunapoolenPersistence({
+  const replacementDatabase = createFaunapoolenPersistence({
     databasePath: replacement,
     operationalRoot: root,
   });
-  markerless.close();
-  const replacementProof = sourceFileProof(replacement);
+  replacementDatabase.close();
+
   let authorityVerified = false;
   assert.throws(
     () =>
@@ -2999,7 +2576,7 @@ test('sealed runtime open neither materializes a missing target nor crosses a ma
         operationalRoot: root,
         requireExisting: true,
         verifyBeforeWrite(database) {
-          verifyLegacyCampaignRuntimeMarker(database);
+          verifyFaunapoolenDatabaseBeforeWrite(database);
           authorityVerified = true;
           fs.renameSync(selected, path.join(root, 'verified-authority.db'));
           fs.renameSync(replacement, selected);
@@ -3008,15 +2585,5 @@ test('sealed runtime open neither materializes a missing target nor crosses a ma
     (error: unknown) => errorTreeMatches(error, /(?:identity|path) changed|ENOENT|no such file/iu),
   );
   assert.equal(authorityVerified, true);
-  assertSourceFileProof(selected, replacementProof);
-  for (const suffix of ['-journal', '-shm', '-wal']) {
-    const sidecarPath = `${selected}${suffix}`;
-    if (!fs.existsSync(sidecarPath)) continue;
-    const sidecar = fs.lstatSync(sidecarPath);
-    assert.equal(sidecar.isFile(), true);
-    assert.equal(sidecar.isSymbolicLink(), false);
-    assert.equal(sidecar.uid, process.geteuid?.());
-    assert.equal(sidecar.nlink, 1);
-    assert.equal(sidecar.mode & 0o777, 0o600);
-  }
+  assert.equal(fs.existsSync(selected), true);
 });

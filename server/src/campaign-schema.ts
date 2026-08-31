@@ -5,9 +5,6 @@ import { IMAGE_CONCEPTS, IMAGE_CONCEPT_IDS, type ImageConceptId } from './image-
 import { isMarketingRuleId } from './marketing-rules.js';
 
 export const CAMPAIGN_MAX_RECORDS = 200;
-export const CAMPAIGN_IMPORT_MAX_FILE_BYTES = 512 * 1024;
-export const CAMPAIGN_IMPORT_MAX_AGGREGATE_BYTES =
-  CAMPAIGN_MAX_RECORDS * CAMPAIGN_IMPORT_MAX_FILE_BYTES;
 
 export const CAMPAIGN_ROOT_FIELDS = Object.freeze([
   'id',

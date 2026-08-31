@@ -8,12 +8,9 @@ import { HttpError } from '@mikaelcedergren/cx-framework/server/errors';
 
 import {
   createFaunapoolenPersistence,
-  insertImportedCampaign,
   type FaunapoolenPersistence,
 } from './campaign-repository.js';
 import {
-  canonicalCampaignBytes,
-  sha256Hex,
   validateCampaignRecord,
   type CampaignCopy,
   type CampaignImagePrompt,
@@ -244,15 +241,15 @@ test('an ambiguous revision-zero strategy run can only be retried explicitly as 
   assert.deepEqual(await reloadedService.listRecoverableStatuses(), []);
 });
 
-test('an imported complete campaign fills missing copy without regenerating valid prompts', async (t) => {
+test('an incomplete persisted campaign fills missing copy without regenerating valid prompts', async (t) => {
   const persistence = fixture(t);
   const campaignId = uuid(300);
-  const imported = campaignRecord(campaignId, {
+  const incomplete = campaignRecord(campaignId, {
     copy: { sv: copy('sv') },
     imagePrompts: prompts(),
     stage: 'complete',
   });
-  importCampaign(persistence, imported, 1);
+  persistence.campaigns.create(incomplete);
 
   const ids = uuidFactory(301);
   const provider = new SyntheticProvider();
@@ -277,7 +274,7 @@ test('an imported complete campaign fills missing copy without regenerating vali
     createUuid: ids,
     generations: persistence.generations,
     maintenance: persistence.generationMaintenance,
-    owner: 'faunapoolen-worker-import-0001',
+    owner: 'faunapoolen-worker-continuation-0001',
     provider,
     store: persistence.jobs,
   });
@@ -287,7 +284,7 @@ test('an imported complete campaign fills missing copy without regenerating vali
   assert.ok(completed);
   assert.equal(completed.record.stage, 'complete');
   assert.ok(completed.record.copy.en);
-  assert.deepEqual(completed.record.imagePrompts, imported.imagePrompts);
+  assert.deepEqual(completed.record.imagePrompts, incomplete.imagePrompts);
   assert.deepEqual(provider.operations, ['campaign.copy.en']);
   assert.equal(persistence.generations.getLatestRun(campaignId)?.state, 'succeeded');
 });
@@ -634,7 +631,7 @@ function campaignRecord(
   return validateCampaignRecord({
     copy: state.copy,
     createdAt: new Date(NOW).toISOString(),
-    idea: 'An imported campaign idea',
+    idea: 'An incomplete campaign idea',
     id,
     imagePrompts: state.imagePrompts,
     name: STRATEGY.name,
@@ -646,19 +643,6 @@ function campaignRecord(
 
 function prompts(): readonly CampaignImagePrompt[] {
   return buildCampaignImagePrompts(IMAGE_SCENES);
-}
-
-function importCampaign(
-  persistence: FaunapoolenPersistence,
-  record: CampaignRecord,
-  sequence: number,
-): void {
-  const bytes = canonicalCampaignBytes(record);
-  insertImportedCampaign(persistence.database.sqlite, record, sequence, {
-    bytes,
-    fileName: `${record.id}.json`,
-    sha256: sha256Hex(bytes),
-  });
 }
 
 function fixture(t: TestContext): FaunapoolenPersistence {

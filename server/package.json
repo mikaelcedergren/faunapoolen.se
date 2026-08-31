@@ -17,9 +17,6 @@
     "start": "pnpm run start:web",
     "start:web": "cd .. && node server/dist/index.js",
     "start:worker": "cd .. && node server/dist/worker.js",
-    "import:campaigns": "cd .. && node server/dist/import-campaigns.js",
-    "quiesce:campaign-database": "cd .. && node server/dist/quiesce-campaign-database.js",
-    "verify:campaign-import": "cd .. && node server/dist/verify-campaign-import.js",
     "test": "node --import tsx --test \"src/**/*.test.ts\""
   },
   "dependencies": {

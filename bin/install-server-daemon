@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Validate or install the Faunapoolen web and jobs-worker system LaunchDaemons. Installation never
-# loads or restarts either role; the completed campaign cutover runbook remains historical evidence.
+# loads or restarts either role; release selection and activation stay separate operations.
 set -euo pipefail
 
 SOURCE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -93,7 +93,7 @@ done
 if [[ "$MODE" == "check" ]]; then
   echo "VALID: Faunapoolen web and jobs-worker LaunchDaemon templates"
   echo "No service was installed, loaded, or restarted."
-  echo "CAMPAIGN-CUTOVER.md is completed historical evidence; current runtime state belongs in the root migration ledger."
+  echo "Current runtime and release operations are owned by the shared server standard."
   exit 0
 fi
 
@@ -137,7 +137,7 @@ for path in (web_private, worker_private, database):
     try:
         metadata = os.lstat(path)
     except OSError as error:
-        raise SystemExit(f"FATAL: private cutover file is unavailable: {path}: {error}")
+        raise SystemExit(f"FATAL: required private runtime file is unavailable: {path}: {error}")
     if (
         not stat.S_ISREG(metadata.st_mode)
         or metadata.st_nlink != 1
@@ -145,7 +145,7 @@ for path in (web_private, worker_private, database):
         or stat.S_IMODE(metadata.st_mode) != 0o600
     ):
         raise SystemExit(
-            f"FATAL: private cutover file must be one owned mode-0600 regular file: {path}"
+            f"FATAL: private runtime file must be one owned mode-0600 regular file: {path}"
         )
 PY
 
@@ -160,4 +160,4 @@ fi
   --definition "${LABELS[1]}=$RENDER_DIR/${LABELS[1]}.plist"
 
 echo "No service was loaded or restarted."
-echo "Any future activation requires separate restart authorisation and complete selected-release verification; CAMPAIGN-CUTOVER.md is historical evidence."
+echo "Activation requires separate restart authorisation and complete selected-release verification."

@@ -124,7 +124,7 @@ test('the admin is excluded from search and every public page stays indexable', 
   expect(rules).toContain('Disallow: /en/admin');
   expect(await (await request.get('/sitemap.xml')).text()).not.toContain('/admin');
 
-  for (const path of ['/admin/', '/en/admin/', '/admin-auth/legacy', '/api/admin/session']) {
+  for (const path of ['/admin/', '/en/admin/', '/api/admin/session']) {
     const res = await request.get(path);
     expect(res.headers()['x-robots-tag'], path).toBe('noindex, nofollow');
   }

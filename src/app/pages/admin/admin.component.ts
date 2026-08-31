@@ -534,7 +534,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   public constructor() {
     // The admin screens are a cx-framework surface inside a site whose public stylesheet is global.
-    // Suppressing that one link keeps the legacy cascade off /admin without touching either
+    // Suppressing that one link keeps the public-site cascade off /admin without touching either
     // stylesheet; both are restored when the route is left.
     this.applyTheme(this.theme());
     this.publicStylesheet?.setAttribute('media', 'not all');

@@ -18,7 +18,7 @@ export function createFaunapoolenBrowserServing(
   return createBrowserServing({
     express,
     repoRoot: environment.operationalRoot,
-    legacyBrowserDir: environment.browserDirectory,
+    defaultBrowserDir: environment.browserDirectory,
     ...(environment.browserDirectoryOverride === undefined
       ? {}
       : { browserDirOverride: environment.browserDirectoryOverride }),

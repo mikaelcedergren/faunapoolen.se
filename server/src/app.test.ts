@@ -489,13 +489,6 @@ test('authentication, origin, parser, request IDs, aliases, and error envelopes 
   });
   assert.equal(signedInMissingOrigin.status, 403);
 
-  const alias = await fetch(`${fixture.baseUrl}/admin-auth/login`, {
-    method: 'POST',
-  });
-  assert.equal(alias.status, 404);
-  assert.equal(((await alias.json()) as { error: { code: string } }).error.code, 'route_not_found');
-  assert.equal(alias.headers.get('x-robots-tag'), 'noindex, nofollow');
-
   const unknownApi = await fetch(`${fixture.baseUrl}/api/unknown`);
   assert.equal(unknownApi.status, 404);
   assert.equal(

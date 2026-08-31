@@ -8,7 +8,7 @@ import {
 
 import {
   CampaignRevisionConflictError,
-  classifyImportedGenerationContinuation,
+  classifyCampaignContinuation,
   GenerationAggregateCapacityError,
   GenerationCompletedReceiptRetryError,
   GenerationRunCapacityError,
@@ -153,9 +153,9 @@ export function createGenerationService({
 
       try {
         const input: GenerationAdmissionInput =
-          admission.kind === 'imported'
+          admission.kind === 'continuation'
             ? {
-                kind: 'imported',
+                kind: 'continuation',
                 now: checkedClock(clock),
                 policy: generationWindowPolicy(),
                 run,
@@ -185,7 +185,7 @@ export function createGenerationService({
 }
 
 type RetryAdmission =
-  | { readonly attempt: number; readonly kind: 'imported' | 'retry' }
+  | { readonly attempt: number; readonly kind: 'continuation' | 'retry' }
   | { readonly kind: 'not_found' }
   | { readonly kind: 'unavailable'; readonly message: string };
 
@@ -217,26 +217,20 @@ function retryAdmission(
   }
 
   if (!campaign) return Object.freeze({ kind: 'not_found' as const });
-  if (campaign.source === null) {
-    return Object.freeze({
-      kind: 'unavailable' as const,
-      message: 'Generation history does not contain a failed stage to retry.',
-    });
-  }
-  const stage = classifyImportedGenerationContinuation(campaign.record);
+  const stage = classifyCampaignContinuation(campaign.record);
   if (stage === null) {
     return Object.freeze({
       kind: 'unavailable' as const,
-      message: 'This imported campaign already contains every generation stage.',
+      message: 'This campaign already contains every generation stage.',
     });
   }
   if (requestedStage !== stage) {
     return Object.freeze({
       kind: 'unavailable' as const,
-      message: `The imported campaign must continue with its ${stage} stage.`,
+      message: `The campaign must continue with its ${stage} stage.`,
     });
   }
-  return Object.freeze({ attempt: 1, kind: 'imported' as const });
+  return Object.freeze({ attempt: 1, kind: 'continuation' as const });
 }
 
 function normalizedIdea(value: string): string {

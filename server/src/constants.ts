@@ -15,9 +15,4 @@ export const ADMIN_REQUEST_BODY_LIMIT = '16kb';
 export const CAMPAIGN_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
-export const PRIVATE_NOINDEX_PATHS = Object.freeze([
-  '/admin',
-  '/en/admin',
-  '/admin-auth',
-  ADMIN_API_PATH,
-]);
+export const PRIVATE_NOINDEX_PATHS = Object.freeze(['/admin', '/en/admin', ADMIN_API_PATH]);

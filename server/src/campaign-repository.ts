@@ -9,7 +9,6 @@ import {
 } from '@mikaelcedergren/cx-framework/server/jobs';
 import {
   withImmediateTransaction,
-  type ReadonlySyncSqliteDatabase,
   type SqliteRow,
   type SqliteValue,
   type SyncSqliteDatabase,
@@ -54,8 +53,6 @@ import {
   parseCampaignGenerationJob,
 } from './generation-jobs.js';
 
-export const CAMPAIGN_IMPORT_RECEIPT_KEY = 'legacy_campaign_directory_v1';
-export const CAMPAIGN_IMPORT_FORMAT_VERSION = 1;
 export const MAX_RECOVERABLE_GENERATION_RUNS = 100;
 export const MAX_GENERATION_RETENTION_BATCH = 100;
 export const GENERATION_TERMINAL_RETENTION_MS = 30 * 24 * 60 * 60 * 1_000;
@@ -74,29 +71,10 @@ const PROVIDER_EFFECT_RETENTION_TARGET = Math.floor(MAX_PROVIDER_EFFECTS * 0.9);
 const PROVIDER_RESPONSE_RETENTION_TARGET = Math.floor(MAX_PROVIDER_RESPONSE_TOTAL_BYTES * 0.9);
 const GENERATION_JOB_RETENTION_TARGET = Math.floor(MAX_RETAINED_GENERATION_JOBS * 0.9);
 
-export interface CampaignImportReceipt {
-  readonly campaignCount: number;
-  readonly formatVersion: 1;
-  readonly orderedCampaignsSha256: string;
-  readonly sourceBytes: number;
-  readonly sourceSha256: string;
-}
-
-export interface ImportedCampaignSource {
-  readonly bytes: Uint8Array;
-  readonly fileName: string;
-  readonly sha256: string;
-}
-
 export interface StoredCampaign {
   readonly sequence: number;
   readonly record: CampaignRecord;
   readonly revision: number;
-  readonly source: Readonly<{
-    readonly bytes: number;
-    readonly fileName: string;
-    readonly sha256: string;
-  }> | null;
 }
 
 export interface CampaignSummary {
@@ -214,7 +192,7 @@ interface GenerationAdmissionBase {
 }
 
 export type GenerationAdmissionInput =
-  | (GenerationAdmissionBase & { readonly kind: 'imported' })
+  | (GenerationAdmissionBase & { readonly kind: 'continuation' })
   | (GenerationAdmissionBase & { readonly kind: 'initial' })
   | (GenerationAdmissionBase & {
       readonly kind: 'retry';
@@ -449,9 +427,6 @@ interface CampaignRow extends SqliteRow {
   readonly record_json: Uint8Array;
   readonly record_sha256: string;
   readonly revision: number | bigint;
-  readonly source_bytes: number | bigint | null;
-  readonly source_filename: string | null;
-  readonly source_sha256: string | null;
   readonly stage: string;
   readonly updated_at: string;
 }
@@ -523,14 +498,6 @@ interface ProviderEffectRow extends SqliteRow {
   readonly run_id: string;
   readonly state: string;
   readonly updated_at: number | bigint;
-}
-
-interface ReceiptRow extends SqliteRow {
-  readonly campaign_count: number | bigint;
-  readonly format_version: number | bigint;
-  readonly ordered_campaigns_sha256: string;
-  readonly source_bytes: number | bigint;
-  readonly source_sha256: string;
 }
 
 export type CreateFaunapoolenPersistenceOptions = OpenFaunapoolenDatabaseOptions & {
@@ -769,7 +736,7 @@ export function createCampaignRepository(
           assertCampaignCapacity(database);
           assertCampaignSequenceCapacity(database);
           const row = database.get<CampaignRow>(
-            `${campaignInsertSql(false)} RETURNING ${campaignColumns()}`,
+            `${campaignInsertSql()} RETURNING ${campaignColumns()}`,
             campaignInsertValues(canonical.record, canonical.bytes, canonical.sha256),
           );
           if (!row) throw new Error('Campaign insert returned no row.');
@@ -1019,9 +986,9 @@ export function createGenerationRepository(
       return;
     }
 
-    if (input.kind === 'imported') {
+    if (input.kind === 'continuation') {
       if (run.expectedCampaignRevision < 1 || run.stage === 'strategy') {
-        throw new Error('Imported continuation requires positive-revision copy or prompt work.');
+        throw new Error('Campaign continuation requires positive-revision copy or prompt work.');
       }
       const campaignRow = database.get<CampaignRow>(
         `SELECT ${campaignColumns()} FROM campaigns WHERE id = ?`,
@@ -1030,15 +997,14 @@ export function createGenerationRepository(
       if (!campaignRow) throw new CampaignRevisionConflictError(run.campaignId);
       const campaign = parseCampaignRow(campaignRow);
       if (
-        campaign.source === null ||
         campaign.revision !== run.expectedCampaignRevision ||
         generationRunExists(database, run.campaignId)
       ) {
         throw new CampaignRevisionConflictError(run.campaignId);
       }
-      const expectedStage = classifyImportedGenerationContinuation(campaign.record);
+      const expectedStage = classifyCampaignContinuation(campaign.record);
       if (expectedStage === null || run.stage !== expectedStage || (run.attempt ?? 1) !== 1) {
-        throw new Error('Imported continuation does not match the sealed campaign stage.');
+        throw new Error('Campaign continuation does not match its persisted stage.');
       }
       return;
     }
@@ -1116,7 +1082,7 @@ export function createGenerationRepository(
       assertCampaignCapacity(database);
       assertCampaignSequenceCapacity(database);
       const row = database.get<CampaignRow>(
-        `${campaignInsertSql(false)} RETURNING ${campaignColumns()}`,
+        `${campaignInsertSql()} RETURNING ${campaignColumns()}`,
         campaignInsertValues(canonical.record, canonical.bytes, canonical.sha256),
       );
       if (!row) throw new Error('Generation campaign insert returned no row.');
@@ -1811,99 +1777,17 @@ export function createGenerationRepository(
   return Object.freeze(repository);
 }
 
-export function insertImportedCampaign(
-  database: SyncSqliteDatabase,
-  record: CampaignRecord,
-  campaignSequence: number,
-  source: ImportedCampaignSource,
-): void {
-  assertPositiveInteger(campaignSequence, 'Campaign sequence');
-  assertCampaignSequenceCapacity(database);
-  const prior = database.get<{ readonly sequence: number | bigint | null }>(
-    'SELECT MAX(campaign_sequence) AS sequence FROM campaigns',
-  );
-  const expectedSequence =
-    prior?.sequence == null
-      ? 1
-      : safeAdd(integer(prior.sequence, 'campaign sequence'), 1, 'Campaign sequence');
-  if (campaignSequence !== expectedSequence) {
-    throw new Error('Imported campaigns must use the next monotonic campaign sequence.');
-  }
-  assertHash(source.sha256, 'Campaign source hash');
-  const canonical = canonicalCampaign(record);
-  const result = database.run(campaignInsertSql(true), [
-    campaignSequence,
-    ...campaignInsertValues(canonical.record, canonical.bytes, canonical.sha256, source),
-  ]);
-  if (result.changes !== 1) throw new Error('Imported campaign was not inserted exactly once.');
-}
-
-export function insertCampaignImportReceipt(
-  database: SyncSqliteDatabase,
-  receipt: CampaignImportReceipt,
-): void {
-  validateReceipt(receipt);
-  const result = database.run(
-    `INSERT INTO campaign_import_receipts (
-       receipt_key, format_version, source_bytes, source_sha256,
-       campaign_count, ordered_campaigns_sha256
-     ) VALUES (?, ?, ?, ?, ?, ?)`,
-    [
-      CAMPAIGN_IMPORT_RECEIPT_KEY,
-      receipt.formatVersion,
-      receipt.sourceBytes,
-      receipt.sourceSha256,
-      receipt.campaignCount,
-      receipt.orderedCampaignsSha256,
-    ],
-  );
-  if (result.changes !== 1)
-    throw new Error('Campaign import receipt was not inserted exactly once.');
-}
-
-export function readCampaignImportReceipt(
-  database: ReadonlySyncSqliteDatabase,
-): CampaignImportReceipt | null {
-  const row = database.get<ReceiptRow>(
-    `SELECT format_version, source_bytes, source_sha256,
-            campaign_count, ordered_campaigns_sha256
-     FROM campaign_import_receipts
-     WHERE receipt_key = ?`,
-    [CAMPAIGN_IMPORT_RECEIPT_KEY],
-  );
-  if (!row) return null;
-  const receipt: CampaignImportReceipt = {
-    campaignCount: integer(row.campaign_count, 'receipt campaign count'),
-    formatVersion: integer(row.format_version, 'receipt format version') as 1,
-    orderedCampaignsSha256: row.ordered_campaigns_sha256,
-    sourceBytes: integer(row.source_bytes, 'receipt source bytes'),
-    sourceSha256: row.source_sha256,
-  };
-  validateReceipt(receipt);
-  return Object.freeze(receipt);
-}
-
-export function readAllStoredCampaigns(
-  database: ReadonlySyncSqliteDatabase,
-): readonly StoredCampaign[] {
-  return database
-    .all<CampaignRow>(`SELECT ${campaignColumns()} FROM campaigns ORDER BY campaign_sequence`)
-    .map(parseCampaignRow);
-}
-
-function campaignInsertSql(imported: boolean): string {
+function campaignInsertSql(): string {
   return `INSERT INTO campaigns (
-    ${imported ? 'campaign_sequence, ' : ''}
     id, created_at, created_at_ms, updated_at, updated_at_ms, name, stage,
-    revision, source_filename, source_bytes, source_sha256, record_sha256, record_json
-  ) VALUES (${imported ? '?, ' : ''}?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)`;
+    revision, record_sha256, record_json
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`;
 }
 
 function campaignInsertValues(
   record: CampaignRecord,
   canonicalBytes: Uint8Array,
   recordHash: string,
-  source?: ImportedCampaignSource,
 ): readonly SqliteValue[] {
   return [
     record.id,
@@ -1913,9 +1797,6 @@ function campaignInsertValues(
     Date.parse(record.updatedAt),
     record.name,
     record.stage,
-    source?.fileName ?? null,
-    source?.bytes.byteLength ?? null,
-    source?.sha256 ?? null,
     recordHash,
     canonicalBytes,
   ];
@@ -1923,7 +1804,7 @@ function campaignInsertValues(
 
 function campaignColumns(): string {
   return `campaign_sequence, id, created_at, updated_at, name, stage, revision,
-          source_filename, source_bytes, source_sha256, record_sha256, record_json`;
+          record_sha256, record_json`;
 }
 
 function parseCampaignRow(row: CampaignRow): StoredCampaign {
@@ -1946,19 +1827,10 @@ function parseCampaignRow(row: CampaignRow): StoredCampaign {
   ) {
     throw new Error('Campaign relational projections do not match the canonical record.');
   }
-  const source =
-    row.source_filename === null && row.source_bytes === null && row.source_sha256 === null
-      ? null
-      : Object.freeze({
-          bytes: integer(row.source_bytes, 'campaign source bytes'),
-          fileName: requiredText(row.source_filename, 'Campaign source filename'),
-          sha256: requiredHash(row.source_sha256, 'Campaign source hash'),
-        });
   return Object.freeze({
     sequence: positiveInteger(row.campaign_sequence, 'campaign sequence'),
     record,
     revision: positiveInteger(row.revision, 'campaign revision'),
-    source,
   });
 }
 
@@ -2126,9 +1998,7 @@ function successfulNextStage(
   return null;
 }
 
-export function classifyImportedGenerationContinuation(
-  record: CampaignRecord,
-): 'copy' | 'prompts' | null {
+export function classifyCampaignContinuation(record: CampaignRecord): 'copy' | 'prompts' | null {
   const copyCount = CAMPAIGN_LANGUAGES.filter(
     (language) => record.copy[language] !== undefined,
   ).length;
@@ -2222,17 +2092,6 @@ function sanitizeCopyUpdate(
   const trimmed = value.trim();
   if (!trimmed || [...trimmed].length > 4_000) throw new Error('Stored copy field is invalid.');
   return trimmed;
-}
-
-function validateReceipt(receipt: CampaignImportReceipt): void {
-  if (receipt.formatVersion !== 1) throw new Error('Campaign import receipt version is invalid.');
-  assertNonNegativeInteger(receipt.sourceBytes, 'Receipt source bytes');
-  assertNonNegativeInteger(receipt.campaignCount, 'Receipt campaign count');
-  if (receipt.campaignCount > CAMPAIGN_MAX_RECORDS) {
-    throw new Error('Campaign import receipt exceeds the campaign count bound.');
-  }
-  assertHash(receipt.sourceSha256, 'Receipt source hash');
-  assertHash(receipt.orderedCampaignsSha256, 'Receipt semantic hash');
 }
 
 function assertCampaignCapacity(database: SyncSqliteDatabase): void {

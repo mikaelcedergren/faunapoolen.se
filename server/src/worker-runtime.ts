@@ -30,7 +30,7 @@ import {
   createCampaignGenerationWorker,
   type CampaignGenerationWorkerLoop,
 } from './generation-worker.js';
-import { verifyLegacyCampaignRuntimeMarker } from './legacy-cutover.js';
+import { verifyFaunapoolenDatabaseBeforeWrite } from './database.js';
 import { createOpenAiResponsesProvider } from './openai-provider.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
@@ -98,7 +98,7 @@ export async function startFaunapoolenWorker({
     ...(environment.isProduction && !environment.releaseValidation
       ? {
           requireExisting: true as const,
-          verifyBeforeWrite: verifyLegacyCampaignRuntimeMarker,
+          verifyBeforeWrite: verifyFaunapoolenDatabaseBeforeWrite,
         }
       : {}),
   });

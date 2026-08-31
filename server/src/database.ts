@@ -57,6 +57,22 @@ const CAMPAIGN_TABLE_SQL = `CREATE TABLE campaigns (
   )
 ) STRICT`;
 
+const CURRENT_CAMPAIGN_TABLE_SQL = `CREATE TABLE campaigns_current (
+  campaign_sequence INTEGER PRIMARY KEY AUTOINCREMENT
+    CHECK(campaign_sequence BETWEEN 1 AND 9007199254740991),
+  id TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL,
+  created_at_ms INTEGER NOT NULL CHECK(created_at_ms >= 0),
+  updated_at TEXT NOT NULL,
+  updated_at_ms INTEGER NOT NULL CHECK(updated_at_ms >= created_at_ms),
+  name TEXT NOT NULL,
+  stage TEXT NOT NULL CHECK(stage IN ('strategy', 'copy', 'complete')),
+  revision INTEGER NOT NULL DEFAULT 1 CHECK(revision >= 1),
+  record_sha256 TEXT NOT NULL
+    CHECK(length(record_sha256) = 64 AND record_sha256 NOT GLOB '*[^0-9a-f]*'),
+  record_json BLOB NOT NULL CHECK(typeof(record_json) = 'blob')
+) STRICT`;
+
 const CAMPAIGN_RECEIPT_TABLE_SQL = `CREATE TABLE campaign_import_receipts (
   receipt_key TEXT PRIMARY KEY CHECK(receipt_key = 'legacy_campaign_directory_v1'),
   format_version INTEGER NOT NULL CHECK(format_version = 1),
@@ -432,15 +448,57 @@ const JOB_MIGRATIONS = DURABLE_JOB_SCHEMA_MIGRATIONS.map((migration) =>
   }),
 );
 
+const RETIRE_IMPORT_EVIDENCE_MIGRATION = Object.freeze({
+  version: PRODUCT_MIGRATION_COUNT + DURABLE_JOB_SCHEMA_MIGRATIONS.length + 1,
+  name: 'retire_campaign_import_evidence',
+  statements: Object.freeze([
+    'DROP TRIGGER campaigns_revision_guard',
+    'DROP TRIGGER campaigns_capacity_guard',
+    'DROP INDEX campaigns_updated_idx',
+    CURRENT_CAMPAIGN_TABLE_SQL,
+    `INSERT INTO campaigns_current (
+       campaign_sequence, id, created_at, created_at_ms, updated_at, updated_at_ms,
+       name, stage, revision, record_sha256, record_json
+     )
+     SELECT campaign_sequence, id, created_at, created_at_ms, updated_at, updated_at_ms,
+            name, stage, revision, record_sha256, record_json
+     FROM campaigns
+     ORDER BY campaign_sequence`,
+    'DROP TABLE campaigns',
+    'ALTER TABLE campaigns_current RENAME TO campaigns',
+    'CREATE INDEX campaigns_updated_idx ON campaigns(updated_at_ms DESC, campaign_sequence DESC)',
+    `CREATE TRIGGER campaigns_capacity_guard
+     BEFORE INSERT ON campaigns
+     WHEN (SELECT COUNT(*) FROM campaigns) >= ${String(CAMPAIGN_MAX_RECORDS)}
+     BEGIN
+       SELECT RAISE(ABORT, 'campaign capacity reached');
+     END`,
+    `CREATE TRIGGER campaigns_revision_guard
+     BEFORE UPDATE ON campaigns
+     WHEN NEW.revision <> OLD.revision + 1
+       OR NEW.campaign_sequence IS NOT OLD.campaign_sequence
+       OR NEW.id IS NOT OLD.id
+       OR NEW.created_at IS NOT OLD.created_at
+       OR NEW.created_at_ms IS NOT OLD.created_at_ms
+     BEGIN
+       SELECT RAISE(ABORT, 'campaign update violates immutable identity or revision');
+     END`,
+    'DROP TRIGGER campaign_import_receipts_sealed_delete',
+    'DROP TRIGGER campaign_import_receipts_sealed_update',
+    'DROP TRIGGER campaign_import_receipts_sealed_insert',
+    'DROP TABLE campaign_import_receipts',
+  ] as const),
+} as const satisfies SqliteMigration);
+
 export const FAUNAPOOLEN_MIGRATIONS = Object.freeze([
   ...PRODUCT_MIGRATIONS,
   ...JOB_MIGRATIONS,
+  RETIRE_IMPORT_EVIDENCE_MIGRATION,
 ] as const satisfies readonly SqliteMigration[]);
 
 const REQUIRED_TABLES = Object.freeze([
   SQLITE_MIGRATION_LEDGER_TABLE,
   'campaigns',
-  'campaign_import_receipts',
   'owner_sessions',
   'login_failure_windows',
   'generation_windows',
@@ -589,11 +647,11 @@ export function verifyFaunapoolenDatabase(database: ReadonlySyncSqliteDatabase):
 }
 
 /**
- * Prove the complete immutable authority before a sealed runtime database may migrate. The ledger
+ * Prove the complete existing authority before a production database may migrate. The ledger
  * may be an older exact prefix of the current definitions; its canonical application times and the
  * entire schema produced by precisely that compiled prefix must match before any pending statement.
  */
-export function verifyFaunapoolenMigrationFoundation(database: ReadonlySyncSqliteDatabase): void {
+export function verifyFaunapoolenDatabaseBeforeWrite(database: ReadonlySyncSqliteDatabase): void {
   verifySqliteIntegrity(database);
   const ledger = database.all<MigrationLedgerRow>(
     `SELECT version, name, fingerprint, applied_at

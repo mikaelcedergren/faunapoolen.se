@@ -164,7 +164,7 @@ class MemoryCampaignRepository implements CampaignRepository {
   }
 
   create(record: StoredCampaign['record']): StoredCampaign {
-    this.stored = Object.freeze({ record, revision: 1, sequence: 1, source: null });
+    this.stored = Object.freeze({ record, revision: 1, sequence: 1 });
     return this.stored;
   }
 
@@ -203,7 +203,6 @@ class MemoryCampaignRepository implements CampaignRepository {
       record,
       revision: expectedRevision + 1,
       sequence: this.stored?.sequence ?? 1,
-      source: this.stored?.source ?? null,
     });
     return this.stored;
   }
@@ -260,7 +259,6 @@ function storedCampaign(revision: number, includeEnglishCopy: boolean): StoredCa
     }),
     revision,
     sequence: 1,
-    source: null,
   });
 }
 

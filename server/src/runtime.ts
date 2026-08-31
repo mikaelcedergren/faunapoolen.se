@@ -29,7 +29,7 @@ import {
   type FaunapoolenEnvironment,
 } from './environment.js';
 import { createGenerationService } from './generation-service.js';
-import { verifyLegacyCampaignRuntimeMarker } from './legacy-cutover.js';
+import { verifyFaunapoolenDatabaseBeforeWrite } from './database.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
 const HTTP_SHUTDOWN_TIMEOUT_MS = 10_000;
@@ -78,7 +78,7 @@ export async function startFaunapoolenServer({
     ...(environment.isProduction && !environment.releaseValidation
       ? {
           requireExisting: true as const,
-          verifyBeforeWrite: verifyLegacyCampaignRuntimeMarker,
+          verifyBeforeWrite: verifyFaunapoolenDatabaseBeforeWrite,
         }
       : {}),
   });

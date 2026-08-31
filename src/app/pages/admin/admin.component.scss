@@ -129,7 +129,7 @@ fp-admin {
 }
 
 // One copy field and its copy control. Deliberately not cx-inline: that component's `align` input
-// reflects to the legacy HTML `align` attribute, which the browser turns into an inherited
+// reflects to the HTML `align` attribute, which the browser turns into an inherited
 // text-align on everything inside the row.
 .fp-copy-row {
   display: grid;
