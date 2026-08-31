@@ -35,7 +35,7 @@
     "typecheck:app": "tsc -p tsconfig.app.json --noEmit",
     "typecheck:server": "pnpm --filter faunapoolen-server run typecheck",
     "test": "pnpm run test:server",
-    "test:server": "pnpm run build:server && pnpm --filter faunapoolen-server run test && node --test tests/server/campaign-import-contract.test.mjs",
+    "test:server": "pnpm run build:server && pnpm --filter faunapoolen-server run test && node --test tests/server/campaign-import-contract.test.mjs tests/server/dev-launcher.test.mjs",
     "test:legacy": "node --test server/*.test.mjs tests/server/current-*.test.mjs",
     "e2e": "node scripts/run-e2e.mjs",
     "e2e:install": "playwright install chromium",
