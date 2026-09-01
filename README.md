@@ -46,7 +46,7 @@ bin/install-server-daemon --check
 src/app/pages/**             source-owned Swedish and English page templates
 src/app/app.routes.ts        route and SEO catalogue
 src/locale/                  English SEO translations
-public/assets/**             canonical public images, CSS, and scripts
+public/assets/**             canonical public images plus directly maintained CSS and scripts
 scripts/flatten.mjs          preserves stable literal .html routes
 server/src/index.ts          compiled web entrypoint
 server/src/worker.ts         compiled worker entrypoint
@@ -57,8 +57,8 @@ server/src/campaign-repository.ts
 data/faunapoolen.db          private operational authority
 ```
 
-The Angular tree and `public/` are the only public-site sources. Edit them directly; there is no
-generated or historical site mirror.
+The Angular tree and `public/` are the only public-site sources. Edit them directly; the shipped
+`styles.css` and `scripts.js` are the sources, with no Sass/minified or historical mirror.
 
 ## Private runtime
 

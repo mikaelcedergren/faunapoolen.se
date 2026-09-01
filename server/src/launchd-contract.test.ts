@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { chmodSync, copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import os from 'node:os';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -38,65 +37,18 @@ test('LaunchDaemon source selects immutable web and listener-free worker roles',
   }
 });
 
-test('daemon installer validates current private state and never activates either service', (t) => {
+test('daemon installer is a thin delegate and never activates either service', () => {
   const source = readFileSync(installer, 'utf8');
-  assert.match(source, /MODE="check"/);
-  assert.match(source, /\.env\.web/);
-  assert.match(source, /\.env\.worker/);
-  assert.match(source, /data\/faunapoolen\.db/);
-  assert.match(source, /server\/dist\/index\.js/);
-  assert.match(source, /server\/dist\/worker\.js/);
-  assert.match(source, /exact \{expected_label\} allowlist/);
-  assert.match(source, /os\.lstat\(path\)/);
-  assert.doesNotMatch(source, /open\([^\n]*(?:\.env\.web|\.env\.worker)/);
+  assert.match(source, /install-site-service-definitions\.mjs/);
+  assert.match(source, /--site faunapoolen/);
+  assert.match(source, /--repo "\$repo" "\$@"/);
   assert.doesNotMatch(source, /\blaunchctl\b/);
-  assert.match(source, /server-ops\/bin\/install-launchdaemon-definitions\.mjs/);
-  assert.match(source, /--definition "\$\{LABELS\[0\]\}=/);
-  assert.match(source, /--definition "\$\{LABELS\[1\]\}=/);
-  assert.doesNotMatch(source, /sudo install -o root -g wheel -m 0644/);
+  assert.doesNotMatch(source, /\bsudo\b/);
+  assert.doesNotMatch(source, /\.env\.|faunapoolen\.db|server\/dist/);
 
-  if (process.platform !== 'darwin') {
-    t.diagnostic('Mac-only installer execution is covered by source contract on this platform.');
-    return;
-  }
   const direct = execFileSync(installer, [], { cwd: repoRoot, encoding: 'utf8' });
-  assert.match(direct, /VALID: Faunapoolen web and jobs-worker LaunchDaemon templates/);
-  assert.match(
-    direct,
-    /Current runtime and release operations are owned by the shared server standard/,
-  );
+  assert.match(direct, /VALID: faunapoolen 2 registered LaunchDaemon definitions/);
+  assert.match(direct, /No service definition was installed/);
   const explicit = execFileSync(installer, ['--check'], { cwd: repoRoot, encoding: 'utf8' });
   assert.equal(explicit, direct);
-
-  const copiedRoot = mkdtempSync(path.join(os.tmpdir(), 'faunapoolen-daemon-check-'));
-  t.after(() => rmSync(copiedRoot, { force: true, recursive: true }));
-  mkdirSync(path.join(copiedRoot, 'bin'));
-  mkdirSync(path.join(copiedRoot, 'launchd'));
-  const copiedInstaller = path.join(copiedRoot, 'bin', 'install-server-daemon');
-  copyFileSync(installer, copiedInstaller);
-  chmodSync(copiedInstaller, 0o755);
-  for (const label of ['com.faunapoolen.server', 'com.faunapoolen.jobs']) {
-    copyFileSync(
-      path.join(repoRoot, 'launchd', `${label}.plist`),
-      path.join(copiedRoot, 'launchd', `${label}.plist`),
-    );
-  }
-  const copiedCheck = execFileSync(copiedInstaller, ['--check'], {
-    cwd: copiedRoot,
-    encoding: 'utf8',
-  });
-  assert.equal(copiedCheck, direct);
-  assert.throws(
-    () =>
-      execFileSync(copiedInstaller, ['--apply'], {
-        cwd: copiedRoot,
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'pipe'],
-      }),
-    (error: unknown) =>
-      error instanceof Error &&
-      /--apply is allowed only from the canonical production checkout/.test(
-        'stderr' in error ? String(error.stderr) : error.message,
-      ),
-  );
 });

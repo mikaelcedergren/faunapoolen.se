@@ -1,5 +1,5 @@
 /**
- * The public site's brand colours, mirrored from public/assets/styles/_variables.scss.
+ * The public site's brand colours, mirrored from the canonical public/assets/styles/styles.css.
  * The stylesheet remains the visual source of truth; this typed copy keeps generated image
  * prompts in the same palette without importing browser styles into the server.
  */

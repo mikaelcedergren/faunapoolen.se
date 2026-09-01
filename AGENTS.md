@@ -44,7 +44,7 @@ one half of an uncertain or full-stack change.
 
 ```text
 src/                         Angular source and route catalogue
-public/                      canonical public assets, robots, and sitemap
+public/                      canonical public images, plain CSS/JS, robots, and sitemap
 scripts/flatten.mjs          preserves literal .html URLs after prerender
 server/src/index.ts          compiled web entrypoint
 server/src/worker.ts         compiled listener-free worker entrypoint
@@ -89,7 +89,8 @@ literal `.html` URLs. `scripts/flatten.mjs` converts Angular's route directories
 files.
 
 The Angular templates, `src/app/app.routes.ts`, `src/locale/messages.en.xlf`, and
-`public/assets/` are the only content sources. Edit them directly and together. The route
+`public/assets/` are the only content sources. Public `styles.css` and `scripts.js` are edited
+directly; there is no generated Sass/minified mirror. Edit the relevant sources together. The route
 catalogue owns title, description, keywords, canonical, hreflang, Open Graph, and JSON-LD metadata.
 The page templates use locale-gated bodies because the Swedish and English prose can differ
 structurally.
