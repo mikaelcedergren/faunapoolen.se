@@ -16,13 +16,13 @@
     "node": ">=26 <27"
   },
   "scripts": {
-    "dev": "node scripts/dev.mjs",
+    "dev": "pnpm favicon:check && node scripts/dev.mjs",
     "build": "pnpm run build:browser && pnpm run build:server",
     "build:browser": "ng build --configuration prod && node scripts/flatten.mjs",
     "build:server": "pnpm --filter faunapoolen-server run build",
     "build:server:release": "node server/node_modules/@mikaelcedergren/cx-framework/scripts/cx-server-artifact.mjs --package faunapoolen-server",
     "build:release": "ng build --configuration prod --output-path \"$SITE_RELEASE_DIR\" && node scripts/flatten.mjs",
-    "build:local": "ng build --configuration local && node scripts/flatten.mjs",
+    "build:local": "pnpm favicon:check && ng build --configuration local && node scripts/flatten.mjs",
     "extract-i18n": "ng extract-i18n --output-path src/locale",
     "start": "pnpm run start:web",
     "start:web": "node server/dist/index.js",
@@ -37,8 +37,10 @@
     "e2e:install": "playwright install chromium",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "favicon:generate": "cx-development-favicon --apply",
+    "favicon:check": "cx-development-favicon",
     "platform:check": "cx-platform-check --root .",
-    "check": "pnpm run format:check && pnpm run platform:check && pnpm run typecheck && pnpm run test && pnpm run build"
+    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm run typecheck && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@angular/cdk": "^22.0.6",
