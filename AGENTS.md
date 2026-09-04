@@ -26,11 +26,15 @@ pnpm build
 pnpm typecheck
 pnpm test
 pnpm platform:check
+pnpm verify:change
 pnpm check
 pnpm e2e
 pnpm start:web
 pnpm start:worker
 ```
+
+Use `pnpm verify:change` for ordinary local proof. Its product-owned public/admin routes, worker and
+provider risk boundaries, and options are documented in `DEVELOPMENT-VERIFICATION.md`.
 
 Development uses Angular on `127.0.0.1:4240` and the compiled-compatible API on
 `127.0.0.1:4241`. Production uses `127.0.0.1:3040`. E2E tests use a runner-owned dynamic
