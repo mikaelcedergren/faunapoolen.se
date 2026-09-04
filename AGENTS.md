@@ -82,8 +82,9 @@ The public visual skin is deliberately product-owned because visual churn risks 
 performance. The exception is visual only: engineering structure, TypeScript, tests, server
 runtime, releases, operations, and AI working rules follow the same architecture as every other
 web product. The private admin UI uses framework components, tokens, layouts, and portable AI
-guidance. If the admin reveals a reusable gap, fix Cortex, publish `cx-framework`, then update this
-consumer.
+guidance as-is. If the admin reveals a reusable gap, stop, explain it, and ask what the user wants
+to do. Do not patch it here or change Cortex unless the user explicitly authorises that framework
+work.
 
 ## Public content and URL contract
 
