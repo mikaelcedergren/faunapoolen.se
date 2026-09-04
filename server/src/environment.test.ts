@@ -256,3 +256,13 @@ test('host, node environment, release flag, ports, and session TTL fail closed',
     );
   }
 });
+
+test('development trusts both loopback origin spellings for mutations', () => {
+  const environment = loadFaunapoolenEnvironment({ NODE_ENV: 'development', PORT: '4241' });
+  assert.deepEqual(environment.mutationOrigins, ['http://127.0.0.1:4241', 'http://localhost:4241']);
+  const named = loadFaunapoolenEnvironment({
+    APP_BASE_URL: 'http://localhost:4240',
+    NODE_ENV: 'development',
+  });
+  assert.deepEqual(named.mutationOrigins, ['http://localhost:4240', 'http://127.0.0.1:4240']);
+});

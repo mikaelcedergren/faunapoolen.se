@@ -219,12 +219,27 @@ export function loadFaunapoolenEnvironment(
     mutationOrigins: Object.freeze(
       isProduction && !releaseValidation
         ? [FAUNAPOOLEN_PUBLIC_ORIGIN, FAUNAPOOLEN_WWW_ORIGIN]
-        : [appOrigin],
+        : releaseValidation
+          ? [appOrigin]
+          : developmentLoopbackOrigins(appOrigin),
     ),
     port: port!,
     sessionSecret,
     sessionTtlSeconds,
   });
+}
+
+/**
+ * Development and test bind to loopback, where `127.0.0.1` and `localhost` are one machine but two
+ * browser origins. Both spellings are trusted so the owner's address-bar choice cannot turn a
+ * local sign-in into an origin refusal. Production and release validation stay exact.
+ */
+function developmentLoopbackOrigins(appOrigin: string): readonly string[] {
+  const url = new URL(appOrigin);
+  if (url.hostname !== '127.0.0.1' && url.hostname !== 'localhost') return [appOrigin];
+  const sibling = new URL(appOrigin);
+  sibling.hostname = url.hostname === '127.0.0.1' ? 'localhost' : '127.0.0.1';
+  return [appOrigin, normalizeHttpOrigin(sibling.origin)];
 }
 
 function exactSecret(environment: Environment, name: string, fallback: string | undefined): string {

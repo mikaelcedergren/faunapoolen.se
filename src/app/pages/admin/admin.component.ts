@@ -605,12 +605,17 @@ export class AdminComponent implements OnInit, OnDestroy {
         body: { username, password },
       });
       if (!response.ok) {
+        // Unexpected refusals (an origin guard, a proxy problem) surface the server's own words
+        // so the real cause is readable instead of hiding behind a generic connection message.
         this.requestError.set(
           response.status === 401
             ? 'Username or password is incorrect. Try again.'
             : response.status === 429
               ? 'Too many sign-in attempts. Try again later.'
-              : 'Admin login cannot be reached right now. Try again.',
+              : await this.apiErrorMessage(
+                  response,
+                  'Admin login cannot be reached right now. Try again.',
+                ),
         );
         return;
       }
