@@ -402,10 +402,8 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   const passwordField = page.locator('input[name="password"]');
   const signInButton = page.getByRole('button', { name: 'Sign in' });
 
-  await expect(usernameField).toHaveAttribute('placeholder', 'Username');
-  await expect(passwordField).toHaveAttribute('placeholder', 'Password');
-  await expect(page.locator('.fp-admin-login .cx-text-field__header')).toHaveCount(0);
-  await expect(page.locator('.fp-admin-login .cx-password-field__header')).toHaveCount(0);
+  await expect(page.getByText('Username', { exact: true })).toBeVisible();
+  await expect(page.getByText('Password', { exact: true })).toBeVisible();
   await expect(page.locator('.fp-admin-login .cx-text-field__prepend')).toHaveCount(0);
   await expect(signInButton.locator('cx-icon')).toHaveCount(0);
 
@@ -473,7 +471,24 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     rationale.getByText('Lead the headline with the outcome, not the product.'),
   ).toBeVisible();
   await expect(rationale.getByText('Lead with the outcome', { exact: true })).toBeVisible();
-  expect(await rationale.evaluate((element) => getComputedStyle(element).position)).toBe('sticky');
+  const copyLayout = page.locator('cx-sidebar-layout');
+  const copyForm = copyLayout.locator('.fp-copy-form');
+  const desktopForm = await copyForm.boundingBox();
+  const desktopRationale = await rationale.boundingBox();
+  expect(desktopForm).not.toBeNull();
+  expect(desktopRationale).not.toBeNull();
+  expect(desktopRationale!.x).toBeGreaterThanOrEqual(desktopForm!.x + desktopForm!.width);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(async () => (await copyForm.boundingBox())?.width ?? 0).toBeGreaterThan(240);
+  await expect(rationale).toBeVisible();
+  const mobileForm = await copyForm.boundingBox();
+  const mobileRationale = await rationale.boundingBox();
+  expect(mobileForm).not.toBeNull();
+  expect(mobileRationale).not.toBeNull();
+  expect(mobileForm!.y).toBeGreaterThanOrEqual(mobileRationale!.y + mobileRationale!.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-sidebar-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole('textbox', { name: 'Primary text', exact: true }).focus();
   await expect(rationale.getByRole('heading', { name: 'Primary text' })).toBeVisible();
 

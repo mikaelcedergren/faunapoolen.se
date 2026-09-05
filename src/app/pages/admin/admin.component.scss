@@ -121,11 +121,6 @@ fp-admin {
   margin-bottom: var(--space-xl);
 }
 
-.fp-copy-layout {
-  display: block;
-  width: 100%;
-}
-
 .fp-copy-form {
   display: grid;
   width: 100%;
@@ -149,17 +144,6 @@ fp-admin {
 
 .fp-field-recovery {
   display: grid;
-}
-
-.fp-copy-explainer-track {
-  width: var(--measure-sm);
-  align-self: stretch;
-}
-
-.fp-copy-explainer {
-  position: sticky;
-  top: calc(var(--controller-size-large) + var(--space-md));
-  width: 100%;
 }
 
 .fp-rationale-section {
@@ -223,14 +207,6 @@ fp-admin {
 @media (max-width: #{bp.$mobile - 1px}) {
   .fp-admin-content {
     padding: var(--space-lg) var(--gutter-page) var(--space-xl);
-  }
-
-  .fp-copy-explainer-track {
-    width: 100%;
-  }
-
-  .fp-copy-explainer {
-    position: static;
   }
 
   .fp-generation-wait,

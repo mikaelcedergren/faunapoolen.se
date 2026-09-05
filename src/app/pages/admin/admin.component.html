@@ -182,14 +182,8 @@
                             (action)="loadConfig()"
                           />
                         } @else if (activeCopy()) {
-                          <cx-split
-                            class="fp-copy-layout"
-                            gap="xl"
-                            gapMobile="lg"
-                            align="stretch"
-                            [wrap]="true"
-                          >
-                            <div start class="fp-copy-form">
+                          <cx-sidebar-layout placement="end">
+                            <div class="fp-copy-form">
                               @for (field of resolvedFields(); track field.id) {
                                 <section
                                   class="fp-copy-field"
@@ -245,35 +239,33 @@
                               }
                             </div>
 
-                            <div end class="fp-copy-explainer-track">
-                              <aside class="fp-copy-explainer" aria-label="Copy rationale">
-                                @if (selectedField(); as selected) {
-                                  <cx-card heading="Why this works" icon="info" padding="large" border>
-                                    <cx-stack gap="lg">
-                                      <section class="fp-rationale-section">
-                                        <h3>{{ selected.label }}</h3>
-                                        <p>{{ selected.rationale?.why || selected.guidance }}</p>
-                                      </section>
+                            @if (selectedField(); as selected) {
+                              <aside sidebar aria-label="Copy rationale">
+                                <cx-card heading="Why this works" icon="info" variant="border">
+                                  <cx-stack gap="lg">
+                                    <section class="fp-rationale-section">
+                                      <h3>{{ selected.label }}</h3>
+                                      <p>{{ selected.rationale?.why || selected.guidance }}</p>
+                                    </section>
 
-                                      @if (selectedFieldRules().length > 0) {
-                                        <section class="fp-rationale-section">
-                                          <h3>StoryBrand principles</h3>
-                                          <cx-stack gap="md">
-                                            @for (rule of selectedFieldRules(); track rule.id) {
-                                              <cx-labeled-row
-                                                [label]="rule.name"
-                                                [content]="{ kind: 'text', text: rule.teaches }"
-                                              />
-                                            }
-                                          </cx-stack>
-                                        </section>
-                                      }
-                                    </cx-stack>
-                                  </cx-card>
-                                }
+                                    @if (selectedFieldRules().length > 0) {
+                                      <section class="fp-rationale-section">
+                                        <h3>StoryBrand principles</h3>
+                                        <cx-stack gap="md">
+                                          @for (rule of selectedFieldRules(); track rule.id) {
+                                            <cx-labeled-row
+                                              [label]="rule.name"
+                                              [content]="{ kind: 'text', text: rule.teaches }"
+                                            />
+                                          }
+                                        </cx-stack>
+                                      </section>
+                                    }
+                                  </cx-stack>
+                                </cx-card>
                               </aside>
-                            </div>
-                          </cx-split>
+                            }
+                          </cx-sidebar-layout>
                         } @else {
                           <cx-state-message heading="Campaign copy is not available yet" icon="text" />
                         }
@@ -323,9 +315,7 @@
                           <cx-card
                             heading="Check before publishing"
                             icon="warning"
-                            mood="warning"
-                            padding="large"
-                            border
+                            mood="warning" variant="border"
                           >
                             <ul class="fp-assumptions">
                               @for (assumption of current.strategy.assumptions; track $index) {
@@ -335,7 +325,7 @@
                           </cx-card>
                         }
 
-                        <cx-card heading="Campaign brief" icon="form" padding="large" border>
+                        <cx-card heading="Campaign brief" icon="form" variant="border">
                           <cx-stack gap="md">
                             @for (row of strategyRows(); track row.label) {
                               <cx-labeled-row [label]="row.label" [content]="row.content" />
@@ -344,7 +334,7 @@
                         </cx-card>
 
                         @if (strategyWhyRows().length > 0) {
-                          <cx-card heading="Why this strategy" icon="info" padding="large" border>
+                          <cx-card heading="Why this strategy" icon="info" variant="border">
                             <cx-stack gap="md">
                               @for (row of strategyWhyRows(); track $index) {
                                 <cx-labeled-row [label]="row.label" [content]="row.content" />
@@ -353,7 +343,7 @@
                           </cx-card>
                         }
 
-                        <cx-card heading="Original idea" icon="chat" padding="large" border>
+                        <cx-card heading="Original idea" icon="chat" variant="border">
                           <p class="fp-prose">{{ current.idea }}</p>
                         </cx-card>
                       </div>
@@ -462,8 +452,6 @@
       class="fp-admin-login__panel"
       heading="Faunapoolen admin"
       icon="lock"
-      padding="large"
-      shadow
     >
       <cx-stack gap="lg">
         <form aria-label="Sign in" (submit)="onSubmit($event)">
@@ -474,9 +462,7 @@
 
             <cx-text-field
               #usernameField
-              label=""
-              ariaLabel="Username"
-              placeholder="Username"
+              label="Username"
               name="username"
               autocomplete="username"
               [value]="username()"
@@ -486,9 +472,7 @@
             />
 
             <cx-password-field
-              label=""
-              ariaLabel="Password"
-              fpPasswordPlaceholder="Password"
+              label="Password"
               name="password"
               autocomplete="current-password"
               [value]="password()"

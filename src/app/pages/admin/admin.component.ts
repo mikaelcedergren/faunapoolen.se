@@ -24,6 +24,7 @@ import {
   CxLabeledRowComponent,
   CxPasswordFieldComponent,
   CxSideNavComponent,
+  CxSidebarLayoutComponent,
   CxSpinnerComponent,
   CxSplitComponent,
   CxStackComponent,
@@ -52,7 +53,6 @@ import {
   cxThemeStartsGroup,
   isCxThemeMode,
 } from '@mikaelcedergren/cx-framework';
-import { PasswordFieldPlaceholderDirective } from './password-field-placeholder.directive';
 
 type AuthResponse = { authenticated?: boolean; ok?: boolean };
 
@@ -269,8 +269,8 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
     CxItemCardComponent,
     CxLabeledRowComponent,
     CxPasswordFieldComponent,
-    PasswordFieldPlaceholderDirective,
     CxSideNavComponent,
+    CxSidebarLayoutComponent,
     CxSpinnerComponent,
     CxSplitComponent,
     CxStackComponent,
@@ -336,6 +336,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly leaveOpen = signal(false);
   protected readonly leaving = signal(false);
   protected readonly sideNavCollapsed = signal(false);
+  private navigationViewport: MediaQueryList | undefined;
+  private readonly adaptNavigationToViewport = (event: MediaQueryListEvent): void => {
+    this.sideNavCollapsed.set(event.matches);
+  };
   protected readonly selectedFieldId = signal('headline');
   protected readonly inspectedPrompt = signal<PromptSection | undefined>(undefined);
   protected readonly sideNavItems: CxSideNavItem[] = [
@@ -629,15 +633,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     if (this.browser) {
       this.document.defaultView?.addEventListener('beforeunload', this.protectUnsavedWork);
-      this.sideNavCollapsed.set(
-        this.document.defaultView?.matchMedia('(max-width: 719px)').matches ?? false,
-      );
+      this.navigationViewport = this.document.defaultView?.matchMedia('(max-width: 719px)');
+      this.sideNavCollapsed.set(this.navigationViewport?.matches ?? false);
+      this.navigationViewport?.addEventListener('change', this.adaptNavigationToViewport);
       this.restoreTheme();
       void this.restoreSession();
     }
   }
 
   public ngOnDestroy(): void {
+    this.navigationViewport?.removeEventListener('change', this.adaptNavigationToViewport);
     this.document.defaultView?.removeEventListener('beforeunload', this.protectUnsavedWork);
     this.generationPollSequence += 1;
     this.document.documentElement.classList.remove(`theme-${this.theme()}`);
