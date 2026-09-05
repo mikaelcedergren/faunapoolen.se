@@ -36,7 +36,6 @@ import {
   CampaignJsonSyntaxError,
   CampaignValidationError,
   canonicalCampaign,
-  canonicalCampaignBytes,
   parseCampaignJson,
   sha256Hex,
   validateCampaignRecord,

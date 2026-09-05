@@ -19,14 +19,19 @@ test('web and worker load only their own private role file', (t) => {
     [
       'ADMIN_PASSWORD=synthetic-password',
       'ADMIN_USERNAME=synthetic-owner',
+      'CAMPAIGN_GENERATION_ENABLED=1',
       'SESSION_SECRET=synthetic-session-secret',
       '',
     ].join('\n'),
     { mode: 0o600 },
   );
-  fs.writeFileSync(path.join(root, '.env.worker'), 'OPENAI_API_KEY=synthetic-provider-key\n', {
-    mode: 0o600,
-  });
+  fs.writeFileSync(
+    path.join(root, '.env.worker'),
+    'CAMPAIGN_GENERATION_ENABLED=1\nOPENAI_API_KEY=synthetic-provider-key\n',
+    {
+      mode: 0o600,
+    },
+  );
   fs.writeFileSync(
     path.join(root, '.env'),
     'ADMIN_PASSWORD=legacy-password\nOPENAI_API_KEY=legacy-provider-key\n',
@@ -43,6 +48,7 @@ test('web and worker load only their own private role file', (t) => {
   assert.deepEqual(webEnvironment, {
     ADMIN_PASSWORD: 'synthetic-password',
     ADMIN_USERNAME: 'synthetic-owner',
+    CAMPAIGN_GENERATION_ENABLED: '1',
     SESSION_SECRET: 'synthetic-session-secret',
   });
 
@@ -56,6 +62,7 @@ test('web and worker load only their own private role file', (t) => {
     role: 'worker',
   });
   assert.deepEqual(workerEnvironment, {
+    CAMPAIGN_GENERATION_ENABLED: '1',
     OPENAI_API_KEY: 'synthetic-provider-key',
   });
 });
@@ -65,6 +72,7 @@ test('production requires each role file and makes its allowlist authoritative',
   const environment: NodeJS.ProcessEnv = {
     ADMIN_PASSWORD: 'ambient-must-be-cleared',
     ADMIN_USERNAME: 'ambient-must-be-replaced',
+    CAMPAIGN_GENERATION_ENABLED: '0',
     NODE_ENV: 'production',
     SESSION_SECRET: 'ambient-must-be-cleared',
     UNRELATED: 'preserved',
@@ -76,12 +84,17 @@ test('production requires each role file and makes its allowlist authoritative',
   );
   assert.equal(environment['ADMIN_USERNAME'], 'ambient-must-be-replaced');
 
-  fs.writeFileSync(path.join(root, '.env.web'), 'ADMIN_USERNAME=file-owner\n', {
-    mode: 0o600,
-  });
+  fs.writeFileSync(
+    path.join(root, '.env.web'),
+    'ADMIN_USERNAME=file-owner\nCAMPAIGN_GENERATION_ENABLED=1\n',
+    {
+      mode: 0o600,
+    },
+  );
   loadFaunapoolenEnvironmentFiles({ environment, role: 'web' });
   assert.deepEqual(environment, {
     ADMIN_USERNAME: 'file-owner',
+    CAMPAIGN_GENERATION_ENABLED: '1',
     NODE_ENV: 'production',
     UNRELATED: 'preserved',
   });
@@ -159,6 +172,7 @@ test('environment files fail closed on public mode, links, and test bypasses all
 
   const validationEnvironment: NodeJS.ProcessEnv = {
     ADMIN_PASSWORD: 'ambient-foreign-must-be-removed',
+    CAMPAIGN_GENERATION_ENABLED: '1',
     CX_RELEASE_VALIDATION: '1',
     CX_RUNTIME_ROOT: root,
     NODE_ENV: 'production',
@@ -169,6 +183,7 @@ test('environment files fail closed on public mode, links, and test bypasses all
     role: 'worker',
   });
   assert.equal(validationEnvironment['ADMIN_PASSWORD'], undefined);
+  assert.equal(validationEnvironment['CAMPAIGN_GENERATION_ENABLED'], '1');
   assert.equal(validationEnvironment['OPENAI_API_KEY'], undefined);
 });
 

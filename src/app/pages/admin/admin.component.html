@@ -1,101 +1,63 @@
 @if (authenticated()) {
-  <section class="fp-admin-workspace" aria-label="Faunapoolen admin">
-    <button
-      class="fp-admin-workspace__scrim"
-      [class.fp-admin-workspace__scrim--visible]="mobileNavOpen()"
-      type="button"
-      aria-label="Dismiss tools menu"
-      (click)="closeMobileNav()"
-    ></button>
+  <div class="fp-admin-app">
+    <cx-side-nav
+      [items]="sideNavItems"
+      [collapsible]="true"
+      [collapsed]="sideNavCollapsed()"
+      (collapsedChange)="sideNavCollapsed.set($event)"
+      (itemSelect)="onSideNavSelect($event)"
+    >
+      <span header class="fp-admin-brand">Faunapoolen</span>
+      <cx-account-control
+        footer
+        username="Admin"
+        [collapsed]="sideNavCollapsed()"
+        [disabled]="submitting() || leaving() || generating()"
+        [menuItems]="accountMenu()"
+        (itemSelect)="onAccountMenu($event)"
+        (logout)="requestSignOut()"
+      />
+    </cx-side-nav>
 
-    <div class="fp-admin-workspace__nav" [class.fp-admin-workspace__nav--visible]="mobileNavOpen()">
-      <cx-side-nav [groups]="navGroups" (itemSelect)="closeMobileNav()">
-        <div header class="fp-admin-brand">
-          <cx-icon icon="ai" size="24" mood="primary" shape="square-subtle" />
-          <span>Faunapoolen</span>
-          <span class="fp-admin-brand__close cx-hide-desktop">
-            <cx-icon-button
-              icon="sidebar-left"
-              variant="transparent"
-              ariaLabel="Close tools menu"
-              (pressed)="closeMobileNav()"
-            />
-          </span>
-        </div>
-
-        <cx-account-control
-          footer
-          username="Admin"
-          [disabled]="submitting()"
-          [menuItems]="accountMenu()"
-          (itemSelect)="onAccountMenu($event)"
-          (logout)="signOut()"
-        />
-      </cx-side-nav>
-    </div>
-
-    <section class="fp-admin-workspace__main cx-page">
+    <section class="fp-admin-main" aria-label="Faunapoolen campaign studio">
       <cx-top-bar
-        [pageTitle]="{
-          kind: 'heading',
-          heading: topBarHeading(),
-          description: topBarDescription()
-        }"
-        [menuItems]="view() === 'campaign' ? deleteMenu : undefined"
-        menuAriaLabel="Campaign actions"
-        (menuItemSelect)="onOpenCampaignMenu($event)"
+        [pageTitle]="topBarTitle()"
+        (breadcrumbSelect)="onBreadcrumbSelect($event)"
       >
-        <!-- One wrapper: content projection only matches elements declared directly in the slot,
-             so conditional actions have to live inside a element that is always present. -->
-        <div actions class="fp-top-bar-actions">
-          <span class="cx-hide-desktop">
-            <cx-icon-button
-              icon="sidebar-left"
-              ariaLabel="Open tools menu"
-              [selected]="mobileNavOpen()"
-              [ariaPressed]="mobileNavOpen()"
-              (pressed)="toggleMobileNav()"
+        <div actions>
+          @if (view() === 'list' && !generating()) {
+            <cx-button
+              text="Create campaign"
+              icon="new"
+              mood="primary"
+              (pressed)="startNewCampaign()"
             />
-          </span>
-
-          @switch (view()) {
-            @case ('list') {
-              @if (campaigns().length > 0) {
-                <cx-button
-                  text="Create campaign"
-                  icon="new"
-                  mood="primary"
-                  (pressed)="startNewCampaign()"
-                />
-              }
-            }
-            @case ('campaign') {
-              <cx-button
-                text="Campaigns"
-                icon="arrow-left"
-                [transparent]="true"
-                (pressed)="showCampaigns()"
-              />
-            }
           }
         </div>
       </cx-top-bar>
 
-      <div class="cx-page__content">
+      <main class="fp-admin-content">
         @switch (view()) {
           @case ('list') {
-            @if (generationError()) {
+            @if (generationError() && !composeOpen()) {
               <cx-alert mood="danger" [heading]="generationError()" />
             }
-
-            @if (campaigns().length === 0) {
+            @if (listError()) {
               <cx-state-message
-                heading="No campaigns yet"
-                description="Start with a rough idea. The studio does the marketing work."
-                icon="send"
-                [action]="newCampaignAction"
-                (action)="startNewCampaign()"
+                state="danger"
+                heading="Campaigns could not be loaded"
+                description="Try again to retrieve your saved campaigns."
+                layout="horizontal"
+                [action]="reloadAction"
+                (action)="refreshCampaigns()"
               />
+            } @else if (listLoading() || openingCampaign()) {
+              <cx-state-message
+                state="pending"
+                [heading]="openingCampaign() ? 'Opening campaign' : 'Loading campaigns'"
+              />
+            } @else if (campaigns().length === 0) {
+              <cx-state-message heading="No campaigns yet" icon="form" />
             } @else {
               <cx-table
                 [columns]="campaignColumns"
@@ -104,217 +66,342 @@
                 [columnsResizable]="false"
                 [columnsReorderable]="false"
                 (rowActivate)="onRowActivate($event)"
-                (rowMenuItemSelect)="onRowMenu($event)"
               />
             }
           }
 
           @case ('campaign') {
-            @if (incomplete()) {
-              <cx-steps [steps]="generationSteps()" [index]="generationIndex()" layout="fill" />
-            }
-            @if (generationError()) {
-              <cx-alert mood="danger" [heading]="generationError()" />
-            }
-            @if (retryStage()) {
-              <cx-button
-                text="Retry this stage"
-                icon="reload"
-                mood="primary"
-                [loading]="generating()"
-                [disabled]="generating()"
-                (pressed)="retryGeneration()"
-              />
-            }
-            @if (copyError()) {
-              <cx-alert mood="warning" [heading]="copyError()" />
-            }
-
-            @if (generating() && !campaign()) {
-              <cx-state-message
-                state="pending"
-                heading="Building the campaign strategy"
-                description="The work is safely queued. You can leave this page while it continues."
-              />
+            @if (generating()) {
+              <section class="fp-generation-wait" aria-label="Campaign generation" aria-live="polite">
+                <cx-stack gap="lg" align="center">
+                  <cx-spinner
+                    size="xlarge"
+                    mood="primary"
+                    [ariaLabel]="generationHeading()"
+                  />
+                  <cx-stack gap="xs" align="center">
+                    <h2>{{ generationHeading() }}</h2>
+                    <p class="fp-meta">{{ generationProgress() }}</p>
+                  </cx-stack>
+                </cx-stack>
+              </section>
+            } @else if (retryStage()) {
+              <section class="fp-campaign-state" aria-label="Campaign generation">
+                <cx-state-message
+                  state="danger"
+                  heading="Generation needs attention"
+                  [description]="generationError()"
+                  [action]="{ text: 'Retry this stage', icon: 'reload', mood: 'primary' }"
+                  (action)="retryGeneration()"
+                />
+              </section>
             } @else if (campaign(); as current) {
-              <cx-stack gap="xl" gapMobile="lg">
-                <section class="fp-section" aria-label="Campaign copy">
-                  @if (activeCopy()) {
-                    <cx-stack gap="md">
+              @if (current.stage !== 'complete') {
+                <section class="fp-campaign-state" aria-label="Campaign generation">
+                  <cx-state-message
+                    heading="Continue this campaign"
+                    [description]="
+                      current.stage === 'strategy'
+                        ? 'The strategy is ready. Create the bilingual copy next.'
+                        : 'The copy is ready. Create the image prompts next.'
+                    "
+                    [action]="current.stage === 'strategy' ? writeCopyAction : writePromptsAction"
+                    (action)="current.stage === 'strategy' ? writeCopy() : writeImagePrompts()"
+                  />
+                </section>
+              } @else {
+                @if (generationError()) {
+                  <cx-alert mood="danger" [heading]="generationError()" />
+                }
+                @if (copyError()) {
+                  <cx-alert mood="warning" [heading]="copyError()" />
+                }
+
+                <cx-split class="fp-campaign-toolbar" gap="lg" gapMobile="md" [wrap]="true">
+                  <cx-tabs
+                    start
+                    ariaLabel="Campaign sections"
+                    controlsId="fp-campaign-panel"
+                    [items]="sectionTabs"
+                    [selectedId]="section()"
+                    (selectedIdChange)="selectSection($event)"
+                  />
+                  <cx-inline end gap="sm" align="center">
+                    @if (copySaveStatus()) {
+                      <cx-status-tag
+                        [text]="copySaveStatus()"
+                        [icon]="
+                          copySaveFailed() ? 'warning' : hasUnsavedCopy() ? 'in-progress' : 'check'
+                        "
+                        [mood]="copySaveFailed() ? 'danger' : 'default'"
+                      />
+                    }
+                    @if (copySaveFailed()) {
+                      <cx-button
+                        text="Review unsaved changes"
+                        size="small"
+                        [transparent]="true"
+                        (pressed)="reviewUnsavedChanges()"
+                      />
+                    }
+                  </cx-inline>
+                </cx-split>
+
+                <div
+                  id="fp-campaign-panel"
+                  role="tabpanel"
+                  [attr.aria-labelledby]="sectionPanelLabel()"
+                  class="fp-campaign-panel"
+                >
+                  @switch (section()) {
+                    @case ('copy') {
                       <cx-tabs
+                        class="fp-language-tabs"
                         ariaLabel="Campaign language"
                         controlsId="fp-copy-panel"
                         [items]="languageTabs"
                         [selectedId]="language()"
+                        [transparent]="true"
                         (selectedIdChange)="selectLanguage($event)"
                       />
 
-                      <div id="fp-copy-panel" role="tabpanel">
-                        <cx-stack gap="lg">
-                          @for (field of resolvedFields(); track field.id) {
-                            <div class="fp-copy-row">
-                              <div class="fp-field">
-                                @if (field.id === 'hashtags') {
-                                  <cx-tag-field
-                                    [label]="field.label"
-                                    [tags]="hashtagTags()"
-                                    [values]="field.tags"
-                                    [creatable]="true"
-                                    [hint]="field.hint"
-                                    [validation]="field.validation"
-                                    (valuesChange)="updateHashtags($event)"
-                                  />
-                                } @else if (field.multiline) {
-                                  <cx-text-area
-                                    [label]="field.label"
-                                    sizing="fixed"
-                                    [minLines]="field.id === 'fullCaption' ? 8 : 3"
-                                    [value]="field.value"
-                                    [hint]="field.hint"
-                                    [validation]="field.validation"
-                                    (valueChange)="updateField(field.id, $event)"
-                                    (focusChange)="onFieldBlur(field.id, $event)"
-                                  />
-                                } @else {
-                                  <cx-text-field
-                                    [label]="field.label"
-                                    [value]="field.value"
-                                    [hint]="field.hint"
-                                    [validation]="field.validation"
-                                    (valueChange)="updateField(field.id, $event)"
-                                    (focusChange)="onFieldBlur(field.id, $event)"
-                                  />
-                                }
-                              </div>
+                      <div
+                        id="fp-copy-panel"
+                        role="tabpanel"
+                        [attr.aria-labelledby]="
+                          language() === 'sv' ? 'fp-copy-panel-tab-0' : 'fp-copy-panel-tab-1'
+                        "
+                      >
+                        @if (configLoading()) {
+                          <cx-state-message state="pending" heading="Loading copy" />
+                        } @else if (configError()) {
+                          <cx-state-message
+                            state="danger"
+                            [heading]="configError()"
+                            [action]="reloadAction"
+                            (action)="loadConfig()"
+                          />
+                        } @else if (activeCopy()) {
+                          <cx-split
+                            class="fp-copy-layout"
+                            gap="xl"
+                            gapMobile="lg"
+                            align="stretch"
+                            [wrap]="true"
+                          >
+                            <div start class="fp-copy-form">
+                              @for (field of resolvedFields(); track field.id) {
+                                <section
+                                  class="fp-copy-field"
+                                  [class.fp-copy-field--selected]="selectedFieldId() === field.id"
+                                  [attr.aria-label]="field.label"
+                                  (pointerdown)="selectCopyField(field.id)"
+                                  (focusin)="selectCopyField(field.id)"
+                                >
+                                  @if (field.id === 'hashtags') {
+                                    <cx-tag-field
+                                      [label]="field.label"
+                                      [tags]="hashtagTags()"
+                                      [values]="field.tags"
+                                      [creatable]="true"
+                                      [hint]="field.hint"
+                                      [validation]="field.validation"
+                                      (valuesChange)="updateHashtags($event)"
+                                    />
+                                  } @else if (field.multiline) {
+                                    <cx-text-area
+                                      [label]="field.label"
+                                      sizing="auto"
+                                      [minLines]="field.id === 'fullCaption' ? 8 : 4"
+                                      [value]="field.value"
+                                      [hint]="field.hint"
+                                      [validation]="field.validation"
+                                      (valueChange)="updateField(field.id, $event)"
+                                      (focusChange)="onFieldBlur(field.id, $event)"
+                                    />
+                                  } @else {
+                                    <cx-text-field
+                                      [label]="field.label"
+                                      [value]="field.value"
+                                      [hint]="field.hint"
+                                      [validation]="field.validation"
+                                      (valueChange)="updateField(field.id, $event)"
+                                      (focusChange)="onFieldBlur(field.id, $event)"
+                                    />
+                                  }
 
-                              <cx-icon-button
-                                [icon]="copiedId() === field.id ? 'check' : 'copy'"
-                                variant="transparent"
-                                [ariaLabel]="'Copy ' + field.label"
-                                (pressed)="copyValue(field.id, field.value)"
-                              />
+                                  @if (field.saveError) {
+                                    <cx-stack class="fp-field-recovery" gap="sm" align="start">
+                                      <cx-alert mood="danger" [heading]="field.saveError" />
+                                      <cx-button
+                                        text="Retry save"
+                                        size="small"
+                                        icon="reload"
+                                        (pressed)="retryCopyField(field.id)"
+                                      />
+                                    </cx-stack>
+                                  }
+                                </section>
+                              }
                             </div>
-                          }
-                        </cx-stack>
-                      </div>
 
-                      @if (variations().length > 0) {
-                        <cx-expansion-panel
-                          variant="flat"
-                          [heading]="variationHeading()"
-                        >
-                          <cx-stack gap="sm">
-                            @for (variation of variations(); track $index) {
-                              <cx-item-card variant="outline" [heading]="variation">
-                                <cx-icon-button
-                                  [icon]="copiedId() === 'variation-' + $index ? 'check' : 'copy'"
-                                  variant="transparent"
-                                  ariaLabel="Copy this alternative"
-                                  (pressed)="copyValue('variation-' + $index, variation)"
-                                />
+                            <div end class="fp-copy-explainer-track">
+                              <aside class="fp-copy-explainer" aria-label="Copy rationale">
+                                @if (selectedField(); as selected) {
+                                  <cx-card heading="Why this works" icon="info" padding="large" border>
+                                    <cx-stack gap="lg">
+                                      <section class="fp-rationale-section">
+                                        <h3>{{ selected.label }}</h3>
+                                        <p>{{ selected.rationale?.why || selected.guidance }}</p>
+                                      </section>
+
+                                      @if (selectedFieldRules().length > 0) {
+                                        <section class="fp-rationale-section">
+                                          <h3>StoryBrand principles</h3>
+                                          <cx-stack gap="md">
+                                            @for (rule of selectedFieldRules(); track rule.id) {
+                                              <cx-labeled-row
+                                                [label]="rule.name"
+                                                [content]="{ kind: 'text', text: rule.teaches }"
+                                              />
+                                            }
+                                          </cx-stack>
+                                        </section>
+                                      }
+                                    </cx-stack>
+                                  </cx-card>
+                                }
+                              </aside>
+                            </div>
+                          </cx-split>
+                        } @else {
+                          <cx-state-message heading="Campaign copy is not available yet" icon="text" />
+                        }
+                      </div>
+                    }
+
+                    @case ('prompts') {
+                      @if (current.imagePrompts.length > 0) {
+                        <div class="fp-prompts">
+                          @for (prompt of promptSections(); track prompt.concept) {
+                            <section class="fp-prompt" [attr.aria-label]="prompt.label">
+                              <cx-item-card
+                                variant="outline"
+                                icon="image"
+                                [heading]="prompt.label"
+                                [description]="prompt.altText"
+                              >
+                                <cx-inline class="fp-prompt-actions" gap="xs">
+                                  <cx-icon-button
+                                    icon="info"
+                                    variant="transparent"
+                                    ariaHasPopup="dialog"
+                                    [ariaLabel]="'Inspect ' + prompt.label + ' prompt'"
+                                    (pressed)="inspectPrompt(prompt)"
+                                  />
+                                  <cx-icon-button
+                                    [icon]="
+                                      copiedId() === 'prompt-' + prompt.concept ? 'check' : 'copy'
+                                    "
+                                    variant="transparent"
+                                    [ariaLabel]="'Copy ' + prompt.label + ' prompt'"
+                                    (pressed)="copyValue('prompt-' + prompt.concept, prompt.code)"
+                                  />
+                                </cx-inline>
                               </cx-item-card>
+                            </section>
+                          }
+                        </div>
+                      } @else {
+                        <cx-state-message heading="Image prompts are not available yet" icon="image" />
+                      }
+                    }
+
+                    @case ('strategy') {
+                      <div class="fp-strategy">
+                        @if (current.strategy.assumptions.length > 0) {
+                          <cx-card
+                            heading="Check before publishing"
+                            icon="warning"
+                            mood="warning"
+                            padding="large"
+                            border
+                          >
+                            <ul class="fp-assumptions">
+                              @for (assumption of current.strategy.assumptions; track $index) {
+                                <li>{{ assumption }}</li>
+                              }
+                            </ul>
+                          </cx-card>
+                        }
+
+                        <cx-card heading="Campaign brief" icon="form" padding="large" border>
+                          <cx-stack gap="md">
+                            @for (row of strategyRows(); track row.label) {
+                              <cx-labeled-row [label]="row.label" [content]="row.content" />
                             }
                           </cx-stack>
-                        </cx-expansion-panel>
-                      }
-                    </cx-stack>
-                  } @else {
-                    <cx-state-message
-                      heading="No campaign copy yet"
-                      description="The strategy is saved. Writing the copy takes a moment and produces both languages at once."
-                      icon="text"
-                      layout="horizontal"
-                      [action]="writeCopyAction"
-                      (action)="writeCopy()"
-                    />
+                        </cx-card>
+
+                        @if (strategyWhyRows().length > 0) {
+                          <cx-card heading="Why this strategy" icon="info" padding="large" border>
+                            <cx-stack gap="md">
+                              @for (row of strategyWhyRows(); track $index) {
+                                <cx-labeled-row [label]="row.label" [content]="row.content" />
+                              }
+                            </cx-stack>
+                          </cx-card>
+                        }
+
+                        <cx-card heading="Original idea" icon="chat" padding="large" border>
+                          <p class="fp-prose">{{ current.idea }}</p>
+                        </cx-card>
+                      </div>
+                    }
                   }
-                </section>
-
-                <section class="fp-section" aria-labelledby="fp-prompts-heading">
-                  <h2 id="fp-prompts-heading">Image prompts</h2>
-
-                  @if (current.imagePrompts.length > 0) {
-                    <cx-stack gap="sm">
-                      @for (prompt of promptSections(); track prompt.concept) {
-                        <cx-item-card
-                          variant="outline"
-                          icon="image"
-                          [heading]="prompt.label"
-                          [description]="prompt.altText"
-                        >
-                          <cx-icon-button
-                            [icon]="copiedId() === 'prompt-' + prompt.concept ? 'check' : 'copy'"
-                            variant="transparent"
-                            [ariaLabel]="'Copy the ' + prompt.label + ' prompt'"
-                            (pressed)="copyValue('prompt-' + prompt.concept, prompt.code)"
-                          />
-                        </cx-item-card>
-                      }
-                    </cx-stack>
-                  } @else if (generating()) {
-                    <cx-state-message
-                      state="pending"
-                      heading="Writing the image prompts"
-                      description="Three scenes that carry the same promise."
-                      layout="horizontal"
-                    />
-                  } @else if (current.stage !== 'strategy') {
-                    <cx-state-message
-                      heading="No image prompts yet"
-                      description="They are written after the campaign copy."
-                      icon="image"
-                      layout="horizontal"
-                      [action]="writePromptsAction"
-                      (action)="writeImagePrompts()"
-                    />
-                  } @else {
-                    <cx-state-message
-                      heading="No image prompts yet"
-                      description="Write the campaign copy first."
-                      icon="image"
-                      layout="horizontal"
-                    />
-                  }
-                </section>
-
-                <cx-expansion-panel heading="Campaign strategy">
-                  <cx-stack gap="sm">
-                    @for (row of strategyRows(); track row.label) {
-                      <cx-labeled-row [label]="row.label" [content]="row.content" />
-                    }
-
-                    @if (assumptionRows().length > 0) {
-                      <cx-divider [discreet]="true" />
-                      @for (row of assumptionRows(); track $index) {
-                        <cx-labeled-row [label]="row.label" [content]="row.content" />
-                      }
-                    }
-
-                    <cx-divider [discreet]="true" />
-                    @for (row of strategyWhyRows(); track $index) {
-                      <cx-labeled-row [label]="row.label" [content]="row.content" />
-                    }
-                    <cx-labeled-row label="Rules applied" [content]="rulesAppliedRow()" />
-                  </cx-stack>
-                </cx-expansion-panel>
-              </cx-stack>
+                </div>
+              }
+            } @else {
+              <cx-state-message state="pending" heading="Opening campaign" />
             }
           }
         }
-      </div>
+
+        @if (clipboardError()) {
+          <cx-alert mood="danger" [heading]="clipboardError()" />
+        }
+        @if (copiedId()) {
+          <div role="status" aria-live="polite" class="fp-clipboard-status">
+            Copied to clipboard
+          </div>
+        }
+      </main>
     </section>
-  </section>
+  </div>
+
+  <cx-dialog
+    variant="confirm"
+    heading="Leave without saving?"
+    description="Your unsaved changes will be discarded if you leave. Keep editing to preserve your work."
+    primaryText="Keep editing"
+    secondaryText="Discard changes"
+    [open]="leaveOpen()"
+    (primary)="keepEditing()"
+    (secondary)="discardAndLeave()"
+    (dismiss)="keepEditing()"
+  />
 
   <cx-dialog
     variant="confirm"
     size="large"
     heading="Create campaign"
-    description="Write the idea exactly as it comes to you. The studio keeps the useful intent and shows every assumption it had to make."
+    description="Describe what you want to communicate."
     [open]="composeOpen()"
+    [dismissOnClickOutside]="false"
     primaryText="Create campaign"
     [primaryLoading]="generating()"
     [primaryDisabled]="generating()"
-    secondaryText="Cancel"
+    secondaryText="Close"
     [closeOnPrimary]="false"
     (primary)="createCampaign()"
     (secondary)="closeCompose()"
@@ -341,7 +428,7 @@
       <cx-inline gap="md" justify="between">
         <cx-button
           size="small"
-          text="Show me an example"
+          text="Use an example"
           icon="chat"
           [transparent]="true"
           [disabled]="generating()"
@@ -353,23 +440,22 @@
   </cx-dialog>
 
   <cx-dialog
-    variant="confirm"
-    mood="danger"
-    heading="Delete campaign"
-    [open]="pendingDelete() !== undefined"
-    [description]="
-      pendingDelete()
-        ? '“' +
-          pendingDelete()!.name +
-          '” is removed with its copy, variations and image prompts. This cannot be undone.'
-        : ''
-    "
-    primaryText="Delete campaign"
-    secondaryText="Keep campaign"
-    (primary)="confirmDelete()"
-    (secondary)="cancelDelete()"
-    (dismiss)="cancelDelete()"
-  />
+    variant="info"
+    size="large"
+    [heading]="inspectedPrompt()?.label ?? 'Image prompt'"
+    primaryText="Close"
+    [open]="inspectedPrompt() !== undefined"
+    (primary)="closePromptDialog()"
+    (dismiss)="closePromptDialog()"
+  >
+    @if (inspectedPrompt(); as prompt) {
+      <cx-stack body gap="lg">
+        <cx-labeled-row label="Purpose" [content]="{ kind: 'text', text: prompt.why }" />
+        <cx-labeled-row label="Alt text" [content]="{ kind: 'text', text: prompt.altText }" />
+        <cx-code-block [code]="prompt.code" [wrap]="true" [copyable]="false" />
+      </cx-stack>
+    }
+  </cx-dialog>
 } @else {
   <section class="fp-admin-login" aria-label="Faunapoolen admin">
     <cx-card
@@ -380,8 +466,6 @@
       shadow
     >
       <cx-stack gap="lg">
-        <p class="fp-prose">Sign in to open your tools.</p>
-
         <form aria-label="Sign in" (submit)="onSubmit($event)">
           <cx-stack gap="md">
             @if (requestError()) {
@@ -390,10 +474,11 @@
 
             <cx-text-field
               #usernameField
-              label="Username"
+              label=""
+              ariaLabel="Username"
+              placeholder="Username"
               name="username"
               autocomplete="username"
-              prependIcon="user"
               [value]="username()"
               [validation]="usernameValidation()"
               [disabled]="submitting()"
@@ -401,7 +486,9 @@
             />
 
             <cx-password-field
-              label="Password"
+              label=""
+              ariaLabel="Password"
+              fpPasswordPlaceholder="Password"
               name="password"
               autocomplete="current-password"
               [value]="password()"
@@ -414,7 +501,6 @@
               class="fp-admin-login__submit"
               text="Sign in"
               mood="primary"
-              icon="lock-open"
               type="submit"
               [loading]="submitting()"
             />

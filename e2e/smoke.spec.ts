@@ -147,11 +147,13 @@ test('the admin is excluded from search and every public page stays indexable', 
 });
 
 test('admin signs in and builds one explained bilingual campaign', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
   const browserErrors: string[] = [];
   page.on('pageerror', (error) => browserErrors.push(error.message));
   page.on('console', (message) => {
-    if (message.type() === 'error') browserErrors.push(message.text());
+    if (message.type() === 'error' && !/status of (503|409)/.test(message.text()))
+      browserErrors.push(message.text());
   });
 
   const roughIdea =
@@ -188,7 +190,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     headline,
     description: 'Natural pools',
     primaryText,
-    fullCaption: `${primaryText} We walk the site with you and plan the first step.`,
+    fullCaption: `${primaryText}\n\nA natural swimming pond brings clear water, planting and space to unwind into one part of the garden. It starts with the place you already have: the light, the ground and how your family wants to spend time outside.\n\nWe walk the site with you, explain the possibilities and plan the first step together. You do not need a finished design to begin.`,
     callToAction,
     hashtags: ['#naturalpool', '#gardendesign', '#faunapoolen'],
     variations: {
@@ -227,7 +229,18 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   };
 
   let createPayload: unknown;
-  let saved: unknown;
+  type SavedEdit = {
+    expectedRevision: number;
+    language: 'en' | 'sv';
+    field: string;
+    value: string;
+  };
+  let saved: SavedEdit | undefined;
+  const saveRequests: SavedEdit[] = [];
+  let failSaves = false;
+  let saveGate: Promise<void> | undefined;
+  let releaseSaves: (() => void) | undefined;
+  let generationReady = false;
 
   const completedCampaign = {
     ...campaign,
@@ -254,12 +267,60 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
         ruleIds: ['photo-not-poster'],
         why: 'A believable photograph earns the attention a poster does not.',
       },
+      {
+        concept: 'detail',
+        label: 'Water at the garden edge',
+        prompt:
+          'An intimate photograph of clear water meeting a limestone edge, with native grasses reflected on the surface. Soft morning light, natural colours and no text.',
+        altText: 'Clear water, pale stone and grasses in morning light.',
+        ruleIds: ['photo-not-poster'],
+        why: 'The detail makes the natural materials tangible.',
+      },
+      {
+        concept: 'lifestyle',
+        label: 'An afternoon by the pond',
+        prompt:
+          'A quiet documentary scene of an adult relaxing beside a natural swimming pond in a Swedish garden. Eye-level composition, late afternoon daylight and no text.',
+        altText: 'A quiet place to sit beside the water on a summer afternoon.',
+        ruleIds: ['photo-not-poster'],
+        why: 'Show what the garden makes possible.',
+      },
     ],
   };
 
   await page.route('**/api/admin/campaigns', async (route) => {
     if (route.request().method() !== 'POST') {
-      await route.continue();
+      await route.fulfill({
+        contentType: 'application/json',
+        json: {
+          campaigns: createPayload
+            ? [
+                { ...campaign, stage: 'complete' },
+                {
+                  ...campaign,
+                  id: '22222222-2222-4333-8444-555555555555',
+                  name: 'Water for a smaller garden',
+                  stage: 'copy',
+                  updatedAt: '2026-08-07T09:00:00.000Z',
+                },
+                {
+                  ...campaign,
+                  id: '33333333-2222-4333-8444-555555555555',
+                  name: 'A quieter place to come home to',
+                  stage: 'strategy',
+                  updatedAt: '2026-08-06T09:00:00.000Z',
+                },
+                {
+                  ...campaign,
+                  id: '44444444-2222-4333-8444-555555555555',
+                  name: 'Make room for nature by the water',
+                  stage: 'complete',
+                  updatedAt: '2026-08-05T09:00:00.000Z',
+                },
+              ]
+            : [],
+        },
+      });
       return;
     }
     createPayload = route.request().postDataJSON();
@@ -285,10 +346,10 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
         json: {
           status: {
             campaignId: campaign.id,
-            campaignRevision: completedCampaign.revision,
+            campaignRevision: generationReady ? completedCampaign.revision : 0,
             jobId: 'synthetic-browser-job',
-            stage: 'prompts',
-            state: 'succeeded',
+            stage: generationReady ? 'prompts' : 'strategy',
+            state: generationReady ? 'succeeded' : 'running',
             updatedAt: completedCampaign.updatedAt,
           },
         },
@@ -296,11 +357,32 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
       return;
     }
     if (url.pathname.endsWith('/copy') && route.request().method() === 'PATCH') {
-      saved = route.request().postDataJSON();
-      await route.fulfill({
-        contentType: 'application/json',
-        json: { ok: true, revision: 4, updatedAt: '2026-08-08T09:01:00.000Z' },
-      });
+      const edit = route.request().postDataJSON() as SavedEdit;
+      saved = edit;
+      saveRequests.push(edit);
+      if (saveGate) await saveGate;
+      if (failSaves || edit.expectedRevision !== completedCampaign.revision) {
+        await route.fulfill({
+          status: failSaves ? 503 : 409,
+          json: {
+            error: {
+              message: failSaves
+                ? 'This change could not be saved. Try again.'
+                : 'The campaign changed elsewhere.',
+            },
+          },
+        });
+      } else {
+        Object.assign(completedCampaign.copy[edit.language], { [edit.field]: edit.value });
+        completedCampaign.revision += 1;
+        await route.fulfill({
+          json: {
+            ok: true,
+            revision: completedCampaign.revision,
+            updatedAt: '2026-08-08T09:01:00.000Z',
+          },
+        });
+      }
       return;
     }
     await route.fallback();
@@ -312,49 +394,108 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
 
   await page.goto('/admin');
 
-  await expect(page.locator('html')).toHaveClass(/theme-night/);
+  await expect(page.locator('html')).toHaveClass(/theme-light/);
   await expect(page.locator('nav.navigation')).toHaveCount(0);
-  await expect(page.getByText('Sign in to open your tools.')).toBeVisible();
+  await expect(page.getByText('Sign in to your campaign studio.')).toHaveCount(0);
 
-  await page.getByRole('textbox', { name: 'Username' }).fill('faunapoolen-e2e-owner');
-  await page.getByRole('textbox', { name: 'Password' }).fill('faunapoolen-e2e-owner-password');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  const usernameField = page.getByRole('textbox', { name: 'Username' });
+  const passwordField = page.locator('input[name="password"]');
+  const signInButton = page.getByRole('button', { name: 'Sign in' });
 
-  await expect(page.getByRole('heading', { name: 'Campaigns' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Campaigns' })).toBeVisible();
+  await expect(usernameField).toHaveAttribute('placeholder', 'Username');
+  await expect(passwordField).toHaveAttribute('placeholder', 'Password');
+  await expect(page.locator('.fp-admin-login .cx-text-field__header')).toHaveCount(0);
+  await expect(page.locator('.fp-admin-login .cx-password-field__header')).toHaveCount(0);
+  await expect(page.locator('.fp-admin-login .cx-text-field__prepend')).toHaveCount(0);
+  await expect(signInButton.locator('cx-icon')).toHaveCount(0);
+
+  await usernameField.fill('faunapoolen-e2e-owner');
+  await passwordField.fill('faunapoolen-e2e-owner-password');
+  await signInButton.click();
+
+  const campaignLocation = page.getByRole('navigation', { name: 'Campaign location' });
+  await expect(
+    campaignLocation.getByRole('listitem').getByText('Campaign Studio', { exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('cx-side-nav')).toHaveCount(1);
+  await expect(page.getByRole('complementary', { name: 'Main navigation' })).toBeVisible();
+
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-list.png' });
 
   // Creating a campaign is a dialog over the list, not a separate page.
   await page.getByRole('button', { name: 'Create campaign' }).click();
-  const dialog = page.locator('.cx-dialog').filter({ hasText: 'Write the idea exactly' });
+  const dialog = page.getByRole('alertdialog', { name: 'Create campaign' });
   await expect(dialog).toBeVisible();
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-compose.png' });
   await page.getByRole('textbox', { name: 'Your rough idea' }).fill(roughIdea);
   await dialog.getByRole('button', { name: 'Create campaign' }).click();
   await expect(dialog).toBeHidden();
 
   expect(createPayload).toEqual({ idea: roughIdea });
 
-  // The campaign name is the page heading — there is no second h1 below it.
-  await expect(page.getByRole('heading', { name: 'A natural place to swim' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+  // Generation is one quiet blocking state. Editing and unrelated actions stay unavailable.
+  await expect(page.getByRole('heading', { name: 'Now I’m creating the strategy' })).toBeVisible();
+  await expect(page.getByRole('status', { name: 'Now I’m creating the strategy' })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Headline' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Create campaign' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Account actions for Admin' })).toBeDisabled();
+  generationReady = true;
 
-  // Two language tabs, never a platform tab. English leads and is the default.
-  const tabs = page.getByRole('tab');
-  await expect(tabs).toHaveCount(2);
-  await expect(tabs.first()).toHaveText('English');
-  await expect(page.getByRole('tab', { selected: true })).toHaveText('English');
-
-  // Six prefilled, editable fields — not a read-only table.
-  const headline = page.getByRole('textbox', { name: 'Headline' });
-  await expect(headline).toHaveValue('A garden you can swim in');
-  await expect(page.getByRole('textbox', { name: 'Primary text' })).toHaveValue(
-    'Swim at home without turning the garden into a building site.',
-  );
-
-  // Guidance sits under the field, with the count on the same discreet line and no meter.
+  // The framework top bar owns the breadcrumb hierarchy and the page's single h1.
   await expect(
-    page.getByText('Lead the headline with the outcome, not the product. · 24/27'),
+    campaignLocation.getByRole('listitem').getByText('A natural place to swim', { exact: true }),
   ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'A natural place to swim' })).toHaveCount(1);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Campaigns', exact: true })).toHaveCount(0);
+
+  // Two language tabs, never a platform tab. Swedish leads and is the default.
+  const tabs = page.getByRole('tablist', { name: 'Campaign language' }).getByRole('tab');
+  await expect(tabs).toHaveCount(2);
+  await expect(tabs.first()).toHaveText('Svenska');
+  await expect(
+    page.getByRole('tablist', { name: 'Campaign language' }).getByRole('tab', { selected: true }),
+  ).toHaveText('Svenska');
+
+  // Six prefilled fields use the framework's normal input treatment.
+  const headline = page.getByRole('textbox', { name: 'Headline' });
+  await expect(headline).toHaveValue('En badplats som hör hemma');
+  await expect(page.getByRole('textbox', { name: 'Primary text' })).toHaveValue(
+    'Bada hemma utan att trädgården blir ett byggprojekt.',
+  );
+  await expect(page.locator('.cx-text-field__field-shell--inline-edit')).toHaveCount(0);
+  await expect(page.locator('.cx-text-area__shell--inline-edit')).toHaveCount(0);
+
+  const rationale = page.getByRole('complementary', { name: 'Copy rationale' });
+  await expect(rationale.getByText('Why this works', { exact: true })).toBeVisible();
+  await expect(rationale.getByRole('heading', { name: 'Headline' })).toBeVisible();
+  await expect(
+    rationale.getByText('Lead the headline with the outcome, not the product.'),
+  ).toBeVisible();
+  await expect(rationale.getByText('Lead with the outcome', { exact: true })).toBeVisible();
+  expect(await rationale.evaluate((element) => getComputedStyle(element).position)).toBe('sticky');
+  await page.getByRole('textbox', { name: 'Primary text', exact: true }).focus();
+  await expect(rationale.getByRole('heading', { name: 'Primary text' })).toBeVisible();
+
+  // Counts stay local; longer writing guidance is disclosed separately.
+  await expect(page.getByText('25/27 characters', { exact: true })).toBeVisible();
   await expect(page.locator('cx-budget')).toHaveCount(0);
+
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-copy.png' });
+  await page.getByRole('tab', { name: 'Strategy', exact: true }).click();
+  await expect(page.getByText('Check before publishing', { exact: true })).toBeVisible();
+  // Let the framework finish its scheduled tab measurements before visual capture.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+      ),
+  );
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-strategy.png' });
+  await page.getByRole('tab', { name: 'Copy', exact: true }).click();
+  await page.getByRole('tab', { name: 'English', exact: true }).click();
 
   // Editing saves on blur.
   await headline.fill('A garden to swim in');
@@ -368,33 +509,118 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
       value: 'A garden to swim in',
     });
 
-  // Going past the budget replaces the guidance with a correction rather than stacking both.
+  // Going past the budget explains how to correct it without stacking more guidance.
   const tooLong = 'A garden you can swim in every single summer';
   await headline.fill(tooLong);
   await expect(
-    page.getByText(`${tooLong.length} characters. This campaign is written to 27.`),
+    page.getByText(`Remove ${tooLong.length - 27} characters to fit the 27-character limit.`),
   ).toBeVisible();
-  await expect(
-    page.getByText('Lead the headline with the outcome, not the product. · 24/27'),
-  ).toHaveCount(0);
+  await expect(page.getByText('24/27 characters', { exact: true })).toHaveCount(0);
 
+  await headline.fill('A garden to swim in');
+  await headline.blur();
+  await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+
+  // A slow save must keep every queued edit attached to its original language.
+  saveGate = new Promise<void>((resolve) => {
+    releaseSaves = resolve;
+  });
+  const requestsBeforeSwitch = saveRequests.length;
+  await headline.fill('A place to swim');
+  await headline.blur();
+  await expect(page.getByText('Saving changes', { exact: true })).toBeVisible();
+  await page
+    .getByRole('textbox', { name: 'Primary text', exact: true })
+    .fill('Swim in a garden that feels like home.');
   // The Swedish tab swaps only the copy.
   await page.getByRole('tab', { name: 'Svenska' }).click();
   await expect(page.getByRole('textbox', { name: 'Headline' })).toHaveValue(
     'En badplats som hör hemma',
   );
 
-  // Image prompts are copy-only rows: the prompt is machine input, so the row shows its concept
-  // and alt text and the whole prompt goes to the clipboard.
-  const promptRow = page.locator('cx-item-card').filter({ hasText: 'Straight photograph' });
+  releaseSaves?.();
+  saveGate = undefined;
+  await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+  expect(
+    saveRequests.slice(requestsBeforeSwitch).map((edit) => [edit.language, edit.field, edit.value]),
+  ).toEqual([
+    ['en', 'headline', 'A place to swim'],
+    ['en', 'primaryText', 'Swim in a garden that feels like home.'],
+  ]);
+  expect(completedCampaign.copy.sv.headline).toBe('En badplats som hör hemma');
+
+  await page.getByRole('tab', { name: 'English', exact: true }).click();
+
+  // Failed writes preserve the draft and prevent a silent exit.
+  failSaves = true;
+  await headline.fill('A calmer garden');
+  await headline.blur();
+  await expect(page.getByRole('button', { name: 'Retry save', exact: true })).toBeVisible();
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-save-error.png' });
+  await campaignLocation.getByRole('button', { name: 'Campaign Studio', exact: true }).click();
+  await expect(page.getByText('Leave without saving?', { exact: true })).toBeVisible();
+  await page.screenshot({
+    animations: 'disabled',
+    path: '/tmp/fauna-admin-after-unsaved-dialog.png',
+  });
+  await page.getByRole('button', { name: 'Keep editing', exact: true }).click();
+  await expect(headline).toHaveValue('A calmer garden');
+  failSaves = false;
+  await page.getByRole('button', { name: 'Retry save', exact: true }).click();
+  await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+
+  // Revision conflicts update the baseline without replacing the user's edit.
+  completedCampaign.revision += 1;
+  await headline.fill('A garden worth staying in');
+  await headline.blur();
+  await expect(
+    page.getByText(
+      'This campaign changed elsewhere. Your edit is kept here. Review it, then retry to save it.',
+    ),
+  ).toBeVisible();
+  await expect(headline).toHaveValue('A garden worth staying in');
+  await page.getByRole('button', { name: 'Retry save', exact: true }).click();
+  await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+  expect(completedCampaign.copy.en.headline).toBe('A garden worth staying in');
+
+  // Keyboard section navigation follows the framework's tab behavior.
+  await page.getByRole('tab', { name: 'Copy', exact: true }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Image prompts', exact: true })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await page.getByRole('tab', { name: 'Image prompts', exact: true }).click();
+  const promptRow = page.getByRole('region', { name: 'Straight photograph', exact: true });
   await expect(promptRow).toHaveCount(1);
-  await expect(promptRow).toContainText('A natural swimming pond in a Swedish garden.');
-  await expect(page.getByText('No HDR tone mapping')).toHaveCount(0);
-  await promptRow.getByRole('button', { name: /Copy the Straight photograph prompt/ }).click();
+  await promptRow
+    .getByRole('button', { name: 'Inspect Straight photograph prompt', exact: true })
+    .click();
+  const promptDialog = page.getByRole('dialog', { name: 'Straight photograph' });
+  await expect(promptDialog).toBeVisible();
+  await expect(
+    promptDialog.getByText('A natural swimming pond in a Swedish garden.'),
+  ).toBeVisible();
+  await expect(promptDialog.getByText('No HDR tone mapping', { exact: false })).toBeVisible();
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-prompts.png' });
+  await promptDialog.getByRole('button', { name: 'Close', exact: true }).click();
+  await promptRow
+    .getByRole('button', { name: 'Copy Straight photograph prompt', exact: true })
+    .click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
     'No HDR tone mapping',
   );
 
+  await campaignLocation.getByRole('button', { name: 'Campaign Studio', exact: true }).click();
+  await expect(page.getByText('Water for a smaller garden', { exact: true })).toBeVisible();
+  await page.screenshot({
+    animations: 'disabled',
+    path: '/tmp/fauna-admin-after-list-populated.png',
+  });
+  await page.getByText('A natural place to swim', { exact: true }).click();
+  await expect(headline).toHaveValue('En badplats som hör hemma');
+  await page.getByRole('tab', { name: 'English', exact: true }).click();
+  await expect(headline).toHaveValue('A garden worth staying in');
+  await expect(page.getByRole('button', { name: 'Campaign actions', exact: true })).toHaveCount(0);
+  await expect(page.getByText('Delete campaign', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Account actions for Admin' }).click();
   await page.getByText('Log out', { exact: true }).click();
   await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
@@ -404,7 +630,9 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
 test('a fresh browser session recovers failed work before its campaign row exists', async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
   const campaignId = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+  let retryRunning = true;
   let retryPayload: unknown;
 
   await page.route('**/api/admin/generations', async (route) => {
@@ -453,7 +681,7 @@ test('a fresh browser session recovers failed work before its campaign row exist
           error: { code: 'synthetic_retry_failure', message: 'Synthetic retry stopped.' },
           jobId: 'retried-browser-job',
           stage: 'strategy',
-          state: 'failed',
+          state: retryRunning ? 'running' : 'failed',
           updatedAt: '2026-08-25T11:01:00.000Z',
         },
       },
@@ -468,11 +696,78 @@ test('a fresh browser session recovers failed work before its campaign row exist
   await expect(
     page.getByText('The provider may have received the first request. Review and retry it.'),
   ).toBeVisible();
+  await page.screenshot({
+    animations: 'disabled',
+    path: '/tmp/fauna-admin-after-generation-error.png',
+  });
   await page.getByRole('button', { name: 'Retry this stage' }).click();
   await expect.poll(() => retryPayload).toEqual({ expectedRevision: 0, stage: 'strategy' });
+  await expect(page.getByText('Now I’m creating the strategy', { exact: true })).toBeVisible();
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-generating.png' });
+  retryRunning = false;
+  await expect(page.getByText('Synthetic retry stopped.', { exact: true })).toBeVisible();
 });
 
 test('unknown route returns 404', async ({ page }) => {
   const res = await page.goto('/nope');
   expect(res?.status()).toBe(404);
+});
+
+test('admin distinguishes loading and failure from an empty collection and preserves a rough idea', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  let releaseList!: () => void;
+  const listGate = new Promise<void>((resolve) => {
+    releaseList = resolve;
+  });
+  let listFailed = true;
+  await page.route('**/api/admin/campaigns', async (route) => {
+    if (route.request().method() === 'POST') {
+      await route.fulfill({
+        status: 503,
+        json: { error: { message: 'Campaign generation is currently disabled.' } },
+      });
+      return;
+    }
+    await listGate;
+    await route.fulfill(
+      listFailed
+        ? { status: 503, json: { error: { message: 'Campaigns are unavailable.' } } }
+        : { json: { campaigns: [] } },
+    );
+  });
+  await page.goto('/admin');
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-login.png' });
+  await page.getByRole('textbox', { name: 'Username' }).fill('faunapoolen-e2e-owner');
+  await page.getByRole('textbox', { name: 'Password' }).fill('faunapoolen-e2e-owner-password');
+  await page.getByRole('button', { name: 'Sign in' }).click();
+  await expect(page.getByText('Loading campaigns', { exact: true })).toBeVisible();
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-loading.png' });
+  releaseList();
+  await expect(page.getByText('Campaigns could not be loaded', { exact: true })).toBeVisible();
+  await expect(page.getByText('No campaigns yet', { exact: true })).toHaveCount(0);
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-list-error.png' });
+  listFailed = false;
+  await page.getByRole('button', { name: 'Try again', exact: true }).click();
+  await expect(page.getByText('No campaigns yet', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Create campaign', exact: true }).click();
+  const idea = page.getByRole('textbox', { name: 'Your rough idea', exact: true });
+  await idea.fill('A garden with room for quiet afternoons by the water.');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await expect(page.getByRole('alertdialog')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Create campaign', exact: true }).click();
+  await expect(idea).toHaveValue('A garden with room for quiet afternoons by the water.');
+  const compose = page
+    .getByRole('alertdialog')
+    .filter({ hasText: 'Describe what you want to communicate' });
+  await compose.getByRole('button', { name: 'Create campaign', exact: true }).click();
+  await expect(
+    page.getByText('Campaign generation is currently disabled.', { exact: true }),
+  ).toBeVisible();
+  await expect(idea).toHaveValue('A garden with room for quiet afternoons by the water.');
+  await page.screenshot({
+    animations: 'disabled',
+    path: '/tmp/fauna-admin-after-create-error.png',
+  });
 });

@@ -13,14 +13,21 @@ export type FaunapoolenProcessRole = 'web' | 'worker';
 
 const ROLE_FILES = Object.freeze({
   web: Object.freeze({
-    allowedKeys: new Set(['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'SESSION_SECRET']),
+    allowedKeys: new Set([
+      'ADMIN_PASSWORD',
+      'ADMIN_USERNAME',
+      'CAMPAIGN_GENERATION_ENABLED',
+      'SESSION_SECRET',
+    ]),
     foreignPrivateKeys: ['OPENAI_API_KEY'] as const,
     name: '.env.web' as const,
+    privateKeys: ['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'SESSION_SECRET'] as const,
   }),
   worker: Object.freeze({
-    allowedKeys: new Set(['OPENAI_API_KEY']),
+    allowedKeys: new Set(['CAMPAIGN_GENERATION_ENABLED', 'OPENAI_API_KEY']),
     foreignPrivateKeys: ['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'SESSION_SECRET'] as const,
     name: '.env.worker' as const,
+    privateKeys: ['OPENAI_API_KEY'] as const,
   }),
 });
 
@@ -35,7 +42,7 @@ export function loadFaunapoolenEnvironmentFiles({
   const roleFile = ROLE_FILES[role];
   for (const name of roleFile.foreignPrivateKeys) delete environment[name];
   if (releaseValidation) {
-    for (const name of roleFile.allowedKeys) delete environment[name];
+    for (const name of roleFile.privateKeys) delete environment[name];
     resolveFaunapoolenOperationalRoot(environment);
     return;
   }

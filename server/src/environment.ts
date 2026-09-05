@@ -59,7 +59,7 @@ export interface FaunapoolenWorkerEnvironment extends FaunapoolenBaseEnvironment
 export type FaunapoolenEnvironmentRole = 'web' | 'worker';
 
 export function resolveFaunapoolenOperationalRoot(environment: Environment): string {
-  const nodeEnvironment = nodeEnvironmentValue(environment);
+  nodeEnvironmentValue(environment);
   const validation = releaseValidationEnvironmentValue(environment);
   const override = environment['CX_RUNTIME_ROOT'];
   if (override !== undefined && !validation) {

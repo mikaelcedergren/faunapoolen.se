@@ -25,7 +25,7 @@ const NOW = 1_800_000_000_000;
 test('one background create is fenced before completed output is interpreted', async () => {
   const repository = new EffectRepository();
   const requests: RequestRecord[] = [];
-  const provider = providerFixture(repository, requests, async (_url, init) => {
+  const provider = providerFixture(repository, requests, async () => {
     return jsonResponse(completed('resp_success_0001', { value: 'ok' }));
   });
 

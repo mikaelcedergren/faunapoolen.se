@@ -57,8 +57,6 @@ const STRATEGY_TOPICS = Object.freeze([
 
 const LANGUAGE_NAMES = Object.freeze({ sv: 'Swedish', en: 'English' } as const);
 
-type StrategyTopic = (typeof STRATEGY_TOPICS)[number];
-
 export type JsonSchemaFormat = Readonly<{
   type: 'json_schema';
   name: string;

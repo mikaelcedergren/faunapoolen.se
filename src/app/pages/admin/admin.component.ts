@@ -16,43 +16,43 @@ import {
   CxAlertComponent,
   CxButtonComponent,
   CxCardComponent,
+  CxCodeBlockComponent,
   CxDialogComponent,
-  CxDividerComponent,
-  CxExpansionPanelComponent,
   CxIconButtonComponent,
-  CxIconComponent,
   CxInlineComponent,
   CxItemCardComponent,
   CxLabeledRowComponent,
   CxPasswordFieldComponent,
   CxSideNavComponent,
+  CxSpinnerComponent,
+  CxSplitComponent,
   CxStackComponent,
   CxStateMessageComponent,
-  CxStepsComponent,
+  CxStatusTagComponent,
   CxTableComponent,
   CxTabsComponent,
   CxTagFieldComponent,
-  CxTextFieldComponent,
   CxTextAreaComponent,
+  CxTextFieldComponent,
   CxTopBarComponent,
   type CxFieldValidation,
   type CxLabeledRowContent,
   type CxMenuItem,
-  type CxSideNavGroup,
+  type CxSideNavItem,
   type CxStateMessageAction,
-  type CxStep,
   type CxTabItem,
   type CxTableColumn,
   type CxTableRow,
   type CxTableRowActivateEvent,
-  type CxTableRowMenuSelectEvent,
   type CxThemeMode,
+  type CxTopBarTitle,
   CX_THEMES,
   CX_THEME_ICONS,
   CX_THEME_LABELS,
   cxThemeStartsGroup,
   isCxThemeMode,
 } from '@mikaelcedergren/cx-framework';
+import { PasswordFieldPlaceholderDirective } from './password-field-placeholder.directive';
 
 type AuthResponse = { authenticated?: boolean; ok?: boolean };
 
@@ -67,6 +67,16 @@ type CampaignStage = 'strategy' | 'copy' | 'complete';
 type GenerationStep = 'strategy' | 'copy' | 'prompts';
 type StepStatus = 'waiting' | 'active' | 'done' | 'failed';
 type View = 'list' | 'campaign';
+type CampaignSection = 'copy' | 'prompts' | 'strategy';
+type CopyEdit = {
+  campaignId: string;
+  language: Language;
+  fieldId: string;
+  value: string | readonly string[];
+  sequence: number;
+  state: 'dirty' | 'saving' | 'saved' | 'failed';
+  error?: string;
+};
 
 type CopyFieldConfig = {
   id: string;
@@ -79,7 +89,13 @@ type CopyFieldConfig = {
 
 type MarketingRule = { id: string; name: string; teaches: string };
 
-type Rationale = { field?: string; topic?: string; ruleIds: string[]; why?: string; guidance?: string };
+type Rationale = {
+  field?: string;
+  topic?: string;
+  ruleIds: string[];
+  why?: string;
+  guidance?: string;
+};
 
 type LanguageCopy = {
   headline: string;
@@ -180,13 +196,22 @@ type ResolvedField = CopyFieldConfig & {
   used: number;
   hint: string;
   validation: CxFieldValidation | undefined;
+  alternatives: string[];
+  rationale?: Rationale;
+  saveError?: string;
 };
 
 type LabeledRow = { label: string; content: CxLabeledRowContent };
 
-type PromptSection = { concept: string; label: string; code: string; altText: string };
+type PromptSection = {
+  concept: string;
+  label: string;
+  code: string;
+  altText: string;
+  why: string;
+};
 
-const DEFAULT_THEME: CxThemeMode = 'night';
+const DEFAULT_THEME: CxThemeMode = 'light';
 const THEME_STORAGE_KEY = 'fp-admin-theme';
 const FALLBACK_MAX_IDEA_CHARACTERS = 3_000;
 const MIN_IDEA_CHARACTERS = 8;
@@ -194,11 +219,11 @@ const MIN_IDEA_CHARACTERS = 8;
 const EXAMPLE_IDEA =
   'Jag vill berätta att en naturpool kan kännas som en del av trädgården, inte som en blå plastpool. Det ska kännas lugnt och möjligt att börja, även om man inte vet exakt vad man behöver.';
 
-// English is the default: the owner reads English, and the Swedish copy is checked afterwards.
-const DEFAULT_LANGUAGE: Language = 'en';
+// The studio is written in English, while Swedish is the campaign's starting language.
+const DEFAULT_LANGUAGE: Language = 'sv';
 const LANGUAGE_TABS: CxTabItem[] = [
-  { id: 'en', label: 'English' },
   { id: 'sv', label: 'Svenska' },
+  { id: 'en', label: 'English' },
 ];
 
 const CAMPAIGN_COLUMNS: CxTableColumn[] = [
@@ -207,8 +232,8 @@ const CAMPAIGN_COLUMNS: CxTableColumn[] = [
   { id: 'status', label: 'Status', size: 'content', hideable: false, pinnable: false },
   { id: 'name', label: 'Campaign', key: true, size: 'flex', hideable: false, pinnable: false },
   {
-    id: 'created',
-    label: 'Created',
+    id: 'updated',
+    label: 'Updated',
     size: 'content',
     align: 'end',
     hideable: false,
@@ -224,10 +249,6 @@ const STRATEGY_TOPIC_LABELS: Record<string, string> = {
   plan: 'Why these three steps',
 };
 
-const DELETE_MENU: CxMenuItem[] = [
-  { id: 'delete', label: 'Delete campaign', prependIcon: 'delete', danger: true },
-];
-
 const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'long',
@@ -241,19 +262,20 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
     CxAlertComponent,
     CxButtonComponent,
     CxCardComponent,
+    CxCodeBlockComponent,
     CxDialogComponent,
-    CxDividerComponent,
-    CxExpansionPanelComponent,
     CxIconButtonComponent,
-    CxIconComponent,
     CxInlineComponent,
     CxItemCardComponent,
     CxLabeledRowComponent,
     CxPasswordFieldComponent,
+    PasswordFieldPlaceholderDirective,
     CxSideNavComponent,
+    CxSpinnerComponent,
+    CxSplitComponent,
     CxStackComponent,
     CxStateMessageComponent,
-    CxStepsComponent,
+    CxStatusTagComponent,
     CxTableComponent,
     CxTabsComponent,
     CxTagFieldComponent,
@@ -274,6 +296,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   private copyResetTimer?: ReturnType<typeof setTimeout>;
   private generationPollSequence = 0;
   private copySaveQueue: Promise<void> = Promise.resolve();
+  private editSequence = 0;
+  private copySaving = false;
+  private pendingLeave?: () => void;
+  private pendingRouteDecision?: (allow: boolean) => void;
+  private readonly protectUnsavedWork = (event: BeforeUnloadEvent): void => {
+    if (this.generating() || this.hasUnsavedCopy() || this.roughIdea().trim()) {
+      event.preventDefault();
+      event.returnValue = '';
+    }
+  };
 
   @ViewChild('usernameField')
   private readonly usernameField?: CxTextFieldComponent;
@@ -293,6 +325,64 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly requestError = signal('');
 
   protected readonly view = signal<View>('list');
+  protected readonly section = signal<CampaignSection>('copy');
+  protected readonly listLoading = signal(true);
+  protected readonly listError = signal('');
+  protected readonly configLoading = signal(true);
+  protected readonly configError = signal('');
+  protected readonly openingCampaign = signal(false);
+  protected readonly generationStatuses = signal<GenerationStatus[]>([]);
+  protected readonly copyEdits = signal<Record<string, CopyEdit>>({});
+  protected readonly leaveOpen = signal(false);
+  protected readonly leaving = signal(false);
+  protected readonly sideNavCollapsed = signal(false);
+  protected readonly selectedFieldId = signal('headline');
+  protected readonly inspectedPrompt = signal<PromptSection | undefined>(undefined);
+  protected readonly sideNavItems: CxSideNavItem[] = [
+    {
+      id: 'campaign-studio',
+      label: 'Campaign Studio',
+      icon: 'form',
+      routerLink: '/admin',
+      routerLinkActiveOptions: { exact: true },
+    },
+  ];
+  protected readonly sectionTabs: CxTabItem[] = [
+    { id: 'copy', label: 'Copy' },
+    { id: 'prompts', label: 'Image prompts' },
+    { id: 'strategy', label: 'Strategy' },
+  ];
+  protected readonly sectionPanelLabel = computed(
+    () => `fp-campaign-panel-tab-${this.sectionTabs.findIndex((tab) => tab.id === this.section())}`,
+  );
+  protected readonly reloadAction: CxStateMessageAction = { text: 'Try again', icon: 'reload' };
+  protected readonly hasUnsavedCopy = computed(() =>
+    Object.values(this.copyEdits()).some((edit) => edit.state !== 'saved'),
+  );
+  protected readonly copySaveStatus = computed(() => {
+    const edits = Object.values(this.copyEdits());
+    if (edits.some((edit) => edit.state === 'failed')) return 'Changes not saved';
+    if (edits.some((edit) => edit.state === 'saving')) return 'Saving changes';
+    if (edits.some((edit) => edit.state === 'dirty')) return 'Unsaved changes';
+    return edits.length ? 'Changes saved' : '';
+  });
+  protected readonly copySaveFailed = computed(() =>
+    Object.values(this.copyEdits()).some((edit) => edit.state === 'failed'),
+  );
+  protected readonly generationHeading = computed(() => {
+    const stage = this.stepStatus();
+    if (this.retryStage()) return 'Generation needs attention';
+    if (!this.generating()) return 'Continue this campaign';
+    if (stage.strategy === 'active') return 'Now I’m creating the strategy';
+    if (stage.copy === 'active') return 'Now I’m writing both languages';
+    return 'Now I’m creating the image prompts';
+  });
+  protected readonly generationProgress = computed(() => {
+    const stage = this.stepStatus();
+    if (stage.strategy === 'active') return 'Step 1 of 3';
+    if (stage.copy === 'active') return 'Step 2 of 3';
+    return 'Step 3 of 3';
+  });
   protected readonly campaigns = signal<CampaignSummary[]>([]);
   protected readonly campaign = signal<Campaign | undefined>(undefined);
   protected readonly fields = signal<CopyFieldConfig[]>([]);
@@ -310,17 +400,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly retryStage = signal<GenerationStep | undefined>(undefined);
   protected readonly language = signal<Language>(DEFAULT_LANGUAGE);
   protected readonly copiedId = signal('');
-  protected readonly pendingDelete = signal<CampaignSummary | undefined>(undefined);
-  protected readonly mobileNavOpen = signal(false);
+  protected readonly clipboardError = signal('');
   protected readonly composeOpen = signal(false);
 
   protected readonly languageTabs = LANGUAGE_TABS;
-  protected readonly deleteMenu = DELETE_MENU;
-  protected readonly newCampaignAction: CxStateMessageAction = {
-    text: 'Create campaign',
-    mood: 'primary',
-    icon: 'new',
-  };
   protected readonly writeCopyAction: CxStateMessageAction = {
     text: 'Write the campaign copy',
     mood: 'primary',
@@ -332,28 +415,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     icon: 'bolt',
   };
 
-  private readonly ruleIndex = computed(() => new Map(this.rules().map(rule => [rule.id, rule])));
-
-  // The sequence is fixed and each position is only reported once the server has actually returned
-  // that stage, so the indicator never claims progress the studio has not made.
-  protected readonly generationSteps = computed<CxStep[]>(() => {
-    const status = this.stepStatus();
-    return [
-      { name: 'Strategy', mood: status.strategy === 'failed' ? 'danger' : 'default' },
-      { name: 'Campaign copy', mood: status.copy === 'failed' ? 'danger' : 'default' },
-      { name: 'Image prompts', mood: status.prompts === 'failed' ? 'danger' : 'default' },
-    ];
-  });
-
-  protected readonly generationIndex = computed(() => {
-    const status = this.stepStatus();
-    return (['strategy', 'copy', 'prompts'] as const).filter(step => status[step] === 'done').length;
-  });
-
-  protected readonly incomplete = computed(() => {
-    const current = this.campaign();
-    return this.generating() || (current !== undefined && current.stage !== 'complete');
-  });
+  private readonly ruleIndex = computed(() => new Map(this.rules().map((rule) => [rule.id, rule])));
 
   protected readonly activeCopy = computed(() => this.campaign()?.copy[this.language()]);
 
@@ -362,75 +424,109 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (!copy) {
       return [];
     }
-    const guidance = new Map(
+    const rationales = new Map(
       copy.rationale
-        .filter(entry => entry.field)
-        .map(entry => [entry.field as string, entry.guidance ?? '']),
+        .filter((entry) => entry.field)
+        .map((entry) => [entry.field as string, entry]),
     );
-    return this.fields().map(field => {
-      const tags = field.id === 'hashtags' ? copy.hashtags : [];
-      const value =
-        field.id === 'hashtags' ? tags.join(' ') : String(copy[fieldKey(field.id)] ?? '');
-      // Hashtags are budgeted per tag, so the count reports the longest one rather than the line.
-      const used =
-        field.id === 'hashtags' ? Math.max(0, ...tags.map(characterCount)) : characterCount(value);
-      return {
-        ...field,
-        value,
-        tags,
-        used,
-        // The count rides the guidance line instead of getting a meter of its own.
-        hint: `${guidance.get(field.id) || field.guidance} · ${used}/${field.budget}`,
-        // The field swaps the hint for validation, so advice and correction never stack up.
-        validation: used > field.budget
-          ? `${used} characters. This campaign is written to ${field.budget}.`
-          : undefined,
-      };
-    });
+    const order = [
+      'headline',
+      'primaryText',
+      'fullCaption',
+      'callToAction',
+      'description',
+      'hashtags',
+    ];
+    return [...this.fields()]
+      .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id))
+      .map((field) => {
+        const rationale = rationales.get(field.id);
+        const tags = field.id === 'hashtags' ? copy.hashtags : [];
+        const value =
+          field.id === 'hashtags' ? tags.join(' ') : String(copy[fieldKey(field.id)] ?? '');
+        // Hashtags are budgeted per tag, so the count reports the longest one rather than the line.
+        const used =
+          field.id === 'hashtags'
+            ? Math.max(0, ...tags.map(characterCount))
+            : characterCount(value);
+        return {
+          ...field,
+          value,
+          tags,
+          used,
+          rationale,
+          guidance: rationale?.guidance || field.guidance,
+          hint:
+            field.id === 'hashtags'
+              ? `${used}/${field.budget} characters per tag`
+              : `${used}/${field.budget} characters`,
+          alternatives:
+            field.id === 'headline' || field.id === 'primaryText' ? copy.variations[field.id] : [],
+          saveError: this.copyEdits()[`${this.language()}:${field.id}`]?.error,
+          // The field swaps the hint for validation, so advice and correction never stack up.
+          validation:
+            used > field.budget
+              ? `Remove ${used - field.budget} characters to fit the ${field.budget}-character limit.`
+              : undefined,
+        };
+      });
   });
 
   protected readonly campaignColumns = CAMPAIGN_COLUMNS;
 
   protected readonly campaignRows = computed<CxTableRow[]>(() =>
-    this.campaigns().map(item => ({
-      id: item.id,
-      cells: {
-        status: {
-          kind: 'status-tag',
-          mood: item.stage === 'complete' ? 'success' : 'warning',
-          icon: item.stage === 'complete' ? 'check' : 'in-progress',
-          text: this.stageLabel(item.stage),
-        },
-        name: { kind: 'text', value: item.name, strong: true },
-        created: { kind: 'text', value: this.campaignDate(item.createdAt), muted: true },
-      },
-      menuItems: DELETE_MENU,
-    })),
+    [...this.campaigns()]
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+      .map((item) => {
+        const generation = this.generationStatuses().find(
+          (status) => status.campaignId === item.id,
+        );
+        const failed = generation?.state === 'failed' || generation?.state === 'ambiguous';
+        const active = generation?.state === 'running' || generation?.state === 'queued';
+        return {
+          id: item.id,
+          cells: {
+            status: {
+              kind: 'status-tag',
+              mood: failed
+                ? 'danger'
+                : active
+                  ? 'info'
+                  : item.stage === 'complete'
+                    ? 'default'
+                    : 'warning',
+              icon: failed
+                ? 'warning'
+                : active
+                  ? 'in-progress'
+                  : item.stage === 'complete'
+                    ? 'check'
+                    : 'in-progress',
+              text: failed
+                ? 'Needs attention'
+                : active
+                  ? 'Generating'
+                  : this.stageLabel(item.stage),
+            },
+            name: { kind: 'text', value: item.name, strong: true },
+            updated: { kind: 'text', value: this.campaignDate(item.updatedAt), muted: true },
+          },
+        };
+      }),
   );
-
-  protected readonly variationField = signal<'headline' | 'primaryText'>('headline');
-
-  protected readonly variationHeading = computed(() => {
-    const id = this.variationField();
-    const label = this.fields().find(field => field.id === id)?.label ?? id;
-    return `Three other angles for ${label.toLowerCase()}`;
-  });
 
   /** The tag field needs the available set as well as the selected ids. */
   protected readonly hashtagTags = computed(() =>
-    (this.activeCopy()?.hashtags ?? []).map(tag => ({ id: tag, name: tag })),
+    (this.activeCopy()?.hashtags ?? []).map((tag) => ({ id: tag, name: tag })),
   );
 
-  protected readonly variations = computed<string[]>(
-    () => this.activeCopy()?.variations[this.variationField()] ?? [],
+  protected readonly selectedField = computed(() =>
+    this.resolvedFields().find((field) => field.id === this.selectedFieldId()),
   );
 
-  /** The rules behind the campaign, surfaced once instead of repeating under every field. */
-  protected readonly rulesAppliedRow = computed<CxLabeledRowContent>(() => {
-    const ids = new Set((this.activeCopy()?.rationale ?? []).flatMap(entry => entry.ruleIds));
-    const names = this.rulesFor([...ids]).map(rule => rule.name);
-    return { kind: 'text', text: names.length > 0 ? names.join(' · ') : 'None' };
-  });
+  protected readonly selectedFieldRules = computed(() =>
+    this.rulesFor(this.selectedField()?.rationale?.ruleIds ?? []),
+  );
 
   protected readonly strategyRows = computed<LabeledRow[]>(() => {
     const strategy = this.campaign()?.strategy;
@@ -451,15 +547,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     ];
   });
 
-  protected readonly assumptionRows = computed<LabeledRow[]>(() =>
-    (this.campaign()?.strategy.assumptions ?? []).map((assumption, index) => ({
-      label: index === 0 ? 'Check before publishing' : '',
-      content: { kind: 'text', text: assumption },
-    })),
-  );
-
   protected readonly strategyWhyRows = computed<LabeledRow[]>(() =>
-    (this.campaign()?.strategy.rationale ?? []).map(entry => ({
+    (this.campaign()?.strategy.rationale ?? []).map((entry) => ({
       label: STRATEGY_TOPIC_LABELS[entry.topic ?? ''] ?? 'Why this decision',
       content: { kind: 'text', text: entry.why ?? '' },
     })),
@@ -468,30 +557,37 @@ export class AdminComponent implements OnInit, OnDestroy {
   // Composed once per campaign so the template never rebuilds labeled-row content objects on
   // every change-detection pass.
   protected readonly promptSections = computed<PromptSection[]>(() =>
-    (this.campaign()?.imagePrompts ?? []).map(prompt => ({
+    (this.campaign()?.imagePrompts ?? []).map((prompt) => ({
       concept: prompt.concept,
       label: prompt.label,
       code: prompt.prompt,
       altText: prompt.altText,
+      why: prompt.why,
     })),
   );
 
-  protected readonly topBarHeading = computed(() => {
-    switch (this.view()) {
-      case 'campaign':
-        return this.campaign()?.name ?? 'Campaign';
-      default:
-        return 'Campaigns';
+  protected readonly topBarTitle = computed<CxTopBarTitle>(() => {
+    const root = { id: 'campaign-studio', label: 'Campaign Studio' };
+    if (this.view() === 'campaign') {
+      return {
+        kind: 'breadcrumbs',
+        items: [
+          root,
+          {
+            id: 'campaign',
+            label: this.campaign()?.name ?? (this.generating() ? 'Creating campaign' : 'Campaign'),
+          },
+        ],
+        currentId: 'campaign',
+        ariaLabel: 'Campaign location',
+      };
     }
-  });
-
-  protected readonly topBarDescription = computed(() => {
-    switch (this.view()) {
-      case 'campaign':
-        return this.campaign()?.strategy.singleMessage ?? '';
-      default:
-        return 'One rough idea becomes one campaign, written to fit every feed it runs in.';
-    }
+    return {
+      kind: 'breadcrumbs',
+      items: [root],
+      currentId: 'campaign-studio',
+      ariaLabel: 'Campaign location',
+    };
   });
 
   protected readonly theme = signal<CxThemeMode>(DEFAULT_THEME);
@@ -522,16 +618,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     ];
   });
 
-  protected readonly navGroups: CxSideNavGroup[] = [
-    {
-      id: 'tools',
-      label: 'Tools',
-      items: [
-        { id: 'campaigns', label: 'Campaigns', icon: 'send', routerLink: ['/admin'] },
-      ],
-    },
-  ];
-
   public constructor() {
     // The admin screens are a cx-framework surface inside a site whose public stylesheet is global.
     // Suppressing that one link keeps the public-site cascade off /admin without touching either
@@ -542,12 +628,17 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     if (this.browser) {
+      this.document.defaultView?.addEventListener('beforeunload', this.protectUnsavedWork);
+      this.sideNavCollapsed.set(
+        this.document.defaultView?.matchMedia('(max-width: 719px)').matches ?? false,
+      );
       this.restoreTheme();
       void this.restoreSession();
     }
   }
 
   public ngOnDestroy(): void {
+    this.document.defaultView?.removeEventListener('beforeunload', this.protectUnsavedWork);
     this.generationPollSequence += 1;
     this.document.documentElement.classList.remove(`theme-${this.theme()}`);
     if (this.publicStylesheet) {
@@ -630,7 +721,14 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected async signOut(): Promise<void> {
+  protected requestSignOut(): void {
+    if (this.generating()) return;
+    void this.leaveCampaign(() => {
+      void this.signOut();
+    }, true);
+  }
+
+  private async signOut(): Promise<void> {
     if (this.submitting()) {
       return;
     }
@@ -651,7 +749,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected startNewCampaign(): void {
-    this.roughIdea.set('');
+    if (this.generating()) return;
     this.roughIdeaValidation.set(undefined);
     this.generationError.set('');
     this.composeOpen.set(true);
@@ -659,15 +757,87 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected closeCompose(): void {
+    if (this.generating()) return;
     this.composeOpen.set(false);
     this.generationError.set('');
   }
 
   protected showCampaigns(): void {
-    this.view.set('list');
-    this.campaign.set(undefined);
-    this.generationError.set('');
-    this.copyError.set('');
+    if (this.generating()) return;
+    void this.leaveCampaign(() => {
+      this.view.set('list');
+      this.campaign.set(undefined);
+      this.generationError.set('');
+      this.copyError.set('');
+      this.clipboardError.set('');
+      this.copiedId.set('');
+      void this.refreshCampaigns();
+    });
+  }
+
+  protected onBreadcrumbSelect(id: string): void {
+    if (id === 'campaign-studio') this.showCampaigns();
+  }
+
+  protected onSideNavSelect(item: CxSideNavItem): void {
+    if (item.id === 'campaign-studio') this.showCampaigns();
+  }
+
+  protected selectSection(id: string): void {
+    if (id === 'copy' || id === 'prompts' || id === 'strategy') {
+      void this.saveChanges();
+      this.section.set(id);
+    }
+  }
+
+  protected reviewUnsavedChanges(): void {
+    const edit = Object.values(this.copyEdits()).find((item) => item.state === 'failed');
+    this.section.set('copy');
+    if (edit) this.language.set(edit.language);
+  }
+
+  private async leaveCampaign(action: () => void, includeIdea = false): Promise<void> {
+    if (this.leaving()) return;
+    this.leaving.set(true);
+    await this.saveChanges();
+    this.leaving.set(false);
+    if (this.hasUnsavedCopy() || (includeIdea && this.roughIdea().trim())) {
+      this.pendingLeave = action;
+      this.leaveOpen.set(true);
+      return;
+    }
+    this.copyEdits.set({});
+    action();
+  }
+
+  public async canLeave(): Promise<boolean> {
+    if (this.generating()) return false;
+    await this.saveChanges();
+    if (!this.hasUnsavedCopy() && !this.roughIdea().trim()) return true;
+    this.pendingRouteDecision?.(false);
+    return new Promise((resolve) => {
+      this.pendingRouteDecision = resolve;
+      this.leaveOpen.set(true);
+    });
+  }
+
+  protected keepEditing(): void {
+    this.pendingRouteDecision?.(false);
+    this.pendingRouteDecision = undefined;
+    this.leaveOpen.set(false);
+    this.pendingLeave = undefined;
+    this.reviewUnsavedChanges();
+  }
+
+  protected discardAndLeave(): void {
+    const action = this.pendingLeave;
+    this.pendingLeave = undefined;
+    this.leaveOpen.set(false);
+    this.copyEdits.set({});
+    this.roughIdea.set('');
+    this.pendingRouteDecision?.(true);
+    this.pendingRouteDecision = undefined;
+    action?.();
   }
 
   protected updateRoughIdea(value: string): void {
@@ -721,6 +891,10 @@ export class AdminComponent implements OnInit, OnDestroy {
         return;
       }
       this.composeOpen.set(false);
+      this.roughIdea.set('');
+      this.section.set('copy');
+      this.selectedFieldId.set('headline');
+      this.campaign.set(undefined);
       this.view.set('campaign');
       this.followGeneration(payload.generation);
     } catch {
@@ -744,6 +918,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private async startTargetedGeneration(stage: GenerationStep): Promise<void> {
+    await this.saveChanges();
+    if (this.hasUnsavedCopy()) {
+      this.reviewUnsavedChanges();
+      return;
+    }
     const campaignId = this.campaign()?.id || this.generationCampaignId();
     const expectedRevision = this.campaign()?.revision ?? this.generationRevision();
     if (!campaignId || this.generating()) return;
@@ -811,6 +990,10 @@ export class AdminComponent implements OnInit, OnDestroy {
           return;
         }
         this.generationError.set('');
+        this.generationStatuses.update((items) => [
+          status,
+          ...items.filter((item) => item.campaignId !== status.campaignId),
+        ]);
         this.generationRevision.set(status.campaignRevision);
         this.stepStatus.set(stepsForGeneration(status.stage, status.state));
 
@@ -842,16 +1025,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected onRowActivate(event: CxTableRowActivateEvent): void {
-    const summary = this.campaigns().find(item => item.id === event.rowId);
+    const summary = this.campaigns().find((item) => item.id === event.rowId);
     if (summary) {
       void this.openCampaign(summary);
-    }
-  }
-
-  protected onRowMenu(event: CxTableRowMenuSelectEvent): void {
-    const summary = this.campaigns().find(item => item.id === event.rowId);
-    if (summary) {
-      this.onCampaignMenu(summary, event.itemId);
     }
   }
 
@@ -859,6 +1035,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     const sequence = ++this.generationPollSequence;
     this.generationError.set('');
     this.copyError.set('');
+    this.openingCampaign.set(true);
     try {
       const response = await this.request(`/api/admin/campaigns/${summary.id}`);
       if (sequence !== this.generationPollSequence) return;
@@ -879,6 +1056,9 @@ export class AdminComponent implements OnInit, OnDestroy {
         await this.refreshCampaigns();
         return;
       }
+      this.copyEdits.set({});
+      this.section.set('copy');
+      this.selectedFieldId.set('headline');
       this.campaign.set(payload.campaign);
       this.generationCampaignId.set(payload.campaign.id);
       this.generationRevision.set(payload.campaign.revision);
@@ -886,123 +1066,153 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.setCopyWarning(payload.campaign);
       this.language.set(DEFAULT_LANGUAGE);
       this.view.set('campaign');
+      const status = this.generationStatuses().find((item) => item.campaignId === summary.id);
+      this.retryStage.set(undefined);
+      this.generating.set(false);
+      if (status?.state === 'failed' || status?.state === 'ambiguous') {
+        this.retryStage.set(status.stage);
+        this.generationError.set(generationFailureMessage(status));
+      } else if (status?.state === 'running' || status?.state === 'queued') {
+        this.generating.set(true);
+        void this.pollGeneration(summary.id, sequence);
+      }
     } catch {
       if (sequence !== this.generationPollSequence) return;
       this.generationError.set('Campaigns cannot be reached right now. Try again.');
-    }
-  }
-
-  /**
-   * Both entry points — the list card menu and the open campaign's top bar — drive the same
-   * action set through this one handler, so the entity's actions cannot drift apart.
-   */
-  protected onCampaignMenu(summary: CampaignSummary, action: string): void {
-    if (action === 'delete') {
-      this.pendingDelete.set(summary);
-    }
-  }
-
-  protected onOpenCampaignMenu(action: string): void {
-    const current = this.campaign();
-    if (current) {
-      this.onCampaignMenu(current, action);
-    }
-  }
-
-  protected cancelDelete(): void {
-    this.pendingDelete.set(undefined);
-  }
-
-  protected async confirmDelete(): Promise<void> {
-    const target = this.pendingDelete();
-    this.pendingDelete.set(undefined);
-    if (!target) {
-      return;
-    }
-    let deleted = false;
-    try {
-      const response = await this.request(`/api/admin/campaigns/${target.id}`, {
-        method: 'DELETE',
-        headers: { 'If-Match': `"${String(target.revision)}"` },
-      });
-      if (!response.ok) {
-        this.generationError.set(
-          await this.apiErrorMessage(response, 'That campaign could not be deleted.'),
-        );
-        return;
-      }
-      deleted = true;
-    } catch {
-      this.generationError.set('That campaign could not be deleted. Check the connection.');
     } finally {
-      if (deleted && this.campaign()?.id === target.id) {
-        this.showCampaigns();
-      }
-      await this.refreshCampaigns();
+      this.openingCampaign.set(false);
     }
   }
 
   protected selectLanguage(id: string): void {
     if (id === 'sv' || id === 'en') {
+      void this.saveChanges();
       this.language.set(id);
     }
   }
 
   protected updateField(fieldId: string, value: string): void {
-    this.mutateCopy(copy => ({ ...copy, [fieldKey(fieldId)]: value }));
+    this.mutateCopy((copy) => ({ ...copy, [fieldKey(fieldId)]: value }));
+    this.markCopyEdit(fieldId, value);
   }
 
   protected updateHashtags(values: string[]): void {
-    // A tag field commits on add and remove rather than on blur, so the change is the commit.
-    this.mutateCopy(copy => ({ ...copy, hashtags: values }));
+    this.mutateCopy((copy) => ({ ...copy, hashtags: values }));
+    this.markCopyEdit('hashtags', values);
     void this.onFieldBlur('hashtags', false);
   }
 
-  /**
-   * Saving happens on blur: the owner never hunts for a save button and there is no unsaved state
-   * to warn about. A failed write says so and leaves the typed text alone.
-   */
-  protected async onFieldBlur(fieldId: string, focused: boolean): Promise<void> {
+  protected selectCopyField(fieldId: string): void {
+    this.selectedFieldId.set(fieldId);
+  }
+
+  protected inspectPrompt(prompt: PromptSection): void {
+    this.inspectedPrompt.set(prompt);
+  }
+
+  protected closePromptDialog(): void {
+    this.inspectedPrompt.set(undefined);
+  }
+
+  private markCopyEdit(fieldId: string, value: CopyEdit['value']): void {
     const campaign = this.campaign();
-    const copy = this.activeCopy();
-    if (focused || !campaign || !copy) {
-      return;
-    }
-    const value = fieldId === 'hashtags' ? copy.hashtags : copy[fieldKey(fieldId)];
-    this.copySaveQueue = this.copySaveQueue
-      .then(() => this.saveCopyField(campaign.id, this.language(), fieldId, value))
-      .catch(() => {
-        this.generationError.set('That change could not be saved. Check the connection.');
-      });
+    if (!campaign) return;
+    const language = this.language();
+    this.copyEdits.update((edits) => ({
+      ...edits,
+      [`${language}:${fieldId}`]: {
+        campaignId: campaign.id,
+        language,
+        fieldId,
+        value,
+        sequence: ++this.editSequence,
+        state: 'dirty',
+      },
+    }));
+  }
+
+  protected async onFieldBlur(fieldId: string, focused: boolean): Promise<void> {
+    if (focused) return;
+    const edit = this.copyEdits()[`${this.language()}:${fieldId}`];
+    if (edit?.state === 'dirty') this.queueCopyEdit(edit);
     await this.copySaveQueue;
   }
 
-  private async saveCopyField(
-    campaignId: string,
-    language: Language,
-    fieldId: string,
-    value: string | readonly string[],
-  ): Promise<void> {
-    const expectedRevision = this.campaign()?.revision;
-    if (!expectedRevision || this.campaign()?.id !== campaignId) return;
+  protected async retryCopyField(fieldId: string): Promise<void> {
+    const edit = this.copyEdits()[`${this.language()}:${fieldId}`];
+    if (edit?.state === 'failed') this.queueCopyEdit(edit);
+    await this.copySaveQueue;
+  }
+
+  private async saveChanges(): Promise<void> {
+    for (const edit of Object.values(this.copyEdits())) {
+      if (edit.state === 'dirty') this.queueCopyEdit(edit);
+    }
+    await this.copySaveQueue;
+  }
+
+  private setEditState(edit: CopyEdit, state: CopyEdit['state'], error?: string): void {
+    const key = `${edit.language}:${edit.fieldId}`;
+    this.copyEdits.update((edits) =>
+      edits[key]?.sequence === edit.sequence
+        ? { ...edits, [key]: { ...edit, state, error } }
+        : edits,
+    );
+  }
+
+  private queueCopyEdit(edit: CopyEdit): void {
+    this.setEditState(edit, 'saving');
+    if (this.copySaving) return;
+    this.copySaving = true;
+    this.copySaveQueue = this.drainCopyEdits().finally(() => {
+      this.copySaving = false;
+    });
+  }
+
+  private async drainCopyEdits(): Promise<void> {
+    // Coalesce pending edits in the bounded field map rather than accumulating promises.
+    // An in-flight request retains its original campaign, language, revision and value.
+    let edit: CopyEdit | undefined;
+    while ((edit = Object.values(this.copyEdits()).find((item) => item.state === 'saving'))) {
+      await this.saveCopyEdit(edit);
+    }
+  }
+
+  private async saveCopyEdit(edit: CopyEdit): Promise<void> {
+    const campaign = this.campaign();
+    if (!campaign || campaign.id !== edit.campaignId) {
+      this.setEditState(edit, 'failed', 'The campaign is no longer open.');
+      return;
+    }
     try {
-      const response = await this.request(`/api/admin/campaigns/${campaignId}/copy`, {
+      const response = await this.request(`/api/admin/campaigns/${edit.campaignId}/copy`, {
         method: 'PATCH',
-        body: { expectedRevision, language, field: fieldId, value },
+        body: {
+          expectedRevision: campaign.revision,
+          language: edit.language,
+          field: edit.fieldId,
+          value: edit.value,
+        },
       });
       if (!response.ok) {
-        this.generationError.set(
-          await this.apiErrorMessage(response, 'That change could not be saved.'),
+        let message = await this.apiErrorMessage(
+          response,
+          'This change could not be saved. Try again.',
         );
-        if (response.status === 409) await this.refreshOpenCampaign(campaignId);
+        if (response.status === 409) {
+          await this.refreshOpenCampaign(edit.campaignId);
+          message =
+            'This campaign changed elsewhere. Your edit is kept here. Review it, then retry to save it.';
+        }
+        this.setEditState(edit, 'failed', message);
         return;
       }
       const payload = (await response.json()) as { revision?: number; updatedAt?: string };
       if (!Number.isSafeInteger(payload.revision) || (payload.revision ?? 0) < 1) {
-        throw new Error('The save response did not include a campaign revision.');
+        throw new Error('Missing saved revision');
       }
-      this.campaign.update(current =>
-        current?.id === campaignId
+      this.campaign.update((current) =>
+        current?.id === edit.campaignId
           ? {
               ...current,
               revision: payload.revision as number,
@@ -1011,15 +1221,19 @@ export class AdminComponent implements OnInit, OnDestroy {
           : current,
       );
       this.generationRevision.set(payload.revision as number);
-      this.generationError.set('');
+      this.setEditState(edit, 'saved');
     } catch {
-      this.generationError.set('That change could not be saved. Check the connection.');
+      this.setEditState(
+        edit,
+        'failed',
+        'This change could not be saved. Check your connection and retry.',
+      );
     }
   }
 
   private mutateCopy(change: (copy: LanguageCopy) => LanguageCopy): void {
     const language = this.language();
-    this.campaign.update(campaign => {
+    this.campaign.update((campaign) => {
       const copy = campaign?.copy[language];
       return campaign && copy
         ? { ...campaign, copy: { ...campaign.copy, [language]: change(copy) } }
@@ -1028,6 +1242,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected async copyValue(id: string, value: string): Promise<void> {
+    this.clipboardError.set('');
     if (!this.browser || !value) {
       return;
     }
@@ -1037,7 +1252,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.clearCopyTimer();
       this.copyResetTimer = setTimeout(() => this.copiedId.set(''), 2_000);
     } catch {
-      this.generationError.set('Copying failed. Select the text and copy it manually.');
+      this.clipboardError.set('Copying failed. Select the text and copy it manually.');
     }
   }
 
@@ -1047,7 +1262,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected stageLabel(stage: CampaignStage): string {
-    return stage === 'complete' ? 'Ready' : stage === 'copy' ? 'No image prompts' : 'No copy yet';
+    return stage === 'complete'
+      ? 'Generated'
+      : stage === 'copy'
+        ? 'Copy generated'
+        : 'Strategy generated';
   }
 
   protected onAccountMenu(itemId: string): void {
@@ -1082,21 +1301,15 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.applyTheme(isCxThemeMode(stored) ? stored : DEFAULT_THEME);
   }
 
-  protected closeMobileNav(): void {
-    this.mobileNavOpen.set(false);
-  }
-
-  protected toggleMobileNav(): void {
-    this.mobileNavOpen.update(open => !open);
-  }
-
   private rulesFor(ruleIds: string[]): MarketingRule[] {
     const index = this.ruleIndex();
-    return ruleIds.map(id => index.get(id)).filter((rule): rule is MarketingRule => Boolean(rule));
+    return ruleIds
+      .map((id) => index.get(id))
+      .filter((rule): rule is MarketingRule => Boolean(rule));
   }
 
   private setStep(step: GenerationStep, status: StepStatus): void {
-    this.stepStatus.update(current => ({ ...current, [step]: status }));
+    this.stepStatus.update((current) => ({ ...current, [step]: status }));
   }
 
   private async restoreSession(): Promise<void> {
@@ -1117,7 +1330,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private async loadWorkspace(): Promise<void> {
     await Promise.all([this.loadConfig(), this.refreshCampaigns()]);
-    await this.recoverGenerationWork();
+    if (!this.hasUnsavedCopy()) await this.recoverGenerationWork();
   }
 
   private async recoverGenerationWork(): Promise<void> {
@@ -1134,9 +1347,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       const payload = (await response.json()) as RecoverableGenerationsResponse;
       if (sequence !== this.generationPollSequence || !this.authenticated()) return;
       const statuses = payload.generations ?? [];
+      this.generationStatuses.set(statuses);
       const status =
-        statuses.find(candidate => candidate.state === 'queued' || candidate.state === 'running') ??
-        statuses[0];
+        statuses.find(
+          (candidate) => candidate.state === 'queued' || candidate.state === 'running',
+        ) ?? statuses[0];
       if (!status) return;
 
       this.generationCampaignId.set(status.campaignId);
@@ -1163,31 +1378,42 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async loadConfig(): Promise<void> {
+  protected async loadConfig(): Promise<void> {
+    this.configLoading.set(true);
+    this.configError.set('');
     try {
       const response = await this.request('/api/admin/config');
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) throw new Error('Configuration unavailable');
       const payload = (await response.json()) as ConfigResponse;
-      this.fields.set(payload.fields ?? []);
+      if (!payload.fields?.length) throw new Error('Missing copy fields');
+      this.fields.set(payload.fields);
       this.rules.set(payload.rules ?? []);
       this.maxIdeaCharacters.set(payload.maxIdeaCharacters ?? FALLBACK_MAX_IDEA_CHARACTERS);
     } catch {
-      // Character meters and explanations stay empty rather than showing invented limits.
+      this.configError.set('Writing guidance and limits could not be loaded.');
+    } finally {
+      this.configLoading.set(false);
     }
   }
 
-  private async refreshCampaigns(): Promise<void> {
+  protected async refreshCampaigns(): Promise<void> {
+    this.listLoading.set(true);
+    this.listError.set('');
     try {
       const response = await this.request('/api/admin/campaigns');
-      if (!response.ok) {
-        return;
-      }
+      if (!response.ok) throw new Error('Campaign list unavailable');
       const payload = (await response.json()) as { campaigns?: CampaignSummary[] };
-      this.campaigns.set(payload.campaigns ?? []);
+      if (!Array.isArray(payload.campaigns)) throw new Error('Missing campaign list');
+      this.campaigns.set(payload.campaigns);
+      const statuses = await this.request('/api/admin/generations');
+      if (statuses.ok) {
+        const generationPayload = (await statuses.json()) as RecoverableGenerationsResponse;
+        this.generationStatuses.set(generationPayload.generations ?? []);
+      }
     } catch {
-      // Keep the current list rather than clearing it on a transient failure.
+      this.listError.set('Campaigns could not be loaded. Try again.');
+    } finally {
+      this.listLoading.set(false);
     }
   }
 
@@ -1196,28 +1422,29 @@ export class AdminComponent implements OnInit, OnDestroy {
     generationSequence?: number,
   ): Promise<void> {
     const response = await this.request(`/api/admin/campaigns/${campaignId}`);
-    if (
-      generationSequence !== undefined &&
-      generationSequence !== this.generationPollSequence
-    ) {
+    if (generationSequence !== undefined && generationSequence !== this.generationPollSequence) {
       return;
     }
     if (!response.ok) return;
     const payload = (await response.json()) as CampaignResponse;
-    if (
-      generationSequence !== undefined &&
-      generationSequence !== this.generationPollSequence
-    ) {
+    if (generationSequence !== undefined && generationSequence !== this.generationPollSequence) {
       return;
     }
     if (!payload.campaign) return;
-    this.campaign.set(payload.campaign);
+    const next = payload.campaign;
+    // A status poll or revision conflict must not replace the user's pending wording.
+    for (const edit of Object.values(this.copyEdits())) {
+      if (edit.campaignId !== next.id || edit.state === 'saved') continue;
+      const copy = next.copy[edit.language];
+      if (copy) next.copy[edit.language] = { ...copy, [edit.fieldId]: edit.value };
+    }
+    this.campaign.set(next);
     this.generationRevision.set(payload.campaign.revision);
     this.setCopyWarning(payload.campaign);
   }
 
   private setCopyWarning(campaign: Campaign): void {
-    const missing = (['en', 'sv'] as const).filter(language => !campaign.copy[language]);
+    const missing = (['en', 'sv'] as const).filter((language) => !campaign.copy[language]);
     this.copyError.set(
       missing.length === 1
         ? `The ${missing[0] === 'en' ? 'English' : 'Swedish'} copy is still missing. Retry campaign copy to create both languages.`
@@ -1258,7 +1485,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       return 'Campaigns is busy right now. Try again shortly.';
     }
     if (status === 503) {
-      return 'OpenAI is not connected yet. Add the API key to the worker-owned .env.worker file and restart the jobs worker.';
+      return 'Campaign generation is unavailable. Your saved campaigns are still accessible.';
     }
     if (status === 504) {
       return 'The campaign took too long to create. Try again.';
@@ -1269,7 +1496,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   private findPublicStylesheet(): HTMLLinkElement | undefined {
     return Array.from(
       this.document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'),
-    ).find(link => link.getAttribute('href')?.startsWith('/assets/styles/styles.css'));
+    ).find((link) => link.getAttribute('href')?.startsWith('/assets/styles/styles.css'));
   }
 
   private originalPublicStylesheetMedia(): string | null {
@@ -1279,6 +1506,9 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   private resetStudio(): void {
     this.view.set('list');
+    this.section.set('copy');
+    this.copyEdits.set({});
+    this.generationStatuses.set([]);
     this.campaigns.set([]);
     this.campaign.set(undefined);
     this.roughIdea.set('');
@@ -1292,8 +1522,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.retryStage.set(undefined);
     this.language.set(DEFAULT_LANGUAGE);
     this.copiedId.set('');
-    this.pendingDelete.set(undefined);
-    this.mobileNavOpen.set(false);
+    this.selectedFieldId.set('headline');
+    this.inspectedPrompt.set(undefined);
     this.composeOpen.set(false);
     this.clearCopyTimer();
   }
@@ -1352,11 +1582,7 @@ function stepsForGeneration(
   };
 }
 
-function generationStepState(
-  index: number,
-  selected: number,
-  state: GenerationState,
-): StepStatus {
+function generationStepState(index: number, selected: number, state: GenerationState): StepStatus {
   if (index < selected) return 'done';
   if (index > selected) return 'waiting';
   if (state === 'succeeded') return 'done';
@@ -1374,7 +1600,7 @@ function generationFailureMessage(status: GenerationStatus): string {
 }
 
 function pollDelay(): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, 1_000));
+  return new Promise((resolve) => setTimeout(resolve, 1_000));
 }
 
 function fieldKey(id: string): EditableTextField {

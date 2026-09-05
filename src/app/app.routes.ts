@@ -7,6 +7,7 @@ import { PageSeo } from './shared/seo';
 export const routes: Routes = [
   {
     path: 'admin',
+    canDeactivate: [(component: { canLeave(): Promise<boolean> }) => component.canLeave()],
     loadComponent: () =>
       import('./pages/admin/admin.component').then((m) => m.AdminComponent),
     title: 'Admin | Faunapoolen',

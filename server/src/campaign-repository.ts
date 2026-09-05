@@ -23,7 +23,6 @@ import {
   normalizeCampaignIdea,
   parseCampaignBytes,
   sha256Hex,
-  validateCampaignRecord,
   type CampaignLanguage,
   type CampaignRecord,
 } from './campaign-schema.js';
@@ -2191,11 +2190,6 @@ function assertIdentifier(value: unknown, label: string): asserts value is strin
   if (typeof value !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$/u.test(value)) {
     throw new Error(`${label} must contain 8-128 safe identifier characters.`);
   }
-}
-
-function requiredText(value: unknown, label: string): string {
-  if (typeof value !== 'string' || !value) throw new Error(`${label} is missing.`);
-  return value;
 }
 
 function requiredFailure(value: unknown, label: string): string {

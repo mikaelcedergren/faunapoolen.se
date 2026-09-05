@@ -38,7 +38,6 @@ import type {
   CampaignMutationResult,
   CampaignService,
   DatabaseReadiness,
-  GenerationAcceptance,
   GenerationService,
   GenerationStage,
 } from './http-contracts.js';

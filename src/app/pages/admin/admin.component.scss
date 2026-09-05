@@ -5,13 +5,8 @@
 @use '@mikaelcedergren/cx-framework/styles/utilities';
 @use '@mikaelcedergren/cx-framework/styles/page';
 
-// The framework's base layer owns the document reset and body typography. It has to reach the
-// document, not just this component: menus, dialogs and tooltips portal their surfaces to <body>,
-// so anything scoped to fp-admin would leave those overlays unstyled.
-//
-// What is left here is page composition only — the application shell and column placement. Every
-// visual decision below reads a token; no component internals are reached into.
-
+// Framework foundations also style overlays projected to the document body.
+// Product selectors below own composition only, never component internals.
 main.fp-admin-shell {
   width: 100%;
   max-width: none;
@@ -24,16 +19,13 @@ fp-admin {
   min-height: 100dvh;
 }
 
-/* Sign in */
-
 .fp-admin-login {
   display: grid;
   min-height: 100dvh;
   place-items: center;
   padding: var(--space-lg);
-  background:
-    radial-gradient(circle at 50% 0%, var(--primary-opacity), transparent 34rem),
-    var(--surface);
+  background: var(--surface);
+  box-sizing: border-box;
 }
 
 .fp-admin-login__panel {
@@ -41,154 +33,209 @@ fp-admin {
 }
 
 .fp-admin-login__submit {
-  // The button exposes its own width custom property for full-width form submits.
   --cx-button-width: 100%;
-
   width: 100%;
 }
 
-/* Application shell */
-
-.fp-admin-workspace {
-  display: grid;
-  width: 100%;
+.fp-admin-app {
+  display: flex;
   height: 100dvh;
-  grid-template-columns: 232px minmax(0, 1fr);
+  min-height: 0;
   overflow: hidden;
   background: var(--surface);
 }
 
-.fp-admin-workspace__nav {
-  position: relative;
-  z-index: var(--z-index-nav-overlay);
-  width: 232px;
-  height: 100dvh;
+.fp-admin-app > cx-side-nav {
   min-height: 0;
-}
-
-.fp-admin-workspace__nav cx-side-nav {
-  height: 100%;
+  flex: 0 0 auto;
 }
 
 .fp-admin-brand {
-  display: flex;
-  width: 100%;
   min-width: 0;
-  align-items: center;
-  gap: var(--space-sm);
-  padding-inline: var(--space-xs);
-  color: var(--ink);
-  font-size: var(--font-size-title-3);
+  overflow: hidden;
   font-weight: var(--font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.fp-admin-brand__close {
-  margin-left: auto;
-}
-
-.fp-admin-workspace__main {
-  --cx-page-measure: var(--measure-xl);
-
-  height: 100dvh;
-  min-height: 0;
-  overflow: auto;
-  background: var(--surface);
-  overscroll-behavior: contain;
-}
-
-.fp-admin-workspace__scrim {
-  display: none;
-}
-
-/* The top bar's trailing control cluster. One wrapper keeps conditional actions projectable. */
-
-.fp-top-bar-actions {
+.fp-admin-main {
   display: flex;
-  align-items: center;
-  gap: var(--space-sm);
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: auto;
 }
 
-/* Text roles */
+.fp-admin-content {
+  display: grid;
+  width: 100%;
+  max-width: var(--measure-xl);
+  min-width: 0;
+  margin-inline: auto;
+  padding: var(--space-xl) var(--gutter-page) var(--space-2xl);
+  gap: var(--space-lg);
+  align-content: start;
+  box-sizing: border-box;
+}
 
+.fp-generation-wait,
+.fp-campaign-state {
+  display: grid;
+  min-height: 62dvh;
+  place-items: center;
+  text-align: center;
+}
+
+.fp-generation-wait h2,
+.fp-generation-wait p,
+.fp-rationale-section h3,
+.fp-rationale-section p,
 .fp-prose {
   margin: 0;
+}
+
+.fp-generation-wait h2 {
+  font-size: var(--font-size-title-2);
+  line-height: var(--line-height-heading);
+}
+
+.fp-campaign-toolbar {
+  display: block;
+}
+
+.fp-campaign-toolbar cx-tabs {
+  min-width: 0;
+}
+
+.fp-campaign-panel {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-lg);
+}
+
+.fp-language-tabs {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin-bottom: var(--space-xl);
+}
+
+.fp-copy-layout {
+  display: block;
+  width: 100%;
+}
+
+.fp-copy-form {
+  display: grid;
+  width: 100%;
   max-width: var(--measure-md);
+  min-width: 0;
+  gap: var(--space-xl);
+}
+
+.fp-copy-field {
+  display: grid;
+  min-width: 0;
+  padding-inline-start: var(--space-md);
+  border-inline-start: 2px solid transparent;
+  gap: var(--space-sm);
+  transition: border-color var(--motion-fast) ease;
+}
+
+.fp-copy-field--selected {
+  border-inline-start-color: var(--primary);
+}
+
+.fp-field-recovery {
+  display: grid;
+}
+
+.fp-copy-explainer-track {
+  width: var(--measure-sm);
+  align-self: stretch;
+}
+
+.fp-copy-explainer {
+  position: sticky;
+  top: calc(var(--controller-size-large) + var(--space-md));
+  width: 100%;
+}
+
+.fp-rationale-section {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.fp-rationale-section h3 {
+  font-size: var(--font-size-title-3);
+  line-height: var(--line-height-heading);
+}
+
+.fp-rationale-section p {
   color: var(--opacity-high);
   line-height: var(--line-height-body-relaxed);
 }
 
-.fp-meta {
+.fp-prompts,
+.fp-strategy {
+  display: grid;
+  width: 100%;
+  max-width: var(--measure-lg);
+  gap: var(--space-lg);
+}
+
+.fp-prompt {
+  min-width: 0;
+}
+
+.fp-prompt-actions {
+  flex-shrink: 0;
+}
+
+.fp-strategy {
+  max-width: var(--measure-md);
+}
+
+.fp-assumptions {
+  display: grid;
+  margin: 0;
+  padding-inline-start: var(--space-lg);
+  gap: var(--space-sm);
+}
+
+.fp-prose {
+  max-width: var(--measure-md);
+  line-height: var(--line-height-body-relaxed);
+  white-space: pre-wrap;
+}
+
+.fp-meta,
+.fp-clipboard-status {
   color: var(--opacity-high);
   font-size: var(--font-size-body-sm);
 }
 
-/* Layout */
-
-.fp-measure {
-  width: min(100%, var(--measure-md));
-}
-
-// One copy field and its copy control. Deliberately not cx-inline: that component's `align` input
-// reflects to the HTML `align` attribute, which the browser turns into an inherited
-// text-align on everything inside the row.
-.fp-copy-row {
-  display: grid;
-  align-items: center;
-  gap: var(--space-sm);
-  grid-template-columns: minmax(0, 1fr) auto;
-}
-
-.fp-field {
-  min-width: 0;
-}
-
-.fp-section {
-  display: grid;
-  min-width: 0;
-  gap: var(--space-md);
-  // Grid items default to min-width:auto, which stops long prompt rows from shrinking.
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.fp-section > h2 {
-  margin: 0;
-  color: var(--ink);
-  font-size: var(--font-size-title-2);
-  font-weight: var(--font-weight-bold);
+.fp-clipboard-status {
+  min-height: var(--space-md);
 }
 
 @media (max-width: #{bp.$mobile - 1px}) {
-  .fp-admin-workspace {
-    grid-template-columns: minmax(0, 1fr);
+  .fp-admin-content {
+    padding: var(--space-lg) var(--gutter-page) var(--space-xl);
   }
 
-  .fp-admin-workspace__nav {
-    position: fixed;
-    inset: 0 auto 0 0;
-    transform: translateX(-100%);
-    transition: transform var(--motion-slow) var(--ease-out-strong);
+  .fp-copy-explainer-track {
+    width: 100%;
   }
 
-  .fp-admin-workspace__nav--visible {
-    transform: translateX(0);
+  .fp-copy-explainer {
+    position: static;
   }
 
-  .fp-admin-workspace__scrim {
-    position: fixed;
-    z-index: var(--z-index-nav-overlay-backdrop);
-    inset: 0;
-    display: block;
-    padding: 0;
-    border: 0;
-    background: var(--overlay-backdrop);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--motion-base) ease;
-  }
-
-  .fp-admin-workspace__scrim--visible {
-    opacity: 1;
-    pointer-events: auto;
+  .fp-generation-wait,
+  .fp-campaign-state {
+    min-height: 50dvh;
   }
 
   .fp-admin-login {
