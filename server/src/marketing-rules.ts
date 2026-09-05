@@ -71,9 +71,9 @@ export const MARKETING_RULES = Object.freeze([
   },
   {
     id: 'native-not-translated',
-    name: 'Write each language natively',
+    name: 'Translate for the reader',
     teaches:
-      'A translated ad reads like a translated ad. Each language needs its own idiom and rhythm — and Swedish runs longer than English, so it needs its own shorter phrasing rather than a squeezed copy.',
+      'English carries the original message. Translate it into natural Swedish, preserving the meaning while adapting idiom, rhythm and length to the reader.',
   },
   {
     id: 'earn-the-hashtag',

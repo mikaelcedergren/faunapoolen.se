@@ -395,10 +395,19 @@ test('the forward migration preserves campaigns and removes closed import eviden
     databasePath,
     operationalRoot: directory,
   });
-  applySqliteMigrations(seed.database, FAUNAPOOLEN_MIGRATIONS.slice(0, -1), {
-    fingerprint: sha256Hex,
-    now: () => '2026-08-01T00:00:00.000Z',
-  });
+  applySqliteMigrations(
+    seed.database,
+    FAUNAPOOLEN_MIGRATIONS.slice(
+      0,
+      FAUNAPOOLEN_MIGRATIONS.findIndex(
+        (migration) => migration.name === 'retire_campaign_import_evidence',
+      ),
+    ),
+    {
+      fingerprint: sha256Hex,
+      now: () => '2026-08-01T00:00:00.000Z',
+    },
+  );
   const campaign = canonicalCampaign(record(401));
   seed.database.run(
     `INSERT INTO campaigns (

@@ -33,8 +33,38 @@
               (pressed)="startNewCampaign()"
             />
           }
+          @if (copySaveStatus() || copySaveFailed()) {
+            <cx-inline gap="sm" align="center">
+              @if (copySaveStatus()) {
+                <cx-status-tag
+                  [text]="copySaveStatus()"
+                  [icon]="copySaveFailed() ? 'warning' : hasUnsavedCopy() ? 'in-progress' : 'check'"
+                  [mood]="copySaveFailed() ? 'danger' : 'default'"
+                />
+              }
+              @if (copySaveFailed()) {
+                <cx-button
+                  text="Review unsaved changes"
+                  size="small"
+                  [transparent]="true"
+                  (pressed)="reviewUnsavedChanges()"
+                />
+              }
+            </cx-inline>
+          }
         </div>
       </cx-top-bar>
+
+      @if (view() === 'campaign' && campaign()?.stage === 'complete' && (!generating() || refining()) && (!retryStage() || refining())) {
+        <cx-tabs
+          ariaLabel="Campaign sections"
+          controlsId="fp-campaign-panel"
+          [items]="sectionTabs"
+          [selectedId]="section()"
+          [transparent]="true"
+          (selectedIdChange)="selectSection($event)"
+        />
+      }
 
       <main class="fp-admin-content">
         @switch (view()) {
@@ -71,7 +101,7 @@
           }
 
           @case ('campaign') {
-            @if (generating()) {
+            @if (generating() && !refining()) {
               <section class="fp-generation-wait" aria-label="Campaign generation" aria-live="polite">
                 <cx-stack gap="lg" align="center">
                   <cx-spinner
@@ -85,7 +115,7 @@
                   </cx-stack>
                 </cx-stack>
               </section>
-            } @else if (retryStage()) {
+            } @else if (retryStage() && !refining()) {
               <section class="fp-campaign-state" aria-label="Campaign generation">
                 <cx-state-message
                   state="danger"
@@ -117,36 +147,6 @@
                   <cx-alert mood="warning" [heading]="copyError()" />
                 }
 
-                <cx-split class="fp-campaign-toolbar" gap="lg" gapMobile="md" [wrap]="true">
-                  <cx-tabs
-                    start
-                    ariaLabel="Campaign sections"
-                    controlsId="fp-campaign-panel"
-                    [items]="sectionTabs"
-                    [selectedId]="section()"
-                    (selectedIdChange)="selectSection($event)"
-                  />
-                  <cx-inline end gap="sm" align="center">
-                    @if (copySaveStatus()) {
-                      <cx-status-tag
-                        [text]="copySaveStatus()"
-                        [icon]="
-                          copySaveFailed() ? 'warning' : hasUnsavedCopy() ? 'in-progress' : 'check'
-                        "
-                        [mood]="copySaveFailed() ? 'danger' : 'default'"
-                      />
-                    }
-                    @if (copySaveFailed()) {
-                      <cx-button
-                        text="Review unsaved changes"
-                        size="small"
-                        [transparent]="true"
-                        (pressed)="reviewUnsavedChanges()"
-                      />
-                    }
-                  </cx-inline>
-                </cx-split>
-
                 <div
                   id="fp-campaign-panel"
                   role="tabpanel"
@@ -155,23 +155,7 @@
                 >
                   @switch (section()) {
                     @case ('copy') {
-                      <cx-tabs
-                        class="fp-language-tabs"
-                        ariaLabel="Campaign language"
-                        controlsId="fp-copy-panel"
-                        [items]="languageTabs"
-                        [selectedId]="language()"
-                        [transparent]="true"
-                        (selectedIdChange)="selectLanguage($event)"
-                      />
-
-                      <div
-                        id="fp-copy-panel"
-                        role="tabpanel"
-                        [attr.aria-labelledby]="
-                          language() === 'sv' ? 'fp-copy-panel-tab-0' : 'fp-copy-panel-tab-1'
-                        "
-                      >
+                      <div aria-label="Campaign copy">
                         @if (configLoading()) {
                           <cx-state-message state="pending" heading="Loading copy" />
                         } @else if (configError()) {
@@ -183,27 +167,58 @@
                           />
                         } @else if (activeCopy()) {
                           <cx-sidebar-layout placement="end">
-                            <div class="fp-copy-form">
+                            <div class="fp-copy-form" [attr.aria-busy]="generating() ? 'true' : null">
+                              <cx-inline gap="md" align="center" justify="between">
+                                <cx-button-group
+                                  ariaLabel="Campaign language"
+                                  [disabled]="generating()"
+                                  size="small"
+                                  [availableValues]="languageOptions"
+                                  [value]="language()"
+                                  (valueChange)="selectLanguage($event)"
+                                />
+                                <cx-button
+                                  ariaLabel="Refine"
+                                  text="Refine"
+                                  mood="primary"
+                                  cxTooltip="Improve your edits while preserving their intent and following the campaign strategy. Refining English also refreshes Swedish."
+                                  cxTooltipPosition="bottom"
+                                  [loading]="generating() && refining()"
+                                  [disabled]="generating() || !activeCopy()"
+                                  (pressed)="refineCopy()"
+                                />
+                              </cx-inline>
+                              @if (refinementNotice(); as notice) {
+                                <cx-alert
+                                  mood="info"
+                                  heading="Copy refined"
+                                  [dismissible]="true"
+                                  (dismiss)="dismissedRefinement.set(notice.runId)"
+                                >{{ notice.summary }}</cx-alert>
+                              }
                               @for (field of resolvedFields(); track field.id) {
                                 <section
                                   class="fp-copy-field"
                                   [class.fp-copy-field--selected]="selectedFieldId() === field.id"
                                   [attr.aria-label]="field.label"
-                                  (pointerdown)="selectCopyField(field.id)"
+                                  (pointerenter)="selectCopyField(field.id)"
                                   (focusin)="selectCopyField(field.id)"
                                 >
                                   @if (field.id === 'hashtags') {
                                     <cx-tag-field
+                                      [disabled]="generating()"
                                       [label]="field.label"
                                       [tags]="hashtagTags()"
                                       [values]="field.tags"
                                       [creatable]="true"
                                       [hint]="field.hint"
                                       [validation]="field.validation"
+                                      (tagsChange)="rememberHashtagOptions($event)"
                                       (valuesChange)="updateHashtags($event)"
                                     />
                                   } @else if (field.multiline) {
                                     <cx-text-area
+                                      [disabled]="generating()"
                                       [label]="field.label"
                                       sizing="auto"
                                       [minLines]="field.id === 'fullCaption' ? 8 : 4"
@@ -215,6 +230,7 @@
                                     />
                                   } @else {
                                     <cx-text-field
+                                      [disabled]="generating()"
                                       [label]="field.label"
                                       [value]="field.value"
                                       [hint]="field.hint"
@@ -245,12 +261,12 @@
                                   <cx-stack gap="lg">
                                     <section class="fp-rationale-section">
                                       <h3>{{ selected.label }}</h3>
-                                      <p>{{ selected.rationale?.why || selected.guidance }}</p>
+                                      <p>{{ selected.guidance }}</p>
                                     </section>
 
                                     @if (selectedFieldRules().length > 0) {
                                       <section class="fp-rationale-section">
-                                        <h3>StoryBrand principles</h3>
+                                        <h3>Principles</h3>
                                         <cx-stack gap="md">
                                           @for (rule of selectedFieldRules(); track rule.id) {
                                             <cx-labeled-row
@@ -405,6 +421,7 @@
       <cx-text-area
         #roughIdeaField
         label="Your rough idea"
+        [placeholder]="exampleIdea"
         hint="What you want people to understand, who it might help, or what feels hard to explain."
         sizing="fixed"
         [minLines]="7"
@@ -415,15 +432,7 @@
         (valueChange)="updateRoughIdea($event)"
       />
 
-      <cx-inline gap="md" justify="between">
-        <cx-button
-          size="small"
-          text="Use an example"
-          icon="chat"
-          [transparent]="true"
-          [disabled]="generating()"
-          (pressed)="useExampleIdea()"
-        />
+      <cx-inline justify="end">
         <span class="fp-meta">{{ roughIdea().length }}/{{ maxIdeaCharacters() }}</span>
       </cx-inline>
     </cx-stack>

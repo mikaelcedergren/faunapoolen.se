@@ -1,6 +1,7 @@
 import type { JsonValue } from '@mikaelcedergren/cx-framework/server/errors';
 import type { EnqueueDurableJob } from '@mikaelcedergren/cx-framework/server/jobs';
 
+import { parseCopyRefinement, type CopyRefinementInput } from './copy-refinement.js';
 import { isCampaignId, normalizeCampaignIdea } from './campaign-schema.js';
 import { MAX_IDEA_CHARACTERS, MIN_IDEA_CHARACTERS } from './generation-content.js';
 import type { GenerationStage } from './campaign-repository.js';
@@ -15,6 +16,7 @@ export type CampaignGenerationJobPayload = Readonly<{
   campaignId: string;
   expectedCampaignRevision: number;
   idea?: string;
+  refinement?: CopyRefinementInput;
   runId: string;
   stage: GenerationStage;
   version: 1;
@@ -24,6 +26,7 @@ export interface BuildCampaignGenerationJobInput {
   readonly campaignId: string;
   readonly expectedCampaignRevision: number;
   readonly idea?: string;
+  readonly refinement?: CopyRefinementInput;
   readonly runId: string;
   readonly stage: GenerationStage;
 }
@@ -52,7 +55,7 @@ export function buildCampaignGenerationJob(
   return Object.freeze({
     idempotencyKey: `campaign-generation:${payload.runId}`,
     maxAttempts: CAMPAIGN_GENERATION_MAX_ATTEMPTS,
-    payload: payload as JsonValue,
+    payload: payload as unknown as JsonValue,
     type: CAMPAIGN_GENERATION_JOB_TYPE,
   });
 }
@@ -84,6 +87,7 @@ function campaignGenerationJobPayload(
     'campaignId',
     'expectedCampaignRevision',
     ...(stage === 'strategy' ? ['idea'] : []),
+    ...(stage === 'copy' && input['refinement'] !== undefined ? ['refinement'] : []),
     'runId',
     'stage',
     'version',
@@ -141,6 +145,9 @@ function campaignGenerationJobPayload(
     ...(idea === undefined ? {} : { idea }),
     runId,
     stage,
+    ...(input['refinement'] === undefined
+      ? {}
+      : { refinement: parseCopyRefinement(input['refinement']) }),
     version: CAMPAIGN_GENERATION_JOB_VERSION,
   });
 }

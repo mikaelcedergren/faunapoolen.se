@@ -158,6 +158,18 @@ class FakeCampaignService implements CampaignService {
 }
 
 class FakeGenerationService implements GenerationService {
+  readonly refinements: Parameters<GenerationService['refineCopy']>[0][] = [];
+  async refineCopy(
+    input: Parameters<GenerationService['refineCopy']>[0],
+  ): Promise<CampaignMutationResult<GenerationAcceptance>> {
+    this.refinements.push(input);
+    return {
+      campaignId: input.campaignId,
+      campaignRevision: input.expectedRevision,
+      jobId: 'job-refine-1',
+      state: 'queued',
+    };
+  }
   readonly creates: Array<{ readonly idea: string; readonly ownerSessionIdHash: string }> = [];
   readonly retries: Array<{
     readonly campaignId: string;
@@ -734,4 +746,45 @@ test('unknown implementation failures are hidden, logged once, and keep their re
   });
   assert.equal(internalErrors.length, 1);
   assert.match(String(internalErrors[0]?.error), /synthetic configuration failure/);
+});
+
+test('refinement uses authenticated origin-protected admission with an exact bounded draft', async (t) => {
+  const fixture = await createFixture(t);
+  const url = `${fixture.baseUrl}/api/admin/campaigns/${CAMPAIGN_ID}/refine`;
+  const body = {
+    expectedRevision: 3,
+    language: 'en',
+    draft: {
+      headline: 'An intentionally overlong headline that the tool should improve',
+      description: 'Natural pools',
+      primaryText: 'A quieter garden',
+      fullCaption: 'A quieter garden to share',
+      callToAction: 'Explore your garden',
+      hashtags: ['#pool', '#garden', '#water'],
+    },
+  };
+  const signedOut = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'content-type': 'application/json', origin: ORIGIN },
+  });
+  assert.equal(signedOut.status, 401);
+  const cookie = await login(fixture);
+  const wrongOrigin = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { cookie, 'content-type': 'application/json', origin: 'https://untrusted.example' },
+  });
+  assert.equal(wrongOrigin.status, 403);
+  const headers = { ...authenticatedHeaders(cookie, true), 'content-type': 'application/json' };
+  const invalid = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ ...body, draft: { ...body.draft, arbitrary: true } }),
+  });
+  assert.equal(invalid.status, 400);
+  assert.equal(fixture.generations.refinements.length, 0);
+  const accepted = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+  assert.equal(accepted.status, 202);
+  assert.deepEqual(fixture.generations.refinements[0]?.refinement.draft, body.draft);
 });

@@ -14,6 +14,7 @@ import {
   type SyncSqliteDatabase,
 } from '@mikaelcedergren/cx-framework/server/sqlite';
 
+import { parseCopyRefinement, type CopyRefinementInput } from './copy-refinement.js';
 import {
   CAMPAIGN_LANGUAGES,
   CAMPAIGN_MAX_RECORDS,
@@ -152,6 +153,7 @@ export interface GenerationRun {
   readonly stage: GenerationStage;
   readonly state: GenerationState;
   readonly strategyIdea: string | null;
+  readonly refinement?: CopyRefinementInput;
   readonly updatedAt: number;
 }
 
@@ -182,6 +184,7 @@ export interface CreateGenerationRunInput {
   readonly runId: string;
   readonly stage: GenerationStage;
   readonly strategyIdea: string | null;
+  readonly refinement?: CopyRefinementInput;
 }
 
 interface GenerationAdmissionBase {
@@ -193,6 +196,7 @@ interface GenerationAdmissionBase {
 export type GenerationAdmissionInput =
   | (GenerationAdmissionBase & { readonly kind: 'continuation' })
   | (GenerationAdmissionBase & { readonly kind: 'initial' })
+  | (GenerationAdmissionBase & { readonly kind: 'refinement' })
   | (GenerationAdmissionBase & {
       readonly kind: 'retry';
       readonly requiredCampaignRevision: number;
@@ -473,6 +477,7 @@ interface GenerationRunRow extends SqliteRow {
   readonly stage: string;
   readonly state: string;
   readonly strategy_idea: string | null;
+  readonly copy_refinement_json: Uint8Array | null;
   readonly updated_at: number | bigint;
 }
 
@@ -948,8 +953,8 @@ export function createGenerationRepository(
       `INSERT INTO generation_runs (
          run_id, campaign_id, owner_session_id_hash, stage, strategy_idea, state,
          expected_campaign_revision, job_id, attempt, created_at, updated_at,
-         finished_at, revision
-       ) VALUES (?, ?, ?, ?, ?, 'queued', ?, ?, ?, ?, ?, NULL, 1)
+         finished_at, revision, copy_refinement_json
+       ) VALUES (?, ?, ?, ?, ?, 'queued', ?, ?, ?, ?, ?, NULL, 1, ?)
        RETURNING *`,
       [
         input.runId,
@@ -962,6 +967,9 @@ export function createGenerationRepository(
         input.attempt ?? 1,
         now,
         now,
+        input.refinement
+          ? Buffer.from(canonicalJsonValue(input.refinement as unknown as JsonValue))
+          : null,
       ],
     );
     if (!row) throw new Error('Generation run insert returned no row.');
@@ -970,6 +978,35 @@ export function createGenerationRepository(
 
   function assertAdmissionState(input: GenerationAdmissionInput): void {
     const run = input.run;
+    if (input.kind === 'refinement') {
+      if (run.stage !== 'copy' || !run.refinement || (run.attempt ?? 1) !== 1)
+        throw new Error('Refinement requires an immutable copy draft.');
+      assertCampaignRevision(database, run.campaignId, run.expectedCampaignRevision);
+      const row = database.get<CampaignRow>(
+        `SELECT ${campaignColumns()} FROM campaigns WHERE id = ?`,
+        [run.campaignId],
+      );
+      if (!row || parseCampaignRow(row).record.stage !== 'complete')
+        throw new Error('Refinement requires a complete campaign.');
+      const previous = database.get<GenerationRunRow>(
+        'SELECT * FROM generation_runs WHERE campaign_id = ? ORDER BY run_sequence DESC LIMIT 1',
+        [run.campaignId],
+      );
+      if (previous && ['queued', 'running'].includes(previous.state))
+        throw new PersistenceRevisionConflictError('Active generation', run.campaignId);
+      if (
+        previous &&
+        ['failed', 'ambiguous'].includes(previous.state) &&
+        database.get(
+          "SELECT 1 FROM provider_effects WHERE run_id = ? AND state = 'succeeded' LIMIT 1",
+          [previous.run_id],
+        )
+      )
+        throw new GenerationCompletedReceiptRetryError();
+      return;
+    }
+    if (input.kind !== 'retry' && run.refinement)
+      throw new Error('Only copy refinement admission can introduce an edited draft.');
     if (input.kind === 'initial') {
       if (run.expectedCampaignRevision !== 0 || run.stage !== 'strategy') {
         throw new Error(
@@ -1032,6 +1069,8 @@ export function createGenerationRepository(
       !['failed', 'ambiguous'].includes(previous.state) ||
       (input.requiredCampaignRevision === 0 && previous.expectedCampaignRevision !== 0) ||
       run.strategyIdea !== previous.strategyIdea ||
+      canonicalJsonValue((run.refinement ?? null) as unknown as JsonValue) !==
+        canonicalJsonValue((previous.refinement ?? null) as unknown as JsonValue) ||
       run.attempt !== previous.attempt + 1
     ) {
       throw new Error(
@@ -1908,6 +1947,13 @@ function parseGenerationRun(row: GenerationRunRow): GenerationRun {
     stage: row.stage as GenerationStage,
     state: row.state as GenerationState,
     strategyIdea: strategyIdea(row.stage, row.strategy_idea),
+    ...(row.copy_refinement_json === null
+      ? {}
+      : {
+          refinement: parseCopyRefinement(
+            JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(row.copy_refinement_json)),
+          ),
+        }),
     updatedAt: integer(row.updated_at, 'generation updated time'),
   });
 }
@@ -2052,7 +2098,9 @@ function validateGenerationRunInput(input: CreateGenerationRunInput): void {
     payload.expectedCampaignRevision !== input.expectedCampaignRevision ||
     payload.runId !== input.runId ||
     payload.stage !== input.stage ||
-    (payload.idea ?? null) !== input.strategyIdea
+    (payload.idea ?? null) !== input.strategyIdea ||
+    canonicalJsonValue((payload.refinement ?? null) as unknown as JsonValue) !==
+      canonicalJsonValue((input.refinement ?? null) as unknown as JsonValue)
   ) {
     throw new Error('Generation run and durable job payload do not have identical lineage.');
   }

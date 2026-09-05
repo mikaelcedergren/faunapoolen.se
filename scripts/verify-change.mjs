@@ -26,6 +26,8 @@ const runtimeRoot = path.join(repoRoot, '.run', 'verification');
 const receiptPath = path.join(runtimeRoot, 'change-receipt.json');
 const evidenceRoot = path.join(runtimeRoot, 'evidence');
 const allowedArguments = new Set(['--force', '--full', '--plan', '--visual']);
+const hmrInputs =
+  /^(?:package\.json$|pnpm-(?:lock|workspace)\.yaml$|patches\/|tests\/hmr\/|playwright\.hmr\.config\.ts$|scripts\/(?:run-e2e|e2e-hmr-server)\.mjs$)/u;
 
 function ensureContained(root, candidate) {
   const resolved = path.resolve(root, candidate);
@@ -135,7 +137,7 @@ export function classifyChanges(
 ) {
   if (forceFull || !hasVerifiedSnapshot) {
     return {
-      checks: forceVisual ? ['full', 'visual'] : ['full'],
+      checks: forceVisual ? ['full', 'hmr', 'visual'] : ['full', 'hmr'],
       reason: forceFull ? 'explicit full verification' : 'first trusted baseline',
       routes: forceVisual ? ['/'] : [],
     };
@@ -189,6 +191,7 @@ export function classifyChanges(
     if (checks.size === 0 && changedFiles.length > 0) checks.add('full');
   }
 
+  if (has(hmrInputs)) checks.add('hmr');
   if (forceVisual) {
     checks.add('visual');
     routes.push('/');
@@ -224,6 +227,9 @@ function plannedChecks(classification) {
     e2e: commandCheck('e2e', 'Isolated browser journeys', 1, ['corepack', 'pnpm', 'e2e'], {
       hostAccess: true,
     }),
+    hmr: commandCheck('hmr', 'Angular hot reload regression', 1, ['corepack', 'pnpm', 'e2e:hmr'], {
+      hostAccess: true,
+    }),
     visual: {
       hostAccess: true,
       id: 'visual',
@@ -240,6 +246,7 @@ function plannedChecks(classification) {
 }
 
 export function checkOwnsPath(checkId, file) {
+  if (checkId === 'hmr') return hmrInputs.test(file);
   if (checkId === 'full' || checkId === 'format') return true;
   if (checkId === 'typecheck') {
     return /^(?:src\/|server\/|.*\.json$|pnpm-lock\.yaml|pnpm-workspace\.yaml)/u.test(file);

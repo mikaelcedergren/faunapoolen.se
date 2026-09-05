@@ -22,6 +22,7 @@ import {
 import type { BrowserServing } from '@mikaelcedergren/cx-framework/server/static-files';
 import express, { type NextFunction, type Request, type Response } from 'express';
 
+import { parseCopyRefinement } from './copy-refinement.js';
 import { type AuthenticatedOwnerSession, type OwnerAuthService } from './auth-service.js';
 import { mountFaunapoolenBrowser } from './browser-serving.js';
 import {
@@ -173,6 +174,30 @@ export function createFaunapoolenApplication({
         stage: generationStage(body['stage']),
       });
       const generation = mutationValue(result);
+      setRevisionEtag(response, generation.campaignRevision);
+      response.status(202).json({ generation });
+    }),
+  );
+  app.post(
+    `${ADMIN_API_PATH}/campaigns/:id/refine`,
+    asyncRoute(async (request, response) => {
+      const body = exactObject(request.body, ['expectedRevision', 'language', 'draft']);
+      let refinement;
+      try {
+        refinement = parseCopyRefinement({ language: body['language'], draft: body['draft'] });
+      } catch (error) {
+        throw invalidRequest(
+          error instanceof Error ? error.message : 'The refinement draft is invalid.',
+        );
+      }
+      const generation = mutationValue(
+        await generationService.refineCopy({
+          campaignId: campaignId(request.params['id']),
+          expectedRevision: revision(body['expectedRevision']),
+          ownerSessionIdHash: ownerSession(response).ownerSessionIdHash,
+          refinement,
+        }),
+      );
       setRevisionEtag(response, generation.campaignRevision);
       response.status(202).json({ generation });
     }),

@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 
+import type { CopyRefinementReceipt } from './copy-refinement.js';
 import { COPY_FIELD_IDS, type CopyFieldId } from './copy-budgets.js';
 import { IMAGE_CONCEPTS, IMAGE_CONCEPT_IDS, type ImageConceptId } from './image-style.js';
 import { isMarketingRuleId } from './marketing-rules.js';
@@ -19,7 +20,7 @@ export const CAMPAIGN_ROOT_FIELDS = Object.freeze([
 ] as const);
 
 export const CAMPAIGN_STAGES = Object.freeze(['strategy', 'copy', 'complete'] as const);
-export const CAMPAIGN_LANGUAGES = Object.freeze(['sv', 'en'] as const);
+export const CAMPAIGN_LANGUAGES = Object.freeze(['en', 'sv'] as const);
 
 const CAMPAIGN_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -133,6 +134,7 @@ export interface CampaignRecord {
   readonly strategy: CampaignStrategy;
   readonly copy: Readonly<Partial<Record<CampaignLanguage, CampaignCopy>>>;
   readonly imagePrompts: readonly CampaignImagePrompt[];
+  readonly refinement?: CopyRefinementReceipt;
 }
 
 export interface CanonicalCampaign {
@@ -199,7 +201,13 @@ export function parseCampaignBytes(bytes: Uint8Array): CampaignRecord {
 }
 
 export function validateCampaignRecord(value: unknown): CampaignRecord {
-  const root = exactObject(value, CAMPAIGN_ROOT_FIELDS, '');
+  const hasRefinement =
+    value !== null && typeof value === 'object' && Object.hasOwn(value, 'refinement');
+  const root = exactObject(
+    value,
+    [...CAMPAIGN_ROOT_FIELDS, ...(hasRefinement ? ['refinement'] : [])],
+    '',
+  );
   const id = campaignId(root.id, 'id');
   const createdAt = timestamp(root.createdAt, 'createdAt');
   const updatedAt = timestamp(root.updatedAt, 'updatedAt');
@@ -232,6 +240,16 @@ export function validateCampaignRecord(value: unknown): CampaignRecord {
     strategy,
     copy,
     imagePrompts,
+    ...(hasRefinement ? { refinement: refinementReceipt(root.refinement) } : {}),
+  };
+}
+
+function refinementReceipt(value: unknown): CopyRefinementReceipt {
+  const receipt = exactObject(value, ['runId', 'language', 'summary'], 'refinement');
+  return {
+    runId: campaignId(receipt.runId, 'refinement.runId'),
+    language: enumValue(receipt.language, CAMPAIGN_LANGUAGES, 'refinement.language'),
+    summary: text(receipt.summary, 1, 700, 'refinement.summary'),
   };
 }
 

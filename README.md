@@ -3,6 +3,18 @@
 The public [Faunapoolen](https://faunapoolen.se) website and its private campaign studio. Swedish
 content is served at the root and English under `/en/`.
 
+The private campaign studio defaults to English. Campaign copy is written in English first,
+then translated into Swedish from that source. A failed translation preserves the completed
+English copy for a targeted retry. Both languages use the English source's sidebar guidance;
+translation generates wording only.
+
+**Refine** improves the current edited draft while preserving its intent and campaign strategy.
+Drafts may exceed the final ad limits. The immutable draft runs through the existing durable copy
+job, quota, provider receipt and revision checks. Refining English also refreshes Swedish;
+refining Swedish keeps English and its guidance unchanged. The improved copy and a bounded change
+summary are saved atomically. A dismissible info alert above the form explains what changed and
+why. Failed work retains the draft for recovery, and a stale result cannot replace newer edits.
+
 The site uses the shared web-product architecture:
 
 - Angular 22 static prerender
@@ -23,10 +35,18 @@ pnpm install
 pnpm dev
 pnpm check
 pnpm e2e
+pnpm e2e:hmr
 ```
 
 Development runs the browser on `http://127.0.0.1:4240` and its local API on
 `http://127.0.0.1:4241`. Production health is `http://127.0.0.1:3040/healthz`.
+
+Angular's build dependency carries a tracked pnpm patch that clears stale template-update
+metadata when browser JavaScript is rebuilt. Template and stylesheet hot updates remain enabled.
+The pinned build version and patch are installed together from the lockfile; an ordinary reinstall
+retains the fix. Remove the patch only when an upstream build version passes `pnpm e2e:hmr` without
+it. That hermetic regression edits synthetic template, TypeScript, and CSS files, checks hot
+updates and page reloads, and runs in CI without touching the development campaign data.
 
 Other useful commands:
 

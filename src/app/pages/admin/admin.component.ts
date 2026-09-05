@@ -15,6 +15,7 @@ import {
   CxAccountControlComponent,
   CxAlertComponent,
   CxButtonComponent,
+  CxButtonGroupComponent,
   CxCardComponent,
   CxCodeBlockComponent,
   CxDialogComponent,
@@ -26,7 +27,6 @@ import {
   CxSideNavComponent,
   CxSidebarLayoutComponent,
   CxSpinnerComponent,
-  CxSplitComponent,
   CxStackComponent,
   CxStateMessageComponent,
   CxStatusTagComponent,
@@ -36,6 +36,9 @@ import {
   CxTextAreaComponent,
   CxTextFieldComponent,
   CxTopBarComponent,
+  CxTooltipDirective,
+  type CxButtonGroupOption,
+  type CxTagFieldTag,
   type CxFieldValidation,
   type CxLabeledRowContent,
   type CxMenuItem,
@@ -56,7 +59,7 @@ import {
 
 type AuthResponse = { authenticated?: boolean; ok?: boolean };
 
-type Language = 'sv' | 'en';
+type Language = 'en' | 'sv';
 type EditableTextField =
   | 'headline'
   | 'description'
@@ -129,6 +132,9 @@ type ImagePrompt = {
   why: string;
 };
 
+type CopyDraft = Pick<LanguageCopy, EditableTextField | 'hashtags'>;
+type Refinement = { runId: string; language: Language; summary: string };
+
 type Campaign = {
   id: string;
   createdAt: string;
@@ -140,6 +146,7 @@ type Campaign = {
   strategy: Strategy;
   copy: Partial<Record<Language, LanguageCopy>>;
   imagePrompts: ImagePrompt[];
+  refinement?: Refinement;
 };
 
 type CampaignSummary = {
@@ -178,6 +185,7 @@ type GenerationAcceptance = {
 };
 
 type GenerationStatus = {
+  refinement?: { runId: string; language: Language; draft: CopyDraft; expectedRevision: number };
   campaignRevision: number;
   campaignId: string;
   jobId: string;
@@ -217,19 +225,15 @@ const FALLBACK_MAX_IDEA_CHARACTERS = 3_000;
 const MIN_IDEA_CHARACTERS = 8;
 
 const EXAMPLE_IDEA =
-  'Jag vill berätta att en naturpool kan kännas som en del av trädgården, inte som en blå plastpool. Det ska kännas lugnt och möjligt att börja, även om man inte vet exakt vad man behöver.';
+  'I want to show that a natural swimming pond can feel like part of the garden. The campaign should make the first step feel calm and manageable, even for someone who does not yet know what they need.';
 
-// The studio is written in English, while Swedish is the campaign's starting language.
-const DEFAULT_LANGUAGE: Language = 'sv';
-const LANGUAGE_TABS: CxTabItem[] = [
-  { id: 'sv', label: 'Svenska' },
+const DEFAULT_LANGUAGE: Language = 'en';
+const LANGUAGE_OPTIONS: CxButtonGroupOption[] = [
   { id: 'en', label: 'English' },
+  { id: 'sv', label: 'Swedish' },
 ];
 
 const CAMPAIGN_COLUMNS: CxTableColumn[] = [
-  // State first, entity second, time last — the reading order answers what is ready, which
-  // campaign, and when it was made.
-  { id: 'status', label: 'Status', size: 'content', hideable: false, pinnable: false },
   { id: 'name', label: 'Campaign', key: true, size: 'flex', hideable: false, pinnable: false },
   {
     id: 'updated',
@@ -249,9 +253,9 @@ const STRATEGY_TOPIC_LABELS: Record<string, string> = {
   plan: 'Why these three steps',
 };
 
-const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
+const DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
-  month: 'long',
+  month: 'short',
   year: 'numeric',
 });
 
@@ -261,6 +265,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
     CxAccountControlComponent,
     CxAlertComponent,
     CxButtonComponent,
+    CxButtonGroupComponent,
     CxCardComponent,
     CxCodeBlockComponent,
     CxDialogComponent,
@@ -272,7 +277,6 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
     CxSideNavComponent,
     CxSidebarLayoutComponent,
     CxSpinnerComponent,
-    CxSplitComponent,
     CxStackComponent,
     CxStateMessageComponent,
     CxStatusTagComponent,
@@ -282,6 +286,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-GB', {
     CxTextFieldComponent,
     CxTextAreaComponent,
     CxTopBarComponent,
+    CxTooltipDirective,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss',
@@ -333,6 +338,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly openingCampaign = signal(false);
   protected readonly generationStatuses = signal<GenerationStatus[]>([]);
   protected readonly copyEdits = signal<Record<string, CopyEdit>>({});
+  protected readonly refining = signal(false);
+  protected readonly dismissedRefinement = signal<string | undefined>(undefined);
+  protected readonly refinementNotice = computed(() => {
+    const receipt = this.campaign()?.refinement;
+    return receipt &&
+      (receipt.language === 'en' || receipt.language === this.language()) &&
+      receipt.runId !== this.dismissedRefinement()
+      ? receipt
+      : undefined;
+  });
   protected readonly leaveOpen = signal(false);
   protected readonly leaving = signal(false);
   protected readonly sideNavCollapsed = signal(false);
@@ -377,9 +392,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     const stage = this.stepStatus();
     if (this.retryStage()) return 'Generation needs attention';
     if (!this.generating()) return 'Continue this campaign';
-    if (stage.strategy === 'active') return 'Now I’m creating the strategy';
-    if (stage.copy === 'active') return 'Now I’m writing both languages';
-    return 'Now I’m creating the image prompts';
+    if (this.refining()) return 'Refining copy';
+    if (stage.strategy === 'active') return 'Creating strategy';
+    if (stage.copy === 'active') return 'Writing campaign copy';
+    return 'Creating image prompts';
   });
   protected readonly generationProgress = computed(() => {
     const stage = this.stepStatus();
@@ -394,6 +410,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly maxIdeaCharacters = signal(FALLBACK_MAX_IDEA_CHARACTERS);
 
   protected readonly roughIdea = signal('');
+  protected readonly exampleIdea = EXAMPLE_IDEA;
   protected readonly roughIdeaValidation = signal<CxFieldValidation | undefined>(undefined);
   protected readonly generating = signal(false);
   protected readonly stepStatus = signal<Record<GenerationStep, StepStatus>>(idleSteps());
@@ -407,7 +424,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly clipboardError = signal('');
   protected readonly composeOpen = signal(false);
 
-  protected readonly languageTabs = LANGUAGE_TABS;
+  protected readonly languageOptions = LANGUAGE_OPTIONS;
+  private pendingHashtagOptions: readonly CxTagFieldTag[] | undefined;
   protected readonly writeCopyAction: CxStateMessageAction = {
     text: 'Write the campaign copy',
     mood: 'primary',
@@ -429,7 +447,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       return [];
     }
     const rationales = new Map(
-      copy.rationale
+      (this.campaign()?.copy.en?.rationale ?? [])
         .filter((entry) => entry.field)
         .map((entry) => [entry.field as string, entry]),
     );
@@ -459,7 +477,9 @@ export class AdminComponent implements OnInit, OnDestroy {
           tags,
           used,
           rationale,
-          guidance: rationale?.guidance || field.guidance,
+          guidance:
+            sidebarGuidance(rationale?.why || rationale?.guidance || field.guidance) ||
+            field.guidance,
           hint:
             field.id === 'hashtags'
               ? `${used}/${field.budget} characters per tag`
@@ -481,42 +501,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly campaignRows = computed<CxTableRow[]>(() =>
     [...this.campaigns()]
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-      .map((item) => {
-        const generation = this.generationStatuses().find(
-          (status) => status.campaignId === item.id,
-        );
-        const failed = generation?.state === 'failed' || generation?.state === 'ambiguous';
-        const active = generation?.state === 'running' || generation?.state === 'queued';
-        return {
-          id: item.id,
-          cells: {
-            status: {
-              kind: 'status-tag',
-              mood: failed
-                ? 'danger'
-                : active
-                  ? 'info'
-                  : item.stage === 'complete'
-                    ? 'default'
-                    : 'warning',
-              icon: failed
-                ? 'warning'
-                : active
-                  ? 'in-progress'
-                  : item.stage === 'complete'
-                    ? 'check'
-                    : 'in-progress',
-              text: failed
-                ? 'Needs attention'
-                : active
-                  ? 'Generating'
-                  : this.stageLabel(item.stage),
-            },
-            name: { kind: 'text', value: item.name, strong: true },
-            updated: { kind: 'text', value: this.campaignDate(item.updatedAt), muted: true },
-          },
-        };
-      }),
+      .map((item) => ({
+        id: item.id,
+        cells: {
+          name: { kind: 'text', value: item.name, strong: true },
+          updated: { kind: 'text', value: this.campaignDate(item.updatedAt), muted: true },
+        },
+      })),
   );
 
   /** The tag field needs the available set as well as the selected ids. */
@@ -851,13 +842,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.generationError.set('');
   }
 
-  protected useExampleIdea(): void {
-    this.roughIdea.set(EXAMPLE_IDEA);
-    this.roughIdeaValidation.set(undefined);
-    this.generationError.set('');
-    queueMicrotask(() => this.roughIdeaField?.focus());
-  }
-
   /** The server owns the durable three-stage pipeline; this request only accepts the work. */
   protected async createCampaign(): Promise<void> {
     if (this.generating()) {
@@ -875,6 +859,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     this.generationError.set('');
     this.copyError.set('');
+    this.refining.set(false);
     this.generating.set(true);
     this.stepStatus.set({ strategy: 'active', copy: 'waiting', prompts: 'waiting' });
 
@@ -915,6 +900,60 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   protected async writeImagePrompts(): Promise<void> {
     await this.startTargetedGeneration('prompts');
+  }
+
+  protected async refineCopy(): Promise<void> {
+    if (this.generating() || !this.activeCopy()) return;
+    this.refining.set(true);
+    this.generating.set(true);
+    this.generationError.set('');
+    this.retryStage.set(undefined);
+    // Wait for a save already in flight; the draft itself may exceed final copy limits.
+    await this.copySaveQueue;
+    const campaign = this.campaign();
+    const copy = this.activeCopy();
+    if (!campaign || !copy) {
+      this.generating.set(false);
+      return;
+    }
+    const language = this.language();
+    const draft: CopyDraft = {
+      headline: copy.headline,
+      description: copy.description,
+      primaryText: copy.primaryText,
+      fullCaption: copy.fullCaption,
+      callToAction: copy.callToAction,
+      hashtags: [...copy.hashtags],
+    };
+    try {
+      const response = await this.request(`/api/admin/campaigns/${campaign.id}/refine`, {
+        method: 'POST',
+        body: { expectedRevision: campaign.revision, language, draft },
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          this.expireSession();
+          return;
+        }
+        this.generationError.set(
+          await this.apiErrorMessage(
+            response,
+            'The copy could not be refined. Your draft is kept here.',
+          ),
+        );
+        if (response.status === 409) await this.refreshOpenCampaign(campaign.id);
+        this.generating.set(false);
+        return;
+      }
+      const payload = (await response.json()) as { generation?: GenerationAcceptance };
+      if (!payload.generation) throw new Error('Missing refinement acceptance');
+      this.followGeneration(payload.generation);
+    } catch {
+      // Admission may have succeeded despite a lost response. Recover its durable status before resubmitting.
+      this.generationError.set('Checking refinement progress…');
+      const sequence = ++this.generationPollSequence;
+      void this.pollGeneration(campaign.id, sequence, campaign.revision);
+    }
   }
 
   protected async retryGeneration(): Promise<void> {
@@ -970,7 +1009,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     void this.pollGeneration(accepted.campaignId, sequence);
   }
 
-  private async pollGeneration(campaignId: string, sequence: number): Promise<void> {
+  private async pollGeneration(
+    campaignId: string,
+    sequence: number,
+    expectedRefinementRevision?: number,
+  ): Promise<void> {
     while (sequence === this.generationPollSequence) {
       try {
         const response = await this.request(`/api/admin/campaigns/${campaignId}/status`);
@@ -994,6 +1037,16 @@ export class AdminComponent implements OnInit, OnDestroy {
           this.generating.set(false);
           return;
         }
+        if (
+          expectedRefinementRevision !== undefined &&
+          status.refinement?.expectedRevision !== expectedRefinementRevision
+        ) {
+          this.generationError.set(
+            'Refinement was not confirmed. Your draft is kept here. Try again.',
+          );
+          this.generating.set(false);
+          return;
+        }
         this.generationError.set('');
         this.generationStatuses.update((items) => [
           status,
@@ -1001,8 +1054,10 @@ export class AdminComponent implements OnInit, OnDestroy {
         ]);
         this.generationRevision.set(status.campaignRevision);
         this.stepStatus.set(stepsForGeneration(status.stage, status.state));
+        this.refining.set(Boolean(status.refinement));
 
-        if (status.campaignRevision > 0) await this.refreshOpenCampaign(campaignId, sequence);
+        if (status.campaignRevision > 0)
+          await this.refreshOpenCampaign(campaignId, sequence, status);
 
         if (status.state === 'failed' || status.state === 'ambiguous') {
           this.generationError.set(generationFailureMessage(status));
@@ -1012,7 +1067,10 @@ export class AdminComponent implements OnInit, OnDestroy {
           return;
         }
 
-        if (status.state === 'succeeded' && status.stage === 'prompts') {
+        if (
+          status.state === 'succeeded' &&
+          (status.stage === 'prompts' || status.refinement || this.campaign()?.stage === 'complete')
+        ) {
           this.retryStage.set(undefined);
           this.generating.set(false);
           await Promise.all([
@@ -1074,6 +1132,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       const status = this.generationStatuses().find((item) => item.campaignId === summary.id);
       this.retryStage.set(undefined);
       this.generating.set(false);
+      this.refining.set(Boolean(status?.refinement));
+      if (status?.refinement) {
+        this.language.set(status.refinement.language);
+        await this.refreshOpenCampaign(summary.id, sequence, status);
+      }
       if (status?.state === 'failed' || status?.state === 'ambiguous') {
         this.retryStage.set(status.stage);
         this.generationError.set(generationFailureMessage(status));
@@ -1090,6 +1153,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected selectLanguage(id: string): void {
+    if (this.generating()) return;
     if (id === 'sv' || id === 'en') {
       void this.saveChanges();
       this.language.set(id);
@@ -1101,7 +1165,22 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.markCopyEdit(fieldId, value);
   }
 
-  protected updateHashtags(values: string[]): void {
+  protected rememberHashtagOptions(tags: CxTagFieldTag[]): void {
+    // Creation emits the option catalogue before its selected IDs; campaign copy stores names.
+    this.pendingHashtagOptions = tags;
+  }
+
+  protected updateHashtags(ids: string[]): void {
+    const options = new Map(
+      (this.pendingHashtagOptions ?? this.hashtagTags()).map((tag) => [tag.id, tag.name]),
+    );
+    this.pendingHashtagOptions = undefined;
+    const names = ids.map((id) => options.get(id));
+    if (names.some((name) => name === undefined)) {
+      this.copyError.set('That tag is no longer available. Reopen the campaign and try again.');
+      return;
+    }
+    const values = [...new Set(names as string[])];
     this.mutateCopy((copy) => ({ ...copy, hashtags: values }));
     this.markCopyEdit('hashtags', values);
     void this.onFieldBlur('hashtags', false);
@@ -1137,6 +1216,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected async onFieldBlur(fieldId: string, focused: boolean): Promise<void> {
+    if (this.generating()) return;
     if (focused) return;
     const edit = this.copyEdits()[`${this.language()}:${fieldId}`];
     if (edit?.state === 'dirty') this.queueCopyEdit(edit);
@@ -1263,15 +1343,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   protected campaignDate(value: string): string {
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? 'Unknown date' : DATE_FORMAT.format(date);
-  }
-
-  protected stageLabel(stage: CampaignStage): string {
-    return stage === 'complete'
-      ? 'Generated'
-      : stage === 'copy'
-        ? 'Copy generated'
-        : 'Strategy generated';
+    if (Number.isNaN(date.getTime())) return 'Unknown date';
+    const parts = DATE_FORMAT.formatToParts(date);
+    return ['day', 'month', 'year']
+      .map((type) => parts.find((part) => part.type === type)!.value)
+      .join(' ');
   }
 
   protected onAccountMenu(itemId: string): void {
@@ -1362,9 +1438,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.generationCampaignId.set(status.campaignId);
       this.generationRevision.set(status.campaignRevision);
       this.stepStatus.set(stepsForGeneration(status.stage, status.state));
+      this.refining.set(Boolean(status.refinement));
+      if (status.refinement) this.language.set(status.refinement.language);
       this.view.set('campaign');
       if (status.campaignRevision > 0) {
-        await this.refreshOpenCampaign(status.campaignId, sequence);
+        await this.refreshOpenCampaign(status.campaignId, sequence, status);
       }
       if (sequence !== this.generationPollSequence) return;
 
@@ -1425,6 +1503,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   private async refreshOpenCampaign(
     campaignId: string,
     generationSequence?: number,
+    status?: GenerationStatus,
   ): Promise<void> {
     const response = await this.request(`/api/admin/campaigns/${campaignId}`);
     if (generationSequence !== undefined && generationSequence !== this.generationPollSequence) {
@@ -1437,6 +1516,23 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
     if (!payload.campaign) return;
     const next = payload.campaign;
+    if (status?.refinement) {
+      const refinement = status.refinement;
+      if (status.state === 'succeeded' && next.refinement?.runId === refinement.runId) {
+        this.copyEdits.update((edits) =>
+          Object.fromEntries(
+            Object.entries(edits).filter(
+              ([, edit]) =>
+                edit.campaignId !== next.id ||
+                (refinement.language === 'sv' && edit.language === 'en'),
+            ),
+          ),
+        );
+      } else if (status.state !== 'succeeded') {
+        const copy = next.copy[refinement.language];
+        if (copy) next.copy[refinement.language] = { ...copy, ...refinement.draft };
+      }
+    }
     // A status poll or revision conflict must not replace the user's pending wording.
     for (const edit of Object.values(this.copyEdits())) {
       if (edit.campaignId !== next.id || edit.state === 'saved') continue;
@@ -1521,6 +1617,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.generationError.set('');
     this.copyError.set('');
     this.generating.set(false);
+    this.refining.set(false);
     this.stepStatus.set(idleSteps());
     this.generationCampaignId.set('');
     this.generationRevision.set(0);
@@ -1619,6 +1716,16 @@ function fieldKey(id: string): EditableTextField {
     return id;
   }
   throw new Error(`Unknown editable campaign copy field: ${id}`);
+}
+
+/** Saved guidance may contain budget clauses; the field meter owns that information. */
+function sidebarGuidance(value: string): string {
+  return value
+    .split(/(?<=[.!?;])\s+/u)
+    .filter((clause) => !/\b(?:characters?|chars?)\b/iu.test(clause))
+    .join(' ')
+    .trim()
+    .replace(/;$/u, '.');
 }
 
 /** Code points, matching how the server counts against each budget. */

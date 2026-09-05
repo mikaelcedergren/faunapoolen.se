@@ -79,3 +79,5 @@ jobs:
         run: corepack pnpm exec playwright install --with-deps chromium
       - name: E2E
         run: corepack pnpm e2e
+      - name: Angular hot reload regression
+        run: corepack pnpm e2e:hmr

@@ -6,6 +6,7 @@ import {
   DurableJobRetentionCapacityError,
 } from '@mikaelcedergren/cx-framework/server/jobs';
 
+import { parseCopyRefinement } from './copy-refinement.js';
 import {
   CampaignRevisionConflictError,
   classifyCampaignContinuation,
@@ -60,6 +61,75 @@ export function createGenerationService({
   providerConfigured,
 }: CreateGenerationServiceOptions): GenerationService {
   const service: GenerationService = {
+    async refineCopy({ campaignId, expectedRevision, ownerSessionIdHash, refinement: raw }) {
+      requireProvider(providerConfigured);
+      let refinement;
+      try {
+        refinement = parseCopyRefinement(raw);
+      } catch (error) {
+        throw new HttpError({
+          code: 'campaign_refinement_invalid',
+          message: error instanceof Error ? error.message : 'The draft is invalid.',
+          status: 400,
+        });
+      }
+      const campaign = campaigns.get(campaignId);
+      if (!campaign) return Object.freeze({ status: 'not_found' as const });
+      if (campaign.revision !== expectedRevision) return revisionConflict(campaign.revision);
+      if (
+        campaign.record.stage !== 'complete' ||
+        !campaign.record.copy.en ||
+        !campaign.record.copy[refinement.language]
+      )
+        throw new HttpError({
+          code: 'campaign_refinement_unavailable',
+          message: 'Finish generating this campaign before refining its copy.',
+          status: 409,
+        });
+      const latest = generations.getLatestRun(campaignId);
+      if (latest?.state === 'queued' || latest?.state === 'running')
+        throw new HttpError({
+          code: 'campaign_generation_active',
+          message: 'This campaign already has generation work in progress.',
+          status: 409,
+        });
+      const runId = uuid(createUuid, 'Generation run');
+      try {
+        const result = generationAdmission.admit({
+          kind: 'refinement',
+          now: checkedClock(clock),
+          policy: generationWindowPolicy(),
+          run: {
+            campaignId,
+            expectedCampaignRevision: expectedRevision,
+            ownerSessionIdHash,
+            runId,
+            stage: 'copy',
+            strategyIdea: null,
+            refinement,
+            job: buildCampaignGenerationJob({
+              campaignId,
+              expectedCampaignRevision: expectedRevision,
+              runId,
+              stage: 'copy',
+              refinement,
+            }),
+          },
+        });
+        requireAllowance(result);
+        return acceptance(result.run, expectedRevision);
+      } catch (error) {
+        if (error instanceof CampaignRevisionConflictError)
+          return currentRevisionResult(campaigns, campaignId);
+        if (error instanceof PersistenceRevisionConflictError)
+          throw new HttpError({
+            code: 'campaign_generation_active',
+            message: 'This campaign already has generation work in progress.',
+            status: 409,
+          });
+        throw generationAdmissionError(error);
+      }
+    },
     async createCampaign({ idea: rawIdea, ownerSessionIdHash }) {
       const idea = normalizedIdea(rawIdea);
       requireProvider(providerConfigured);
@@ -137,6 +207,7 @@ export function createGenerationService({
         campaignId,
         expectedCampaignRevision: expectedRevision,
         ...(strategyIdea === null || strategyIdea === undefined ? {} : { idea: strategyIdea }),
+        ...(latest?.refinement ? { refinement: latest.refinement } : {}),
         runId,
         stage,
       };
@@ -149,6 +220,7 @@ export function createGenerationService({
         runId,
         stage,
         strategyIdea: strategyIdea ?? null,
+        ...(latest?.refinement ? { refinement: latest.refinement } : {}),
       };
 
       try {
@@ -321,6 +393,15 @@ function generationStatus(run: GenerationRun, campaignRevision: number): Generat
       ? { error: Object.freeze({ code: run.errorCode, message: run.errorMessage }) }
       : {}),
     jobId: run.jobId,
+    ...(run.refinement
+      ? {
+          refinement: {
+            ...run.refinement,
+            runId: run.runId,
+            expectedRevision: run.expectedCampaignRevision,
+          },
+        }
+      : {}),
     stage: run.stage,
     state: run.state,
     updatedAt: new Date(run.updatedAt).toISOString(),

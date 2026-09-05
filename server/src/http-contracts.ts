@@ -1,4 +1,5 @@
 import type { JsonValue } from '@mikaelcedergren/cx-framework/server/errors';
+import type { CopyRefinementInput } from './copy-refinement.js';
 
 export type CampaignStage = 'strategy' | 'copy' | 'complete';
 export type GenerationStage = 'strategy' | 'copy' | 'prompts';
@@ -66,6 +67,10 @@ export interface GenerationAcceptance {
 }
 
 export interface GenerationStatus {
+  readonly refinement?: CopyRefinementInput & {
+    readonly runId: string;
+    readonly expectedRevision: number;
+  };
   /** Zero is valid only before the strategy stage has produced a campaign record. */
   readonly campaignRevision: number;
   readonly campaignId: string;
@@ -80,6 +85,12 @@ export interface GenerationStatus {
 }
 
 export interface GenerationService {
+  refineCopy(input: {
+    readonly campaignId: string;
+    readonly expectedRevision: number;
+    readonly ownerSessionIdHash: string;
+    readonly refinement: CopyRefinementInput;
+  }): Promise<CampaignMutationResult<GenerationAcceptance>>;
   createCampaign(input: {
     readonly idea: string;
     readonly ownerSessionIdHash: string;

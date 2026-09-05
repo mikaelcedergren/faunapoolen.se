@@ -490,10 +490,27 @@ const RETIRE_IMPORT_EVIDENCE_MIGRATION = Object.freeze({
   ] as const),
 } as const satisfies SqliteMigration);
 
+const COPY_REFINEMENT_MIGRATION = Object.freeze({
+  version: RETIRE_IMPORT_EVIDENCE_MIGRATION.version + 1,
+  name: 'immutable_copy_refinement_drafts',
+  statements: Object.freeze([
+    `ALTER TABLE generation_runs ADD COLUMN copy_refinement_json BLOB
+     CHECK(copy_refinement_json IS NULL OR
+       (stage = 'copy' AND typeof(copy_refinement_json) = 'blob' AND length(copy_refinement_json) <= 25000))`,
+    `CREATE TRIGGER generation_runs_refinement_guard
+     BEFORE UPDATE OF copy_refinement_json ON generation_runs
+     WHEN NEW.copy_refinement_json IS NOT OLD.copy_refinement_json
+     BEGIN
+       SELECT RAISE(ABORT, 'copy refinement input is immutable');
+     END`,
+  ]),
+} satisfies SqliteMigration);
+
 export const FAUNAPOOLEN_MIGRATIONS = Object.freeze([
   ...PRODUCT_MIGRATIONS,
   ...JOB_MIGRATIONS,
   RETIRE_IMPORT_EVIDENCE_MIGRATION,
+  COPY_REFINEMENT_MIGRATION,
 ] as const satisfies readonly SqliteMigration[]);
 
 const REQUIRED_TABLES = Object.freeze([

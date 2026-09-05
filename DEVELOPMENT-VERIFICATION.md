@@ -3,7 +3,7 @@
 Run `pnpm verify:change` after a coherent local change. It compares the exact current source with
 the last successful proof, reuses checks only while their owned inputs are byte-identical, and runs
 independent selected checks together. The first run deliberately executes the complete `pnpm check`
-gate.
+gate and the Angular hot-reload regression.
 
 Useful controls:
 
@@ -23,6 +23,7 @@ pnpm verify:change --full
   the `/admin/` or campaign route. The rendered route may show the real local login boundary; E2E
   owns authenticated synthetic behavior.
 - E2E changes run the isolated repository-owned E2E command.
+- Dependency, pnpm patch, and hot-reload harness changes also run `pnpm e2e:hmr`.
 - Dependencies, repository authority, authentication, SQLite, durable jobs, the worker and provider
   boundary, environment ownership, private-route/robots alignment, installers, service/release and
   flattening machinery, and this verifier's trust implementation use the complete `pnpm check`

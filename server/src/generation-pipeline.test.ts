@@ -6,6 +6,7 @@ import test, { type TestContext } from 'node:test';
 
 import { HttpError } from '@mikaelcedergren/cx-framework/server/errors';
 
+import { parseCopyRefinement } from './copy-refinement.js';
 import {
   createFaunapoolenPersistence,
   type FaunapoolenPersistence,
@@ -17,7 +18,11 @@ import {
   type CampaignRecord,
   type CampaignStrategy,
 } from './campaign-schema.js';
-import { buildCampaignImagePrompts, type GeneratedImageScenes } from './generation-content.js';
+import {
+  campaignWording,
+  buildCampaignImagePrompts,
+  type GeneratedImageScenes,
+} from './generation-content.js';
 import { createGenerationService } from './generation-service.js';
 import { createCampaignGenerationWorker } from './generation-worker.js';
 import {
@@ -67,11 +72,15 @@ test('durable worker completes strategy, bilingual copy, and prompts through ato
   assert.equal(campaign.revision, 3);
   assert.deepEqual(provider.operations, [
     'campaign.strategy',
-    'campaign.copy.sv',
     'campaign.copy.en',
+    'campaign.copy.sv',
     'campaign.image_prompts',
   ]);
   assert.doesNotMatch(provider.inputs.get('campaign.copy.sv') ?? '', /nature pool campaign/u);
+  const translationInput = provider.inputs.get('campaign.copy.sv') ?? '';
+  const englishSource = translationInput.split('ENGLISH SOURCE COPY\n')[1];
+  assert.ok(englishSource);
+  assert.deepEqual(JSON.parse(englishSource), campaignWording(campaign.record.copy.en!));
 
   const status = await service.getStatus(accepted.campaignId);
   assert.equal(status?.stage, 'prompts');
@@ -80,79 +89,94 @@ test('durable worker completes strategy, bilingual copy, and prompts through ato
   assert.equal(persistence.jobs.get(accepted.jobId)?.status, 'succeeded');
 });
 
-test('one-language copy is preserved, then targeted retry generates only the missing language', async (t) => {
-  const persistence = fixture(t);
-  const ids = uuidFactory(200);
-  const provider = new SyntheticProvider();
-  provider.failures.set(
-    'campaign.copy.en',
-    new GenerationProviderTerminalError(
-      'provider_generation_failed',
-      'Synthetic English copy failure.',
-      'failed',
-    ),
-  );
-  const service = createGenerationService({
-    campaigns: persistence.campaigns,
-    clock: () => NOW,
-    createUuid: ids,
-    generationAdmission: persistence.generationAdmission,
-    generations: persistence.generations,
-    providerConfigured: true,
-  });
-  const accepted = await service.createCampaign({
-    idea: 'Write a bilingual water garden campaign',
-    ownerSessionIdHash: OWNER_HASH,
-  });
-  const worker = createCampaignGenerationWorker({
-    campaigns: persistence.campaigns,
-    clock: () => NOW,
-    createUuid: ids,
-    generations: persistence.generations,
-    maintenance: persistence.generationMaintenance,
-    owner: 'faunapoolen-worker-partial-0001',
-    provider,
-    store: persistence.jobs,
-  });
-  assert.equal(await worker.runUntilIdle(), 2);
+for (const failedLanguage of ['en', 'sv'] as const) {
+  test(`failed ${failedLanguage} generation preserves completed copy and retries only missing work`, async (t) => {
+    const persistence = fixture(t);
+    const ids = uuidFactory(200);
+    const provider = new SyntheticProvider();
+    provider.failures.set(
+      `campaign.copy.${failedLanguage}`,
+      new GenerationProviderTerminalError(
+        'provider_generation_failed',
+        'Synthetic Swedish translation failure.',
+        'failed',
+      ),
+    );
+    const service = createGenerationService({
+      campaigns: persistence.campaigns,
+      clock: () => NOW,
+      createUuid: ids,
+      generationAdmission: persistence.generationAdmission,
+      generations: persistence.generations,
+      providerConfigured: true,
+    });
+    const accepted = await service.createCampaign({
+      idea: 'Write a bilingual water garden campaign',
+      ownerSessionIdHash: OWNER_HASH,
+    });
+    const worker = createCampaignGenerationWorker({
+      campaigns: persistence.campaigns,
+      clock: () => NOW,
+      createUuid: ids,
+      generations: persistence.generations,
+      maintenance: persistence.generationMaintenance,
+      owner: 'faunapoolen-worker-partial-0001',
+      provider,
+      store: persistence.jobs,
+    });
+    assert.equal(await worker.runUntilIdle(), 2);
 
-  const partial = persistence.campaigns.get(accepted.campaignId);
-  assert.ok(partial);
-  assert.equal(partial.record.stage, 'copy');
-  assert.ok(partial.record.copy.sv);
-  assert.equal(partial.record.copy.en, undefined);
-  assert.equal(partial.revision, 2);
-  assert.equal(persistence.generations.getLatestRun(accepted.campaignId)?.state, 'failed');
-  assert.deepEqual(
-    (await service.listRecoverableStatuses()).map(
-      ({ campaignId, campaignRevision, stage, state }) => ({
-        campaignId,
-        campaignRevision,
-        stage,
-        state,
-      }),
-    ),
-    [{ campaignId: accepted.campaignId, campaignRevision: 2, stage: 'copy', state: 'failed' }],
-  );
+    const partial = persistence.campaigns.get(accepted.campaignId);
+    assert.ok(partial);
+    assert.equal(partial.record.stage, failedLanguage === 'sv' ? 'copy' : 'strategy');
+    assert.equal(Boolean(partial.record.copy.en), failedLanguage === 'sv');
+    assert.equal(partial.record.copy.sv, undefined);
+    assert.equal(partial.revision, failedLanguage === 'sv' ? 2 : 1);
+    if (failedLanguage === 'en') assert.ok(!provider.operations.includes('campaign.copy.sv'));
+    assert.equal(persistence.generations.getLatestRun(accepted.campaignId)?.state, 'failed');
+    assert.deepEqual(
+      (await service.listRecoverableStatuses()).map(
+        ({ campaignId, campaignRevision, stage, state }) => ({
+          campaignId,
+          campaignRevision,
+          stage,
+          state,
+        }),
+      ),
+      [
+        {
+          campaignId: accepted.campaignId,
+          campaignRevision: partial.revision,
+          stage: 'copy',
+          state: 'failed',
+        },
+      ],
+    );
 
-  provider.failures.delete('campaign.copy.en');
-  provider.operations.length = 0;
-  const retried = await service.retryCampaign({
-    campaignId: accepted.campaignId,
-    expectedRevision: partial.revision,
-    ownerSessionIdHash: OWNER_HASH,
-    stage: 'copy',
+    provider.failures.delete(`campaign.copy.${failedLanguage}`);
+    provider.operations.length = 0;
+    const retried = await service.retryCampaign({
+      campaignId: accepted.campaignId,
+      expectedRevision: partial.revision,
+      ownerSessionIdHash: OWNER_HASH,
+      stage: 'copy',
+    });
+    assert.equal('state' in retried ? retried.state : undefined, 'queued');
+    assert.equal(await worker.runUntilIdle(), 2);
+
+    const completed = persistence.campaigns.get(accepted.campaignId);
+    assert.ok(completed);
+    assert.equal(completed.record.stage, 'complete');
+    assert.deepEqual(Object.keys(completed.record.copy).sort(), ['en', 'sv']);
+    assert.deepEqual(
+      provider.operations,
+      failedLanguage === 'sv'
+        ? ['campaign.copy.sv', 'campaign.image_prompts']
+        : ['campaign.copy.en', 'campaign.copy.sv', 'campaign.image_prompts'],
+    );
+    assert.deepEqual(await service.listRecoverableStatuses(), []);
   });
-  assert.equal('state' in retried ? retried.state : undefined, 'queued');
-  assert.equal(await worker.runUntilIdle(), 2);
-
-  const completed = persistence.campaigns.get(accepted.campaignId);
-  assert.ok(completed);
-  assert.equal(completed.record.stage, 'complete');
-  assert.deepEqual(Object.keys(completed.record.copy).sort(), ['en', 'sv']);
-  assert.deepEqual(provider.operations, ['campaign.copy.en', 'campaign.image_prompts']);
-  assert.deepEqual(await service.listRecoverableStatuses(), []);
-});
+}
 
 test('an ambiguous revision-zero strategy run can only be retried explicitly as strategy', async (t) => {
   const persistence = fixture(t);
@@ -520,8 +544,19 @@ class SyntheticProvider implements OpenAiResponsesProvider {
 }
 
 function resultForOperation(operation: string): unknown {
+  if (operation === 'campaign.refine.en')
+    return {
+      copy: { ...copy('en'), headline: 'Calm water starts here' },
+      translation: { ...campaignWording(copy('sv')), headline: 'Lugnt vatten börjar här' },
+      summary: 'Kept the calm garden intent, shortened the headline, and refreshed Swedish.',
+    };
+  if (operation === 'campaign.refine.sv')
+    return {
+      copy: { ...campaignWording(copy('sv')), headline: 'Lugnt vatten börjar här' },
+      summary: 'Kept the garden intent and made the Swedish headline clearer.',
+    };
   if (operation === 'campaign.strategy') return STRATEGY;
-  if (operation === 'campaign.copy.sv') return copy('sv');
+  if (operation === 'campaign.copy.sv') return campaignWording(copy('sv'));
   if (operation === 'campaign.copy.en') return copy('en');
   if (operation === 'campaign.image_prompts') return IMAGE_SCENES;
   throw new Error(`Unexpected synthetic generation operation: ${operation}`);
@@ -673,3 +708,159 @@ function uuidFactory(start: number): () => string {
 function uuid(value: number): string {
   return `00000000-0000-4000-8000-${String(value).padStart(12, '0')}`;
 }
+
+for (const language of ['en', 'sv'] as const) {
+  test(`refines ${language} from a durable imperfect draft and atomically saves the explanation`, async (t) => {
+    const persistence = fixture(t);
+    const original = campaignRecord(uuid(800), {
+      copy: { en: copy('en'), sv: copy('sv') },
+      imagePrompts: prompts(),
+      stage: 'complete',
+    });
+    persistence.campaigns.create(original);
+    const ids = uuidFactory(810);
+    const provider = new SyntheticProvider();
+    const service = createGenerationService({
+      campaigns: persistence.campaigns,
+      clock: () => NOW,
+      createUuid: ids,
+      generationAdmission: persistence.generationAdmission,
+      generations: persistence.generations,
+      providerConfigured: true,
+    });
+    const { variations: _variations, rationale: _rationale, ...wording } = copy(language);
+    const refinement = parseCopyRefinement({
+      language,
+      draft: {
+        ...wording,
+        headline: 'Keep the garden calm and make the first step feel simple, with water at home',
+      },
+    });
+    const accepted = await service.refineCopy({
+      campaignId: original.id,
+      expectedRevision: 1,
+      ownerSessionIdHash: OWNER_HASH,
+      refinement,
+    });
+    assert.ok('jobId' in accepted);
+    assert.deepEqual((await service.getStatus(original.id))?.refinement?.draft, refinement.draft);
+    assert.deepEqual(persistence.campaigns.get(original.id)?.record, original);
+    await assert.rejects(
+      service.refineCopy({
+        campaignId: original.id,
+        expectedRevision: 1,
+        ownerSessionIdHash: OWNER_HASH,
+        refinement,
+      }),
+      (error) => error instanceof HttpError && error.status === 409,
+    );
+    const run = persistence.generations.getLatestRun(original.id)!;
+    assert.throws(
+      () =>
+        persistence.database.sqlite.run(
+          'UPDATE generation_runs SET copy_refinement_json = NULL WHERE run_id = ?',
+          [run.runId],
+        ),
+      /immutable/,
+    );
+    const worker = createCampaignGenerationWorker({
+      campaigns: persistence.campaigns,
+      clock: () => NOW,
+      createUuid: ids,
+      generations: persistence.generations,
+      maintenance: persistence.generationMaintenance,
+      owner: 'faunapoolen-refinement-test-0001',
+      provider,
+      store: persistence.jobs,
+    });
+    assert.equal(await worker.runUntilIdle(), 1);
+    assert.equal(await worker.runUntilIdle(), 0);
+    const saved = persistence.campaigns.get(original.id)!;
+    assert.equal(saved.revision, 2);
+    assert.deepEqual(saved.record.strategy, original.strategy);
+    assert.deepEqual(saved.record.imagePrompts, original.imagePrompts);
+    assert.equal(saved.record.refinement?.language, language);
+    assert.equal(saved.record.refinement?.runId, run.runId);
+    assert.match(saved.record.refinement?.summary ?? '', /intent/);
+    assert.equal(saved.record.copy.sv?.headline, 'Lugnt vatten börjar här');
+    if (language === 'en') assert.equal(saved.record.copy.en?.headline, 'Calm water starts here');
+    else assert.deepEqual(saved.record.copy.en, original.copy.en);
+    assert.deepEqual(saved.record.copy.sv?.rationale, saved.record.copy.en?.rationale);
+    assert.deepEqual(provider.operations, [`campaign.refine.${language}`]);
+    assert.match(
+      provider.inputs.get(`campaign.refine.${language}`) ?? '',
+      /first step feel simple/,
+    );
+  });
+}
+
+test('failed refinement keeps the campaign and retries the original draft; stale work never overwrites a newer edit', async (t) => {
+  const persistence = fixture(t);
+  const original = campaignRecord(uuid(900), {
+    copy: { en: copy('en'), sv: copy('sv') },
+    imagePrompts: prompts(),
+    stage: 'complete',
+  });
+  persistence.campaigns.create(original);
+  const ids = uuidFactory(910);
+  const provider = new SyntheticProvider();
+  provider.failures.set(
+    'campaign.refine.en',
+    new GenerationProviderTerminalError(
+      'provider_generation_failed',
+      'Synthetic refinement failure.',
+      'failed',
+    ),
+  );
+  const service = createGenerationService({
+    campaigns: persistence.campaigns,
+    clock: () => NOW,
+    createUuid: ids,
+    generationAdmission: persistence.generationAdmission,
+    generations: persistence.generations,
+    providerConfigured: true,
+  });
+  const { variations: _variations, rationale: _rationale, ...draft } = copy('en');
+  const input = {
+    campaignId: original.id,
+    expectedRevision: 1,
+    ownerSessionIdHash: OWNER_HASH,
+    refinement: parseCopyRefinement({ language: 'en', draft }),
+  };
+  await service.refineCopy(input);
+  const worker = createCampaignGenerationWorker({
+    campaigns: persistence.campaigns,
+    clock: () => NOW,
+    createUuid: ids,
+    generations: persistence.generations,
+    maintenance: persistence.generationMaintenance,
+    owner: 'faunapoolen-refinement-test-0002',
+    provider,
+    store: persistence.jobs,
+  });
+  await worker.runUntilIdle();
+  assert.deepEqual(persistence.campaigns.get(original.id)?.record, original);
+  assert.equal((await service.getStatus(original.id))?.state, 'failed');
+  provider.failures.clear();
+  await service.retryCampaign({
+    campaignId: original.id,
+    expectedRevision: 1,
+    ownerSessionIdHash: OWNER_HASH,
+    stage: 'copy',
+  });
+  assert.deepEqual(persistence.generations.getLatestRun(original.id)?.refinement, input.refinement);
+  persistence.campaigns.updateCopy({
+    campaignId: original.id,
+    expectedRevision: 1,
+    language: 'en',
+    field: 'headline',
+    value: 'A newer owner edit',
+  });
+  await worker.runUntilIdle();
+  assert.equal(
+    persistence.campaigns.get(original.id)?.record.copy.en?.headline,
+    'A newer owner edit',
+  );
+  assert.equal((await service.getStatus(original.id))?.error?.code, 'campaign_revision_conflict');
+  assert.equal(provider.operations.length, 1);
+});

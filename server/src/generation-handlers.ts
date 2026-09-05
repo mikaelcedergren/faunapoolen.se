@@ -8,6 +8,7 @@ import {
   type DurableJobHandler,
 } from '@mikaelcedergren/cx-framework/server/jobs';
 
+import { refinementGenerationSpec } from './copy-refinement.js';
 import {
   CampaignCapacityError,
   CampaignRevisionConflictError,
@@ -41,6 +42,7 @@ import {
 import {
   buildCampaignImagePrompts,
   copyGenerationSpec,
+  translationGenerationSpec,
   imagePromptsGenerationSpec,
   strategyGenerationSpec,
 } from './generation-content.js';
@@ -135,6 +137,8 @@ export function createCampaignGenerationHandlers({
     try {
       if (payload.stage === 'strategy') {
         await executeStrategy(payload, run, context);
+      } else if (payload.refinement) {
+        await executeRefinement(payload, run, context);
       } else if (payload.stage === 'copy') {
         await executeCopy(payload, run, context);
       } else {
@@ -290,40 +294,84 @@ export function createCampaignGenerationHandlers({
     });
   }
 
+  async function executeRefinement(
+    payload: CampaignGenerationJobPayload,
+    run: GenerationRun,
+    context: DurableJobExecutionContext,
+  ): Promise<void> {
+    const stored = requiredCampaign(run);
+    if (!payload.refinement || stored.record.stage !== 'complete')
+      throw new Error('Refinement requires a complete campaign and an immutable draft.');
+    let result;
+    try {
+      result = await provider.generateStructured({
+        runId: run.runId,
+        signal: context.signal,
+        spec: (correction) =>
+          refinementGenerationSpec(
+            stored.record.strategy,
+            payload.refinement!,
+            stored.record.copy.en!.rationale,
+            correction,
+          ),
+      });
+    } catch (error) {
+      terminalizeProviderFailure(run, error, context);
+    }
+    const record = validateCampaignRecord({
+      ...stored.record,
+      copy: {
+        ...stored.record.copy,
+        [payload.refinement.language]: result.copy,
+        ...(result.translation ? { sv: result.translation } : {}),
+      },
+      refinement: {
+        runId: run.runId,
+        language: payload.refinement.language,
+        summary: result.summary,
+      },
+      updatedAt: nextTimestamp(stored.record, checkedClock(clock)),
+    });
+    generations.finalizeStage({
+      expectedRunRevision: run.revision,
+      runId: run.runId,
+      outcome: {
+        state: 'succeeded',
+        campaign: { kind: 'replace', expectedRevision: stored.revision, record },
+      },
+    });
+  }
+
   async function executeCopy(
     _payload: CampaignGenerationJobPayload,
     run: GenerationRun,
     context: DurableJobExecutionContext,
   ): Promise<void> {
     const stored = requiredCampaign(run);
-    const missing = CAMPAIGN_LANGUAGES.filter(
-      (language) => stored.record.copy[language] === undefined,
-    );
-    const settled = await Promise.allSettled(
-      missing.map(async (language) =>
-        Object.freeze({
-          copy: await provider.generateStructured({
-            runId: run.runId,
-            signal: context.signal,
-            spec: (correction) => copyGenerationSpec(stored.record.strategy, language, correction),
-          }),
-          language,
-        }),
-      ),
-    );
-
     const copy: Partial<Record<CampaignLanguage, CampaignCopy>> = {
       ...stored.record.copy,
     };
     const failures: GenerationProviderTerminalError[] = [];
-    for (const [index, result] of settled.entries()) {
-      const language = missing[index];
-      if (!language) throw new Error('Copy generation result lost its language identity.');
-      if (result.status === 'fulfilled') {
-        copy[language] = result.value.copy;
-        continue;
+    // The translation depends on the English result. Retain completed languages on retry.
+    for (const language of CAMPAIGN_LANGUAGES) {
+      if (copy[language] !== undefined) continue;
+      try {
+        const englishCopy = copy.en;
+        if (language === 'sv' && englishCopy === undefined) {
+          throw new Error('Swedish translation requires the English source copy.');
+        }
+        copy[language] = await provider.generateStructured({
+          runId: run.runId,
+          signal: context.signal,
+          spec: (correction) =>
+            language === 'en'
+              ? copyGenerationSpec(stored.record.strategy, correction)
+              : translationGenerationSpec(stored.record.strategy, englishCopy!, correction),
+        });
+      } catch (error) {
+        failures.push(providerFailure(error, context));
+        break;
       }
-      failures.push(providerFailure(result.reason, context));
     }
 
     if (failures.length > 0) {
@@ -582,6 +630,7 @@ function runMatchesJob(
     (run.stage === 'strategy'
       ? run.strategyIdea === payload.idea
       : run.strategyIdea === null && payload.idea === undefined) &&
+    JSON.stringify(run.refinement) === JSON.stringify(payload.refinement) &&
     idempotencyMatches
   );
 }

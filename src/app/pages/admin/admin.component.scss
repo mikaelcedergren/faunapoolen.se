@@ -100,31 +100,15 @@ fp-admin {
   line-height: var(--line-height-heading);
 }
 
-.fp-campaign-toolbar {
-  display: block;
-}
-
-.fp-campaign-toolbar cx-tabs {
-  min-width: 0;
-}
-
 .fp-campaign-panel {
   display: grid;
   min-width: 0;
   gap: var(--space-lg);
 }
 
-.fp-language-tabs {
-  display: block;
-  width: max-content;
-  max-width: 100%;
-  margin-bottom: var(--space-xl);
-}
-
 .fp-copy-form {
   display: grid;
   width: 100%;
-  max-width: var(--measure-md);
   min-width: 0;
   gap: var(--space-xl);
 }

@@ -211,7 +211,10 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     ].map((field) => ({
       field,
       ruleIds: ['outcome-first'],
-      guidance: `Lead the ${field} with the outcome, not the product.`,
+      guidance:
+        field === 'callToAction'
+          ? 'Ask for one specific consultation step; stay within 25 characters.'
+          : `Lead the ${field} with the outcome, not the product. Stay within the character limit.`,
     })),
   });
 
@@ -233,7 +236,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     expectedRevision: number;
     language: 'en' | 'sv';
     field: string;
-    value: string;
+    value: string | string[];
   };
   let saved: SavedEdit | undefined;
   const saveRequests: SavedEdit[] = [];
@@ -241,10 +244,20 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   let saveGate: Promise<void> | undefined;
   let releaseSaves: (() => void) | undefined;
   let generationReady = false;
+  let refinementPayload:
+    | { expectedRevision: number; language: 'en' | 'sv'; draft: ReturnType<typeof languageCopy> }
+    | undefined;
+  let refinementState: 'running' | 'succeeded' | 'failed' = 'running';
+  let refinementCalls = 0;
+  let refinementApplied = false;
+  const refinementId = 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee';
+  const refinementSummary =
+    'Kept the quiet garden idea, led with its benefit, and shortened the headline. Refreshed the Swedish translation.';
 
   const completedCampaign = {
     ...campaign,
     stage: 'complete' as const,
+    refinement: undefined as { runId: string; language: 'en' | 'sv'; summary: string } | undefined,
     copy: {
       sv: languageCopy(
         'En badplats som hör hemma',
@@ -287,6 +300,53 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
       },
     ],
   };
+
+  completedCampaign.copy.sv.rationale.forEach((entry) => {
+    entry.guidance = 'A separate Swedish explanation must not be shown.';
+  });
+  const refinementStatus = () => {
+    if (!refinementPayload) return undefined;
+    if (refinementState === 'succeeded' && !refinementApplied) {
+      completedCampaign.copy.en.headline = 'A quieter garden to swim in';
+      completedCampaign.copy.en.fullCaption = `${completedCampaign.copy.en.primaryText}\n\n${completedCampaign.copy.en.fullCaption.split('\n\n').slice(1).join('\n\n')}`;
+      completedCampaign.copy.sv.headline = 'Bada i en lugnare trädgård';
+      completedCampaign.refinement = {
+        runId: refinementId,
+        language: 'en',
+        summary: refinementSummary,
+      };
+      completedCampaign.revision += 1;
+      refinementApplied = true;
+    }
+    return {
+      campaignId: campaign.id,
+      campaignRevision: completedCampaign.revision,
+      jobId: 'synthetic-refinement-job',
+      stage: 'copy',
+      state: refinementState,
+      updatedAt: completedCampaign.updatedAt,
+      refinement: {
+        runId: refinementId,
+        language: refinementPayload.language,
+        draft: refinementPayload.draft,
+        expectedRevision: refinementPayload.expectedRevision,
+      },
+      ...(refinementState === 'failed'
+        ? {
+            error: {
+              code: 'provider_generation_failed',
+              message: 'Synthetic refinement failed. Your draft is kept.',
+            },
+          }
+        : {}),
+    };
+  };
+  await page.route('**/api/admin/generations', async (route) => {
+    const status = refinementStatus();
+    await route.fulfill({
+      json: { generations: status && status.state !== 'succeeded' ? [status] : [] },
+    });
+  });
 
   await page.route('**/api/admin/campaigns', async (route) => {
     if (route.request().method() !== 'POST') {
@@ -340,6 +400,27 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
 
   await page.route(`**/api/admin/campaigns/${campaign.id}/**`, async (route) => {
     const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/refine')) {
+      refinementPayload = route.request().postDataJSON();
+      refinementCalls += 1;
+      refinementState = 'running';
+      await route.fulfill({
+        status: 202,
+        json: {
+          generation: {
+            campaignId: campaign.id,
+            campaignRevision: completedCampaign.revision,
+            jobId: 'synthetic-refinement-job',
+            state: 'queued',
+          },
+        },
+      });
+      return;
+    }
+    if (url.pathname.endsWith('/status') && refinementPayload) {
+      await route.fulfill({ json: { status: refinementStatus() } });
+      return;
+    }
     if (url.pathname.endsWith('/status')) {
       await route.fulfill({
         contentType: 'application/json',
@@ -432,8 +513,8 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   expect(createPayload).toEqual({ idea: roughIdea });
 
   // Generation is one quiet blocking state. Editing and unrelated actions stay unavailable.
-  await expect(page.getByRole('heading', { name: 'Now I’m creating the strategy' })).toBeVisible();
-  await expect(page.getByRole('status', { name: 'Now I’m creating the strategy' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Creating strategy' })).toBeVisible();
+  await expect(page.getByRole('status', { name: 'Creating strategy' })).toBeVisible();
   await expect(page.getByRole('textbox', { name: 'Headline' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Create campaign' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Account actions for Admin' })).toBeDisabled();
@@ -447,30 +528,39 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
   await expect(page.getByRole('button', { name: 'Campaigns', exact: true })).toHaveCount(0);
 
-  // Two language tabs, never a platform tab. Swedish leads and is the default.
-  const tabs = page.getByRole('tablist', { name: 'Campaign language' }).getByRole('tab');
-  await expect(tabs).toHaveCount(2);
-  await expect(tabs.first()).toHaveText('Svenska');
-  await expect(
-    page.getByRole('tablist', { name: 'Campaign language' }).getByRole('tab', { selected: true }),
-  ).toHaveText('Svenska');
+  const campaignTabs = page.getByRole('tablist', { name: 'Campaign sections' });
+  const topBarBounds = await page.locator('cx-top-bar').boundingBox();
+  const sectionBounds = await campaignTabs.boundingBox();
+  expect(topBarBounds).not.toBeNull();
+  expect(sectionBounds).not.toBeNull();
+  expect(Math.abs(sectionBounds!.y - (topBarBounds!.y + topBarBounds!.height))).toBeLessThan(2);
+
+  const languages = page.getByRole('group', { name: 'Campaign language' });
+  await expect(languages.getByRole('button')).toHaveCount(2);
+  await expect(languages.getByRole('button').first()).toHaveText('English');
+  await expect(languages.getByRole('button', { name: 'English', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
 
   // Six prefilled fields use the framework's normal input treatment.
   const headline = page.getByRole('textbox', { name: 'Headline' });
-  await expect(headline).toHaveValue('En badplats som hör hemma');
+  await expect(headline).toHaveValue('A garden you can swim in');
   await expect(page.getByRole('textbox', { name: 'Primary text' })).toHaveValue(
-    'Bada hemma utan att trädgården blir ett byggprojekt.',
+    'Swim at home without turning the garden into a building site.',
   );
   await expect(page.locator('.cx-text-field__field-shell--inline-edit')).toHaveCount(0);
   await expect(page.locator('.cx-text-area__shell--inline-edit')).toHaveCount(0);
 
   const rationale = page.getByRole('complementary', { name: 'Copy rationale' });
   await expect(rationale.getByText('Why this works', { exact: true })).toBeVisible();
+  await page.getByRole('region', { name: 'Headline', exact: true }).hover();
   await expect(rationale.getByRole('heading', { name: 'Headline' })).toBeVisible();
   await expect(
     rationale.getByText('Lead the headline with the outcome, not the product.'),
   ).toBeVisible();
   await expect(rationale.getByText('Lead with the outcome', { exact: true })).toBeVisible();
+  await expect(rationale).not.toContainText(/characters?/i);
   const copyLayout = page.locator('cx-sidebar-layout');
   const copyForm = copyLayout.locator('.fp-copy-form');
   const desktopForm = await copyForm.boundingBox();
@@ -478,6 +568,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   expect(desktopForm).not.toBeNull();
   expect(desktopRationale).not.toBeNull();
   expect(desktopRationale!.x).toBeGreaterThanOrEqual(desktopForm!.x + desktopForm!.width);
+  expect(desktopRationale!.x - (desktopForm!.x + desktopForm!.width)).toBeLessThan(65);
   await page.setViewportSize({ width: 390, height: 844 });
   await expect.poll(async () => (await copyForm.boundingBox())?.width ?? 0).toBeGreaterThan(240);
   await expect(rationale).toBeVisible();
@@ -489,11 +580,17 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-sidebar-mobile.png' });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.getByRole('textbox', { name: 'Primary text', exact: true }).focus();
+  const savesBeforeHover = saveRequests.length;
+  await page.getByRole('region', { name: 'Call to action', exact: true }).hover();
+  await expect(rationale.getByText('Ask for one specific consultation step.')).toBeVisible();
+  await expect(rationale).not.toContainText(/characters?/i);
+  await page.getByRole('region', { name: 'Primary text', exact: true }).hover();
   await expect(rationale.getByRole('heading', { name: 'Primary text' })).toBeVisible();
+  expect(saveRequests.length).toBe(savesBeforeHover);
+  await expect(rationale.getByRole('heading', { name: 'Principles', exact: true })).toBeVisible();
 
   // Counts stay local; longer writing guidance is disclosed separately.
-  await expect(page.getByText('25/27 characters', { exact: true })).toBeVisible();
+  await expect(page.getByText('24/27 characters', { exact: true })).toBeVisible();
   await expect(page.locator('cx-budget')).toHaveCount(0);
 
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-copy.png' });
@@ -510,7 +607,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   );
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-strategy.png' });
   await page.getByRole('tab', { name: 'Copy', exact: true }).click();
-  await page.getByRole('tab', { name: 'English', exact: true }).click();
+  await page.getByRole('button', { name: 'English', exact: true }).click();
 
   // Editing saves on blur.
   await headline.fill('A garden to swim in');
@@ -547,11 +644,13 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await page
     .getByRole('textbox', { name: 'Primary text', exact: true })
     .fill('Swim in a garden that feels like home.');
-  // The Swedish tab swaps only the copy.
-  await page.getByRole('tab', { name: 'Svenska' }).click();
+  // The Swedish option swaps only the copy, using the identical English explanation.
+  const sharedExplanation = await rationale.innerText();
+  await page.getByRole('button', { name: 'Swedish', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Headline' })).toHaveValue(
     'En badplats som hör hemma',
   );
+  await expect(rationale).toHaveText(sharedExplanation, { useInnerText: true });
 
   releaseSaves?.();
   saveGate = undefined;
@@ -564,7 +663,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   ]);
   expect(completedCampaign.copy.sv.headline).toBe('En badplats som hör hemma');
 
-  await page.getByRole('tab', { name: 'English', exact: true }).click();
+  await page.getByRole('button', { name: 'English', exact: true }).click();
 
   // Failed writes preserve the draft and prevent a silent exit.
   failSaves = true;
@@ -597,6 +696,22 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await page.getByRole('button', { name: 'Retry save', exact: true }).click();
   await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
   expect(completedCampaign.copy.en.headline).toBe('A garden worth staying in');
+
+  // Tag creation uses the framework dialog and persists the entered name, never its option ID.
+  const tagField = page.locator('cx-tag-field');
+  await tagField.getByRole('combobox').click();
+  await page.getByText('Create tag', { exact: true }).click();
+  const tagDialog = page.getByRole('alertdialog', { name: 'Create tag' });
+  await expect(tagDialog).toBeVisible();
+  await tagDialog.getByRole('textbox', { name: 'Name', exact: true }).fill('#WaterGarden');
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-tag-dialog.png' });
+  await tagDialog.getByRole('button', { name: 'Create tag', exact: true }).click();
+  await expect(tagDialog).toBeHidden();
+  await expect(tagField.getByText('#WaterGarden', { exact: true })).toBeVisible();
+  await expect(page.getByText('Changes saved', { exact: true })).toBeVisible();
+  expect(completedCampaign.copy.en.hashtags).toContain('#WaterGarden');
+  expect(saved?.field).toBe('hashtags');
+  expect(saved?.value).toContain('#WaterGarden');
 
   // Keyboard section navigation follows the framework's tab behavior.
   await page.getByRole('tab', { name: 'Copy', exact: true }).focus();
@@ -631,9 +746,71 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     path: '/tmp/fauna-admin-after-list-populated.png',
   });
   await page.getByText('A natural place to swim', { exact: true }).click();
-  await expect(headline).toHaveValue('En badplats som hör hemma');
-  await page.getByRole('tab', { name: 'English', exact: true }).click();
   await expect(headline).toHaveValue('A garden worth staying in');
+  await expect(
+    page.locator('cx-tag-field').getByText('#WaterGarden', { exact: true }),
+  ).toBeVisible();
+  // Refinement keeps imperfect edits, recovers its immutable draft after reload, and applies one result.
+  const refineButton = page.getByRole('button', { name: 'Refine', exact: true });
+  const refineTooltip = page.getByRole('tooltip').filter({
+    hasText: 'Improve your edits while preserving their intent',
+  });
+  await refineButton.hover();
+  await expect(refineTooltip).toBeVisible();
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-refine-tooltip.png' });
+  await page.keyboard.press('Escape');
+  await expect(refineTooltip).toHaveCount(0);
+  await page.mouse.move(0, 0);
+  await refineButton.focus();
+  await expect(refineTooltip).toBeVisible();
+  await page.keyboard.press('Escape');
+  const intentionalDraft =
+    'A quiet garden where we can swim together and make room for the whole family';
+  failSaves = true;
+  await headline.fill(intentionalDraft);
+  await page.getByRole('button', { name: 'Refine', exact: true }).click();
+  await expect.poll(() => refinementPayload?.draft.headline).toBe(intentionalDraft);
+  await expect(page.getByRole('button', { name: 'Refine', exact: true })).toBeDisabled();
+  await expect(headline).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Swedish', exact: true })).toBeDisabled();
+  expect(refinementCalls).toBe(1);
+  refinementState = 'failed';
+  await expect(
+    page.getByText('Synthetic refinement failed. Your draft is kept.', { exact: true }),
+  ).toBeVisible();
+  await expect(headline).toHaveValue(intentionalDraft);
+  await expect(headline).toBeEnabled();
+  failSaves = false;
+  await page.getByRole('button', { name: 'Refine', exact: true }).click();
+  await expect.poll(() => refinementCalls).toBe(2);
+  await page.reload();
+  await expect(headline).toHaveValue(intentionalDraft);
+  await expect(headline).toBeDisabled();
+  refinementState = 'succeeded';
+  await expect(headline).toHaveValue('A quieter garden to swim in');
+  await expect(headline).toBeEnabled();
+  const refinementAlert = page.locator('cx-alert').filter({ hasText: 'Copy refined' });
+  await expect(refinementAlert).toContainText(refinementSummary);
+  const alertBounds = await refinementAlert.boundingBox();
+  const headlineBounds = await headline.boundingBox();
+  expect(alertBounds!.y + alertBounds!.height).toBeLessThan(headlineBounds!.y);
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-refined.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(refinementAlert).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-refined-mobile.png' });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+
+  await page.getByRole('button', { name: 'Swedish', exact: true }).click();
+  await expect(headline).toHaveValue('Bada i en lugnare trädgård');
+  await expect(
+    page.getByText('A separate Swedish explanation must not be shown.', { exact: true }),
+  ).toHaveCount(0);
+  await page.getByRole('button', { name: 'English', exact: true }).click();
+  await refinementAlert.getByRole('button', { name: 'Dismiss Copy refined', exact: true }).click();
+  await expect(refinementAlert).toHaveCount(0);
+  await expect(headline).toHaveValue('A quieter garden to swim in');
+  expect(refinementCalls).toBe(2);
   await expect(page.getByRole('button', { name: 'Campaign actions', exact: true })).toHaveCount(0);
   await expect(page.getByText('Delete campaign', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Account actions for Admin' }).click();
@@ -717,7 +894,7 @@ test('a fresh browser session recovers failed work before its campaign row exist
   });
   await page.getByRole('button', { name: 'Retry this stage' }).click();
   await expect.poll(() => retryPayload).toEqual({ expectedRevision: 0, stage: 'strategy' });
-  await expect(page.getByText('Now I’m creating the strategy', { exact: true })).toBeVisible();
+  await expect(page.getByText('Creating strategy', { exact: true })).toBeVisible();
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-generating.png' });
   retryRunning = false;
   await expect(page.getByText('Synthetic retry stopped.', { exact: true })).toBeVisible();

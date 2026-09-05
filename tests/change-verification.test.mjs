@@ -56,8 +56,8 @@ test('source inventory retains dangling links and detects target changes without
 });
 
 test('first use and explicit full select the complete proof', () => {
-  assert.deepEqual(classifyChanges([], { hasVerifiedSnapshot: false }).checks, ['full']);
-  assert.deepEqual(classifyChanges([], { forceFull: true }).checks, ['full']);
+  assert.deepEqual(classifyChanges([], { hasVerifiedSnapshot: false }).checks, ['full', 'hmr']);
+  assert.deepEqual(classifyChanges([], { forceFull: true }).checks, ['full', 'hmr']);
 });
 
 test('options have stable meanings and reject unknown or duplicate arguments', () => {
@@ -92,7 +92,6 @@ test('documentation, interface, E2E, and high-risk paths select their owning pro
   assert.deepEqual(classifyChanges(['e2e/smoke.spec.ts']).checks, ['format', 'e2e']);
   for (const file of [
     'AGENTS.md',
-    'package.json',
     '.env.worker.example',
     'server/src/database.ts',
     'server/src/openai-provider.ts',
@@ -107,7 +106,26 @@ test('documentation, interface, E2E, and high-risk paths select their owning pro
   assert.deepEqual(classifyChanges(['src/app/app.routes.ts']).checks, ['full', 'e2e', 'visual']);
   assert.deepEqual(
     classifyChanges(['package.json', 'src/app/pages/about/about.component.ts']).checks,
-    ['full', 'visual'],
+    ['full', 'visual', 'hmr'],
+  );
+});
+
+test('dependency and hot-reload changes require the watcher regression', () => {
+  for (const file of [
+    'package.json',
+    'pnpm-lock.yaml',
+    'pnpm-workspace.yaml',
+    'patches/angular.patch',
+    'tests/hmr/template-cache.spec.ts',
+    'playwright.hmr.config.ts',
+    'scripts/e2e-hmr-server.mjs',
+  ]) {
+    assert.deepEqual(classifyChanges([file]).checks, ['full', 'hmr'], file);
+  }
+  const check = { id: 'hmr', command: ['corepack', 'pnpm', 'e2e:hmr'] };
+  assert.notEqual(
+    checkInputHash(check, { 'patches/angular.patch': 'old' }),
+    checkInputHash(check, { 'patches/angular.patch': 'new' }),
   );
 });
 
