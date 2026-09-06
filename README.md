@@ -46,7 +46,7 @@ metadata when browser JavaScript is rebuilt. Template and stylesheet hot updates
 The pinned build version and patch are installed together from the lockfile; an ordinary reinstall
 retains the fix. Remove the patch only when an upstream build version passes `pnpm e2e:hmr` without
 it. That hermetic regression edits synthetic template, TypeScript, and CSS files, checks hot
-updates and page reloads, and runs in CI without touching the development campaign data.
+updates and page reloads, and runs locally without touching the development campaign data.
 
 Other useful commands:
 
