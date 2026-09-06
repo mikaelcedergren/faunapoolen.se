@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import {
   integerEnvironmentValue,
   localBindHost,
+  resolveExecutionPolicy,
+  type ExecutionPolicy,
   nodeEnvironmentValue,
   portEnvironmentValue,
   releaseValidationEnvironmentValue,
@@ -27,6 +29,7 @@ export const FAUNAPOOLEN_MANIFEST_FILE = fileURLToPath(
 export const FAUNAPOOLEN_ARTIFACT_ROOT = path.dirname(FAUNAPOOLEN_MANIFEST_FILE);
 
 interface FaunapoolenBaseEnvironment {
+  readonly execution: ExecutionPolicy;
   readonly appOrigin: string;
   readonly dataDirectory: string;
   readonly databasePath: string;
@@ -89,6 +92,7 @@ export function loadFaunapoolenEnvironment(
   const nodeEnvironment = nodeEnvironmentValue(environment);
   const releaseValidation = releaseValidationEnvironmentValue(environment);
   const isProduction = nodeEnvironment === 'production';
+  const execution = resolveExecutionPolicy(environment);
 
   const operationalRoot = resolveFaunapoolenOperationalRoot(environment);
   const port = role === 'web' ? portEnvironmentValue(environment, 'PORT', 3040) : undefined;
@@ -102,7 +106,7 @@ export function loadFaunapoolenEnvironment(
   const appOrigin = normalizeHttpOrigin(
     configuredOrigin ?? `http://127.0.0.1:${String(port ?? 3040)}`,
   );
-  const defaultDataDirectory = isProduction || releaseValidation ? 'data' : '.run/dev/data';
+  const defaultDataDirectory = 'data';
   const dataDirectory = resolveContainedPath(
     operationalRoot,
     environment['DATA_DIR'] ?? defaultDataDirectory,
@@ -113,7 +117,7 @@ export function loadFaunapoolenEnvironment(
     environment['DB_PATH'] ?? path.join(dataDirectory, 'faunapoolen.db'),
     'DB_PATH',
   );
-  if (isProduction) {
+  if (isProduction || execution.dataMode === 'shared') {
     const expectedDataDirectory = path.join(operationalRoot, 'data');
     const expectedDatabasePath = path.join(expectedDataDirectory, 'faunapoolen.db');
     if (dataDirectory !== expectedDataDirectory) {
@@ -126,10 +130,11 @@ export function loadFaunapoolenEnvironment(
   const generationEnabled = binaryEnvironmentSwitch(
     environment,
     'CAMPAIGN_GENERATION_ENABLED',
-    isProduction ? undefined : environment['OPENAI_API_KEY'] !== undefined,
+    execution.dataMode === 'shared' ? undefined : environment['OPENAI_API_KEY'] !== undefined,
   );
 
   const base = {
+    execution,
     appOrigin,
     dataDirectory,
     databasePath,
@@ -165,7 +170,7 @@ export function loadFaunapoolenEnvironment(
     : exactSecret(
         environment,
         'ADMIN_USERNAME',
-        isProduction ? undefined : 'faunapoolen-local-owner',
+        execution.dataMode === 'shared' ? undefined : 'faunapoolen-local-owner',
       );
   if (adminUsername.length > 256) {
     throw new Error('ADMIN_USERNAME must contain at most 256 characters.');
@@ -175,7 +180,7 @@ export function loadFaunapoolenEnvironment(
     : exactSecret(
         environment,
         'ADMIN_PASSWORD',
-        isProduction ? undefined : 'faunapoolen-local-development-password',
+        execution.dataMode === 'shared' ? undefined : 'faunapoolen-local-development-password',
       );
   if (adminPassword.length < 16 || adminPassword.length > 256) {
     throw new Error('ADMIN_PASSWORD must contain between 16 and 256 characters.');
@@ -185,7 +190,9 @@ export function loadFaunapoolenEnvironment(
     : exactSecret(
         environment,
         'SESSION_SECRET',
-        isProduction ? undefined : 'faunapoolen-local-development-session-secret',
+        execution.dataMode === 'shared'
+          ? undefined
+          : 'faunapoolen-local-development-session-secret',
       );
   if (sessionSecret.length < 32) {
     throw new Error('SESSION_SECRET must contain at least 32 characters.');

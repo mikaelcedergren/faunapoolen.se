@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { chmodSync, existsSync, lstatSync, mkdirSync, realpathSync } from 'node:fs';
+import { lstatSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -8,8 +8,12 @@ export function createDevelopmentEnvironments(ambient = process.env) {
   const server = {
     ...ambient,
     APP_BASE_URL: 'http://127.0.0.1:4240',
-    DATA_DIR: '.run/dev/data',
-    DB_PATH: '.run/dev/data/faunapoolen.db',
+    DATA_DIR: 'data',
+    CX_EXECUTION_SCOPE: 'development',
+    CX_DATA_MODE: 'shared',
+    CX_SCHEDULE_OWNER: 'false',
+    CAMPAIGN_GENERATION_ENABLED: ambient.CAMPAIGN_GENERATION_ENABLED ?? '0',
+    DB_PATH: 'data/faunapoolen.db',
     HOST: '127.0.0.1',
     NODE_ENV: 'development',
     PORT: '4241',
@@ -27,27 +31,23 @@ export function prepareDevelopmentDataDirectory(root = process.cwd()) {
   if (canonicalRoot !== resolve(root)) {
     throw new Error('Faunapoolen development must run from its canonical repository path.');
   }
-  const directories = [
-    resolve(canonicalRoot, '.run'),
-    resolve(canonicalRoot, '.run', 'dev'),
-    resolve(canonicalRoot, '.run', 'dev', 'data'),
-  ];
-  for (const directory of directories) {
-    if (!existsSync(directory)) {
-      mkdirSync(directory, { mode: 0o700 });
-    }
-    const metadata = lstatSync(directory);
+  const directory = resolve(canonicalRoot, 'data');
+  const database = resolve(directory, 'faunapoolen.db');
+  for (const [candidate, kind] of [
+    [directory, 'directory'],
+    [database, 'file'],
+  ]) {
+    const metadata = lstatSync(candidate);
     if (
-      !metadata.isDirectory() ||
+      (kind === 'directory' ? !metadata.isDirectory() : !metadata.isFile()) ||
       metadata.isSymbolicLink() ||
       metadata.uid !== process.getuid?.() ||
-      realpathSync(directory) !== directory
+      realpathSync(candidate) !== candidate
     ) {
-      throw new Error(`Unsafe Faunapoolen development directory: ${directory}`);
+      throw new Error(`Unsafe Faunapoolen shared development store: ${candidate}`);
     }
-    chmodSync(directory, 0o700);
   }
-  return directories.at(-1);
+  return directory;
 }
 
 export function startDevelopment() {

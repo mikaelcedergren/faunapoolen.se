@@ -5,9 +5,31 @@ import path from 'node:path';
 import test from 'node:test';
 
 import { FAUNAPOOLEN_PUBLIC_ORIGIN, FAUNAPOOLEN_WWW_ORIGIN } from './constants.js';
-import { loadFaunapoolenEnvironment } from './environment.js';
+import { loadFaunapoolenEnvironment as resolveFaunapoolenEnvironment } from './environment.js';
+
+const TEST_POLICY = {
+  CX_EXECUTION_SCOPE: 'test',
+  CX_DATA_MODE: 'isolated',
+  CX_SCHEDULE_OWNER: 'false',
+};
+const PRODUCTION_POLICY = {
+  CX_EXECUTION_SCOPE: 'production',
+  CX_DATA_MODE: 'shared',
+  CX_SCHEDULE_OWNER: 'false',
+};
+const VALIDATION_POLICY = {
+  CX_EXECUTION_SCOPE: 'validation',
+  CX_DATA_MODE: 'isolated',
+  CX_SCHEDULE_OWNER: 'false',
+};
+const loadFaunapoolenEnvironment = ((environment: NodeJS.ProcessEnv, role = 'web') =>
+  resolveFaunapoolenEnvironment(
+    { ...TEST_POLICY, ...environment },
+    role as 'web',
+  )) as typeof resolveFaunapoolenEnvironment;
 
 const PRODUCTION_ENVIRONMENT = Object.freeze({
+  ...PRODUCTION_POLICY,
   ADMIN_PASSWORD: 'correct-horse-battery-staple',
   ADMIN_USERNAME: 'owner',
   APP_BASE_URL: FAUNAPOOLEN_PUBLIC_ORIGIN,
@@ -84,6 +106,7 @@ test('release validation is production-isolated inside one absolute runtime root
     APP_BASE_URL: 'http://127.0.0.1',
     CAMPAIGN_GENERATION_ENABLED: '0',
     CX_RELEASE_VALIDATION: '1',
+    ...VALIDATION_POLICY,
     CX_RUNTIME_ROOT: runtimeRoot,
     NODE_ENV: 'production',
     PORT: '4357',
@@ -94,6 +117,7 @@ test('release validation is production-isolated inside one absolute runtime root
     APP_BASE_URL: 'http://127.0.0.1',
     CAMPAIGN_GENERATION_ENABLED: '0',
     CX_RELEASE_VALIDATION: '1',
+    ...VALIDATION_POLICY,
     CX_RUNTIME_ROOT: runtimeRoot,
     NODE_ENV: 'production',
     PORT: '4357',
@@ -127,6 +151,7 @@ test('release validation is production-isolated inside one absolute runtime root
         ...PRODUCTION_ENVIRONMENT,
         APP_BASE_URL: 'http://127.0.0.1',
         CX_RELEASE_VALIDATION: '1',
+        ...VALIDATION_POLICY,
       }),
     /CX_RUNTIME_ROOT/,
   );
@@ -136,6 +161,7 @@ test('release validation is production-isolated inside one absolute runtime root
         ...PRODUCTION_ENVIRONMENT,
         APP_BASE_URL: 'http://127.0.0.1',
         CX_RELEASE_VALIDATION: '1',
+        ...VALIDATION_POLICY,
         CX_RUNTIME_ROOT: runtimeRoot,
         SITE_BROWSER_DIR: path.join(runtimeRoot, '..', 'outside-browser'),
       }),
@@ -152,6 +178,7 @@ test('mutable data and browser paths cannot escape the operational root', (t) =>
     ...PRODUCTION_ENVIRONMENT,
     APP_BASE_URL: 'http://127.0.0.1',
     CX_RELEASE_VALIDATION: '1',
+    ...VALIDATION_POLICY,
     CX_RUNTIME_ROOT: runtimeRoot,
     OPENAI_API_KEY: undefined,
   };
@@ -190,10 +217,7 @@ test('provider overrides are test-only exact numeric-loopback URLs', () => {
     'worker',
   );
   assert.equal(accepted.providerBaseUrl, 'http://127.0.0.1:4545/v1');
-  assert.equal(
-    accepted.databasePath,
-    path.join(process.cwd(), '.run', 'dev', 'data', 'faunapoolen.db'),
-  );
+  assert.equal(accepted.databasePath, path.join(process.cwd(), 'data', 'faunapoolen.db'));
 
   for (const value of [
     'https://127.0.0.1:4545/v1',
@@ -265,4 +289,28 @@ test('development trusts both loopback origin spellings for mutations', () => {
     NODE_ENV: 'development',
   });
   assert.deepEqual(named.mutationOrigins, ['http://localhost:4240', 'http://127.0.0.1:4240']);
+});
+
+test('shared development requires private credentials and explicit generation configuration', () => {
+  const base = {
+    ...PRODUCTION_ENVIRONMENT,
+    NODE_ENV: 'development',
+    CX_EXECUTION_SCOPE: 'development',
+    APP_BASE_URL: 'http://127.0.0.1:4240',
+    CAMPAIGN_GENERATION_ENABLED: '0',
+  };
+  const environment = loadFaunapoolenEnvironment(base);
+  assert.equal(environment.execution.dataMode, 'shared');
+  assert.equal(environment.generationEnabled, false);
+  for (const key of [
+    'ADMIN_USERNAME',
+    'ADMIN_PASSWORD',
+    'SESSION_SECRET',
+    'CAMPAIGN_GENERATION_ENABLED',
+  ]) {
+    assert.throws(
+      () => loadFaunapoolenEnvironment({ ...base, [key]: undefined }),
+      /Missing required/,
+    );
+  }
 });

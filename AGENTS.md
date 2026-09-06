@@ -1,5 +1,19 @@
 # faunapoolen.se
 
+## Everyday development
+
+Wolfie uses the product with real records, fixes problems in development as they appear, and
+publishes when satisfied. Follow the shared [development contract](../SERVER-STANDARD.md#local-development)
+and [dev-first delivery rule](../AGENTS.md#user-facing-delivery). Automated mutation checks and
+release validation remain isolated and synthetic.
+
+Normal dev and production share `data/faunapoolen.db`. Keep paid generation under its existing
+explicit enablement and preserve the public-content publication boundary.
+
+Shared-storage upgrades require a coordinated maintenance window for every writer. The
+[cross-repo implementation record](../SHARED-DATA-DEVELOPMENT-PLAN.md) distinguishes source
+preparation from installed runtime adoption.
+
 Faunapoolen is the public Swedish/English website at [faunapoolen.se](https://faunapoolen.se) and a
 private campaign studio at `/admin`. The public site is an Angular 22 static-prerender application
 served by one compiled TypeScript/Express web process. A separate listener-free worker owns durable
@@ -66,8 +80,9 @@ JavaScript server, generated source mirror, alternate store, import fallback, or
 wrapper. Git history is the historical record; active source and documentation describe only the
 current system.
 
-The database is required to exist in production. Its exact supported migration prefix and complete
-schema are verified on the same connection before any write or pending migration. Current schema
+The database is required to exist in shared dev and production. Both roles verify the exact
+current schema before writes and refuse pending migrations. Only explicit offline maintenance
+accepts a supported older migration prefix. Current schema
 owns campaigns, signed owner sessions, login windows, generation quotas, durable jobs, generation
 runs, provider effects, and bounded recovery state. Existing databases move forward through
 append-only migrations; never rewrite an applied migration or bypass the pre-write proof.
@@ -174,3 +189,16 @@ must refuse external fetches and never load the repository's real `.env.web`, `.
 Operational campaign data, secrets, logs, and release state are ignored by Git. Preserve the
 authoritative SQLite database and registered backups. The protected private source archive under
 `.run/campaigns` is data only and is never a runtime input or fallback.
+
+## Shared storage maintenance
+
+The registered offline candidate tools run `quiesce-database`, `migrate-database`, and
+`verify-database` from `server/dist/database-maintenance.js`. They do not load secrets, seed data,
+or start workers. The host operator must prove every dev and production writer stopped, take a
+verified backup, migrate once, and select schema-compatible runtimes before restarting.
+
+Migration preserves old jobs and their domain records in the held `legacy` scope. New workers
+cannot claim them. `server/src/scope-migration.ts` assigns reviewed terminal or never-attempted jobs
+and their domain owner atomically. Attempted or ambiguous provider work requires explicit outcome
+resolution before assignment; never infer an origin or replay it automatically. Old isolated dev
+stores remain preserved until a separately reviewed import resolves duplicate or changed records.

@@ -687,6 +687,7 @@ function fixture(t: TestContext): FaunapoolenPersistence {
   const jobs = uuidFactory(10_000);
   const leases = uuidFactory(20_000);
   const persistence = createFaunapoolenPersistence({
+    executionScope: 'test',
     clock: () => NOW,
     createJobId: jobs,
     createLeaseToken: leases,

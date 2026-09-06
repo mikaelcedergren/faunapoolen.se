@@ -311,6 +311,7 @@ async function createFixture(
 
 function createEnvironment(root: string, browserDirectory: string): FaunapoolenEnvironment {
   return {
+    execution: { executionScope: 'test', dataMode: 'isolated', scheduleOwner: false },
     adminPassword: PASSWORD,
     adminUsername: USERNAME,
     appOrigin: ORIGIN,

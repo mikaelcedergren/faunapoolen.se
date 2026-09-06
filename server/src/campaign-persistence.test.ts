@@ -198,6 +198,7 @@ function persistenceFixture(
   const databasePath = path.join(directory, 'faunapoolen.db');
   let jobSequence = 0;
   const persistence = createFaunapoolenPersistence({
+    executionScope: 'test',
     clock,
     createJobId: () => `job-${String(++jobSequence).padStart(8, '0')}`,
     createLeaseToken: () => `lease-${String(jobSequence).padStart(8, '0')}`,
@@ -286,12 +287,19 @@ function insertTerminalGenerationRun(
   const runId = campaignId(index + 100_000);
   const jobId = `terminal-job-${String(index).padStart(8, '0')}`;
   const failed = state === 'failed' || state === 'ambiguous';
+  // Model a terminal run whose queue receipt was subsequently pruned.
+  persistence.database.sqlite.run(
+    `INSERT INTO cx_jobs (id, type, payload_json, idempotency_key, status, max_attempts,
+       scheduled_at, available_at, finished_at, created_at, updated_at, execution_scope)
+     VALUES (?, 'synthetic.terminal', '{}', ?, 'succeeded', 1, 0, 0, ?, 0, ?, ?)`,
+    [jobId, jobId, finishedAt, finishedAt, persistence.jobs.executionScope],
+  );
   persistence.database.sqlite.run(
     `INSERT INTO generation_runs (
        run_id, campaign_id, owner_session_id_hash, stage, strategy_idea, state,
        expected_campaign_revision, job_id, attempt, error_code, error_message,
-       created_at, updated_at, finished_at, revision
-     ) VALUES (?, ?, ?, 'strategy', ?, ?, 0, ?, 1, ?, ?, ?, ?, ?, 1)`,
+       created_at, updated_at, finished_at, revision, execution_scope
+     ) VALUES (?, ?, ?, 'strategy', ?, ?, 0, ?, 1, ?, ?, ?, ?, ?, 1, ?)`,
     [
       runId,
       options.campaignId ?? campaignId(index),
@@ -304,8 +312,10 @@ function insertTerminalGenerationRun(
       finishedAt,
       finishedAt,
       finishedAt,
+      persistence.jobs.executionScope,
     ],
   );
+  persistence.database.sqlite.run('DELETE FROM cx_jobs WHERE id = ?', [jobId]);
   return Object.freeze({ jobId, runId });
 }
 
@@ -441,6 +451,7 @@ test('the forward migration preserves campaigns and removes closed import eviden
 
   let verified = false;
   const upgraded = openFaunapoolenDatabase({
+    migrate: true,
     databasePath,
     operationalRoot: directory,
     requireExisting: true,
@@ -1276,6 +1287,7 @@ test('strategy retry retains its immutable idea across restart after the termina
   let now = 1_800_000_000_000;
   const open = () =>
     createFaunapoolenPersistence({
+      executionScope: 'test',
       clock: () => now,
       createJobId: () => `restart-job-${String(++jobSequence).padStart(8, '0')}`,
       createLeaseToken: () => `restart-lease-${String(jobSequence).padStart(8, '0')}`,
@@ -1396,13 +1408,13 @@ test('stage finalization atomically hands off by monotonic sequence and preserve
         `INSERT INTO generation_runs (
            run_id, campaign_id, owner_session_id_hash, stage, strategy_idea, state,
            expected_campaign_revision, job_id, attempt, created_at, updated_at,
-           finished_at, revision
-         ) VALUES (?, ?, ?, 'prompts', NULL, 'queued', 1, ?, 1, ?, ?, NULL, 1)`,
+           finished_at, revision, execution_scope
+         ) VALUES (?, ?, ?, 'prompts', NULL, 'queued', 1, ?, 1, ?, ?, NULL, 1, 'test')`,
         [
           '00000000-0000-4000-8000-000000000002',
           campaignId(310),
           OWNER_HASH,
-          'cross-stage-job-0001',
+          strategyDone.nextRun!.jobId,
           fixedNow,
           fixedNow,
         ],
@@ -1596,6 +1608,7 @@ test('retention survives restart, deletes whole old aggregates, and preserves la
   const databasePath = path.join(directory, 'faunapoolen.db');
   const open = () =>
     createFaunapoolenPersistence({
+      executionScope: 'test',
       databasePath,
       operationalRoot: directory,
     });
@@ -1844,6 +1857,7 @@ test('post-restart reconciliation closes max-attempt job orphans and restores de
   let jobSequence = 0;
   const open = () =>
     createFaunapoolenPersistence({
+      executionScope: 'test',
       clock: () => now,
       createJobId: () => `reconcile-job-${String(++jobSequence).padStart(8, '0')}`,
       createLeaseToken: () => `reconcile-lease-${String(jobSequence).padStart(8, '0')}`,
@@ -1980,6 +1994,7 @@ test('a succeeded paid receipt gets one same-run application recovery and can ne
   let now = 100_000;
   let jobSequence = 0;
   const persistence = createFaunapoolenPersistence({
+    executionScope: 'test',
     clock: () => now,
     createJobId: () => `receipt-job-${String(++jobSequence).padStart(8, '0')}`,
     createLeaseToken: () => `receipt-lease-${String(jobSequence).padStart(8, '0')}`,
@@ -2106,6 +2121,7 @@ test('a succeeded paid receipt gets one same-run application recovery and can ne
 
   let claimed = false;
   const singleRecoveryClaimStore: DurableJobStore = {
+    executionScope: persistence.jobs.executionScope,
     leaseDurationMs: persistence.jobs.leaseDurationMs,
     maxConcurrentJobs: persistence.jobs.maxConcurrentJobs,
     claim(owner) {
@@ -2563,6 +2579,7 @@ test('production open requires an existing verified database and detects a path 
 
   const selected = path.join(root, 'selected.db');
   const selectedDatabase = createFaunapoolenPersistence({
+    executionScope: 'test',
     databasePath: selected,
     operationalRoot: root,
   });
@@ -2571,6 +2588,7 @@ test('production open requires an existing verified database and detects a path 
 
   const replacement = path.join(root, 'replacement.db');
   const replacementDatabase = createFaunapoolenPersistence({
+    executionScope: 'test',
     databasePath: replacement,
     operationalRoot: root,
   });
@@ -2580,6 +2598,7 @@ test('production open requires an existing verified database and detects a path 
   assert.throws(
     () =>
       createFaunapoolenPersistence({
+        executionScope: 'test',
         databasePath: selected,
         operationalRoot: root,
         requireExisting: true,
@@ -2594,4 +2613,89 @@ test('production open requires an existing verified database and detects a path 
   );
   assert.equal(authorityVerified, true);
   assert.equal(fs.existsSync(selected), true);
+});
+
+test('shared campaigns isolate generation receipts and recovery without multiplying the generation budget', (t) => {
+  const development = persistenceFixture(t);
+  const production = createFaunapoolenPersistence({
+    executionScope: 'production',
+    databasePath: development.database.databasePath,
+    operationalRoot: path.dirname(development.database.databasePath),
+    migrate: false,
+  });
+  try {
+    development.campaigns.create(record(910));
+    assert.ok(production.campaigns.get(campaignId(910)));
+    const now = Date.parse(UPDATED_AT);
+    const accepted = development.generationAdmission.admit({
+      kind: 'initial',
+      run: runInput(911),
+      now,
+      policy: { maximumGenerations: 1, windowMs: 600_000 },
+    });
+    assert.equal(accepted.status, 'accepted');
+    if (accepted.status !== 'accepted') throw new Error('Expected admission');
+    const run = accepted.run;
+    assert.equal(production.jobs.claim('production-worker'), null);
+    assert.equal(production.generations.getRun(run.runId), null);
+    assert.equal(production.generations.getRunByJobId(run.jobId), null);
+    assert.equal(production.generations.getLatestRun(run.campaignId), null);
+    assert.deepEqual(production.generations.listLatestRecoverableRuns({ limit: 10 }), []);
+    assert.throws(
+      () =>
+        production.generations.transitionRun({
+          runId: run.runId,
+          expectedRevision: 1,
+          state: 'running',
+        }),
+      /revision|Generation run/,
+    );
+    const effect = development.generations.prepareEffect({
+      effectId: 'e'.repeat(64),
+      effectKey: 'shared-scope-effect',
+      operation: 'responses.create',
+      requestSha256: REQUEST_HASH,
+      runId: run.runId,
+    });
+    const creating = development.generations.transitionEffect({
+      effectId: effect.effectId,
+      expectedRevision: effect.revision,
+      state: 'creating',
+    });
+    assert.equal(production.generations.getEffect(effect.effectId), null);
+    assert.throws(
+      () =>
+        production.generations.transitionEffect({
+          effectId: effect.effectId,
+          expectedRevision: creating.revision,
+          state: 'creating',
+        }),
+      /revision|Generation run/,
+    );
+    assert.equal(production.generations.markCreatingEffectsAmbiguous(now), 0);
+    assert.equal(development.generations.getEffect(effect.effectId)?.state, 'creating');
+    assert.deepEqual(production.generationMaintenance.reconcileTerminalJobs({ now, limit: 10 }), {
+      ambiguous: 0,
+      failed: 0,
+      resumed: 0,
+    });
+    assert.equal(
+      production.generationMaintenance.maintainTerminalStorage({
+        now: now + 100_000_000,
+        limit: 10,
+      }).runs,
+      0,
+    );
+    assert.equal(
+      production.generationAdmission.admit({
+        kind: 'initial',
+        run: runInput(912),
+        now,
+        policy: { maximumGenerations: 1, windowMs: 600_000 },
+      }).status,
+      'rate_limited',
+    );
+  } finally {
+    production.close();
+  }
 });

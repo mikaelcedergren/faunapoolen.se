@@ -50,6 +50,7 @@ test('final handoff capacity exhausts the run explicitly instead of leaving it a
   await assert.rejects(
     handler(job.payload, {
       attempt: 8,
+      executionScope: 'test',
       heartbeat: () => NOW,
       idempotencyKey: `campaign-generation:${RUN_ID}`,
       jobId: JOB_ID,
@@ -86,6 +87,7 @@ test('effect-capacity exhaustion fails definitively before any provider create c
   await assert.rejects(
     handler(job.payload, {
       attempt: 8,
+      executionScope: 'test',
       heartbeat: () => NOW,
       idempotencyKey: `campaign-generation:${RUN_ID}`,
       jobId: JOB_ID,
@@ -131,6 +133,7 @@ test('invalid or altered job input fails only the run associated with the truste
       await assert.rejects(
         handler(scenario.payload, {
           attempt: 1,
+          executionScope: 'test',
           heartbeat: () => NOW,
           idempotencyKey: `campaign-generation:${RUN_ID}`,
           jobId: JOB_ID,
@@ -174,6 +177,7 @@ test('a recovery-shaped key is rejected unless the exact job identity is persist
   await assert.rejects(
     handler(job.payload, {
       attempt: 1,
+      executionScope: 'test',
       heartbeat: () => NOW,
       idempotencyKey: campaignGenerationReceiptRecoveryIdempotencyKey(RUN_ID),
       jobId: JOB_ID,
@@ -208,6 +212,7 @@ test('exhausted polling quarantines the durable receipt and run as ambiguous wit
   })[CAMPAIGN_GENERATION_JOB_TYPE];
   assert.ok(handler);
   const context = {
+    executionScope: 'test',
     attempt: 8,
     heartbeat: () => NOW,
     idempotencyKey: `campaign-generation:${RUN_ID}`,

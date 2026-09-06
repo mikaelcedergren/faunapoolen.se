@@ -7,6 +7,7 @@ import {
 import {
   SQLITE_MIGRATION_LEDGER_TABLE,
   applySqliteMigrations,
+  applySqliteMigrationsAtomically,
   createPreparedSyncSqliteAdapter,
   openOwnedSqliteDatabase,
   verifySqliteIntegrity,
@@ -440,7 +441,7 @@ const PRODUCT_MIGRATIONS = Object.freeze([
   }),
 ] as const satisfies readonly SqliteMigration[]);
 
-const JOB_MIGRATIONS = DURABLE_JOB_SCHEMA_MIGRATIONS.map((migration) =>
+const JOB_MIGRATIONS = DURABLE_JOB_SCHEMA_MIGRATIONS.slice(0, 4).map((migration) =>
   Object.freeze({
     version: PRODUCT_MIGRATION_COUNT + migration.version,
     name: `shared_${migration.name}`,
@@ -449,7 +450,7 @@ const JOB_MIGRATIONS = DURABLE_JOB_SCHEMA_MIGRATIONS.map((migration) =>
 );
 
 const RETIRE_IMPORT_EVIDENCE_MIGRATION = Object.freeze({
-  version: PRODUCT_MIGRATION_COUNT + DURABLE_JOB_SCHEMA_MIGRATIONS.length + 1,
+  version: PRODUCT_MIGRATION_COUNT + 4 + 1,
   name: 'retire_campaign_import_evidence',
   statements: Object.freeze([
     'DROP TRIGGER campaigns_revision_guard',
@@ -511,6 +512,26 @@ export const FAUNAPOOLEN_MIGRATIONS = Object.freeze([
   ...JOB_MIGRATIONS,
   RETIRE_IMPORT_EVIDENCE_MIGRATION,
   COPY_REFINEMENT_MIGRATION,
+  {
+    ...DURABLE_JOB_SCHEMA_MIGRATIONS[4]!,
+    version: COPY_REFINEMENT_MIGRATION.version + 1,
+    name: 'shared_durable_job_execution_scopes',
+  },
+  {
+    version: COPY_REFINEMENT_MIGRATION.version + 2,
+    name: 'generation_execution_scopes',
+    statements: [
+      "ALTER TABLE generation_runs ADD COLUMN execution_scope TEXT NOT NULL DEFAULT 'legacy'",
+      'CREATE INDEX generation_runs_scope_campaign ON generation_runs(execution_scope, campaign_id, run_sequence DESC)',
+      `CREATE TRIGGER generation_runs_scope_insert BEFORE INSERT ON generation_runs
+       WHEN NOT EXISTS (SELECT 1 FROM cx_jobs WHERE id = NEW.job_id AND execution_scope = NEW.execution_scope)
+       BEGIN SELECT RAISE(ABORT, 'generation run and job scopes must match'); END`,
+      `CREATE TRIGGER generation_runs_scope_update BEFORE UPDATE OF execution_scope, job_id ON generation_runs
+       WHEN (NEW.execution_scope IS NOT OLD.execution_scope AND OLD.execution_scope <> 'legacy')
+         OR NOT EXISTS (SELECT 1 FROM cx_jobs WHERE id = NEW.job_id AND execution_scope = NEW.execution_scope)
+       BEGIN SELECT RAISE(ABORT, 'generation run execution scope is immutable'); END`,
+    ],
+  },
 ] as const satisfies readonly SqliteMigration[]);
 
 const REQUIRED_TABLES = Object.freeze([
@@ -585,7 +606,7 @@ export function openFaunapoolenDatabase(
 ): FaunapoolenDatabase {
   const {
     databasePath,
-    migrate = true,
+    migrate = !options.requireExisting,
     now = () => new Date().toISOString(),
     operationalRoot,
   } = options;
@@ -645,7 +666,9 @@ export function migrateFaunapoolenDatabase(
   database: SyncSqliteDatabase,
   now: () => string = () => new Date().toISOString(),
 ): void {
-  const result = applySqliteMigrations(database, FAUNAPOOLEN_MIGRATIONS, {
+  const result = applySqliteMigrationsAtomically(database, FAUNAPOOLEN_MIGRATIONS, {
+    captureState: () => undefined,
+    verifyFinalState: (current) => verifyFaunapoolenDatabase(current),
     fingerprint: sha256Hex,
     now,
   });
@@ -886,6 +909,7 @@ function migrationFingerprint(migration: SqliteMigration): string {
       name: migration.name,
       statements: migration.statements,
       version: migration.version,
+      ...(migration.rebuildReferencedTables ? { rebuildReferencedTables: true } : {}),
     }),
   );
 }

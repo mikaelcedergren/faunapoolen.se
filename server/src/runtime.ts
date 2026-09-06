@@ -29,7 +29,7 @@ import {
   type FaunapoolenEnvironment,
 } from './environment.js';
 import { createGenerationService } from './generation-service.js';
-import { verifyFaunapoolenDatabaseBeforeWrite } from './database.js';
+import { verifyFaunapoolenDatabase } from './database.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
 const HTTP_SHUTDOWN_TIMEOUT_MS = 10_000;
@@ -73,12 +73,13 @@ export async function startFaunapoolenServer({
   });
 
   const persistence = createFaunapoolenPersistence({
+    executionScope: environment.execution.executionScope,
     databasePath: environment.databasePath,
     operationalRoot: environment.operationalRoot,
-    ...(environment.isProduction && !environment.releaseValidation
+    ...(environment.execution.dataMode === 'shared'
       ? {
           requireExisting: true as const,
-          verifyBeforeWrite: verifyFaunapoolenDatabaseBeforeWrite,
+          verifyBeforeWrite: verifyFaunapoolenDatabase,
         }
       : {}),
   });

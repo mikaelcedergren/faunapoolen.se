@@ -11,8 +11,10 @@ import {
 import {
   acquireServerWorkerReadinessLease,
   createServerWorkerReadiness,
+  createWorkerLifetimeReference,
   signalServerWorkerReadiness,
   type ServerWorkerReadinessLease,
+  type WorkerLifetimeReference,
 } from '@mikaelcedergren/cx-framework/server/worker-readiness';
 
 import {
@@ -30,7 +32,7 @@ import {
   createCampaignGenerationWorker,
   type CampaignGenerationWorkerLoop,
 } from './generation-worker.js';
-import { verifyFaunapoolenDatabaseBeforeWrite } from './database.js';
+import { verifyFaunapoolenDatabase } from './database.js';
 import { createOpenAiResponsesProvider } from './openai-provider.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
@@ -93,12 +95,13 @@ export async function startFaunapoolenWorker({
   }
 
   const persistence = createFaunapoolenPersistence({
+    executionScope: environment.execution.executionScope,
     databasePath: environment.databasePath,
     operationalRoot: environment.operationalRoot,
-    ...(environment.isProduction && !environment.releaseValidation
+    ...(environment.execution.dataMode === 'shared'
       ? {
           requireExisting: true as const,
-          verifyBeforeWrite: verifyFaunapoolenDatabaseBeforeWrite,
+          verifyBeforeWrite: verifyFaunapoolenDatabase,
         }
       : {}),
   });
@@ -228,6 +231,7 @@ export async function startFaunapoolenWorker({
     let closing: Promise<void> | undefined;
     let disposeSignals = (): void => undefined;
     let readinessLease: ServerWorkerReadinessLease | undefined;
+    let lifetimeReference: WorkerLifetimeReference | undefined;
     let workerStarted = false;
     const shutdown: GracefulShutdown = {
       get closing() {
@@ -239,6 +243,7 @@ export async function startFaunapoolenWorker({
         closing = closeWorkerRuntime({
           closeReadinessLease: () => {
             readinessLease?.close();
+            lifetimeReference?.close();
           },
           closePersistence: () => {
             if (!persistenceOpen) return;
@@ -268,6 +273,9 @@ export async function startFaunapoolenWorker({
         identity,
         production: environment.isProduction,
       });
+      if (!environment.isProduction) {
+        lifetimeReference = createWorkerLifetimeReference();
+      }
       workerStarted = true;
       worker.start();
     } catch (startupError) {
@@ -287,6 +295,18 @@ export async function startFaunapoolenWorker({
         ? '[faunapoolen] campaign generation worker ready with claims enabled'
         : '[faunapoolen] campaign generation worker ready with claims disabled',
     );
+    if (sourceEnvironment['CX_DEV_GENERATION']) {
+      console.info(
+        JSON.stringify({
+          developmentRuntime: {
+            generation: sourceEnvironment['CX_DEV_GENERATION'],
+            pid: process.pid,
+            role: FAUNAPOOLEN_WORKER_KEY,
+            ...environment.execution,
+          },
+        }),
+      );
+    }
     return Object.freeze({
       claimsEnabled: environment.generationEnabled,
       environment,

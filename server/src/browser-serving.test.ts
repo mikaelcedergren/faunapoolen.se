@@ -47,6 +47,7 @@ const PUBLIC_LITERAL_HTML_ROUTES = [
 
 function createEnvironment(root: string, browserDirectory: string): FaunapoolenEnvironment {
   return {
+    execution: { executionScope: 'test', dataMode: 'isolated', scheduleOwner: false },
     adminPassword: 'synthetic-password-value',
     adminUsername: 'owner',
     appOrigin: 'http://127.0.0.1:4359',
