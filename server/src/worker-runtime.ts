@@ -1,4 +1,5 @@
 import { loadProductManifestFile } from '@mikaelcedergren/cx-framework/server/product-manifest';
+import { configureFaunapoolenLogging, log } from './logging.js';
 import { assertServerProcessRole } from '@mikaelcedergren/cx-framework/server/process-role';
 import {
   loadServerReleaseIdentity,
@@ -85,6 +86,7 @@ export async function startFaunapoolenWorker({
     environment: sourceEnvironment,
     required: environment.isProduction || environment.releaseValidation,
   });
+  configureFaunapoolenLogging('jobs', sourceEnvironment, identity?.releaseId);
   if (identity) {
     assertServerProcessRole({
       artifactRoot: FAUNAPOOLEN_ARTIFACT_ROOT,
@@ -119,7 +121,6 @@ export async function startFaunapoolenWorker({
         },
         close(reason = 'shutdown') {
           if (closing) return closing;
-          console.info(`[faunapoolen] worker validation stopping (${reason})`);
           closing = closeWorkerValidation({
             closePersistence: () => {
               if (!persistenceOpen) return;
@@ -128,6 +129,13 @@ export async function startFaunapoolenWorker({
             },
             disposeSignals: () => disposeSignals(),
             releaseValidationReference,
+          }).then(() => {
+            log.emit({
+              event: 'process.stopped',
+              level: 'info',
+              category: 'operation',
+              outcome: 'success',
+            });
           });
           return closing;
         },
@@ -135,15 +143,24 @@ export async function startFaunapoolenWorker({
       try {
         disposeSignals = bindShutdownSignals({
           onError(error) {
-            console.error('[faunapoolen] worker validation shutdown failed', error);
+            log.emit({
+              event: 'process.stop_failed',
+              level: 'error',
+              category: 'diagnostic',
+              outcome: 'failure',
+              error,
+            });
             process.exitCode = 1;
             try {
               releaseValidationReference();
             } catch (releaseError) {
-              console.error(
-                '[faunapoolen] worker validation reference release failed',
-                releaseError,
-              );
+              log.emit({
+                event: 'process.reference_release_failed',
+                level: 'error',
+                category: 'diagnostic',
+                outcome: 'failure',
+                error: releaseError,
+              });
             }
           },
           shutdown,
@@ -168,7 +185,13 @@ export async function startFaunapoolenWorker({
         }
         throw startupError;
       }
-      console.info('[faunapoolen] worker release validation ready');
+      log.emit({
+        event: 'process.ready',
+        level: 'info',
+        category: 'operation',
+        outcome: 'success',
+        code: 'VALIDATION',
+      });
       return Object.freeze({
         environment,
         identity,
@@ -198,7 +221,13 @@ export async function startFaunapoolenWorker({
       generations: persistence.generations,
       maintenance: persistence.generationMaintenance,
       onError(error) {
-        console.error('[faunapoolen] campaign generation worker operation failed', error);
+        log.emit({
+          event: 'worker.failed',
+          level: 'error',
+          category: 'diagnostic',
+          outcome: 'failure',
+          error,
+        });
       },
       onMaintenance(result) {
         if (
@@ -209,7 +238,31 @@ export async function startFaunapoolenWorker({
           result.responseBytes > 0 ||
           result.runs > 0
         ) {
-          console.info('[faunapoolen] campaign generation maintenance completed', result);
+          for (const [operation, count] of Object.entries({
+            ambiguous: result.ambiguous,
+            effects: result.effects,
+            failed: result.failed,
+            jobs: result.jobs,
+            runs: result.runs,
+          })) {
+            if (count > 0)
+              log.emit({
+                event: 'generation.maintenance',
+                level: 'info',
+                category: 'operation',
+                outcome: 'success',
+                operation,
+                count,
+              });
+          }
+          if (result.responseBytes > 0)
+            log.emit({
+              event: 'generation.response_bytes_expired',
+              level: 'info',
+              category: 'operation',
+              outcome: 'success',
+              bytes: result.responseBytes,
+            });
         }
       },
       onRecovery(result) {
@@ -221,7 +274,24 @@ export async function startFaunapoolenWorker({
           result.resumedRuns > 0 ||
           result.retriedJobs > 0
         ) {
-          console.info('[faunapoolen] campaign generation recovery completed', result);
+          for (const [operation, count] of Object.entries({
+            ambiguousEffects: result.ambiguousEffects,
+            ambiguousRuns: result.ambiguousRuns,
+            failedJobs: result.failedJobs,
+            failedRuns: result.failedRuns,
+            resumedRuns: result.resumedRuns,
+            retriedJobs: result.retriedJobs,
+          })) {
+            if (count > 0)
+              log.emit({
+                event: 'generation.recovery',
+                level: 'info',
+                category: 'operation',
+                outcome: 'success',
+                operation,
+                count,
+              });
+          }
         }
       },
       ...(provider === undefined ? {} : { provider }),
@@ -239,7 +309,6 @@ export async function startFaunapoolenWorker({
       },
       close(reason = 'shutdown') {
         if (closing) return closing;
-        console.info(`[faunapoolen] worker stopping (${reason})`);
         closing = closeWorkerRuntime({
           closeReadinessLease: () => {
             readinessLease?.close();
@@ -253,6 +322,13 @@ export async function startFaunapoolenWorker({
           disposeSignals: () => disposeSignals(),
           reason,
           worker: workerStarted ? worker : undefined,
+        }).then(() => {
+          log.emit({
+            event: 'process.stopped',
+            level: 'info',
+            category: 'operation',
+            outcome: 'success',
+          });
         });
         return closing;
       },
@@ -261,7 +337,13 @@ export async function startFaunapoolenWorker({
     try {
       disposeSignals = bindShutdownSignals({
         onError(error) {
-          console.error('[faunapoolen] worker shutdown failed', error);
+          log.emit({
+            event: 'process.stop_failed',
+            level: 'error',
+            category: 'diagnostic',
+            outcome: 'failure',
+            error,
+          });
           process.exitCode = 1;
         },
         shutdown,
@@ -290,11 +372,13 @@ export async function startFaunapoolenWorker({
       throw startupError;
     }
 
-    console.info(
-      environment.generationEnabled
-        ? '[faunapoolen] campaign generation worker ready with claims enabled'
-        : '[faunapoolen] campaign generation worker ready with claims disabled',
-    );
+    log.emit({
+      event: 'process.ready',
+      level: 'info',
+      category: 'operation',
+      outcome: 'success',
+      code: environment.generationEnabled ? 'CLAIMS_ENABLED' : 'CLAIMS_DISABLED',
+    });
     if (sourceEnvironment['CX_DEV_GENERATION']) {
       console.info(
         JSON.stringify({

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { log } from './logging.js';
 
 import type { JsonValue } from '@mikaelcedergren/cx-framework/server/errors';
 import {
@@ -91,7 +92,12 @@ export interface CampaignCopyUpdate {
   readonly campaignId: string;
   readonly expectedRevision: number;
   readonly field:
-    'callToAction' | 'description' | 'fullCaption' | 'hashtags' | 'headline' | 'primaryText';
+    | 'callToAction'
+    | 'description'
+    | 'fullCaption'
+    | 'hashtags'
+    | 'headline'
+    | 'primaryText';
   readonly language: CampaignLanguage;
   readonly value: string | readonly string[];
 }
@@ -125,7 +131,13 @@ export interface GenerationAllowance {
 export type GenerationStage = 'strategy' | 'copy' | 'prompts';
 export type GenerationState = 'queued' | 'running' | 'succeeded' | 'failed' | 'ambiguous';
 export type ProviderEffectState =
-  'prepared' | 'creating' | 'submitted' | 'polling' | 'succeeded' | 'rejected' | 'ambiguous';
+  | 'prepared'
+  | 'creating'
+  | 'submitted'
+  | 'polling'
+  | 'succeeded'
+  | 'rejected'
+  | 'ambiguous';
 
 export interface GenerationRun {
   readonly attempt: number;
@@ -1097,7 +1109,7 @@ export function createGenerationRepository(
     validateGenerationRunInput(input.run);
     assertEpoch(input.now, 'Generation admission time');
     assertWindowPolicy(input.policy.maximumGenerations, input.policy.windowMs, 'Generation');
-    return jobs.withTransaction((transaction) => {
+    const result = jobs.withTransaction((transaction) => {
       // Admission state is checked before charging the bounded window. Every later mutation is in
       // this same immediate transaction, so job/run capacity or insertion failure rolls it back.
       assertAdmissionState(input);
@@ -1111,6 +1123,18 @@ export function createGenerationRepository(
         status: 'accepted' as const,
       });
     });
+    if (result.status === 'accepted') {
+      log.emit({
+        event: 'generation.admitted',
+        level: 'info',
+        category: 'diagnostic',
+        outcome: 'success',
+        jobId: result.run.jobId,
+        effectId: result.run.runId,
+        operation: result.run.stage,
+      });
+    }
+    return result;
   }
 
   function persistCampaignMutation(
@@ -1183,7 +1207,7 @@ export function createGenerationRepository(
       requireOwnedRun(input.runId);
       assertPositiveInteger(input.expectedRunRevision, 'Expected generation revision');
       const now = checkedClock(clock);
-      return jobs.withTransaction((transaction) => {
+      const result = jobs.withTransaction((transaction) => {
         const row = ownedRun(input.runId);
         if (!row) throw new PersistenceRevisionConflictError('Generation run', input.runId);
         const current = parseGenerationRun(row);
@@ -1258,6 +1282,38 @@ export function createGenerationRepository(
         const nextRun = insertRun(transaction, nextInput, now);
         return Object.freeze({ campaign, finalizedRun, nextRun });
       });
+      const completed = result.finalizedRun;
+      log.emit({
+        event: 'generation.stage_completed',
+        level: completed.state === 'succeeded' ? 'info' : 'error',
+        category: 'operation',
+        outcome: completed.state === 'succeeded' ? 'success' : 'failure',
+        jobId: completed.jobId,
+        effectId: completed.runId,
+        operation: completed.stage,
+        code: completed.state.toUpperCase(),
+      });
+      if (result.nextRun) {
+        log.emit({
+          event: 'generation.handoff',
+          level: 'info',
+          category: 'diagnostic',
+          outcome: 'success',
+          jobId: result.nextRun.jobId,
+          effectId: completed.runId,
+          operation: result.nextRun.stage,
+        });
+        log.emit({
+          event: 'generation.admitted',
+          level: 'info',
+          category: 'diagnostic',
+          outcome: 'success',
+          jobId: result.nextRun.jobId,
+          effectId: result.nextRun.runId,
+          operation: result.nextRun.stage,
+        });
+      }
+      return result;
     },
     getEffect(effectId) {
       const row = database.get<ProviderEffectRow>(

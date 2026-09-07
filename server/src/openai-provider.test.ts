@@ -3,6 +3,12 @@ import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import test, { type TestContext } from 'node:test';
+import {
+  parseLogRecord,
+  runWithLogContext,
+  type LogRecord,
+} from '@mikaelcedergren/cx-framework/server/logging';
+import { configureFaunapoolenLogging } from './logging.js';
 
 import type { JsonValue } from '@mikaelcedergren/cx-framework/server/errors';
 
@@ -21,6 +27,60 @@ import {
 
 const RUN_ID = '22222222-2222-4222-8222-222222222222';
 const NOW = 1_800_000_000_000;
+
+test('provider diagnostics summarize recovered polling failures with stable opaque context', async (t) => {
+  const records: LogRecord[] = [];
+  const logger = configureFaunapoolenLogging('jobs', { NODE_ENV: 'test' }, 'fixture', {
+    write(line) {
+      records.push(parseLogRecord(line));
+      return true;
+    },
+    status() {
+      return { accepted: records.length, dropped: 0, failed: 0, pendingBytes: 0, available: true };
+    },
+  });
+  t.after(() => configureFaunapoolenLogging('operator', { NODE_ENV: 'test' }));
+  const repository = new EffectRepository();
+  const requests: RequestRecord[] = [];
+  const responses = [
+    jsonResponse({ id: 'resp_PRIVATE_0001', status: 'queued' }),
+    new Response('PRIVATE transient body', { status: 503 }),
+    jsonResponse(completed('resp_PRIVATE_0001', { value: 'PRIVATE final content' })),
+  ];
+  const provider = providerFixture(repository, requests, async () => {
+    const response = responses.shift();
+    assert.ok(response);
+    return response;
+  });
+  const generate = () =>
+    runWithLogContext({ jobId: 'synthetic-provider-job', runId: 'synthetic-worker-attempt' }, () =>
+      provider.generateStructured({ runId: RUN_ID, signal: new AbortController().signal, spec }),
+    );
+  assert.deepEqual(await generate(), { value: 'PRIVATE final content' });
+  assert.deepEqual(await generate(), { value: 'PRIVATE final content' });
+  const finished = records.filter((record) => record.event === 'provider.finished');
+  assert.equal(finished.length, 2);
+  assert.equal(finished[0]?.attempt, 3);
+  assert.equal(finished[0]?.count, 1);
+  assert.equal(finished[0]?.statusCode, 200);
+  assert.equal(finished[0]?.outcome, 'success');
+  assert.equal(finished[1]?.attempt, 0);
+  assert.equal(finished[1]?.code, 'DURABLE_REPLAY');
+  assert.equal(finished[0]?.effectId, repository.only().effectId);
+  assert.ok(
+    records.every(
+      (record) =>
+        record.effectId === finished[0]?.effectId &&
+        record.jobId === 'synthetic-provider-job' &&
+        record.runId === 'synthetic-worker-attempt',
+    ),
+  );
+  assert.equal(logger.status().invalid, 0);
+  assert.doesNotMatch(
+    JSON.stringify(records),
+    /PRIVATE|Initial input|Instructions|127\.0\.0\.1|resp_/u,
+  );
+});
 
 test('one background create is fenced before completed output is interpreted', async () => {
   const repository = new EffectRepository();

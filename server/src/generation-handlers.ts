@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+import { runWithLogContext } from '@mikaelcedergren/cx-framework/server/logging';
+import { log } from './logging.js';
 
 import {
   DurableJobCapacityError,
@@ -380,7 +382,7 @@ export function createCampaignGenerationHandlers({
         failures,
         changed ? partialCopy(stored, copy, checkedClock(clock)) : undefined,
       );
-      terminalizeRun(run, outcome);
+      terminalizeRun(run, outcome, failures[0]);
     }
 
     const hasPrompts = stored.record.imagePrompts.length > 0;
@@ -476,11 +478,15 @@ export function createCampaignGenerationHandlers({
     context: DurableJobExecutionContext,
   ): never {
     const terminal = providerFailure(error, context);
-    terminalizeRun(run, {
-      errorCode: terminal.code,
-      errorMessage: terminal.message,
-      state: terminal.outcome,
-    });
+    terminalizeRun(
+      run,
+      {
+        errorCode: terminal.code,
+        errorMessage: terminal.message,
+        state: terminal.outcome,
+      },
+      terminal,
+    );
   }
 
   function providerFailure(
@@ -543,13 +549,22 @@ export function createCampaignGenerationHandlers({
     );
   }
 
-  function terminalizeRun(run: GenerationRun, outcome: TerminalGenerationStageOutcome): never {
+  function terminalizeRun(
+    run: GenerationRun,
+    outcome: TerminalGenerationStageOutcome,
+    cause?: unknown,
+  ): never {
     generations.finalizeStage({
       expectedRunRevision: run.revision,
       outcome,
       runId: run.runId,
     });
-    throw new CampaignGenerationExecutionError(outcome.errorCode, outcome.errorMessage, false);
+    throw new CampaignGenerationExecutionError(
+      outcome.errorCode,
+      outcome.errorMessage,
+      false,
+      cause === undefined ? {} : { cause },
+    );
   }
 
   function nextRunInput(
@@ -574,7 +589,46 @@ export function createCampaignGenerationHandlers({
     });
   }
 
-  return Object.freeze({ [CAMPAIGN_GENERATION_JOB_TYPE]: handler });
+  const observedHandler: DurableJobHandler = (payload, context) =>
+    runWithLogContext({ runId: randomUUID(), jobId: context.jobId }, async () => {
+      const started = performance.now();
+      log.emit({
+        event: 'job.started',
+        level: 'info',
+        category: 'diagnostic',
+        outcome: 'started',
+        operation: CAMPAIGN_GENERATION_JOB_TYPE,
+        attempt: context.attempt,
+      });
+      try {
+        await handler(payload, context);
+        log.emit({
+          event: 'job.handler_completed',
+          level: 'info',
+          category: 'diagnostic',
+          outcome: 'success',
+          operation: CAMPAIGN_GENERATION_JOB_TYPE,
+          attempt: context.attempt,
+          durationMs: performance.now() - started,
+        });
+      } catch (error) {
+        const disposition = classifyCampaignGenerationFailure(error, checkedClock(clock));
+        const waiting = 'type' in disposition;
+        log.emit({
+          event: waiting ? 'job.waiting' : 'job.handler_failed',
+          level: waiting ? 'info' : 'error',
+          category: 'diagnostic',
+          outcome: waiting ? 'skipped' : 'failure',
+          operation: CAMPAIGN_GENERATION_JOB_TYPE,
+          attempt: context.attempt,
+          durationMs: performance.now() - started,
+          code: disposition.code,
+          ...(waiting ? {} : { error }),
+        });
+        throw error;
+      }
+    });
+  return Object.freeze({ [CAMPAIGN_GENERATION_JOB_TYPE]: observedHandler });
 }
 
 function aggregateCopyFailure(

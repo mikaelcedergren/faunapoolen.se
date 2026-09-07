@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+import { runWithLogContext } from '@mikaelcedergren/cx-framework/server/logging';
+import { log } from './logging.js';
 
 import {
   createDurableWorker,
@@ -111,7 +113,7 @@ export function createCampaignGenerationWorker(
         provider,
       }),
       owner,
-      store,
+      store: observedStore(store),
     });
   }
   let cancelPoll: (() => void) | undefined;
@@ -119,10 +121,12 @@ export function createCampaignGenerationWorker(
 
   async function runUntilIdle(): Promise<number> {
     try {
-      const processed = await worker.runUntilIdle();
+      const processed = await runWithLogContext({ runId: randomUUID() }, () =>
+        worker.runUntilIdle(),
+      );
       if (processed > 0) {
         try {
-          maintain();
+          runWithLogContext({ runId: randomUUID() }, maintain);
         } catch (error) {
           // Completed work remains authoritative. Maintenance is bounded and will be retried on the
           // periodic path; diagnostics must not turn a successful worker batch into a false failure.
@@ -159,7 +163,7 @@ export function createCampaignGenerationWorker(
 
   function maintenanceTick(): void {
     try {
-      maintain();
+      runWithLogContext({ runId: randomUUID() }, maintain);
     } catch (error) {
       onError(error);
     }
@@ -199,7 +203,7 @@ export function createCampaignGenerationWorker(
       if (cancelPoll || cancelMaintenance) return;
       if (!worker.accepting)
         throw new Error('A stopped campaign generation worker cannot restart.');
-      recover();
+      runWithLogContext({ runId: randomUUID() }, recover);
       const scheduledPoll = scheduleInterval(pollIntervalMs, poll);
       if (typeof scheduledPoll !== 'function') {
         throw new Error('Campaign generation worker poll interval must be cancellable.');
@@ -260,6 +264,68 @@ function createClaimDisabledCampaignGenerationWorker(): CampaignGenerationWorker
 function defaultScheduleInterval(intervalMs: number, tick: () => void): () => void {
   const timer = setInterval(tick, intervalMs);
   return () => clearInterval(timer);
+}
+
+/** A handler return is not a durable terminal transition; record the store's committed result. */
+function observedStore(store: DurableJobStore): DurableJobStore {
+  return Object.freeze<DurableJobStore>({
+    ...store,
+    complete(claim) {
+      store.complete(claim);
+      log.emit({
+        event: 'job.completed',
+        level: 'info',
+        category: 'operation',
+        outcome: 'success',
+        jobId: claim.id,
+        operation: claim.type,
+        attempt: claim.attempts,
+      });
+    },
+    fail(claim, failure) {
+      const result = store.fail(claim, failure);
+      const terminal = result.status === 'failed';
+      log.emit({
+        event: terminal ? 'job.failed' : 'job.retry_scheduled',
+        level: terminal ? 'error' : 'warn',
+        category: terminal ? 'operation' : 'diagnostic',
+        outcome: terminal ? 'failure' : 'retry',
+        jobId: claim.id,
+        operation: claim.type,
+        attempt: claim.attempts,
+        code: failure.code,
+      });
+      return result;
+    },
+    delay(claim, delay) {
+      const result = store.delay(claim, delay);
+      log.emit({
+        event: 'job.delayed',
+        level: 'info',
+        category: 'diagnostic',
+        outcome: 'skipped',
+        jobId: claim.id,
+        operation: claim.type,
+        attempt: claim.attempts,
+        code: delay.code,
+      });
+      return result;
+    },
+    defer(claim, barrier) {
+      const result = store.defer(claim, barrier);
+      log.emit({
+        event: 'job.deferred',
+        level: 'warn',
+        category: 'diagnostic',
+        outcome: 'skipped',
+        jobId: claim.id,
+        operation: claim.type,
+        attempt: claim.attempts,
+        code: barrier.code,
+      });
+      return result;
+    },
+  });
 }
 
 function assertTimer(value: number, label: string): void {

@@ -5,6 +5,12 @@ import path from 'node:path';
 import test, { type TestContext } from 'node:test';
 
 import { HttpError } from '@mikaelcedergren/cx-framework/server/errors';
+import {
+  parseLogRecord,
+  runWithLogContext,
+  type LogRecord,
+} from '@mikaelcedergren/cx-framework/server/logging';
+import { configureFaunapoolenLogging } from './logging.js';
 
 import { parseCopyRefinement } from './copy-refinement.js';
 import {
@@ -35,6 +41,17 @@ const NOW = Date.UTC(2026, 7, 25, 14, 0, 0);
 const OWNER_HASH = 'a'.repeat(64);
 
 test('durable worker completes strategy, bilingual copy, and prompts through atomic handoffs', async (t) => {
+  const records: LogRecord[] = [];
+  const logger = configureFaunapoolenLogging('jobs', { NODE_ENV: 'test' }, 'fixture', {
+    write(line) {
+      records.push(parseLogRecord(line));
+      return true;
+    },
+    status() {
+      return { accepted: records.length, dropped: 0, failed: 0, pendingBytes: 0, available: true };
+    },
+  });
+  t.after(() => configureFaunapoolenLogging('operator', { NODE_ENV: 'test' }));
   const persistence = fixture(t);
   const ids = uuidFactory(100);
   const provider = new SyntheticProvider();
@@ -46,10 +63,12 @@ test('durable worker completes strategy, bilingual copy, and prompts through ato
     generations: persistence.generations,
     providerConfigured: true,
   });
-  const accepted = await service.createCampaign({
-    idea: 'Create a calm nature pool campaign',
-    ownerSessionIdHash: OWNER_HASH,
-  });
+  const accepted = await runWithLogContext({ requestId: 'synthetic-admission-0001' }, () =>
+    service.createCampaign({
+      idea: 'Create a calm nature pool campaign',
+      ownerSessionIdHash: OWNER_HASH,
+    }),
+  );
   assert.equal(accepted.campaignRevision, 0);
 
   const worker = createCampaignGenerationWorker({
@@ -62,7 +81,10 @@ test('durable worker completes strategy, bilingual copy, and prompts through ato
     provider,
     store: persistence.jobs,
   });
-  assert.equal(await worker.runUntilIdle(), 3);
+  assert.equal(
+    await runWithLogContext({ requestId: 'unrelated-request-0002' }, () => worker.runUntilIdle()),
+    3,
+  );
 
   const campaign = persistence.campaigns.get(accepted.campaignId);
   assert.ok(campaign);
@@ -87,6 +109,65 @@ test('durable worker completes strategy, bilingual copy, and prompts through ato
   assert.equal(status?.state, 'succeeded');
   assert.equal(status?.campaignRevision, 3);
   assert.equal(persistence.jobs.get(accepted.jobId)?.status, 'succeeded');
+  const admitted = records.find((record) => record.event === 'generation.admitted');
+  assert.equal(admitted?.jobId, accepted.jobId);
+  assert.equal(admitted?.requestId, 'synthetic-admission-0001');
+  const started = records.filter((record) => record.event === 'job.started');
+  assert.equal(started.length, 3);
+  assert.equal(new Set(started.map((record) => record.runId)).size, 3);
+  assert.ok(started.every((record) => record.requestId === undefined));
+  assert.equal(records.filter((record) => record.event === 'generation.handoff').length, 2);
+  assert.equal(records.filter((record) => record.event === 'generation.stage_completed').length, 3);
+  const terminal = records.filter((record) => record.event === 'job.completed');
+  assert.equal(terminal.length, 3);
+  assert.ok(
+    terminal.every(
+      (record) => record.jobId && persistence.jobs.get(record.jobId)?.status === 'succeeded',
+    ),
+  );
+  assert.equal(logger.status().invalid, 0);
+  assert.doesNotMatch(
+    JSON.stringify(records),
+    /calm nature pool|ENGLISH SOURCE|initial input|ownerSession|unrelated-request/u,
+  );
+});
+
+test('a rolled-back generation admission never produces an accepted log record', async (t) => {
+  const records: LogRecord[] = [];
+  configureFaunapoolenLogging('web', { NODE_ENV: 'test' }, 'fixture', {
+    write(line) {
+      records.push(parseLogRecord(line));
+      return true;
+    },
+    status() {
+      return { accepted: records.length, dropped: 0, failed: 0, pendingBytes: 0, available: true };
+    },
+  });
+  t.after(() => configureFaunapoolenLogging('operator', { NODE_ENV: 'test' }));
+  const persistence = fixture(t);
+  persistence.database.sqlite.execute(
+    "CREATE TRIGGER synthetic_reject_admission BEFORE INSERT ON generation_runs BEGIN SELECT RAISE(ABORT, 'PRIVATE failed insert'); END",
+  );
+  const service = createGenerationService({
+    campaigns: persistence.campaigns,
+    clock: () => NOW,
+    createUuid: uuidFactory(90),
+    generationAdmission: persistence.generationAdmission,
+    generations: persistence.generations,
+    providerConfigured: true,
+  });
+  await assert.rejects(
+    service.createCampaign({
+      idea: 'A sufficiently long PRIVATE campaign idea',
+      ownerSessionIdHash: OWNER_HASH,
+    }),
+  );
+  assert.equal(records.filter((record) => record.event === 'generation.admitted').length, 0);
+  assert.equal(
+    persistence.database.sqlite.get<{ count: number }>('SELECT count(*) AS count FROM cx_jobs')
+      ?.count,
+    0,
+  );
 });
 
 for (const failedLanguage of ['en', 'sv'] as const) {

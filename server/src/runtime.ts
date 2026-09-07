@@ -1,4 +1,5 @@
 import type { Server } from 'node:http';
+import { configureFaunapoolenLogging, log } from './logging.js';
 
 import { listenHttpApplication } from '@mikaelcedergren/cx-framework/server/listen';
 import { loadProductManifestFile } from '@mikaelcedergren/cx-framework/server/product-manifest';
@@ -57,6 +58,7 @@ export async function startFaunapoolenServer({
     environment: sourceEnvironment,
     required: environment.isProduction || environment.releaseValidation,
   });
+  configureFaunapoolenLogging('web', sourceEnvironment, identity?.releaseId);
   if (identity) {
     assertServerProcessRole({
       artifactRoot: FAUNAPOOLEN_ARTIFACT_ROOT,
@@ -126,7 +128,6 @@ export async function startFaunapoolenServer({
       },
       close(reason = 'shutdown') {
         if (closing) return closing;
-        console.info(`[faunapoolen] web process stopping (${reason})`);
         closing = closeWebRuntime({
           closeHttp: () => httpShutdown.close(reason),
           closePersistence: () => {
@@ -135,6 +136,13 @@ export async function startFaunapoolenServer({
             persistence.close();
           },
           disposeSignals: () => disposeSignals(),
+        }).then(() => {
+          log.emit({
+            event: 'process.stopped',
+            level: 'info',
+            category: 'operation',
+            outcome: 'success',
+          });
         });
         return closing;
       },
@@ -143,7 +151,13 @@ export async function startFaunapoolenServer({
     try {
       disposeSignals = bindShutdownSignals({
         onError(error) {
-          console.error('[faunapoolen] web process shutdown failed', error);
+          log.emit({
+            event: 'process.stop_failed',
+            level: 'error',
+            category: 'diagnostic',
+            outcome: 'failure',
+            error,
+          });
           process.exitCode = 1;
         },
         shutdown,
@@ -161,9 +175,7 @@ export async function startFaunapoolenServer({
       throw signalError;
     }
 
-    console.info(
-      `[faunapoolen] web process listening on http://${environment.host}:${String(environment.port)}`,
-    );
+    log.emit({ event: 'process.ready', level: 'info', category: 'operation', outcome: 'success' });
     return Object.freeze({ environment, identity, persistence, server, shutdown });
   } catch (error) {
     const failures: unknown[] = [error];

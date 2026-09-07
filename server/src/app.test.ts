@@ -4,6 +4,12 @@ import type { AddressInfo } from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import test, { type TestContext } from 'node:test';
+import {
+  createRuntimeLogger,
+  parseLogRecord,
+  type LogRecord,
+  type RuntimeLogger,
+} from '@mikaelcedergren/cx-framework/server/logging';
 
 import type { ServerReleaseIdentity } from '@mikaelcedergren/cx-framework/server/server-identity';
 
@@ -253,7 +259,7 @@ async function createFixture(
   t: TestContext,
   options: {
     readonly identity?: ServerReleaseIdentity;
-    readonly onInternalError?: (error: unknown, request: unknown) => void;
+    readonly logger?: Pick<RuntimeLogger, 'emit'>;
   } = {},
 ): Promise<Fixture> {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'faunapoolen-target-app-'));
@@ -287,7 +293,7 @@ async function createFixture(
     environment,
     generationService: generations,
     ...(options.identity === undefined ? {} : { identity: options.identity }),
-    ...(options.onInternalError === undefined ? {} : { onInternalError: options.onInternalError }),
+    ...(options.logger === undefined ? {} : { logger: options.logger }),
   });
   const server = app.listen(0, '127.0.0.1');
   await new Promise<void>((resolve, reject) => {
@@ -725,11 +731,34 @@ test('campaign and generation routes use exact HTTP methods and optimistic revis
 });
 
 test('unknown implementation failures are hidden, logged once, and keep their request ID', async (t) => {
-  const internalErrors: Array<{ error: unknown; request: unknown }> = [];
-  const fixture = await createFixture(t, {
-    onInternalError(error, request) {
-      internalErrors.push({ error, request });
+  const records: LogRecord[] = [];
+  const logger = createRuntimeLogger({
+    identity: {
+      service: 'faunapoolen',
+      role: 'web',
+      environment: 'test',
+      executionScope: 'test',
+      releaseId: 'fixture',
+      pid: process.pid,
     },
+    sink: {
+      write(line) {
+        records.push(parseLogRecord(line));
+        return true;
+      },
+      status() {
+        return {
+          accepted: records.length,
+          dropped: 0,
+          failed: 0,
+          pendingBytes: 0,
+          available: true,
+        };
+      },
+    },
+  });
+  const fixture = await createFixture(t, {
+    logger,
   });
   fixture.campaigns.configurationFailure = true;
   const cookie = await login(fixture);
@@ -745,8 +774,11 @@ test('unknown implementation failures are hidden, logged once, and keep their re
     message: 'The request could not be completed.',
     requestId: response.headers.get('x-request-id'),
   });
+  const internalErrors = records.filter((record) => record.event === 'http.internal_error');
   assert.equal(internalErrors.length, 1);
-  assert.match(String(internalErrors[0]?.error), /synthetic configuration failure/);
+  assert.equal(internalErrors[0]?.requestId, body.error.requestId);
+  assert.equal(internalErrors[0]?.error?.type, 'Error');
+  assert.doesNotMatch(JSON.stringify(records), /synthetic configuration failure/);
 });
 
 test('refinement uses authenticated origin-protected admission with an exact bounded draft', async (t) => {

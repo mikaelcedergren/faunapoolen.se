@@ -1,4 +1,6 @@
 import compression from 'compression';
+import type { RuntimeLogger } from '@mikaelcedergren/cx-framework/server/logging';
+import { log } from './logging.js';
 import {
   apiNotFoundMiddleware,
   HttpError,
@@ -51,7 +53,7 @@ export interface FaunapoolenApplicationOptions {
   readonly environment: FaunapoolenEnvironment;
   readonly generationService: GenerationService;
   readonly identity?: ServerReleaseIdentity;
-  readonly onInternalError?: (error: unknown, request: unknown) => void;
+  readonly logger?: Pick<RuntimeLogger, 'emit'>;
 }
 
 type AsyncRoute = (request: Request, response: Response) => Promise<void>;
@@ -64,13 +66,15 @@ export function createFaunapoolenApplication({
   environment,
   generationService,
   identity,
-  onInternalError = defaultInternalErrorLogger,
+  logger = log,
 }: FaunapoolenApplicationOptions): express.Express {
   const app = express();
   hardenApplication(app);
   app.disable('etag');
   app.use(securityHeaders({ frameOptions: 'SAMEORIGIN' }));
-  app.use(requestIdMiddleware());
+  app.use(
+    requestIdMiddleware(environment.isProduction ? { trustedProxyAddress: '127.0.0.1' } : {}),
+  );
   app.use(noindexHeader(PRIVATE_NOINDEX_PATHS));
   app.use(compression());
 
@@ -250,7 +254,7 @@ export function createFaunapoolenApplication({
   app.use((request, _response, next) => {
     next(notFoundError(request.originalUrl));
   });
-  app.use(jsonErrorMiddleware({ onInternalError }));
+  app.use(jsonErrorMiddleware({ logger }));
   return app;
 }
 
@@ -438,21 +442,4 @@ function campaignNotFound(): HttpError {
 
 function invalidRequest(message: string): HttpError {
   return new HttpError({ code: 'invalid_request', message, status: 400 });
-}
-
-function defaultInternalErrorLogger(error: unknown, request: unknown): void {
-  const context =
-    request && typeof request === 'object'
-      ? (request as {
-          readonly method?: unknown;
-          readonly path?: unknown;
-          readonly requestId?: unknown;
-        })
-      : {};
-  console.error('[faunapoolen] unhandled request error', {
-    error,
-    method: typeof context.method === 'string' ? context.method : undefined,
-    path: typeof context.path === 'string' ? context.path : undefined,
-    requestId: typeof context.requestId === 'string' ? context.requestId : undefined,
-  });
 }

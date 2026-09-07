@@ -3,6 +3,14 @@
 The public [Faunapoolen](https://faunapoolen.se) website and its private campaign studio. Swedish
 content is served at the root and English under `/en/`.
 
+Operational diagnostics use the [shared logging policy](../SERVER-STANDARD.md#logs-and-bounded-storage).
+The web and jobs roles correlate request admission, durable stage handoffs and provider effects
+using opaque references. Provider polling emits one bounded summary per effect attempt; health
+checks record storage failure and recovery transitions. Campaign content, prompts, credentials
+and provider bodies are excluded. The [shared implementation plan](../LOGGING-IMPLEMENTATION-PLAN.md)
+tracks host capture activation separately from this producer code. Generation remains disabled
+unless explicitly enabled through the existing product configuration.
+
 The private campaign studio defaults to English. Campaign copy is written in English first,
 then translated into Swedish from that source. A failed translation preserves the completed
 English copy for a targeted retry. Both languages use the English source's sidebar guidance;

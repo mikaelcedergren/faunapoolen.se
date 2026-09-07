@@ -1,3 +1,4 @@
+import { log } from './logging.js';
 import { DatabaseSync } from 'node:sqlite';
 
 import {
@@ -626,6 +627,7 @@ export function openFaunapoolenDatabase(
   });
   const sqlite = owned.database;
   let closed = false;
+  let readinessFailed = false;
   try {
     if (migrate) migrateFaunapoolenDatabase(sqlite, now);
     else verifyFaunapoolenDatabase(sqlite);
@@ -654,8 +656,27 @@ export function openFaunapoolenDatabase(
       try {
         owned.verifyStorage();
         verifyFaunapoolenDatabaseReadiness(sqlite);
+        if (readinessFailed)
+          log.emit({
+            event: 'storage.ready',
+            level: 'info',
+            category: 'diagnostic',
+            outcome: 'success',
+            operation: 'database.readiness',
+          });
+        readinessFailed = false;
         return true;
-      } catch {
+      } catch (error) {
+        if (!readinessFailed)
+          log.emit({
+            event: 'storage.unavailable',
+            level: 'error',
+            category: 'diagnostic',
+            outcome: 'failure',
+            operation: 'database.readiness',
+            error,
+          });
+        readinessFailed = true;
         return false;
       }
     },
