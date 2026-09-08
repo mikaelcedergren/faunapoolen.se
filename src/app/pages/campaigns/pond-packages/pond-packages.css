@@ -1,15 +1,3 @@
-:root {
-  --campaign-ink: #001e29;
-  --campaign-ink-deep: #00131a;
-  --campaign-water: #00a1e4;
-  --campaign-aqua: #00d3c8;
-  --campaign-ink-soft: #052732;
-  --campaign-surface: #082f3b;
-  --campaign-cream: #052732;
-  --campaign-paper: #001e29;
-  --campaign-coral: #ff9f71;
-}
-
 fp-campaign-pond-packages {
   display: block;
   margin: 0 -2rem;
@@ -22,7 +10,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-page {
-  background: var(--campaign-paper);
+  background: #001e29;
   color: #fff;
   font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   overflow: hidden;
@@ -108,7 +96,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-phone:hover,
 .campaign-secondary-link:hover {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
 }
 
 .campaign-phone .material-symbols-outlined {
@@ -117,7 +105,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-cta {
   align-items: center;
-  background: var(--campaign-water);
+  background: #00a1e4;
   border-radius: 999px;
   box-shadow: 0 0.8rem 2.5rem rgba(0, 161, 228, 0.28);
   color: #fff;
@@ -183,7 +171,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-eyebrow {
   align-items: center;
-  color: var(--campaign-water);
+  color: #00a1e4;
   display: flex;
   font-size: 0.76rem;
   font-weight: 800;
@@ -205,7 +193,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-hero .campaign-eyebrow {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
 }
 
 .campaign-hero h1 {
@@ -246,7 +234,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-hero-benefits .material-symbols-outlined {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
   font-size: 1.1rem;
   padding: 0;
   width: auto;
@@ -280,7 +268,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-proof-bar {
-  background: var(--campaign-ink);
+  background: #001e29;
   color: #fff;
   padding: 1.5rem 0;
 }
@@ -358,7 +346,7 @@ fp-campaign-pond-packages ~ footer {
   align-items: center;
   background: rgba(0, 161, 228, 0.1);
   border-radius: 50%;
-  color: var(--campaign-water);
+  color: #00a1e4;
   display: flex;
   font-size: 1.6rem;
   height: 3rem;
@@ -386,7 +374,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-problem-section {
-  background: var(--campaign-cream);
+  background: #052732;
 }
 
 .campaign-split {
@@ -433,7 +421,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-photo-note .material-symbols-outlined {
-  color: var(--campaign-coral);
+  color: #ff9f71;
 }
 
 .campaign-copy > p:not(.campaign-eyebrow) {
@@ -458,14 +446,14 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-check-list .material-symbols-outlined {
-  color: var(--campaign-water);
+  color: #00a1e4;
   font-size: 1.15rem;
   padding: 0.25rem 0 0;
   width: auto;
 }
 
 .campaign-guide-section {
-  background: var(--campaign-ink-soft);
+  background: #052732;
 }
 
 .campaign-guide-image {
@@ -495,7 +483,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-guide-points > div > .material-symbols-outlined {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
   flex: 0 0 auto;
   font-size: 1.35rem;
 }
@@ -540,12 +528,12 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-plan-section {
-  background: var(--campaign-ink);
+  background: #001e29;
   color: #fff;
 }
 
 .campaign-plan-section .campaign-eyebrow {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
 }
 
 .campaign-plan-section .campaign-intro {
@@ -567,9 +555,9 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-step-number {
   align-items: center;
-  background: var(--campaign-aqua);
+  background: #00d3c8;
   border-radius: 50%;
-  color: var(--campaign-ink);
+  color: #001e29;
   display: flex;
   font-size: 0.9rem;
   font-weight: 900;
@@ -598,7 +586,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-result-section {
-  background: var(--campaign-ink-soft);
+  background: #052732;
 }
 
 .campaign-result-section .campaign-guide-image {
@@ -647,7 +635,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-quote-mark {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
   display: block;
   font-family: "Literata", Georgia, serif;
   font-size: 5rem;
@@ -677,7 +665,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-possibilities-section {
-  background: var(--campaign-paper);
+  background: #001e29;
 }
 
 .campaign-possibility-grid {
@@ -706,7 +694,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-card-label {
-  color: var(--campaign-water) !important;
+  color: #00a1e4 !important;
   font-size: 0.7rem !important;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -715,7 +703,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-faq-section {
-  background: var(--campaign-cream);
+  background: #052732;
 }
 
 .campaign-faq-layout {
@@ -754,7 +742,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-faq-list summary::after {
-  color: var(--campaign-water);
+  color: #00a1e4;
   content: "+";
   font-family: "Lato", sans-serif;
   font-size: 1.5rem;
@@ -783,11 +771,11 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-faq-link:hover {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
 }
 
 .campaign-form-section {
-  background: var(--campaign-ink);
+  background: #001e29;
   color: #fff;
   padding: 7rem 0;
 }
@@ -805,7 +793,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-form-copy .campaign-eyebrow {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
 }
 
 .campaign-form-copy > p:not(.campaign-eyebrow) {
@@ -830,7 +818,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-form-promises .material-symbols-outlined {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
   font-size: 1rem;
   padding: 0;
   width: auto;
@@ -847,7 +835,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-person-note .material-symbols-outlined {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
   font-size: 1.2rem;
 }
 
@@ -864,7 +852,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-form {
-  background: var(--campaign-surface);
+  background: #082f3b;
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 1.2rem;
   box-shadow: 0 2.5rem 7rem rgba(0, 0, 0, 0.3);
@@ -894,7 +882,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-form-heading > span {
   align-items: center;
-  background: var(--campaign-water);
+  background: #00a1e4;
   border-radius: 50%;
   color: #fff;
   display: flex;
@@ -914,7 +902,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-form-kicker {
-  color: var(--campaign-water);
+  color: #00a1e4;
   font-size: 0.66rem;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -967,7 +955,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-choice-grid input:checked + span {
   background: rgba(0, 161, 228, 0.16);
-  border-color: var(--campaign-water);
+  border-color: #00a1e4;
   box-shadow: 0 0 0 2px rgba(0, 161, 228, 0.12);
 }
 
@@ -1035,7 +1023,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-form option {
-  background: var(--campaign-ink);
+  background: #001e29;
   color: #fff;
 }
 
@@ -1051,7 +1039,7 @@ fp-campaign-pond-packages ~ footer {
 .campaign-form input:focus,
 .campaign-form textarea:focus,
 .campaign-form select:focus {
-  border-color: var(--campaign-water);
+  border-color: #00a1e4;
 }
 
 .campaign-form ::placeholder {
@@ -1067,7 +1055,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-submit {
   align-items: center;
-  background: var(--campaign-water);
+  background: #00a1e4;
   border: 0;
   border-radius: 999px;
   color: #fff;
@@ -1114,7 +1102,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-form-success > .material-symbols-outlined {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
   font-size: 4rem;
   margin-bottom: 1.2rem;
 }
@@ -1151,7 +1139,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-footer {
-  background: var(--campaign-ink-deep);
+  background: #00131a;
   color: #fff;
   margin: 0;
   padding: 1.5rem 0;
@@ -1200,7 +1188,7 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-footer-read-more {
   align-items: center;
-  color: var(--campaign-water);
+  color: #00a1e4;
   display: inline-flex;
   font-size: 0.72rem;
   font-weight: 800;
@@ -1208,7 +1196,7 @@ fp-campaign-pond-packages ~ footer {
 }
 
 .campaign-footer-read-more:hover {
-  color: var(--campaign-aqua);
+  color: #00d3c8;
 }
 
 .campaign-footer-read-more .material-symbols-outlined {
@@ -1632,7 +1620,7 @@ fp-campaign-pond-packages ~ footer {
 
   .campaign-mobile-cta {
     align-items: center;
-    background: var(--campaign-water);
+    background: #00a1e4;
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 999px;
     bottom: max(0.7rem, env(safe-area-inset-bottom));
