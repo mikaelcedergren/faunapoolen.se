@@ -17,6 +17,7 @@
   },
   "scripts": {
     "dev": "pnpm favicon:check && node scripts/dev.mjs",
+    "dev:owner": "pnpm favicon:check && node scripts/dev.mjs --owner",
     "build": "pnpm run build:browser && pnpm run build:server",
     "build:browser": "ng build --configuration prod && node scripts/flatten.mjs",
     "build:server": "pnpm --filter faunapoolen-server run build",

@@ -49,6 +49,10 @@ pnpm e2e:hmr
 Development runs the browser on `http://127.0.0.1:4240` and its local API on
 `http://127.0.0.1:4241`. Production health is `http://127.0.0.1:3040/healthz`.
 
+On the personal Mac, `cx faunapoolen.se` selects `pnpm dev:owner` on the same ports. This mode
+creates its own `data/owner-development/faunapoolen.db`, skips private environment files, and
+disables paid generation. The Mac mini's `pnpm dev` continues using its existing shared store.
+
 Angular's build dependency carries a tracked pnpm patch that clears stale template-update
 metadata when browser JavaScript is rebuilt. Template and stylesheet hot updates remain enabled.
 The pinned build version and patch are installed together from the lockfile; an ordinary reinstall
