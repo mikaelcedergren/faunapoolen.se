@@ -1,0 +1,21 @@
+<cx-inline gap="md" [align]="'center'">
+  <cx-image
+    [image]="{
+      src: aquascapeImages.certification,
+      alt: 'Certified Aquascape Contractor',
+      width: '80',
+      objectFit: 'contain',
+    }"
+    fallbackText="Certified Aquascape Contractor"
+  />
+  <div class="cx-fill">
+    <p class="cx-text-body-lg cx-font-bold">
+      {{ evidence.certification }}
+    </p>
+    @if (page !== 'about') {
+      <a class="cx-text-body-lg cx-text-link" [href]="routeFor('about') + '#certification'">{{
+        editorial.certificationMeaning
+      }}</a>
+    }
+  </div>
+</cx-inline>

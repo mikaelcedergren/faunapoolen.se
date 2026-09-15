@@ -17,11 +17,19 @@ pnpm verify:change --full
 ## Faunapoolen map
 
 - Documentation uses formatting only.
-- Public product-skin changes use formatting, types, a production browser build, and the affected
+- Public page changes use formatting, types, a production browser build, and the affected
   stable public route in the already-running local product on port `4240`.
 - Private admin and campaign-interface changes additionally run the isolated E2E journey and render
   the `/admin/` or campaign route. The rendered route may show the real local login boundary; E2E
   owns authenticated synthetic behavior.
+- Article builds additionally prove the frozen original Swedish/English body, links, image and SEO
+  baseline. They also check the complete public sitemap. English source extraction and translated
+  catalogue coverage are checked separately by `pnpm i18n:check`.
+- The public compositions map to their English routes under `/en/`; article files map to their
+  preserved `/en/blog/posts/<slug>.html` addresses. Inbox work maps to `/en/admin/enquiries/`.
+- The isolated browser suite owns form readiness, validation, interrupted-receipt retries, real
+  synthetic enquiry persistence and private status updates, language switching, unsupported-browser
+  suggestions, private indexing exclusions and narrow-screen layout checks.
 - E2E changes run the isolated repository-owned E2E command.
 - Dependency, pnpm patch, and hot-reload harness changes also run `pnpm e2e:hmr`.
 - Dependencies, repository authority, authentication, SQLite, durable jobs, the worker and provider

@@ -19,12 +19,13 @@
     "dev": "pnpm favicon:check && node scripts/dev.mjs",
     "dev:owner": "pnpm favicon:check && node scripts/dev.mjs --owner",
     "build": "pnpm run build:browser && pnpm run build:server",
-    "build:browser": "ng build --configuration prod && node scripts/flatten.mjs",
+    "build:browser": "ng build --configuration prod && node scripts/flatten.mjs && node --test tests/public-site.test.mjs",
     "build:server": "pnpm --filter faunapoolen-server run build",
     "build:server:release": "node server/node_modules/@mikaelcedergren/cx-framework/scripts/cx-server-artifact.mjs --package faunapoolen-server",
     "build:release": "ng build --configuration prod --output-path \"$SITE_RELEASE_DIR\" && node scripts/flatten.mjs",
     "build:local": "pnpm favicon:check && ng build --configuration local && node scripts/flatten.mjs",
-    "extract-i18n": "ng extract-i18n --output-path src/locale",
+    "extract-i18n": "ng extract-i18n --format=json --output-path src/locale --out-file messages.en.json",
+    "i18n:check": "node scripts/check-i18n.mjs",
     "start": "pnpm run start:web",
     "start:web": "node server/dist/index.js",
     "start:worker": "node server/dist/worker.js",
@@ -45,7 +46,7 @@
     "platform:check": "cx-platform-check --root .",
     "verify:change": "node scripts/verify-change.mjs",
     "style:check": "cx-style-token-check --all",
-    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm style:check && pnpm run typecheck && pnpm run test:verification && pnpm run test && pnpm run build"
+    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm style:check && pnpm i18n:check && pnpm run typecheck && pnpm run test:verification && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@angular/cdk": "22.0.6",

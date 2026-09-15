@@ -1,0 +1,79 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <article aria-labelledby="guide-title">
+      <cx-stack gap="2xl">
+        <cx-stack gap="lg" class="cx-measure-md-start">
+          <cx-button
+            [text]="ui.all_guides"
+            icon="arrow-left"
+            [transparent]="true"
+            [href]="routeFor('guides')"
+          />
+          <cx-tag [text]="copy.common.guideLabel" />
+          <h1 id="guide-title" class="cx-text-display cx-font-serif cx-text-balance">
+            {{ guide.title }}
+          </h1>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ guide.intro }}</p>
+          </div>
+        </cx-stack>
+
+        <cx-stack gap="sm">
+          <img
+            class="cx-w-full cx-rounded-xl"
+            [src]="guide.image"
+            [alt]="guide.title"
+            width="1536"
+            fetchpriority="high"
+          />
+        </cx-stack>
+        <nav [attr.aria-label]="editorial.guideContents" class="cx-measure-md cx-w-full">
+          <cx-stack gap="md">
+            <p class="cx-text-body-lg cx-font-bold">
+              {{ editorial.guideContents }}
+            </p>
+            @for (section of guideReading.sections; track section.id) {
+              <a
+                class="cx-text-body-lg cx-text-link"
+                [href]="guideHref(guide.id) + '#' + section.id"
+                >{{ section.title }}</a
+              >
+            }
+          </cx-stack>
+        </nav>
+        <div
+          id="guide-body"
+          class="cx-article cx-article--lg"
+          [innerHTML]="guideReading.html"
+        ></div>
+
+        <cx-divider />
+
+        <section [attr.aria-label]="ui.continue_reading">
+          <cx-stack gap="lg">
+            <div class="cx-article cx-article--lg cx-article--start">
+              <h2>
+                {{ ui.continue_reading }}
+              </h2>
+            </div>
+            @for (item of relatedGuides; track item.id) {
+              @if (item.id !== guide.id) {
+                <cx-card variant="border" [href]="guideHref(item.id)" [ariaLabel]="item.title">
+                  <cx-stack gap="sm">
+                    <cx-tag [text]="copy.common.guideLabel" />
+                    <h3 class="cx-text-title-2 cx-font-serif">
+                      {{ item.title }}
+                    </h3>
+                    <p class="cx-text-body-lg cx-text-muted">
+                      {{ item.seo.description }}
+                    </p>
+                  </cx-stack>
+                </cx-card>
+              }
+            }
+          </cx-stack>
+        </section>
+      </cx-stack>
+    </article>
+  </cx-stack></fp-site-shell
+>

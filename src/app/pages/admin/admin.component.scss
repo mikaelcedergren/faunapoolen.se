@@ -1,9 +1,4 @@
-@use '@mikaelcedergren/cx-framework/tokens';
 @use '@mikaelcedergren/cx-framework/tokens/breakpoints-scale' as bp;
-@use '@mikaelcedergren/cx-framework/styles/fonts';
-@use '@mikaelcedergren/cx-framework/styles/base';
-@use '@mikaelcedergren/cx-framework/styles/utilities';
-@use '@mikaelcedergren/cx-framework/styles/page';
 
 // Framework foundations also style overlays projected to the document body.
 // Product selectors below own composition only, never component internals.

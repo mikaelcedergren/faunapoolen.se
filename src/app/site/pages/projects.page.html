@@ -1,0 +1,33 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="projects-title">
+      <cx-stack gap="lg">
+        <div class="cx-text-body cx-font-bold cx-text-accent">
+          {{ copy.projects.eyebrow }}
+        </div>
+        <h1
+          id="projects-title"
+          class="cx-text-display cx-font-serif cx-text-balance cx-measure-lg-start"
+        >
+          {{ copy.projects.title }}
+        </h1>
+        <p class="cx-text-body-lg cx-text-muted cx-measure-lg-start">
+          {{ copy.projects.ingress }}
+        </p>
+      </cx-stack>
+    </section>
+
+    <cx-card variant="border" [href]="routeFor('gotland')" [ariaLabel]="evidence.caseLink">
+      <cx-stack gap="lg">
+        <cx-tag [text]="evidence.caseEyebrow" />
+        <div class="cx-article cx-article--lg cx-article--start">
+          <h2>{{ evidence.caseTitle }}</h2>
+        </div>
+        <p class="cx-text-body-lg">{{ evidence.caseBody }}</p>
+
+        <span class="cx-text-body cx-text-link">{{ evidence.caseLink }} →</span>
+      </cx-stack>
+    </cx-card>
+
+    <fp-process /> </cx-stack
+></fp-site-shell>

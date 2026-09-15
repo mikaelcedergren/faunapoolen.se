@@ -1,0 +1,20 @@
+<section aria-labelledby="process-title">
+  <cx-stack gap="xl">
+    <div class="cx-article cx-article--lg cx-article--start">
+      <h2 id="process-title">{{ copy.home.processTitle }}</h2>
+    </div>
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="xl">
+      @for (item of process; track item.number) {
+        <cx-inline gap="lg" align="start">
+          <span class="cx-text-title-1 cx-text-accent">{{ item.number }}</span>
+          <cx-stack gap="sm" class="cx-fill">
+            <h3 class="cx-text-title-1 cx-font-serif">
+              {{ item.title }}
+            </h3>
+            <p class="cx-text-body-lg">{{ item.body }}</p>
+          </cx-stack>
+        </cx-inline>
+      }
+    </cx-grid>
+  </cx-stack>
+</section>

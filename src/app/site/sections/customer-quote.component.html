@@ -1,0 +1,9 @@
+<div class="cx-article cx-article--lg cx-article--start" [attr.data-review]="review().id">
+  <blockquote cite="https://faunapoolen.se/">“{{ review().quote }}”</blockquote>
+  <p class="cx-text-body-lg">
+    <strong>{{ review().author }}</strong> · {{ review().context }}
+  </p>
+  @if (locale !== 'sv') {
+    <p class="cx-text-body">{{ evidence.translated }}</p>
+  }
+</div>

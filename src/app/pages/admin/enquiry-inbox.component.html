@@ -1,0 +1,119 @@
+<cx-stack gap="lg">
+  <cx-inline gap="md" [wrap]="true">
+    @if (selected()) {
+      <cx-button
+        text="All enquiries"
+        icon="arrow-left"
+        [transparent]="true"
+        [disabled]="saving()"
+        (pressed)="selectedId.set(''); error.set('')"
+      />
+    }
+    <cx-button
+      text="Reload inbox"
+      icon="reload"
+      [transparent]="true"
+      [loading]="loading()"
+      [disabled]="saving()"
+      (pressed)="reload()"
+    />
+  </cx-inline>
+  @if (error()) {
+    <cx-alert mood="danger" [heading]="error()" />
+  }
+  @if (loading()) {
+    <cx-state-message state="pending" heading="Loading enquiries" />
+  } @else if (selected(); as enquiry) {
+    <cx-stack gap="lg">
+      <cx-stack gap="xs"
+        ><h1 class="cx-text-title-1">{{ enquiry.name }}</h1>
+        <p class="cx-text-muted">
+          {{ statusLabel(enquiry.status) }} · {{ date(enquiry.createdAt) }}
+        </p>
+      </cx-stack>
+      <cx-inline gap="sm" [wrap]="true">
+        @if (enquiry.status === 'new') {
+          <cx-button
+            text="Mark contacted"
+            [loading]="saving()"
+            [disabled]="!!error()"
+            (pressed)="update('contacted')"
+          />
+        }
+        @if (enquiry.status !== 'closed') {
+          <cx-button
+            text="Close enquiry"
+            [disabled]="saving() || !!error()"
+            (pressed)="update('closed')"
+          />
+        }
+        @if (enquiry.status === 'closed') {
+          <cx-button
+            text="Reopen enquiry"
+            [disabled]="saving() || !!error()"
+            (pressed)="update('new')"
+          />
+        }
+      </cx-inline>
+      <section class="cx-article cx-article--start">
+        <h2>Contact</h2>
+        <p>
+          <a [href]="'mailto:' + enquiry.email">{{ enquiry.email }}</a
+          ><br />{{ enquiry.phone }}<br />{{ enquiry.location }}
+        </p>
+        <p>
+          Preferred language:
+          {{
+            enquiry.language === 'sv' ? 'Swedish' : enquiry.language === 'da' ? 'Danish' : 'English'
+          }}
+          @if (enquiry.contactPeriod) {
+            · Contact time: {{ choiceLabel(enquiry.contactPeriod) }}
+          }
+        </p>
+        <h2>Project brief</h2>
+        <p>{{ enquiry.notes || 'No additional notes.' }}</p>
+        <dl>
+          <dt>Project</dt>
+          <dd>{{ choiceLabel(enquiry.service) }}</dd>
+          @if (enquiry.service === 'pool') {
+            <dt>Package</dt>
+            <dd>{{ choiceLabel(enquiry.packageId) }}</dd>
+            <dt>Swim area</dt>
+            <dd>{{ choiceLabel(enquiry.sizeId) }}</dd>
+            <dt>Additions</dt>
+            <dd>{{ additions(enquiry.featureIds) }}</dd>
+            <dt>Annual maintenance</dt>
+            <dd>{{ enquiry.annualCare ? 'Requested' : 'Not requested' }}</dd>
+          }
+          <dt>Site access</dt>
+          <dd>{{ choiceLabel(enquiry.siteId) }}</dd>
+        </dl>
+        <p class="cx-text-muted">
+          These are the visitor’s initial choices, not a quotation. No automated email has been
+          sent.
+        </p>
+      </section>
+    </cx-stack>
+  } @else if (!error()) {
+    <cx-filter-bar
+      [quickFilters]="filters"
+      [selectedQuickFilterId]="filter()"
+      (selectedQuickFilterIdChange)="filter.set($event)"
+    />
+    @if (rows().length) {
+      <cx-table
+        [columns]="columns"
+        [rows]="rows()"
+        rowActivation="press"
+        [columnsResizable]="false"
+        [columnsReorderable]="false"
+        (rowActivate)="open($event)"
+      />
+    } @else {
+      <cx-state-message
+        [heading]="filter() === 'all' ? 'No enquiries yet' : 'No enquiries in this view'"
+        description="Enquiries sent through the website will appear here."
+      />
+    }
+  }
+</cx-stack>

@@ -1,0 +1,54 @@
+<section id="packages" class="cx-scroll-target" aria-labelledby="packages-title">
+  <cx-stack gap="xl">
+    <div class="cx-article cx-article--lg cx-article--start">
+      <h2 id="packages-title">{{ copy.home.packagesTitle }}</h2>
+      <p>{{ copy.home.packagesBody }}</p>
+    </div>
+    <cx-stack gap="xl">
+      @for (item of packages; track item.id) {
+        <cx-divider [discreet]="true" />
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="xl" gapMobile="md" align="start">
+          <cx-stack gap="md" align="start">
+            <h3 class="cx-text-title-1 cx-font-serif">
+              {{ item.name }}
+            </h3>
+            <p class="cx-text-body-lg">{{ item.area }}</p>
+            @if (item.featured) {
+              <p class="cx-text-body-lg cx-text-accent">
+                {{ copy.common.familyPackage }}
+              </p>
+            }
+          </cx-stack>
+          <div class="cx-article cx-article--start">
+            <p>{{ item.description }}</p>
+            @if (page === 'nature-pools') {
+              <ul>
+                @for (benefit of item.includes; track benefit) {
+                  <li>{{ benefit }}</li>
+                }
+              </ul>
+            }
+          </div>
+          <cx-stack gap="md" align="start">
+            <p class="cx-text-title-1 cx-font-bold">
+              {{ copy.common.from }} {{ packagePrice(item) }}
+            </p>
+            <p class="cx-text-body-lg cx-text-muted">
+              {{ copy.common.inclVat }}
+            </p>
+            <cx-button
+              [text]="copy.common.viewPackage"
+              appendIcon="arrow-right"
+              [href]="packageHref(item.id)"
+              size="large"
+            />
+          </cx-stack>
+        </cx-grid>
+      }
+      <cx-divider [discreet]="true" />
+    </cx-stack>
+    <p class="cx-text-body-lg cx-measure-lg-start">
+      {{ editorial.priceScope }}
+    </p>
+  </cx-stack>
+</section>

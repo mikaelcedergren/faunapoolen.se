@@ -1,0 +1,35 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="guides-title">
+      <div class="cx-article cx-article--lg cx-article--start">
+        <h1 id="guides-title">{{ copy.guides.title }}</h1>
+        <p>{{ copy.guides.ingress }}</p>
+      </div>
+    </section>
+
+    <section [attr.aria-label]="copy.guides.title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="xl">
+        @for (item of guides; track item.id) {
+          <cx-card variant="border" [href]="guideHref(item.id)" [ariaLabel]="item.title">
+            <cx-stack gap="lg">
+              <cx-image
+                [image]="{
+                  src: item.image,
+                  alt: item.title,
+                  height: '320',
+                  objectFit: 'cover',
+                  borderRadius: 'large',
+                }"
+              />
+              <cx-stack gap="sm">
+                <h2 class="cx-text-title-1 cx-font-serif">{{ item.title }}</h2>
+                <p class="cx-text-body-lg cx-text-muted">{{ item.seo.description }}</p>
+                <span class="cx-text-link">{{ copy.guides.read }} →</span>
+              </cx-stack>
+            </cx-stack>
+          </cx-card>
+        }
+      </cx-grid>
+    </section>
+  </cx-stack></fp-site-shell
+>

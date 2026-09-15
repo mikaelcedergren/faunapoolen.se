@@ -30,6 +30,7 @@ import {
   type FaunapoolenEnvironment,
 } from './environment.js';
 import { createGenerationService } from './generation-service.js';
+import { createEnquiryService } from './enquiry-service.js';
 import { verifyFaunapoolenDatabase } from './database.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
@@ -104,6 +105,10 @@ export async function startFaunapoolenServer({
       providerConfigured: environment.generationEnabled,
     });
     const app = createFaunapoolenApplication({
+      enquiryService: createEnquiryService({
+        database: persistence.database.sqlite,
+        secret: environment.sessionSecret,
+      }),
       authService,
       browserServing: configuredBrowserServing,
       campaignService,

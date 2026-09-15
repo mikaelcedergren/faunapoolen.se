@@ -8,6 +8,7 @@
 import { existsSync, readdirSync, renameSync, rmdirSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeSitemap } from './sitemap.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const BROWSER = process.env.SITE_RELEASE_BROWSER_DIR
@@ -45,6 +46,8 @@ function flatten(dir) {
 }
 
 flatten(BROWSER);
+// A local CSR build has no prerendered catalogue; production always does.
+if (existsSync(join(BROWSER, 'en', 'blog', 'index.html'))) writeSitemap(BROWSER);
 
 // Staged releases are sealed to exactly `browser/` + `release.json`, but `ng build` also writes
 // license/route byproducts at the output root — staged mode must drop them before sealing.

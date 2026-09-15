@@ -9,28 +9,15 @@ import { assertBrowserServingForStartup } from '@mikaelcedergren/cx-framework/se
 import express from 'express';
 
 import { createFaunapoolenBrowserServing, mountFaunapoolenBrowser } from './browser-serving.js';
+import { PUBLIC_PAGES, LEGACY_REDIRECTS } from './public-routes.js';
 import type { FaunapoolenEnvironment } from './environment.js';
 
-const PUBLIC_SECTION_ROUTES = [
-  '',
-  'admin',
-  'about',
-  'services',
-  'pricing',
-  'contact',
-  'suppliers',
-  'sweden-expert-naturpooler-biopooler-ecopooler-kemikaliefria-pooler-baddammar',
-  'campaigns/pond-packages',
-  'blog',
-] as const;
+const sections = (locale: 'sv' | 'en' | 'da') =>
+  Object.values(PUBLIC_PAGES[locale]).map((p) =>
+    p.replace(/^\/(en|da)/, '').replace(/^\/|\/$/g, ''),
+  );
 
 const PUBLIC_LITERAL_HTML_ROUTES = [
-  'nature-pools.html',
-  'koi-pond-series.html',
-  'swim-series.html',
-  'waterfront-series.html',
-  'plunge-series.html',
-  'pond-packages-landing.html',
   'blog/posts/5-common-problems-installing-a-nature-pool.html',
   'blog/posts/algae-control-and-maintenance-tips.html',
   'blog/posts/build-your-own-nature-pool.html',
@@ -70,11 +57,11 @@ function createEnvironment(root: string, browserDirectory: string): FaunapoolenE
 }
 
 function writeFixture(browserDirectory: string): void {
-  fs.mkdirSync(path.join(browserDirectory, 'about'), { recursive: true });
+  fs.mkdirSync(path.join(browserDirectory, 'om'), { recursive: true });
   fs.mkdirSync(path.join(browserDirectory, 'assets'), { recursive: true });
   fs.writeFileSync(path.join(browserDirectory, 'index.html'), '<p>root-page</p>');
-  fs.writeFileSync(path.join(browserDirectory, 'about', 'index.html'), '<p>about-page</p>');
-  fs.writeFileSync(path.join(browserDirectory, 'koi-pond-series.html'), '<p>literal-page</p>');
+  fs.writeFileSync(path.join(browserDirectory, 'om', 'index.html'), '<p>about-page</p>');
+  fs.writeFileSync(path.join(browserDirectory, 'synthetic-page.html'), '<p>literal-page</p>');
   fs.writeFileSync(path.join(browserDirectory, '404.html'), '<p>not-found-page</p>');
   fs.writeFileSync(path.join(browserDirectory, 'main-abcdef12.js'), 'hashed');
   fs.writeFileSync(path.join(browserDirectory, 'styles.css'), 'ordinary');
@@ -83,8 +70,8 @@ function writeFixture(browserDirectory: string): void {
 
 function writeCompleteRouteFixture(browserDirectory: string): void {
   writeFixture(browserDirectory);
-  for (const locale of ['', 'en'] as const) {
-    for (const route of PUBLIC_SECTION_ROUTES) {
+  for (const locale of ['', 'en', 'da'] as const) {
+    for (const route of sections(locale || 'sv')) {
       const file = path.join(browserDirectory, locale, route, 'index.html');
       fs.mkdirSync(path.dirname(file), { recursive: true });
       fs.writeFileSync(file, `<p>section:${locale || 'sv'}:${route || 'root'}</p>`);
@@ -125,9 +112,9 @@ test('SSG sections, literal HTML, three cache tiers, and the real 404 stay exact
 
   for (const [pathname, marker] of [
     ['/', 'root-page'],
-    ['/about', 'about-page'],
-    ['/about/', 'about-page'],
-    ['/koi-pond-series.html', 'literal-page'],
+    ['/om', 'about-page'],
+    ['/om/', 'about-page'],
+    ['/synthetic-page.html', 'literal-page'],
   ] as const) {
     const response = await fetch(`${baseUrl}${pathname}`);
     assert.equal(response.status, 200, pathname);
@@ -135,7 +122,7 @@ test('SSG sections, literal HTML, three cache tiers, and the real 404 stay exact
     assert.match(await response.text(), new RegExp(marker), pathname);
   }
 
-  const literalWithSlash = await fetch(`${baseUrl}/koi-pond-series.html/`);
+  const literalWithSlash = await fetch(`${baseUrl}/synthetic-page.html/`);
   assert.equal(literalWithSlash.status, 404);
   assert.match(await literalWithSlash.text(), /not-found-page/);
 
@@ -157,8 +144,7 @@ test('SSG sections, literal HTML, three cache tiers, and the real 404 stay exact
   assert.equal(await missingAsset.text(), 'Asset not found');
 });
 
-test('all 28 Swedish and 28 English public outputs retain their section or literal-file URL', async (t) => {
-  assert.equal(PUBLIC_SECTION_ROUTES.length + PUBLIC_LITERAL_HTML_ROUTES.length, 28);
+test('all 60 public locale outputs retain their section or literal-file URL', async (t) => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'faunapoolen-browser-route-matrix-'));
   t.after(() => fs.rmSync(root, { force: true, recursive: true }));
   const browserDirectory = path.join(root, 'browser');
@@ -169,9 +155,9 @@ test('all 28 Swedish and 28 English public outputs retain their section or liter
   const baseUrl = await start(app, t);
 
   let requests = 0;
-  for (const locale of ['', 'en'] as const) {
+  for (const locale of ['', 'en', 'da'] as const) {
     const prefix = locale ? `/${locale}` : '';
-    for (const route of PUBLIC_SECTION_ROUTES) {
+    for (const route of sections(locale || 'sv')) {
       const pathname = `${prefix}/${route}${route ? '/' : ''}` || '/';
       const response = await fetch(`${baseUrl}${pathname}`);
       assert.equal(response.status, 200, pathname);
@@ -186,7 +172,13 @@ test('all 28 Swedish and 28 English public outputs retain their section or liter
       requests += 1;
     }
   }
-  assert.equal(requests, 56);
+  assert.equal(requests, 60);
+  for (const [from, to] of Object.entries(LEGACY_REDIRECTS)) {
+    const response = await fetch(baseUrl + from + '?source=old-link', { redirect: 'manual' });
+    assert.equal(response.status, 301, from);
+    assert.equal(response.headers.get('location'), to + '?source=old-link');
+    assert.equal((await fetch(baseUrl + to, { redirect: 'manual' })).status, 200, to);
+  }
 });
 
 test('browser serving never catches API or non-read methods', async (t) => {
@@ -202,7 +194,7 @@ test('browser serving never catches API or non-read methods', async (t) => {
 
   const api = await fetch(`${baseUrl}/api/admin/config`);
   assert.equal(api.status, 418);
-  const post = await fetch(`${baseUrl}/about`, { method: 'POST' });
+  const post = await fetch(`${baseUrl}/om`, { method: 'POST' });
   assert.equal(post.status, 418);
   assert.deepEqual(await post.json(), { method: 'POST' });
 });

@@ -1,0 +1,48 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="gotland-title">
+      <cx-stack gap="lg">
+        <h1 id="gotland-title" class="cx-text-title-1 cx-font-serif">
+          {{ evidence.caseTitle }}
+        </h1>
+        <cx-masonry [columns]="3" [columnsMobile]="2" gap="sm">
+          @for (item of gotlandMedia; track item.id) {
+            @if (item.kind === 'photo') {
+              <a
+                class="cx-figure"
+                [attr.data-gotland-photo]="item.id"
+                [href]="item.src"
+                (click)="openGotlandPhoto($event, item.id)"
+                [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
+              >
+                <img
+                  [src]="item.preview"
+                  [attr.srcset]="
+                    item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
+                  "
+                  sizes="(max-width: 767px) 50vw, 400px"
+                  [alt]="item.alt"
+                  [width]="item.width"
+                  [height]="item.height"
+                  [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
+                  decoding="async"
+                />
+              </a>
+            } @else {
+              <fp-gotland-film [film]="item" />
+            }
+          }
+        </cx-masonry>
+      </cx-stack>
+    </section>
+    <cx-lightbox
+      [images]="gotlandGalleryImages"
+      [open]="gotlandGalleryOpen()"
+      [index]="gotlandGalleryIndex()"
+      (indexChange)="gotlandGalleryIndex.set($event)"
+      (openChange)="gotlandGalleryOpen.set($event)"
+      [ariaLabel]="evidence.caseTitle"
+      [previousAriaLabel]="gotlandCopy.previous"
+      [nextAriaLabel]="gotlandCopy.next"
+    /> </cx-stack
+></fp-site-shell>

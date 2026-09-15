@@ -1,0 +1,82 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="about-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-stack gap="lg" align="start">
+          <div class="cx-text-body cx-font-bold cx-text-accent">
+            {{ copy.about.eyebrow }}
+          </div>
+          <h1 id="about-title" class="cx-text-display cx-font-serif cx-text-balance">
+            {{ copy.about.title }}
+          </h1>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ copy.about.ingress }}</p>
+          </div>
+        </cx-stack>
+        <cx-stack gap="sm"
+          ><img
+            class="cx-w-full cx-rounded-xl"
+            [src]="images.evening"
+            [alt]="ui.quiet_evening_beside_a_nature_pool_with_family_timber_and_granite"
+            width="1536"
+            fetchpriority="high"
+          />
+          <p class="cx-text-body cx-text-muted">
+            {{ editorial.conceptImage }}
+          </p></cx-stack
+        >
+      </cx-grid>
+    </section>
+
+    <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+        <cx-stack gap="lg">
+          <div class="cx-article cx-article--lg cx-article--start">
+            <h2 id="about-method-title">{{ copy.about.methodTitle }}</h2>
+          </div>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ copy.about.methodBody }}</p>
+          </div>
+        </cx-stack>
+        <cx-card>
+          <cx-stack gap="md">
+            <fp-certification />
+            <p class="cx-text-body-lg cx-text-muted">
+              {{ evidence.certificationDetail }}
+            </p>
+            <cx-button
+              [text]="evidence.certificationLink"
+              [href]="aquascape.certification"
+              appendIcon="open-new"
+            />
+          </cx-stack>
+        </cx-card>
+      </cx-grid>
+    </section>
+
+    <section aria-labelledby="team-title">
+      <cx-stack gap="xl">
+        <div class="cx-article cx-article--lg cx-article--start">
+          <h2 id="team-title">{{ copy.about.teamTitle }}</h2>
+        </div>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
+          @for (person of team; track person.name) {
+            <cx-stack gap="md">
+              <cx-stack gap="sm">
+                <h3 class="cx-text-title-2 cx-font-serif">
+                  {{ person.name }}
+                </h3>
+                <span class="cx-text-body cx-font-bold cx-text-accent">
+                  {{ person.role }}
+                </span>
+              </cx-stack>
+              <p class="cx-text-body-lg cx-text-muted">
+                {{ person.body }}
+              </p>
+            </cx-stack>
+          }
+        </cx-grid>
+      </cx-stack>
+    </section>
+  </cx-stack></fp-site-shell
+>

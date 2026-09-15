@@ -23,7 +23,7 @@ test('compiled offline migration holds legacy work and immutable verification ne
   const seed = new DatabaseSync(filename);
   applySqliteMigrations(
     createPreparedSyncSqliteAdapter(seed),
-    FAUNAPOOLEN_MIGRATIONS.slice(0, -2),
+    FAUNAPOOLEN_MIGRATIONS.filter((migration) => migration.version <= 10),
     {
       fingerprint: (source) => createHash('sha256').update(source).digest('hex'),
       now: () => '2026-01-01T00:00:00.000Z',

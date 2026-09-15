@@ -5,7 +5,6 @@
       [collapsible]="true"
       [collapsed]="sideNavCollapsed()"
       (collapsedChange)="sideNavCollapsed.set($event)"
-      (itemSelect)="onSideNavSelect($event)"
     >
       <span header class="fp-admin-brand">Faunapoolen</span>
       <cx-account-control
@@ -20,10 +19,7 @@
     </cx-side-nav>
 
     <section class="fp-admin-main" aria-label="Faunapoolen campaign studio">
-      <cx-top-bar
-        [pageTitle]="topBarTitle()"
-        (breadcrumbSelect)="onBreadcrumbSelect($event)"
-      >
+      <cx-top-bar [pageTitle]="topBarTitle()" (breadcrumbSelect)="onBreadcrumbSelect($event)">
         <div actions>
           @if (view() === 'list' && !generating()) {
             <cx-button
@@ -55,7 +51,12 @@
         </div>
       </cx-top-bar>
 
-      @if (view() === 'campaign' && campaign()?.stage === 'complete' && (!generating() || refining()) && (!retryStage() || refining())) {
+      @if (
+        view() === 'campaign' &&
+        campaign()?.stage === 'complete' &&
+        (!generating() || refining()) &&
+        (!retryStage() || refining())
+      ) {
         <cx-tabs
           ariaLabel="Campaign sections"
           controlsId="fp-campaign-panel"
@@ -68,6 +69,9 @@
 
       <main class="fp-admin-content">
         @switch (view()) {
+          @case ('inbox') {
+            <fp-enquiry-inbox (sessionExpired)="expireSession()" />
+          }
           @case ('list') {
             @if (generationError() && !composeOpen()) {
               <cx-alert mood="danger" [heading]="generationError()" />
@@ -102,13 +106,13 @@
 
           @case ('campaign') {
             @if (generating() && !refining()) {
-              <section class="fp-generation-wait" aria-label="Campaign generation" aria-live="polite">
+              <section
+                class="fp-generation-wait"
+                aria-label="Campaign generation"
+                aria-live="polite"
+              >
                 <cx-stack gap="lg" align="center">
-                  <cx-spinner
-                    size="xlarge"
-                    mood="primary"
-                    [ariaLabel]="generationHeading()"
-                  />
+                  <cx-spinner size="xlarge" mood="primary" [ariaLabel]="generationHeading()" />
                   <cx-stack gap="xs" align="center">
                     <h2>{{ generationHeading() }}</h2>
                     <p class="fp-meta">{{ generationProgress() }}</p>
@@ -167,7 +171,10 @@
                           />
                         } @else if (activeCopy()) {
                           <cx-sidebar-layout placement="end">
-                            <div class="fp-copy-form" [attr.aria-busy]="generating() ? 'true' : null">
+                            <div
+                              class="fp-copy-form"
+                              [attr.aria-busy]="generating() ? 'true' : null"
+                            >
                               <cx-inline gap="md" align="center" justify="between">
                                 <cx-button-group
                                   ariaLabel="Campaign language"
@@ -194,7 +201,8 @@
                                   heading="Copy refined"
                                   [dismissible]="true"
                                   (dismiss)="dismissedRefinement.set(notice.runId)"
-                                >{{ notice.summary }}</cx-alert>
+                                  >{{ notice.summary }}</cx-alert
+                                >
                               }
                               @for (field of resolvedFields(); track field.id) {
                                 <section
@@ -283,7 +291,10 @@
                             }
                           </cx-sidebar-layout>
                         } @else {
-                          <cx-state-message heading="Campaign copy is not available yet" icon="text" />
+                          <cx-state-message
+                            heading="Campaign copy is not available yet"
+                            icon="text"
+                          />
                         }
                       </div>
                     }
@@ -321,7 +332,10 @@
                           }
                         </div>
                       } @else {
-                        <cx-state-message heading="Image prompts are not available yet" icon="image" />
+                        <cx-state-message
+                          heading="Image prompts are not available yet"
+                          icon="image"
+                        />
                       }
                     }
 
@@ -331,7 +345,8 @@
                           <cx-card
                             heading="Check before publishing"
                             icon="warning"
-                            mood="warning" variant="border"
+                            mood="warning"
+                            variant="border"
                           >
                             <ul class="fp-assumptions">
                               @for (assumption of current.strategy.assumptions; track $index) {
@@ -457,13 +472,9 @@
   </cx-dialog>
 } @else {
   <section class="fp-admin-login" aria-label="Faunapoolen admin">
-    <cx-card
-      class="fp-admin-login__panel"
-      heading="Faunapoolen admin"
-      icon="lock"
-    >
+    <cx-card class="fp-admin-login__panel" heading="Faunapoolen admin" icon="lock">
       <cx-stack gap="lg">
-        <form aria-label="Sign in" (submit)="onSubmit($event)">
+        <form method="post" aria-label="Sign in" (submit)="onSubmit($event)">
           <cx-stack gap="md">
             @if (requestError()) {
               <cx-alert mood="danger" [heading]="requestError()" />
@@ -476,7 +487,7 @@
               autocomplete="username"
               [value]="username()"
               [validation]="usernameValidation()"
-              [disabled]="submitting()"
+              [disabled]="!authReady() || submitting()"
               (valueChange)="updateUsername($event)"
             />
 
@@ -486,7 +497,7 @@
               autocomplete="current-password"
               [value]="password()"
               [validation]="passwordValidation()"
-              [disabled]="submitting()"
+              [disabled]="!authReady() || submitting()"
               (valueChange)="updatePassword($event)"
             />
 
@@ -495,7 +506,7 @@
               text="Sign in"
               mood="primary"
               type="submit"
-              [loading]="submitting()"
+              [loading]="!authReady() || submitting()"
             />
           </cx-stack>
         </form>

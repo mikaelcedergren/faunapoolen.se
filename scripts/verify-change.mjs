@@ -18,6 +18,7 @@ import {
 } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PUBLIC_PAGES } from '../server/src/public-routes.ts';
 
 export const VERIFICATION_SCHEMA_VERSION = 1;
 const repoName = 'faunapoolen.se';
@@ -107,28 +108,12 @@ function uniqueRoutes(routes, fallback = '/') {
 }
 
 export function routeForSourcePath(file) {
-  const post = /^src\/app\/pages\/blog\/posts\/([^/.]+)(?:\.component\.ts|\.html)$/u.exec(
-    file,
-  )?.[1];
-  if (post) return `/blog/posts/${post}.html`;
-  const campaign = /^src\/app\/pages\/campaigns\/([^/]+)\//u.exec(file)?.[1];
-  if (campaign) return `/campaigns/${campaign}/`;
-  const page = /^src\/app\/pages\/([^/]+)\//u.exec(file)?.[1];
-  if (!page || page === 'home' || page === 'not-found') return '/';
-  if (page === 'admin') return '/admin/';
-  if (
-    new Set([
-      'nature-pools',
-      'koi-pond-series',
-      'swim-series',
-      'waterfront-series',
-      'plunge-series',
-      'pond-packages-landing',
-    ]).has(page)
-  ) {
-    return `/${page}.html`;
-  }
-  return `/${page}/`;
+  const post = /^src\/app\/site\/articles\/([^/]+)\.ts$/u.exec(file)?.[1];
+  if (post) return `/en/blog/posts/${post}.html`;
+  if (file.startsWith('src/app/pages/admin/enquiry-inbox')) return '/en/admin/enquiries/';
+  if (file.startsWith('src/app/pages/admin/')) return '/admin/';
+  const page = /^src\/app\/site\/pages\/([^.]+)\.page\./u.exec(file)?.[1];
+  return PUBLIC_PAGES.en[page] ?? '/';
 }
 
 export function classifyChanges(

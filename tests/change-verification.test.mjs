@@ -83,9 +83,9 @@ test('options have stable meanings and reject unknown or duplicate arguments', (
 
 test('documentation, interface, E2E, and high-risk paths select their owning proofs', () => {
   assert.deepEqual(classifyChanges(['README.md']).checks, ['format']);
-  const ui = classifyChanges(['src/app/pages/about/about.component.ts']);
+  const ui = classifyChanges(['src/app/site/pages/about.page.ts']);
   assert.deepEqual(ui.checks, ['format', 'typecheck', 'build-browser', 'visual']);
-  assert.deepEqual(ui.routes, ['/about/']);
+  assert.deepEqual(ui.routes, ['/en/about/']);
   const admin = classifyChanges(['src/app/pages/admin/admin.component.ts']);
   assert.deepEqual(admin.checks, ['format', 'typecheck', 'build-browser', 'e2e', 'visual']);
   assert.deepEqual(admin.routes, ['/admin/']);
@@ -104,10 +104,11 @@ test('documentation, interface, E2E, and high-risk paths select their owning pro
     assert.deepEqual(classifyChanges([file]).checks, ['full'], file);
   }
   assert.deepEqual(classifyChanges(['src/app/app.routes.ts']).checks, ['full', 'e2e', 'visual']);
-  assert.deepEqual(
-    classifyChanges(['package.json', 'src/app/pages/about/about.component.ts']).checks,
-    ['full', 'visual', 'hmr'],
-  );
+  assert.deepEqual(classifyChanges(['package.json', 'src/app/site/pages/about.page.ts']).checks, [
+    'full',
+    'visual',
+    'hmr',
+  ]);
 });
 
 test('dependency and hot-reload changes require the watcher regression', () => {
@@ -142,17 +143,14 @@ test('explicit visual proof adds the default route without weakening selected ch
 
 test('route mapping is bounded and product-owned', () => {
   assert.equal(
-    routeForSourcePath('src/app/pages/blog/posts/pool-conversions.component.ts'),
-    '/blog/posts/pool-conversions.html',
+    routeForSourcePath('src/app/site/articles/pool-conversions.ts'),
+    '/en/blog/posts/pool-conversions.html',
   );
-  assert.equal(
-    routeForSourcePath('src/app/pages/nature-pools/nature-pools.component.ts'),
-    '/nature-pools.html',
-  );
+  assert.equal(routeForSourcePath('src/app/site/pages/nature-pools.page.ts'), '/en/nature-pools/');
   assert.equal(routeForSourcePath('src/app/pages/admin/admin.component.ts'), '/admin/');
   assert.equal(
-    routeForSourcePath('src/app/pages/campaigns/pond-packages/pond-packages.component.ts'),
-    '/campaigns/pond-packages/',
+    routeForSourcePath('src/app/pages/admin/enquiry-inbox.component.ts'),
+    '/en/admin/enquiries/',
   );
   assert.equal(routeForSourcePath('src/styles.scss'), '/');
   assert.equal(safeEvidenceName('/admin/'), 'admin');
@@ -231,15 +229,15 @@ test('check reuse hashes only change when an owned input changes', () => {
   const check = { command: ['pnpm', 'build:browser'], id: 'build-browser' };
   const original = checkInputHash(check, {
     'README.md': 'docs-a',
-    'src/app/pages/about/about.component.ts': 'source-a',
+    'src/app/site/pages/about.page.ts': 'source-a',
   });
   const docsOnly = checkInputHash(check, {
     'README.md': 'docs-b',
-    'src/app/pages/about/about.component.ts': 'source-a',
+    'src/app/site/pages/about.page.ts': 'source-a',
   });
   const sourceChange = checkInputHash(check, {
     'README.md': 'docs-b',
-    'src/app/pages/about/about.component.ts': 'source-b',
+    'src/app/site/pages/about.page.ts': 'source-b',
   });
   assert.equal(original, docsOnly);
   assert.notEqual(original, sourceChange);

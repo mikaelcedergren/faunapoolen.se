@@ -1,7 +1,8 @@
 # faunapoolen.se
 
-The public [Faunapoolen](https://faunapoolen.se) website and its private campaign studio. Swedish
-content is served at the root and English under `/en/`.
+The public [Faunapoolen](https://faunapoolen.se) website, private campaign studio and enquiry inbox.
+English is the source editing language under `/en/`; Swedish keeps the root and Danish lives under
+`/da/`. Browser preferences suggest a language without redirecting indexed pages.
 
 Operational diagnostics use the [shared logging policy](../SERVER-STANDARD.md#logs-and-bounded-storage).
 The web and jobs roles correlate request admission, durable stage handoffs and provider effects
@@ -33,8 +34,8 @@ The site uses the shared web-product architecture:
 - immutable browser/server release artifacts
 - `@mikaelcedergren/cx-framework` for shared runtime behavior and the private admin UI
 
-Faunapoolen deliberately keeps its established public visual skin. That is a visual exception, not
-an engineering exception.
+The owner-approved rebuild uses the Aqua/editorial direction from the Faunapoolen Playground,
+composed from the published framework. The admin retains its existing theme choices.
 
 ## Work locally
 
@@ -75,10 +76,15 @@ bin/install-server-daemon --check
 ## Source layout
 
 ```text
-src/app/pages/**             source-owned Swedish and English page templates
-src/app/app.routes.ts        route and SEO catalogue
-src/locale/                  English SEO translations
-public/assets/**             canonical public images plus directly maintained CSS and scripts
+src/app/site/pages/**        independent public page compositions
+src/app/site/articles/**     lazy-loaded English article bodies
+src/app/site/content/**      source copy and article metadata
+src/app/pages/admin/**       campaign studio and enquiry inbox
+src/app/app.routes.ts        public/private route composition
+server/src/public-routes.ts  pure shared URL catalogue and retired-page redirects
+src/locale/                  Angular i18n English extraction and Swedish/Danish translations
+src/styles.scss              published framework foundations and editorial typography
+public/assets/**             canonical public images, including preserved article image URLs
 scripts/flatten.mjs          preserves stable literal .html routes
 server/src/index.ts          compiled web entrypoint
 server/src/worker.ts         compiled worker entrypoint
@@ -89,8 +95,25 @@ server/src/campaign-repository.ts
 data/faunapoolen.db          private operational authority
 ```
 
-The Angular tree and `public/` are the only public-site sources. Edit them directly; the shipped
-`styles.css` and `scripts.js` are the sources, with no Sass/minified or historical mirror.
+Edit English copy at its source, run `pnpm extract-i18n`, update the Swedish/Danish JSON catalogues,
+then run `pnpm i18n:check`. After intentionally removing messages, run
+`node scripts/check-i18n.mjs --prune` to remove obsolete translations; missing entries still fail.
+Production and the single local dev server use the same catalogues. Locale switching reloads the
+document. Minor framework-owned English labels such as “Optional” and “Clear” are an accepted
+exception; do not patch them locally.
+
+The blog stays at `/blog/`, `/en/blog/` and `/da/blog/`. All twelve original Swedish/English article
+bodies and SEO fields are protected by `tests/fixtures/blog-seo-baseline.json` and the browser-build
+test. Never regenerate that baseline to make an unintended content change pass. The sitemap is
+generated from rendered canonical pages; retired redirects, admin and 404 pages are excluded.
+
+Enquiries are saved directly to SQLite. `/admin/enquiries` provides new/contacted/closed views,
+contact details and the project brief. Status updates use revisions; retries reuse the same
+submission reference. Capacity is 1,000 records without automatic deletion; admission is limited to
+five submissions per email and 100 overall per hour. Closing is not deletion. Enquiries trigger no
+automated email, marketing subscription or paid provider effect.
+
+See [the rebuild record](docs/REBUILD.md) for publication review items.
 
 ## Private runtime
 

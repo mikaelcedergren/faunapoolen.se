@@ -1,0 +1,18 @@
+<figure class="cx-figure" [attr.data-gotland-film]="film().id">
+  <div class="cx-embed" [class.cx-embed--square]="film().portrait">
+    <iframe
+      [src]="embedUrl()"
+      loading="lazy"
+      [attr.aria-label]="evidence.caseTitle + ' · ' + gotlandCopy.film + ' ' + film().number"
+      allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+  </div>
+  <figcaption class="cx-figure__caption">
+    {{ gotlandCopy.film }} {{ film().number }} · {{ film().duration }} ·
+    <a [href]="'https://vimeo.com/' + film().id" target="_blank" rel="noopener noreferrer">{{
+      gotlandCopy.vimeo
+    }}</a>
+  </figcaption>
+</figure>

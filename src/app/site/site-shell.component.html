@@ -1,0 +1,121 @@
+<div class="cx-page">
+  <cx-masthead
+    heading="Faunapoolen"
+    [logoSrc]="logo"
+    [homeHref]="homeHref"
+    [items]="navItems"
+    [menuAriaLabel]="copy.menuLabel"
+    variant="frosted"
+    [sticky]="true"
+  >
+    <nav actions [attr.aria-label]="languageLabel">
+      <cx-inline gap="md">
+        @for (language of languages; track language.locale) {
+          <a
+            [href]="language.href"
+            [attr.hreflang]="language.locale"
+            [attr.lang]="language.locale"
+            [attr.aria-label]="language.label"
+            [title]="language.label"
+            [attr.aria-current]="language.locale === locale ? 'true' : null"
+            class="cx-text-link"
+            >{{ language.locale.toUpperCase() }}</a
+          >
+        }
+      </cx-inline>
+    </nav>
+  </cx-masthead>
+
+  <div class="cx-page__content">
+    <div class="cx-measure-xl cx-w-full">
+      <main>
+        <cx-stack gap="2xl">
+          @if (suggestion(); as language) {
+            <cx-alert
+              [heading]="suggestionHeading"
+              [action]="language"
+              [dismissible]="true"
+              (dismiss)="dismissSuggestion()"
+            />
+          }
+          <ng-content />
+          @if (page === 'gotland') {
+            <cx-inline
+              ><cx-button
+                [text]="copy.common.talkButton"
+                [href]="configureHref"
+                [transparent]="true"
+                appendIcon="arrow-right"
+            /></cx-inline>
+          } @else if (page !== 'configure') {
+            <section aria-labelledby="contact-invitation-title">
+              <cx-stack gap="xl">
+                <cx-divider [discreet]="true" />
+                <cx-grid [columns]="2" [columnsMobile]="1" gap="xl" [align]="'center'">
+                  <div class="cx-article cx-article--lg cx-article--start">
+                    <h2 id="contact-invitation-title">
+                      {{ copy.common.talkTitle }}
+                    </h2>
+                    <p>{{ copy.common.talkBody }}</p>
+                  </div>
+                  <cx-stack gap="lg" align="start">
+                    <p class="cx-text-body-lg">
+                      {{ editorial.firstContact }}
+                    </p>
+                    <cx-button
+                      [text]="copy.common.talkButton"
+                      mood="primary"
+                      size="large"
+                      [href]="
+                        page === 'waterscapes' ? configureHref + '?service=pond' : configureHref
+                      "
+                      appendIcon="arrow-right"
+                    />
+                  </cx-stack>
+                </cx-grid>
+              </cx-stack>
+            </section>
+          }
+
+          <footer [attr.aria-label]="ui.footer">
+            <cx-stack gap="lg">
+              <cx-divider />
+              <cx-split gap="lg" [align]="'center'" [wrap]="true">
+                <cx-stack start gap="2xs">
+                  <span class="cx-text-title-3 cx-font-bold">Faunapoolen</span>
+                  <span class="cx-text-body-lg cx-text-muted">
+                    {{ ui.nature_pools_ponds_and_streams }}
+                  </span>
+                </cx-stack>
+                <cx-inline end gap="xs" [wrap]="true">
+                  <cx-button
+                    [text]="copy.nav.guides"
+                    [transparent]="true"
+                    size="default"
+                    [href]="routeFor('guides')"
+                  />
+                  <cx-button
+                    [text]="copy.nav.about"
+                    [transparent]="true"
+                    size="default"
+                    [href]="routeFor('about')"
+                  />
+                  @for (language of languages; track language.locale) {
+                    <a
+                      [href]="language.href"
+                      [attr.hreflang]="language.locale"
+                      [attr.lang]="language.locale"
+                      [attr.aria-current]="language.locale === locale ? 'true' : null"
+                      class="cx-text-link"
+                      >{{ language.label }}</a
+                    >
+                  }
+                </cx-inline>
+              </cx-split>
+            </cx-stack>
+          </footer>
+        </cx-stack>
+      </main>
+    </div>
+  </div>
+</div>

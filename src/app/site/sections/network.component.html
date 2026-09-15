@@ -1,0 +1,27 @@
+<section aria-labelledby="aquascape-network-title">
+  <cx-stack gap="xl">
+    <cx-stack gap="sm">
+      <div class="cx-article cx-article--lg cx-article--start">
+        <h2 id="aquascape-network-title">
+          {{ evidence.networkTitle }}
+        </h2>
+      </div>
+      <p class="cx-text-body-lg cx-text-muted cx-measure-lg-start">
+        {{ evidence.networkBody }}
+      </p>
+    </cx-stack>
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="xl">
+      @for (project of networkProjects; track project.source) {
+        <cx-stack gap="md">
+          <p class="cx-text-body-lg cx-text-muted">
+            {{ project.location }}
+          </p>
+          <h3 class="cx-text-title-2 cx-font-serif">{{ project.name }}</h3>
+          <p class="cx-text-body">{{ project.body }}</p>
+          <p class="cx-text-body-lg cx-text-muted">{{ evidence.builder }}: {{ project.builder }}</p>
+          <cx-button [text]="evidence.source" [href]="project.source" appendIcon="open-new" />
+        </cx-stack>
+      }
+    </cx-grid>
+  </cx-stack>
+</section>

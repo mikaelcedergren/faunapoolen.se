@@ -1,0 +1,147 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="home-title">
+      <cx-stack gap="xl">
+        <cx-grid [columns]="2" [columnsMobile]="1" gap="xl" [align]="'center'">
+          <cx-stack gap="lg" align="start">
+            <p class="cx-text-body-lg cx-text-accent">
+              {{ copy.home.eyebrow }}
+            </p>
+            <div class="cx-article cx-article--lg cx-article--start">
+              <h1 id="home-title">{{ copy.home.title }}</h1>
+              <p>{{ copy.home.ingress }}</p>
+            </div>
+            <cx-inline gap="md" [wrap]="true">
+              <cx-button
+                [text]="copy.home.primary"
+                mood="primary"
+                size="large"
+                [href]="configureHref"
+              />
+              <cx-button
+                [text]="copy.home.secondary"
+                size="large"
+                [transparent]="true"
+                [href]="routeFor('nature-pools') + '#packages'"
+                appendIcon="arrow-right"
+              />
+            </cx-inline>
+          </cx-stack>
+          <cx-stack gap="sm">
+            <img
+              class="cx-w-full cx-rounded-lg"
+              [src]="images.hero"
+              [alt]="editorial.heroAlt"
+              width="1536"
+              fetchpriority="high"
+            />
+            <p class="cx-text-body-lg cx-text-muted">
+              {{ editorial.conceptImage }}
+            </p>
+          </cx-stack>
+        </cx-grid>
+        <cx-divider [discreet]="true" />
+        <cx-grid [columns]="2" [columnsMobile]="1" gap="xl" [align]="'center'">
+          <fp-certification />
+          <p class="cx-text-body-lg">
+            {{ editorial.responsibility }}
+          </p>
+        </cx-grid>
+      </cx-stack>
+    </section>
+
+    <section aria-labelledby="home-life-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="lg" [align]="'center'">
+        <cx-stack gap="sm">
+          <img
+            class="cx-w-full cx-rounded-lg"
+            [src]="images.architecture"
+            [alt]="editorial.architectureAlt"
+            width="1536"
+            loading="lazy"
+          />
+          <p class="cx-text-body-lg cx-text-muted">
+            {{ editorial.conceptImage }}
+          </p>
+        </cx-stack>
+        <div class="cx-article cx-article--lg cx-article--start">
+          <h2 id="home-life-title">
+            {{ editorial.lifeTitle }}
+          </h2>
+          <p>{{ editorial.lifeBody }}</p>
+          <p>
+            <a [href]="routeFor('nature-pools')">{{ editorial.lifeLink }} →</a>
+          </p>
+        </div>
+      </cx-grid>
+    </section>
+
+    <section aria-labelledby="home-customers-title">
+      <cx-stack gap="xl">
+        <div class="cx-article cx-article--lg cx-article--start">
+          <h2 id="home-customers-title">
+            {{ editorial.customerTitle }}
+          </h2>
+          <p>{{ editorial.britaContext }}</p>
+        </div>
+        <cx-grid [columns]="2" [columnsMobile]="1" gap="xl">
+          <fp-customer-quote [review]="testimonials[0]" />
+          <fp-customer-quote [review]="testimonials[1]" />
+        </cx-grid>
+        <cx-divider [discreet]="true" />
+        <cx-split gap="xl" [wrap]="true" [align]="'center'">
+          <cx-stack start gap="sm">
+            <div class="cx-article cx-article--lg cx-article--start">
+              <h2 id="home-case-title">
+                {{ evidence.caseTitle }}
+              </h2>
+            </div>
+            <p class="cx-text-body-lg">
+              {{ editorial.casePreview }}
+            </p>
+          </cx-stack>
+          <cx-button
+            end
+            [text]="evidence.caseLink"
+            [href]="routeFor('gotland')"
+            appendIcon="arrow-right"
+            size="large"
+            [transparent]="true"
+          />
+        </cx-split>
+      </cx-stack>
+    </section>
+
+    <fp-technology />
+    <fp-package-comparison />
+
+    <section aria-labelledby="home-waterscape-title">
+      <cx-stack gap="xl">
+        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="lg" [align]="'center'">
+          <div class="cx-article cx-article--lg cx-article--start">
+            <h2 id="home-waterscape-title">
+              {{ copy.home.waterscapeTitle }}
+            </h2>
+            <p>{{ copy.home.waterscapeBody }}</p>
+            <p>
+              <a [href]="routeFor('waterscapes')">{{ copy.nav.waterscapes }} →</a>
+            </p>
+          </div>
+          <cx-stack gap="sm">
+            <img
+              class="cx-w-full cx-rounded-lg"
+              [src]="images.waterscape"
+              [alt]="editorial.waterscapeAlt"
+              width="1536"
+              loading="lazy"
+            />
+            <p class="cx-text-body-lg cx-text-muted">
+              {{ editorial.conceptImage }}
+            </p>
+          </cx-stack>
+        </cx-grid>
+        <fp-customer-quote [review]="testimonials[2]" />
+      </cx-stack>
+    </section>
+    <fp-process /> </cx-stack
+></fp-site-shell>

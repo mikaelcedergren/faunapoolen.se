@@ -1,0 +1,87 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="nature-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-stack gap="lg" align="start">
+          <div class="cx-text-body cx-font-bold cx-text-accent">
+            {{ copy.naturePools.eyebrow }}
+          </div>
+          <h1 id="nature-title" class="cx-text-display cx-font-serif cx-text-balance">
+            {{ copy.naturePools.title }}
+          </h1>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ copy.naturePools.ingress }}</p>
+          </div>
+          <cx-inline gap="sm" [wrap]="true">
+            <cx-button
+              [text]="copy.start"
+              mood="primary"
+              size="large"
+              [href]="routeFor('configure')"
+            />
+            <cx-button [text]="copy.nav.guides" size="large" [href]="routeFor('guides')" />
+          </cx-inline>
+        </cx-stack>
+        <cx-stack gap="sm"
+          ><img
+            class="cx-w-full cx-rounded-xl"
+            [src]="images.detail"
+            [alt]="ui.hand_touching_clear_water_beside_wet_granite_and_reeds"
+            width="1536"
+            fetchpriority="high"
+          />
+          <p class="cx-text-body cx-text-muted">
+            {{ editorial.conceptImage }}
+          </p></cx-stack
+        >
+      </cx-grid>
+    </section>
+
+    <fp-technology />
+    <fp-package-comparison />
+
+    <section aria-labelledby="care-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-stack gap="lg">
+          <div class="cx-article cx-article--lg cx-article--start">
+            <h2 id="care-title">{{ copy.naturePools.careTitle }}</h2>
+          </div>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ copy.naturePools.careBody }}</p>
+          </div>
+          <cx-stack gap="sm">
+            @for (point of copy.naturePools.carePoints; track point) {
+              <p class="cx-text-body-lg">{{ point }}</p>
+            }
+          </cx-stack>
+        </cx-stack>
+        <cx-stack gap="sm"
+          ><img
+            class="cx-w-full cx-rounded-xl"
+            [src]="images.evening"
+            [alt]="ui.family_with_towels_and_warm_drinks_beside_the_nature_pool_at_dusk"
+            width="1536"
+            loading="lazy"
+          />
+          <p class="cx-text-body cx-text-muted">
+            {{ editorial.conceptImage }}
+          </p></cx-stack
+        >
+      </cx-grid>
+    </section>
+    <fp-network />
+    <section [attr.aria-label]="copy.nav.guides">
+      <div class="cx-article cx-article--lg cx-article--start">
+        <h2>
+          {{ ui.want_to_understand_the_difference }}
+        </h2>
+        <p>
+          {{ ui.compare_filtration_maintenance_and_the_swimming_experience_before_deciding }}
+        </p>
+        <p>
+          <a [href]="guideHref('difference')">{{ guides[1].title }} →</a>
+        </p>
+      </div>
+    </section>
+  </cx-stack></fp-site-shell
+>

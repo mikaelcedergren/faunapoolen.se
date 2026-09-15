@@ -4,7 +4,3 @@ dist
 coverage
 pnpm-lock.yaml
 public/assets
-# Source-owned imported page copy keeps deliberate inline whitespace.
-src/app/pages
-src/app/app.routes.ts
-src/locale

@@ -1,0 +1,90 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="waterscapes-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-stack gap="lg" align="start">
+          <div class="cx-text-body cx-font-bold cx-text-accent">
+            {{ copy.waterscapes.eyebrow }}
+          </div>
+          <h1 id="waterscapes-title" class="cx-text-display cx-font-serif cx-text-balance">
+            {{ copy.waterscapes.title }}
+          </h1>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ copy.waterscapes.ingress }}</p>
+          </div>
+          <cx-button
+            [text]="copy.start"
+            mood="primary"
+            size="large"
+            [href]="configureHref + '?service=pond'"
+          />
+        </cx-stack>
+        <cx-stack gap="sm"
+          ><img
+            class="cx-w-full cx-rounded-xl"
+            [src]="images.waterscape"
+            [alt]="ui.child_watching_koi_in_a_garden_pond_with_a_natural_stream"
+            width="1536"
+            fetchpriority="high"
+          />
+          <p class="cx-text-body cx-text-muted">
+            {{ editorial.conceptImage }}
+          </p></cx-stack
+        >
+      </cx-grid>
+    </section>
+
+    <section aria-labelledby="water-types-title">
+      <cx-stack gap="xl">
+        <div class="cx-article cx-article--lg cx-article--start">
+          <h2 id="water-types-title">
+            {{ copy.waterscapes.typesTitle }}
+          </h2>
+        </div>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
+          @for (item of copy.waterscapes.types; track item.title; let i = $index) {
+            <cx-stack gap="md">
+              <h3 class="cx-text-title-2 cx-font-serif">
+                {{ item.title }}
+              </h3>
+              <p class="cx-text-body-lg cx-text-muted">{{ item.body }}</p>
+              <cx-button
+                [text]="editorial.discussService"
+                [href]="configureHref + '?service=' + (i === 1 ? 'stream' : 'pond')"
+                appendIcon="arrow-right"
+                [transparent]="true"
+              />
+            </cx-stack>
+          }
+        </cx-grid>
+      </cx-stack>
+    </section>
+
+    <section aria-labelledby="waterscape-method-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-stack gap="sm"
+          ><img
+            class="cx-w-full cx-rounded-xl"
+            [src]="images.detail"
+            [alt]="ui.water_ripples_wet_stone_and_reeds_in_close_detail"
+            width="1536"
+            loading="lazy"
+          />
+          <p class="cx-text-body cx-text-muted">
+            {{ editorial.conceptImage }}
+          </p></cx-stack
+        >
+        <cx-stack gap="lg">
+          <div class="cx-article cx-article--lg cx-article--start">
+            <h2 id="waterscape-method-title">
+              {{ copy.waterscapes.methodTitle }}
+            </h2>
+          </div>
+          <div class="cx-article cx-article--lg cx-article--start">
+            <p>{{ copy.waterscapes.methodBody }}</p>
+          </div>
+        </cx-stack>
+      </cx-grid>
+    </section>
+  </cx-stack></fp-site-shell
+>

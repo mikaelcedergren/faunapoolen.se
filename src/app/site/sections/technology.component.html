@@ -1,0 +1,45 @@
+<section id="aquascape" aria-labelledby="aquascape-title" class="cx-scroll-target">
+  <div class="cx-full-bleed cx-bg-surface-alt cx-py-2xl">
+    <cx-stack gap="xl">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="lg" [align]="'center'">
+        <div class="cx-article cx-article--lg cx-article--start">
+          <h2 id="aquascape-title">
+            {{ evidence.technologyTitle }}
+          </h2>
+          <p>{{ evidence.technologyBody }}</p>
+          <p>{{ editorial.technologyResponsibility }}</p>
+          @if (page === 'home') {
+            <p>
+              <a [href]="routeFor('nature-pools') + '#aquascape'"
+                >{{ editorial.technologyDetails }} →</a
+              >
+            </p>
+          } @else {
+            <p>
+              <a [href]="aquascape.technology">{{ evidence.technologyLink }} ↗</a>
+            </p>
+          }
+        </div>
+        <cx-stack gap="md" align="start">
+          <img
+            class="cx-w-full cx-rounded-lg"
+            [src]="aquascapeImages.recreationalPond"
+            [alt]="editorial.supplierAlt"
+            width="1200"
+            loading="lazy"
+          />
+          <p class="cx-text-body-lg cx-text-muted">
+            {{ evidence.videoCaption }}
+          </p>
+          <cx-button
+            [text]="editorial.videoLink"
+            [href]="aquascape.video"
+            icon="play"
+            size="large"
+            [transparent]="true"
+          />
+        </cx-stack>
+      </cx-grid>
+    </cx-stack>
+  </div>
+</section>

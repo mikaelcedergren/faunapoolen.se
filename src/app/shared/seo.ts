@@ -10,6 +10,10 @@ const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/assets/images/og-image.jpg`;
 export interface PageSeo {
   /** Swedish canonical path, e.g. '/' or '/koi-pond-series.html'. */
   path: string;
+  /** Equivalent English route; the public site owns translated URL segments. */
+  enPath?: string;
+  daPath?: string;
+  defaultLanguage?: 'en' | 'sv';
   description: string;
   keywords?: string;
   ogTitle?: string;
@@ -67,19 +71,14 @@ export class SeoTitleStrategy extends TitleStrategy {
     super();
   }
 
-  private get isEnglish(): boolean {
-    return this.localeId.toLowerCase().startsWith('en');
-  }
-
   override updateTitle(snapshot: RouterStateSnapshot): void {
     let route = snapshot.root;
     while (route.firstChild) route = route.firstChild;
 
     const seo = (route.data['seo'] as PageSeo | undefined) ?? { path: '/', description: '' };
     const title = this.buildTitle(snapshot) ?? 'Faunapoolen';
-    const isEn = this.isEnglish;
-    const lang = isEn ? 'en' : 'sv';
-    const inLanguage = isEn ? 'en-US' : 'sv-SE';
+    const lang = this.localeId.split('-')[0];
+    const inLanguage = lang === 'sv' ? 'sv-SE' : lang === 'da' ? 'da-DK' : 'en-US';
 
     if (seo.private) {
       this.renderPrivatePage(title, lang);
@@ -87,11 +86,12 @@ export class SeoTitleStrategy extends TitleStrategy {
     }
 
     const svPath = seo.path;
-    const enPath = svPath === '/' ? '/en/' : `/en${svPath}`;
+    const enPath = seo.enPath ?? (svPath === '/' ? '/en/' : `/en${svPath}`);
     const svUrl = SITE_ORIGIN + svPath;
     const enUrl = SITE_ORIGIN + enPath;
-    const canonical = isEn ? enUrl : svUrl;
-    const siteBase = isEn ? `${SITE_ORIGIN}/en/` : `${SITE_ORIGIN}/`;
+    const daUrl = SITE_ORIGIN + (seo.daPath ?? `/da${svPath}`);
+    const canonical = lang === 'sv' ? svUrl : lang === 'da' ? daUrl : enUrl;
+    const siteBase = lang === 'sv' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}/${lang}/`;
 
     const ogImage = seo.ogImage ?? DEFAULT_OG_IMAGE;
     const ogTitle = seo.ogTitle ?? title;
@@ -102,6 +102,8 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ name: 'description', content: seo.description });
     if (seo.keywords) {
       this.meta.updateTag({ name: 'keywords', content: seo.keywords });
+    } else {
+      this.meta.removeTag("name='keywords'");
     }
     // The source pages carry no robots meta on indexable pages (indexable is the default), so only
     // emit one to mark a page noindex — keeps parity with the live <head>.
@@ -114,7 +116,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:type', content: seo.ogType ?? 'website' });
     this.meta.updateTag({ property: 'og:url', content: canonical });
     this.meta.updateTag({ property: 'og:site_name', content: 'Faunapoolen' });
-    this.meta.updateTag({ property: 'og:locale', content: isEn ? 'en_US' : 'sv_SE' });
+    this.meta.updateTag({ property: 'og:locale', content: inLanguage.replace('-', '_') });
     this.meta.updateTag({ property: 'og:image', content: ogImage });
     this.meta.updateTag({ property: 'og:title', content: ogTitle });
     this.meta.updateTag({ property: 'og:description', content: ogDescription });
@@ -137,7 +139,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ name: 'twitter:image', content: ogImage });
 
     this.setCanonical(canonical);
-    this.setAlternates(svUrl, enUrl);
+    this.setAlternates(svUrl, enUrl, daUrl, seo.defaultLanguage === 'sv' ? svUrl : enUrl);
     this.setJsonLd(
       this.buildGraph(canonical, title, seo.description, inLanguage, ogImage, siteBase, seo),
     );
@@ -179,7 +181,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     link.setAttribute('href', url);
   }
 
-  private setAlternates(svUrl: string, enUrl: string): void {
+  private setAlternates(svUrl: string, enUrl: string, daUrl: string, defaultUrl: string): void {
     const head = this.document.head;
     head.querySelectorAll("link[rel='alternate'][hreflang]").forEach((el) => el.remove());
     const add = (hreflang: string, href: string): void => {
@@ -191,7 +193,8 @@ export class SeoTitleStrategy extends TitleStrategy {
     };
     add('sv', svUrl);
     add('en', enUrl);
-    add('x-default', svUrl);
+    add('da', daUrl);
+    add('x-default', defaultUrl);
   }
 
   private buildGraph(

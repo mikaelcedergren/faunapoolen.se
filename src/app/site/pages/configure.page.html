@@ -1,0 +1,306 @@
+<fp-site-shell
+  ><cx-stack gap="2xl">
+    <section aria-labelledby="configure-title">
+      <div class="cx-article cx-article--lg cx-article--start">
+        <h1 id="configure-title">{{ copy.configure.title }}</h1>
+        <p>{{ copy.configure.ingress }}</p>
+      </div>
+    </section>
+    <section id="configurator" class="cx-scroll-target" aria-labelledby="configure-title">
+      <form method="post" novalidate (submit)="$event.preventDefault(); submitProject()">
+        <cx-stack gap="xl">
+          @if (submitted()) {
+            <cx-alert [heading]="receivedTitle" mood="success">{{ receivedBody }}</cx-alert>
+          }
+          @if (deliveryError()) {
+            <cx-alert mood="danger" [heading]="deliveryError()" />
+          }
+          <cx-sidebar-layout placement="end" mobilePlacement="after">
+            <div id="project-fields">
+              <cx-stack gap="xl">
+                @if (!submitted()) {
+                  <cx-stack gap="lg">
+                    <div class="cx-article cx-article--lg cx-article--start">
+                      <h2>
+                        {{ ui.your_garden }}
+                      </h2>
+                    </div>
+                    <cx-dropdown
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="editorial.service"
+                      size="large"
+                      [availableValues]="serviceChoices"
+                      [value]="serviceId()"
+                      (valueChange)="selectService($event)"
+                    />
+                    @if (serviceId() === 'pool') {
+                      <cx-dropdown
+                        [disabled]="!ready() || !!pendingRequest()"
+                        [label]="copy.configure.packageTitle"
+                        size="large"
+                        [availableValues]="packageChoices"
+                        [value]="packageId()"
+                        [hint]="editorial.packageHelp"
+                        (valueChange)="selectPackage($event)"
+                      />
+                    }
+                    <cx-text-field
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="copy.configure.location"
+                      size="large"
+                      name="postal-code"
+                      autocomplete="postal-code"
+                      [value]="contactLocation()"
+                      [validation]="fieldError(contactLocation())"
+                      (valueChange)="contactLocation.set($event)"
+                    />
+                    <cx-text-area
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="editorial.notes"
+                      [hint]="editorial.notesHelp"
+                      [optional]="true"
+                      size="large"
+                      [value]="contactNotes()"
+                      [minLines]="3"
+                      [maxLength]="4000"
+                      sizing="auto"
+                      (valueChange)="contactNotes.set($event)"
+                    />
+                  </cx-stack>
+                  @if (hasEstimate()) {
+                    <cx-divider [discreet]="true" />
+                    <cx-stack gap="lg">
+                      <div class="cx-article cx-article--lg cx-article--start">
+                        <h2>{{ editorial.optionalChoices }}</h2>
+                      </div>
+                      <p class="cx-text-body-lg">
+                        {{ editorial.optionalChoicesBody }}
+                      </p>
+                      <cx-dropdown
+                        [disabled]="!ready() || !!pendingRequest()"
+                        [label]="copy.configure.siteTitle"
+                        size="large"
+                        [availableValues]="siteChoices"
+                        [value]="siteId()"
+                        (valueChange)="selectSite($event)"
+                      />
+                      <cx-dropdown
+                        [disabled]="!ready() || !!pendingRequest()"
+                        [label]="copy.configure.sizeTitle"
+                        size="large"
+                        [availableValues]="sizeChoices"
+                        [value]="sizeId()"
+                        (valueChange)="selectSize($event)"
+                      />
+                      <cx-dropdown
+                        [disabled]="!ready() || !!pendingRequest()"
+                        [label]="copy.configure.featuresTitle"
+                        [optional]="true"
+                        selection="multiple"
+                        size="large"
+                        [availableValues]="featureChoices"
+                        [values]="featureIds()"
+                        (valuesChange)="featureIds.set($event)"
+                        [placeholder]="copy.configure.none"
+                      />
+                      <cx-dropdown
+                        [disabled]="!ready() || !!pendingRequest()"
+                        [label]="copy.configure.careTitle"
+                        size="large"
+                        [availableValues]="careChoices"
+                        [value]="care() ? 'yes' : 'no'"
+                        (valueChange)="care.set($event === 'yes')"
+                      />
+                    </cx-stack>
+                  }
+                  <cx-divider [discreet]="true" />
+                  <cx-stack gap="lg">
+                    <div class="cx-article cx-article--lg cx-article--start">
+                      <h2>{{ copy.configure.contactTitle }}</h2>
+                    </div>
+                    <p class="cx-text-body-lg">
+                      {{ editorial.contactHelp }}
+                    </p>
+                    <cx-text-field
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="copy.configure.name"
+                      size="large"
+                      name="name"
+                      autocomplete="name"
+                      [value]="contactName()"
+                      [validation]="fieldError(contactName())"
+                      (valueChange)="contactName.set($event)"
+                    />
+                    <cx-email-field
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="copy.configure.email"
+                      size="large"
+                      [value]="contactEmail()"
+                      [validation]="emailError()"
+                      (valueChange)="contactEmail.set($event)"
+                    />
+                    <cx-text-field
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="copy.configure.phone"
+                      size="large"
+                      [optional]="true"
+                      name="tel"
+                      autocomplete="tel"
+                      [value]="contactPhone()"
+                      (valueChange)="contactPhone.set($event)"
+                    />
+                    <cx-dropdown
+                      [disabled]="!ready() || !!pendingRequest()"
+                      [label]="copy.configure.contactPeriod"
+                      size="large"
+                      [optional]="true"
+                      [placeholder]="editorial.unknown"
+                      [availableValues]="contactPeriodOptions"
+                      [value]="contactPeriod()"
+                      (valueChange)="contactPeriod.set($event)"
+                    />
+                  </cx-stack>
+                } @else {
+                  <div class="cx-article cx-article--start">
+                    <h2>{{ copy.configure.contactTitle }}</h2>
+                    <p>{{ contactName() }}<br />{{ contactEmail() }}</p>
+                    @if (contactPhone()) {
+                      <p>{{ contactPhone() }}</p>
+                    }
+                    <p>{{ contactLocation() }}</p>
+                    @if (contactPeriod()) {
+                      <p>{{ contactPeriodLabel() }}</p>
+                    }
+                    @if (contactNotes()) {
+                      <p>{{ contactNotes() }}</p>
+                    }
+                  </div>
+                }
+              </cx-stack>
+            </div>
+            <aside
+              sidebar
+              id="project-summary"
+              class="cx-scroll-target"
+              [attr.aria-label]="copy.configure.summaryTitle"
+            >
+              <cx-stack gap="lg">
+                <h2 class="cx-text-title-1 cx-font-serif">
+                  {{ copy.configure.summaryTitle }}
+                </h2>
+                <p class="cx-text-body-lg cx-text-accent">{{ serviceLabel() }} · Faunapoolen</p>
+                @if (hasEstimate()) {
+                  <p class="cx-text-title-1 cx-font-serif">
+                    {{ selectedPackage().name }}
+                  </p>
+                  <p class="cx-text-body-lg">
+                    {{ selectedPackage().area }}
+                  </p>
+                  <cx-divider [discreet]="true" />
+                  <div class="cx-article cx-article--start">
+                    <ul>
+                      @for (benefit of selectedPackage().includes; track benefit) {
+                        <li>{{ benefit }}</li>
+                      }
+                    </ul>
+                  </div>
+                  <cx-stack gap="md">
+                    <cx-split gap="md" [wrap]="true"
+                      ><span start class="cx-text-body-lg">{{
+                        copy.configure.selectedPackage
+                      }}</span
+                      ><strong end class="cx-text-body-lg">{{
+                        money(selectedPackage().price)
+                      }}</strong></cx-split
+                    >
+                    @if (siteId() !== 'unsure' && selectedSite().price) {
+                      <cx-split gap="md" [wrap]="true"
+                        ><span start class="cx-text-body-lg">{{ selectedSite().name }}</span
+                        ><strong end class="cx-text-body-lg"
+                          >+{{ money(selectedSite().price) }}</strong
+                        ></cx-split
+                      >
+                    }
+                    @if (selectedSize().price) {
+                      <cx-split gap="md" [wrap]="true"
+                        ><span start class="cx-text-body-lg">{{ selectedSize().name }}</span
+                        ><strong end class="cx-text-body-lg"
+                          >+{{ money(selectedSize().price) }}</strong
+                        ></cx-split
+                      >
+                    }
+                    @for (feature of selectedFeatures(); track feature.id) {
+                      <cx-split gap="md" [wrap]="true"
+                        ><span start class="cx-text-body-lg">{{ feature.name }}</span
+                        ><strong end class="cx-text-body-lg"
+                          >+{{ money(feature.price) }}</strong
+                        ></cx-split
+                      >
+                    }
+                  </cx-stack>
+                  <cx-divider [discreet]="true" />
+                  <div aria-live="polite" aria-atomic="true">
+                    <cx-stack gap="md">
+                      <cx-metric
+                        [label]="copy.configure.estimate + ' · ' + copy.configure.vat"
+                        [value]="money(projectEstimate())"
+                      />
+                      @if (care()) {
+                        <cx-metric
+                          [label]="
+                            copy.configure.care +
+                            ' · ' +
+                            copy.configure.yearly +
+                            ' · ' +
+                            copy.configure.vat
+                          "
+                          [value]="money(yearlyEstimate())"
+                        />
+                      }
+                    </cx-stack>
+                  </div>
+                  @if (siteId() === 'unsure') {
+                    <p class="cx-text-body-lg">
+                      {{ editorial.estimatePending }}
+                    </p>
+                  }
+                  <p class="cx-text-body-lg">
+                    {{ copy.configure.nonBinding }}
+                  </p>
+                  <p class="cx-text-body-lg cx-text-muted">
+                    {{ evidence.technologyLine }}
+                  </p>
+                } @else {
+                  <div class="cx-article cx-article--start">
+                    <p>
+                      <strong>{{ editorial.servicePrice }}</strong>
+                    </p>
+                    <p>{{ editorial.servicePriceBody }}</p>
+                  </div>
+                }
+                <cx-divider [discreet]="true" />
+                <p class="cx-text-body-lg">
+                  {{ editorial.firstContact }}
+                </p>
+              </cx-stack>
+            </aside>
+          </cx-sidebar-layout>
+          @if (!submitted()) {
+            <cx-stack gap="lg" align="start">
+              <p class="cx-text-body-lg cx-measure-md-start">
+                {{ privacyNotice }}
+              </p>
+              <cx-button
+                type="submit"
+                [text]="submitLabel"
+                [loading]="!ready() || sending()"
+                size="large"
+                mood="primary"
+                appendIcon="arrow-right"
+              />
+            </cx-stack>
+          }
+        </cx-stack>
+      </form>
+    </section> </cx-stack
+></fp-site-shell>
