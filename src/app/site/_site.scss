@@ -1,0 +1,68 @@
+.fp-intro {
+  width: min(100%, var(--measure-xl));
+  margin-inline: auto;
+}
+
+// Public composition only. Framework components own their internal presentation.
+.fp-section {
+  display: block;
+  width: min(100%, var(--measure-xl));
+  box-sizing: border-box;
+  margin-inline: auto;
+  padding: var(--space-2xl) var(--gutter-page);
+}
+
+.fp-band {
+  background: var(--surface-alt);
+}
+
+.fp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: var(--font-size-title-3);
+  font-weight: var(--font-weight-bold);
+}
+
+.fp-brand:focus-visible {
+  outline: var(--outline-tab);
+  outline-offset: var(--outline-tab-offset);
+}
+
+.fp-logo {
+  display: block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: var(--space-sm);
+  object-fit: contain;
+  background: var(--ink);
+  border-radius: var(--radius-md);
+}
+
+.fp-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-media-lg);
+}
+
+.fp-reading {
+  width: 100%;
+  margin-inline: auto;
+}
+
+.fp-project-link {
+  display: block;
+  border-radius: var(--radius-media-lg);
+}
+
+.fp-project-link:focus-visible {
+  outline: var(--outline-tab);
+  outline-offset: var(--outline-tab-offset);
+}
+
+.fp-anchor {
+  scroll-margin-block-start: calc(var(--space-2xl) + var(--space-2xl));
+}

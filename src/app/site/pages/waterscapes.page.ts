@@ -1,3 +1,4 @@
+import { CxHeroComponent } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   CxStackComponent,
@@ -8,7 +9,13 @@ import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-waterscapes-page',
-  imports: [CxStackComponent, CxGridComponent, CxButtonComponent, SiteShellComponent],
+  imports: [
+    CxHeroComponent,
+    CxStackComponent,
+    CxGridComponent,
+    CxButtonComponent,
+    SiteShellComponent,
+  ],
   templateUrl: './waterscapes.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

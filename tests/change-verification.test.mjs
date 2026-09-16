@@ -149,6 +149,10 @@ test('route mapping is bounded and product-owned', () => {
   assert.equal(routeForSourcePath('src/app/site/pages/nature-pools.page.ts'), '/en/nature-pools/');
   assert.equal(routeForSourcePath('src/app/pages/admin/admin.component.ts'), '/admin/');
   assert.equal(
+    routeForSourcePath('src/app/pages/admin/social-posts.component.ts'),
+    '/en/admin/social-posts/',
+  );
+  assert.equal(
     routeForSourcePath('src/app/pages/admin/enquiry-inbox.component.ts'),
     '/en/admin/enquiries/',
   );

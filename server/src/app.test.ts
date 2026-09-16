@@ -1,3 +1,5 @@
+import { createSocialService } from './social-service.js';
+import { createSocialAi } from './social-ai.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import type { AddressInfo } from 'node:net';
@@ -22,7 +24,7 @@ import {
 } from './auth-service.js';
 import { createFaunapoolenApplication } from './app.js';
 import { createEnquiryService } from './enquiry-service.js';
-import { openFaunapoolenDatabase } from './database.js';
+import { createFaunapoolenPersistence } from './campaign-repository.js';
 import { createFaunapoolenBrowserServing } from './browser-serving.js';
 import type { FaunapoolenEnvironment } from './environment.js';
 import type {
@@ -286,11 +288,15 @@ async function createFixture(
     sessionSecret: SESSION_SECRET,
     sessionTtlSeconds: 3_600,
   });
-  const enquiryDatabase = openFaunapoolenDatabase({
+  const socialPersistence = createFaunapoolenPersistence({
+    executionScope: 'test',
     operationalRoot: root,
     databasePath: path.join(root, 'enquiries.db'),
   });
+  const enquiryDatabase = socialPersistence.database;
   const app = createFaunapoolenApplication({
+    socialService: createSocialService(socialPersistence.database.sqlite),
+    socialAi: createSocialAi(socialPersistence.database.sqlite, socialPersistence.jobs, false),
     enquiryService: createEnquiryService({
       database: enquiryDatabase.sqlite,
       secret: SESSION_SECRET,
@@ -886,4 +892,77 @@ test('refinement uses authenticated origin-protected admission with an exact bou
   const accepted = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
   assert.equal(accepted.status, 202);
   assert.deepEqual(fixture.generations.refinements[0]?.refinement.draft, body.draft);
+});
+
+test('social API protects reads, uploads, exports and mutations with session, origin and revisions', async (t) => {
+  const fixture = await createFixture(t),
+    base = fixture.baseUrl + '/api/admin/social-posts';
+  const post = {
+    name: 'Synthetic post',
+    text: 'Pond life',
+    variants: [
+      {
+        platform: 'facebook',
+        text: 'Pond life',
+        title: '',
+        published: false,
+        format: 'square',
+        fit: 'contain',
+        x: 50,
+        y: 50,
+        start: 0,
+        end: null,
+      },
+    ],
+  };
+  assert.equal((await fetch(base)).status, 401);
+  assert.equal((await fetch(base + '/123/media')).status, 401);
+  const cookie = await login(fixture),
+    id = '12345678-1234-4123-8123-123456789012';
+  const create = (headers: Record<string, string>) =>
+    fetch(base, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: JSON.stringify({ id, post }),
+    });
+  assert.equal((await create({ cookie })).status, 403);
+  assert.equal((await create({ cookie, origin: ORIGIN })).status, 201);
+  const response = await fetch(base + '/' + id, { headers: { cookie } });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('cache-control'), 'private, no-store');
+  assert.equal(
+    (
+      await fetch(base + '/' + id + '/media', {
+        method: 'PUT',
+        headers: { cookie, 'content-type': 'application/octet-stream' },
+        body: 'bad',
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await fetch(base + '/' + id, {
+        method: 'PATCH',
+        headers: { cookie, origin: ORIGIN, 'content-type': 'application/json' },
+        body: JSON.stringify({ expectedRevision: 3, post }),
+      })
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await fetch(base + '/' + id + '/adapt', {
+        method: 'POST',
+        headers: { cookie, origin: ORIGIN, 'content-type': 'application/json' },
+        body: JSON.stringify({ expectedRevision: 1 }),
+      })
+    ).status,
+    503,
+  );
+  for (const prefix of ['', '/en', '/da'])
+    assert.equal(
+      (await fetch(fixture.baseUrl + prefix + '/admin/social-posts')).headers.get('x-robots-tag'),
+      'noindex, nofollow',
+    );
 });

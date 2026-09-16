@@ -1,18 +1,19 @@
+import { CxStackComponent, CxGridComponent, CxHeroComponent } from '@mikaelcedergren/cx-framework';
 import { GOTLAND_COPY, GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
 import type { CxLightboxImage } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
-import {
-  CxStackComponent,
-  CxMasonryComponent,
-  CxLightboxComponent,
-} from '@mikaelcedergren/cx-framework';
+import { CxMasonryComponent, CxLightboxComponent } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
+import { CustomerQuoteComponent } from '../sections/customer-quote.component';
 import { GotlandFilmComponent } from '../sections/gotland-film.component';
 @Component({
   selector: 'fp-gotland-page',
   imports: [
+    CxHeroComponent,
     CxStackComponent,
+    CxGridComponent,
+    CustomerQuoteComponent,
     CxMasonryComponent,
     CxLightboxComponent,
     SiteShellComponent,

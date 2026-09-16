@@ -1,5 +1,32 @@
 import { expect, test } from '@playwright/test';
 
+test('FAQ answers open by keyboard and language changes keep the FAQ page', async ({ page }) => {
+  await page.goto('/en/faq/');
+  const first = page.getByRole('button', {
+    name: 'Could this work in my garden?',
+    exact: true,
+  });
+  await first.press('Enter');
+  await expect(first).toHaveAttribute('aria-expanded', 'true');
+  await expect(
+    page.getByText(
+      'We assess available space, access for construction, ground conditions and levels. You can start with a conversation about your garden before deciding on a design.',
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'How much space does a pool need?', exact: true }).click();
+  await expect(first).toHaveAttribute('aria-expanded', 'false');
+  await page.getByRole('button', { name: 'Language: English', exact: true }).click();
+  await page.getByRole('option', { name: /Svenska/ }).click();
+  await expect(page).toHaveURL(/\/vanliga-fragor\/?$/);
+  await expect(page.getByRole('heading', { name: 'Vanliga frågor', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
+  await page.getByRole('option', { name: /Dansk/ }).click();
+  await expect(page).toHaveURL(/\/da\/spoergsmaal\/?$/);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'da');
+  await expect(page.locator('cx-list-item')).toHaveCount(15);
+});
+
 test('an interrupted receipt retries the same enquiry without losing its details', async ({
   page,
 }) => {
@@ -43,24 +70,24 @@ test.describe('unsupported browser language', () => {
   });
 });
 
-test('language links keep the article, never redirect by browser preference, and include Danish', async ({
+test('mobile language selector keeps the article and includes Danish without horizontal overflow', async ({
   page,
 }) => {
   const errors: string[] = [];
+  await page.setViewportSize({ width: 390, height: 844 });
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/blog/posts/build-your-own-nature-pool.html');
   await expect(page).toHaveURL(/\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'sv');
-  await page
-    .getByRole('navigation', { name: 'Språk', exact: true })
-    .getByRole('link', { name: 'Dansk' })
-    .click();
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
+    .toBeLessThanOrEqual(0);
+  await page.getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
+  await page.getByRole('option', { name: /Dansk/ }).click();
   await expect(page).toHaveURL(/\/da\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'da');
-  await page
-    .getByRole('navigation', { name: 'Sprog', exact: true })
-    .getByRole('link', { name: 'English' })
-    .click();
+  await page.getByRole('button', { name: 'Sprog: Dansk', exact: true }).click();
+  await page.getByRole('option', { name: /English/ }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('#guide-body')).toBeVisible();
   await page.locator('a[href$="#guide-section-1"]').click();
@@ -85,7 +112,9 @@ test('an enquiry reaches the real private inbox and its saved status survives re
   await page.goto('/en/configure/');
   // Exercise validation first; this also proves the SSR form is interactive before editing.
   await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
-  await expect(page.getByText('Please complete this field.', { exact: true })).toHaveCount(3);
+  await expect(page.getByText('Enter your name.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Enter your email address.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Enter your town or postcode.', { exact: true })).toBeVisible();
   await page.getByRole('textbox', { name: 'Name', exact: true }).fill(name);
   await page
     .getByRole('textbox', { name: 'Email', exact: true })

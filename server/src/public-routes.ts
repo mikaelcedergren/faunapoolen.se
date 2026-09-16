@@ -8,6 +8,7 @@ const catalogue = {
       waterscapes: '/vattenmiljoer/',
       guides: '/blog/',
       about: '/om/',
+      faq: '/vanliga-fragor/',
       configure: '/konfigurera/',
     },
     en: {
@@ -18,6 +19,7 @@ const catalogue = {
       waterscapes: '/en/waterscapes/',
       guides: '/en/blog/',
       about: '/en/about/',
+      faq: '/en/faq/',
       configure: '/en/configure/',
     },
     da: {
@@ -28,6 +30,7 @@ const catalogue = {
       waterscapes: '/da/vandmiljoer/',
       guides: '/da/blog/',
       about: '/da/om/',
+      faq: '/da/spoergsmaal/',
       configure: '/da/konfigurer/',
     },
   },

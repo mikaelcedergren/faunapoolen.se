@@ -5,6 +5,7 @@ import { log } from './logging.js';
 import {
   createDurableWorker,
   type DurableJobStore,
+  type DurableJobHandler,
   type DurableWorker,
 } from '@mikaelcedergren/cx-framework/server/jobs';
 
@@ -39,6 +40,7 @@ export interface CampaignGenerationWorkerLoop {
 
 export interface CreateCampaignGenerationWorkerOptions {
   readonly campaigns: CampaignRepository;
+  readonly additionalHandlers?: Readonly<Record<string, DurableJobHandler>>;
   readonly clock?: () => number;
   readonly createUuid?: () => string;
   readonly enabled?: boolean;
@@ -105,13 +107,16 @@ export function createCampaignGenerationWorker(
     if (!provider) throw new Error('Enabled campaign generation requires a provider.');
     worker = createDurableWorker({
       classifyFailure: (error) => classifyCampaignGenerationFailure(error, checkedClock(clock)),
-      handlers: createCampaignGenerationHandlers({
-        campaigns,
-        clock,
-        createUuid,
-        generations,
-        provider,
-      }),
+      handlers: {
+        ...options.additionalHandlers,
+        ...createCampaignGenerationHandlers({
+          campaigns,
+          clock,
+          createUuid,
+          generations,
+          provider,
+        }),
+      },
       owner,
       store: observedStore(store),
     });

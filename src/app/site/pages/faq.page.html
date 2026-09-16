@@ -1,0 +1,26 @@
+<fp-site-shell>
+  <div hero class="fp-intro">
+    <cx-hero
+      [underMasthead]="true"
+      headingClass="cx-font-regular"
+      [heading]="title"
+      variant="stacked"
+    />
+  </div>
+  <section class="fp-section" [attr.aria-label]="title">
+    <cx-list>
+      @for (item of items; track item.id) {
+        <cx-list-item [itemId]="item.id" [heading]="item.question" [expandable]="true">
+          <div class="cx-editorial">
+            <p>{{ item.answer }}</p>
+            @if (item.id === 'price') {
+              <p>
+                <a [href]="routeFor('nature-pools') + '#packages'">{{ editorial.priceLink }} →</a>
+              </p>
+            }
+          </div>
+        </cx-list-item>
+      }
+    </cx-list>
+  </section>
+</fp-site-shell>

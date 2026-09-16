@@ -1,3 +1,4 @@
+import { SocialPostsComponent } from './social-posts.component';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { EnquiryInboxComponent } from './enquiry-inbox.component';
@@ -67,7 +68,7 @@ type EditableTextField =
 type CampaignStage = 'strategy' | 'copy' | 'complete';
 type GenerationStep = 'strategy' | 'copy' | 'prompts';
 type StepStatus = 'waiting' | 'active' | 'done' | 'failed';
-type View = 'list' | 'campaign' | 'inbox';
+type View = 'list' | 'campaign' | 'inbox' | 'social';
 type CampaignSection = 'copy' | 'prompts' | 'strategy';
 type CopyEdit = {
   campaignId: string;
@@ -261,6 +262,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
   selector: 'fp-admin',
   imports: [
     EnquiryInboxComponent,
+    SocialPostsComponent,
     CxAccountControlComponent,
     CxAlertComponent,
     CxButtonComponent,
@@ -300,7 +302,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     (segment) => segment.path === 'enquiries',
   )
     ? 'inbox'
-    : 'list';
+    : inject(ActivatedRoute).snapshot.url.some((segment) => segment.path === 'social-posts')
+      ? 'social'
+      : 'list';
+  @ViewChild(SocialPostsComponent) private socialPosts?: SocialPostsComponent;
   private copyResetTimer?: ReturnType<typeof setTimeout>;
   private generationPollSequence = 0;
   private copySaveQueue: Promise<void> = Promise.resolve();
@@ -366,6 +371,13 @@ export class AdminComponent implements OnInit, OnDestroy {
       label: 'Campaign studio',
       icon: 'form',
       routerLink: '/admin',
+      routerLinkActiveOptions: { exact: true },
+    },
+    {
+      id: 'social-posts',
+      label: 'Social posts',
+      icon: 'share',
+      routerLink: '/admin/social-posts',
       routerLinkActiveOptions: { exact: true },
     },
     {
@@ -573,9 +585,11 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   protected readonly topBarTitle = computed<CxTopBarTitle>(() => {
     const root =
-      this.view() === 'inbox'
-        ? { id: 'enquiries', label: 'Enquiry inbox' }
-        : { id: 'campaign-studio', label: 'Campaign studio' };
+      this.view() === 'social'
+        ? { id: 'social-posts', label: 'Social posts' }
+        : this.view() === 'inbox'
+          ? { id: 'enquiries', label: 'Enquiry inbox' }
+          : { id: 'campaign-studio', label: 'Campaign studio' };
     if (this.view() === 'campaign') {
       return {
         kind: 'breadcrumbs',
@@ -719,7 +733,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected requestSignOut(): void {
+  protected async requestSignOut(): Promise<void> {
+    if (this.socialPosts && !(await this.socialPosts.canLeave())) return;
     if (this.generating()) return;
     void this.leaveCampaign(() => {
       void this.signOut();
@@ -805,6 +820,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   public async canLeave(): Promise<boolean> {
+    if (this.socialPosts) return this.socialPosts.canLeave();
     if (this.generating()) return false;
     await this.saveChanges();
     if (!this.hasUnsavedCopy() && !this.roughIdea().trim()) return true;
@@ -1410,7 +1426,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private async loadWorkspace(): Promise<void> {
-    if (this.initialView === 'inbox') return;
+    if (this.initialView === 'inbox' || this.initialView === 'social') return;
     await Promise.all([this.loadConfig(), this.refreshCampaigns()]);
     if (!this.hasUnsavedCopy()) await this.recoverGenerationWork();
   }

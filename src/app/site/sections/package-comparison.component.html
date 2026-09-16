@@ -1,41 +1,47 @@
-<section id="packages" class="cx-scroll-target" aria-labelledby="packages-title">
+<section id="packages" class="fp-anchor" aria-labelledby="packages-title">
   <cx-stack gap="xl">
-    <div class="cx-article cx-article--lg cx-article--start">
-      <h2 id="packages-title">{{ copy.home.packagesTitle }}</h2>
+    <div class="cx-editorial">
+      <h2 id="packages-title" class="cx-font-regular">{{ copy.home.packagesTitle }}</h2>
       <p>{{ copy.home.packagesBody }}</p>
     </div>
-    <cx-stack gap="xl">
+    <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
       @for (item of packages; track item.id) {
-        <cx-divider [discreet]="true" />
-        <cx-grid [columns]="3" [columnsMobile]="1" gap="xl" gapMobile="md" align="start">
-          <cx-stack gap="md" align="start">
-            <h3 class="cx-text-title-1 cx-font-serif">
-              {{ item.name }}
-            </h3>
-            <p class="cx-text-body-lg">{{ item.area }}</p>
-            @if (item.featured) {
-              <p class="cx-text-body-lg cx-text-accent">
-                {{ copy.common.familyPackage }}
+        <cx-card variant="border">
+          <cx-stack gap="lg">
+            <cx-stack gap="md" align="start">
+              <h3 class="cx-text-title-1 cx-font-serif cx-font-regular">
+                {{ item.name }}
+              </h3>
+              <p class="cx-text-body-lg">{{ item.area }}</p>
+            </cx-stack>
+            <cx-stack gap="sm" align="start">
+              <p class="cx-text-title-1 cx-font-bold">
+                {{ copy.common.from }} {{ packagePrice(item) }}
               </p>
-            }
+              <p class="cx-text-body-lg cx-text-muted">{{ copy.common.inclVat }}</p>
+            </cx-stack>
+            <div class="cx-editorial">
+              @if (page === 'nature-pools') {
+                <cx-stack gap="lg">
+                  @for (benefit of item.includes; track benefit; let i = $index) {
+                    <cx-stack gap="sm">
+                      <strong class="cx-text-body">{{
+                        [
+                          editorial.packageDesign,
+                          editorial.packageFiltration,
+                          editorial.packageSurroundings,
+                        ][i]
+                      }}</strong>
+                      <span class="cx-text-body">{{ benefit }}</span>
+                    </cx-stack>
+                  }
+                </cx-stack>
+              } @else {
+                <p>{{ item.description }}</p>
+              }
+            </div>
           </cx-stack>
-          <div class="cx-article cx-article--start">
-            <p>{{ item.description }}</p>
-            @if (page === 'nature-pools') {
-              <ul>
-                @for (benefit of item.includes; track benefit) {
-                  <li>{{ benefit }}</li>
-                }
-              </ul>
-            }
-          </div>
-          <cx-stack gap="md" align="start">
-            <p class="cx-text-title-1 cx-font-bold">
-              {{ copy.common.from }} {{ packagePrice(item) }}
-            </p>
-            <p class="cx-text-body-lg cx-text-muted">
-              {{ copy.common.inclVat }}
-            </p>
+          <cx-stack slot="footer" align="start">
             <cx-button
               [text]="copy.common.viewPackage"
               appendIcon="arrow-right"
@@ -43,10 +49,9 @@
               size="large"
             />
           </cx-stack>
-        </cx-grid>
+        </cx-card>
       }
-      <cx-divider [discreet]="true" />
-    </cx-stack>
+    </cx-grid>
     <p class="cx-text-body-lg cx-measure-lg-start">
       {{ editorial.priceScope }}
     </p>

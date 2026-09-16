@@ -1,0 +1,349 @@
+<cx-stack gap="lg">
+  @if (error()) {
+    <cx-alert mood="danger" [heading]="error()" />
+  }
+  @if (!draft()) {
+    <cx-inline gap="md" [wrap]="true" justify="between">
+      <cx-button-group
+        ariaLabel="Post status"
+        [availableValues]="filters"
+        [value]="filter()"
+        (valueChange)="filter.set($event)"
+      />
+      <cx-button
+        text="Add a post"
+        icon="new"
+        mood="primary"
+        [disabled]="loading() || busy()"
+        (pressed)="add()"
+      />
+    </cx-inline>
+    @if (loading()) {
+      <cx-state-message state="pending" heading="Loading posts" />
+    } @else if (error()) {
+      <cx-button text="Reload posts" icon="reload" (pressed)="reload()" />
+    } @else if (!rows().length) {
+      <cx-state-message
+        [heading]="filter() === 'pending' ? 'No pending posts' : 'No published posts'"
+      />
+    } @else {
+      <cx-table
+        [columns]="columns"
+        [rows]="rows()"
+        rowActivation="press"
+        [columnsResizable]="false"
+        [columnsReorderable]="false"
+        (rowActivate)="open('' + $event.rowId)"
+      />
+    }
+  } @else if (draft(); as d) {
+    <cx-inline gap="md" [wrap]="true">
+      <cx-button
+        text="All posts"
+        icon="arrow-left"
+        [transparent]="true"
+        [disabled]="busy() || saving()"
+        (pressed)="back()"
+      />
+      @if (post()) {
+        <cx-button
+          [text]="source() ? 'Show versions' : 'Edit source'"
+          [transparent]="true"
+          [disabled]="busy() || saving()"
+          (pressed)="source() ? prepare() : source.set(true)"
+        />
+        @if (dirty() && error()) {
+          <cx-button text="Retry saving" [loading]="saving()" (pressed)="save()" />
+        }
+      }
+      <span class="social-meta" role="status">{{
+        saving() ? 'Saving…' : dirty() && post() ? 'Changes not saved' : post() ? 'Saved' : ''
+      }}</span>
+    </cx-inline>
+    @if (source()) {
+      <cx-stack gap="lg">
+        <cx-text-area
+          label="Post content"
+          placeholder="What would you like to share?"
+          [value]="d.text"
+          [minLines]="6"
+          [maxLength]="20000"
+          [disabled]="busy()"
+          (valueChange)="update('text', $event)"
+        />
+        <cx-text-field
+          label="Post name"
+          [optional]="true"
+          hint="Leave blank to use the first line."
+          [value]="d.name"
+          [disabled]="busy()"
+          (valueChange)="update('name', $event)"
+        />
+        <cx-file-upload
+          variant="zone"
+          heading="Add an image or video"
+          hint="JPEG, PNG, MP4, MOV or WebM · up to 100 MB · video up to 10 minutes"
+          accept="image/jpeg,image/png,video/mp4,video/quicktime,video/webm"
+          [maxSize]="maxMedia"
+          [files]="files()"
+          [disabled]="busy() || saving() || anyPublished()"
+          (fileUpload)="upload($event)"
+        />
+        <fieldset class="social-platforms">
+          <legend>Platforms</legend>
+          <cx-inline gap="lg" [wrap]="true">
+            @for (platform of platforms; track platform) {
+              <cx-checkbox
+                [text]="labels[platform]"
+                [selected]="chosen(platform)"
+                [disabled]="busy() || saving()"
+                (selectedChange)="choose(platform, $event)"
+              />
+            }
+          </cx-inline>
+        </fieldset>
+        @if (post()) {
+          <p class="social-meta">
+            Changes to the source keep your existing platform text. New platforms start with the
+            source text.
+          </p>
+        }
+        <cx-inline
+          ><cx-button
+            [text]="post() ? 'Show versions' : 'Prepare versions'"
+            mood="primary"
+            [loading]="saving()"
+            [disabled]="busy() || !d.text.trim() || !d.variants.length"
+            (pressed)="prepare()"
+        /></cx-inline>
+      </cx-stack>
+    } @else if (variant(); as v) {
+      <h1 class="social-title">{{ d.name }}</h1>
+      <cx-tabs
+        ariaLabel="Platform versions"
+        controlsId="social-version"
+        [items]="tabs()"
+        [selectedId]="selected()"
+        [transparent]="true"
+        (selectedIdChange)="select($event)"
+      />
+      <section id="social-version" role="tabpanel" [attr.aria-label]="labels[v.platform]">
+        <cx-sidebar-layout placement="end" mobilePlacement="after">
+          <cx-stack gap="lg">
+            @if (v.platform === 'youtube') {
+              <cx-text-field
+                label="Video title"
+                [value]="v.title"
+                [disabled]="v.published || busy()"
+                (valueChange)="edit({ title: $event })"
+              />
+            }
+            <cx-text-area
+              [label]="v.platform === 'youtube' ? 'Description' : 'Post text'"
+              [value]="v.text"
+              [minLines]="8"
+              [maxLength]="20000"
+              [disabled]="v.published || busy()"
+              [hint]="count()"
+              (valueChange)="edit({ text: $event })"
+            />
+            @if (issues().length) {
+              <ul class="social-issues">
+                @for (issue of issues(); track issue) {
+                  <li>{{ issue }}</li>
+                }
+              </ul>
+            }
+            <cx-inline gap="md" [wrap]="true">
+              <cx-button
+                text="Copy text"
+                icon="copy"
+                [disabled]="!!issues().length"
+                (pressed)="copy()"
+              />
+              @if (post()?.media) {
+                <cx-button
+                  text="Download media"
+                  icon="download"
+                  mood="primary"
+                  [loading]="busy()"
+                  [disabled]="!!issues().length || saving()"
+                  (pressed)="download()"
+                />
+              }
+              <cx-button
+                text="Adapt text"
+                icon="ai"
+                [transparent]="true"
+                [disabled]="
+                  !aiEnabled() || busy() || adaptation()?.state === 'pending' || anyPublished()
+                "
+                (pressed)="adapt()"
+              />
+            </cx-inline>
+            @if (!aiEnabled()) {
+              <p class="social-meta">AI text adaptation is not enabled.</p>
+            }
+            @if (adaptation()?.state === 'pending') {
+              <cx-state-message state="pending" heading="Adapting text" />
+            }
+            @if (adaptation()?.state === 'failed') {
+              <cx-alert
+                mood="warning"
+                [heading]="adaptation()?.error || 'Text could not be adapted.'"
+              />
+            }
+            @if (suggestion(); as suggestion) {
+              <cx-stack gap="md"
+                ><h2 class="social-subtitle">Suggested text</h2>
+                @if (suggestion.title) {
+                  <strong>{{ suggestion.title }}</strong>
+                }
+                <p class="social-copy">{{ suggestion.text }}</p>
+                <cx-inline
+                  ><cx-button
+                    text="Use suggested text"
+                    [disabled]="v.published"
+                    (pressed)="applySuggestion()" /></cx-inline
+              ></cx-stack>
+            }
+            <cx-checkbox
+              text="Published"
+              [selected]="v.published"
+              [disabled]="busy() || saving() || (!v.published && !!issues().length)"
+              (selectedChange)="published($event)"
+            />
+            @if (notice()) {
+              <p class="social-meta" role="status">{{ notice() }}</p>
+            }
+          </cx-stack>
+          <aside sidebar class="social-preview">
+            <h2 class="social-subtitle">Preview</h2>
+            <p class="social-meta">{{ labels[v.platform] }} · approximate appearance</p>
+            @if (post()?.media; as media) {
+              <cx-button-group
+                ariaLabel="Media format"
+                size="small"
+                [availableValues]="formats()"
+                [value]="v.format"
+                [disabled]="v.published || busy()"
+                (valueChange)="format($event)"
+              />
+              @if (media.kind === 'image') {
+                @if (imagePreview()) {
+                  <img
+                    class="social-media"
+                    [src]="imagePreview()"
+                    [alt]="d.name"
+                    [style.aspect-ratio]="ratio()"
+                  />
+                } @else {
+                  <cx-state-message state="pending" heading="Loading preview" />
+                }
+              } @else {
+                <video
+                  class="social-media"
+                  controls
+                  playsinline
+                  preload="metadata"
+                  [src]="mediaUrl()"
+                  [style.aspect-ratio]="ratio()"
+                  [style.object-fit]="v.fit"
+                  [style.object-position]="v.x + '% ' + v.y + '%'"
+                  (loadedmetadata)="previewTime($event)"
+                  (timeupdate)="previewTime($event)"
+                ></video>
+              }
+            }
+            @if (v.title) {
+              <strong>{{ v.title }}</strong>
+            }
+            <p class="social-copy">{{ v.text }}</p>
+            @if (post()?.media; as media) {
+              <cx-button
+                text="Adjust framing"
+                icon="edit"
+                [transparent]="true"
+                [disabled]="v.published || busy()"
+                (pressed)="adjust.set(!adjust())"
+              />
+              @if (adjust() && !v.published) {
+                <cx-button-group
+                  ariaLabel="Media fit"
+                  size="small"
+                  [availableValues]="fits"
+                  [value]="v.fit"
+                  (valueChange)="fit($event)"
+                />
+                @if (v.fit === 'cover') {
+                  <cx-slider
+                    label="Horizontal position"
+                    [min]="0"
+                    [max]="100"
+                    [value]="v.x"
+                    (valueChange)="edit({ x: $event })"
+                  /><cx-slider
+                    label="Vertical position"
+                    [min]="0"
+                    [max]="100"
+                    [value]="v.y"
+                    (valueChange)="edit({ y: $event })"
+                  />
+                }
+                @if (media.kind === 'video') {
+                  <cx-slider
+                    label="Video trim (seconds)"
+                    [range]="true"
+                    [min]="0"
+                    [max]="media.duration"
+                    [step]="0.1"
+                    [rangeValue]="[v.start, v.end ?? media.duration]"
+                    (rangeValueChange)="trim($event)"
+                  />
+                }
+              }
+            }
+          </aside>
+        </cx-sidebar-layout>
+      </section>
+    }
+    @if (post()) {
+      <cx-inline
+        ><cx-button
+          text="Delete post"
+          icon="delete"
+          mood="danger"
+          [transparent]="true"
+          [disabled]="busy() || saving()"
+          (pressed)="error.set(''); deleteOpen.set(true)"
+      /></cx-inline>
+    }
+  }
+</cx-stack>
+<cx-dialog
+  heading="Delete this post?"
+  description="The post and its uploaded media will be removed."
+  primaryText="Delete post"
+  secondaryText="Keep post"
+  mood="danger"
+  [open]="deleteOpen()"
+  [closeOnPrimary]="false"
+  [primaryLoading]="busy()"
+  (primary)="remove()"
+  (openChange)="deleteOpen.set($event)"
+>
+  @if (error()) {
+    <div body><cx-alert mood="danger" [heading]="error()" /></div>
+  }
+</cx-dialog>
+<cx-dialog
+  heading="Leave without saving?"
+  description="Your unsaved text and selected file will be discarded."
+  primaryText="Discard changes"
+  secondaryText="Keep editing"
+  mood="danger"
+  [open]="leaveOpen()"
+  (primary)="decideLeave(true)"
+  (secondary)="decideLeave(false)"
+  (dismiss)="decideLeave(false)"
+/>

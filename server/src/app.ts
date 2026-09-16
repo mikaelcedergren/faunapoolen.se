@@ -1,3 +1,6 @@
+import type { SocialService } from './social-service.js';
+import type { SocialAi } from './social-ai.js';
+import { mountSocialRoutes } from './social-routes.js';
 import compression from 'compression';
 import type { RuntimeLogger } from '@mikaelcedergren/cx-framework/server/logging';
 import { log } from './logging.js';
@@ -54,6 +57,8 @@ export interface FaunapoolenApplicationOptions {
   readonly environment: FaunapoolenEnvironment;
   readonly generationService: GenerationService;
   readonly enquiryService: EnquiryService;
+  readonly socialService: SocialService;
+  readonly socialAi: SocialAi;
   readonly identity?: ServerReleaseIdentity;
   readonly logger?: Pick<RuntimeLogger, 'emit'>;
 }
@@ -68,6 +73,8 @@ export function createFaunapoolenApplication({
   environment,
   generationService,
   enquiryService,
+  socialService,
+  socialAi,
   identity,
   logger = log,
 }: FaunapoolenApplicationOptions): express.Express {
@@ -131,6 +138,7 @@ export function createFaunapoolenApplication({
   // a 401 even when the caller also omits Origin or sends malformed JSON.
   app.use(ADMIN_API_PATH, requireOwnerSession(authService));
   app.use(ADMIN_API_PATH, originGuard);
+  mountSocialRoutes(app, socialService, socialAi, environment.generationEnabled);
   app.use(ADMIN_API_PATH, jsonBody);
   app.get(`${ADMIN_API_PATH}/enquiries`, (_request, response) => {
     response.json({ enquiries: enquiryService.list() });

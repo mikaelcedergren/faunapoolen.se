@@ -1,3 +1,4 @@
+import { CxHeroComponent } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   CxStackComponent,
@@ -10,6 +11,7 @@ import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-guides-page',
   imports: [
+    CxHeroComponent,
     CxStackComponent,
     CxGridComponent,
     CxCardComponent,

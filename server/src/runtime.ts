@@ -1,3 +1,5 @@
+import { createSocialService } from './social-service.js';
+import { createSocialAi } from './social-ai.js';
 import type { Server } from 'node:http';
 import { configureFaunapoolenLogging, log } from './logging.js';
 
@@ -91,6 +93,8 @@ export async function startFaunapoolenServer({
   try {
     const authService = createOwnerAuthService({
       cookieSecure: environment.cookieSecure,
+      localDevelopmentCredentials:
+        !environment.isProduction && environment.execution.dataMode === 'isolated',
       expectedPassword: environment.adminPassword,
       expectedUsername: environment.adminUsername,
       repository: persistence.ownerAuth,
@@ -105,6 +109,12 @@ export async function startFaunapoolenServer({
       providerConfigured: environment.generationEnabled,
     });
     const app = createFaunapoolenApplication({
+      socialService: createSocialService(persistence.database.sqlite),
+      socialAi: createSocialAi(
+        persistence.database.sqlite,
+        persistence.jobs,
+        environment.generationEnabled,
+      ),
       enquiryService: createEnquiryService({
         database: persistence.database.sqlite,
         secret: environment.sessionSecret,

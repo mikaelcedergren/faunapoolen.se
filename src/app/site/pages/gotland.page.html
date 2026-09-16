@@ -1,48 +1,68 @@
-<fp-site-shell
-  ><cx-stack gap="2xl">
-    <section aria-labelledby="gotland-title">
+<fp-site-shell>
+  <div hero class="fp-intro">
+    <cx-hero
+      [underMasthead]="true"
+      headingClass="cx-font-regular"
+      [heading]="evidence.caseTitle"
+      variant="stacked"
+    >
+      <p body>{{ editorial.caseStory }}</p>
+    </cx-hero>
+  </div>
+  <section class="fp-section" [attr.aria-label]="evidence.caseTitle">
+    <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
+      @for (item of gotlandMedia; track item.id) {
+        @if (item.kind === 'photo') {
+          <a
+            class="cx-figure"
+            [attr.data-gotland-photo]="item.id"
+            [href]="item.src"
+            (click)="openGotlandPhoto($event, item.id)"
+            [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
+          >
+            <img
+              [src]="item.preview"
+              [attr.srcset]="
+                item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
+              "
+              sizes="(max-width: 767px) 50vw, 400px"
+              [alt]="item.alt"
+              [width]="item.width"
+              [height]="item.height"
+              [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
+              decoding="async"
+            />
+          </a>
+        } @else {
+          <fp-gotland-film [film]="item" />
+        }
+      }
+    </cx-masonry>
+  </section>
+  <section class="fp-section" aria-labelledby="gotland-life-title">
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
       <cx-stack gap="lg">
-        <h1 id="gotland-title" class="cx-text-title-1 cx-font-serif">
-          {{ evidence.caseTitle }}
-        </h1>
-        <cx-masonry [columns]="3" [columnsMobile]="2" gap="sm">
-          @for (item of gotlandMedia; track item.id) {
-            @if (item.kind === 'photo') {
-              <a
-                class="cx-figure"
-                [attr.data-gotland-photo]="item.id"
-                [href]="item.src"
-                (click)="openGotlandPhoto($event, item.id)"
-                [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
-              >
-                <img
-                  [src]="item.preview"
-                  [attr.srcset]="
-                    item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
-                  "
-                  sizes="(max-width: 767px) 50vw, 400px"
-                  [alt]="item.alt"
-                  [width]="item.width"
-                  [height]="item.height"
-                  [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
-                  decoding="async"
-                />
-              </a>
-            } @else {
-              <fp-gotland-film [film]="item" />
-            }
-          }
-        </cx-masonry>
+        <h2 class="cx-text-title-1 cx-font-serif cx-font-regular">
+          {{ editorial.caseExperience }}
+        </h2>
+        <fp-customer-quote [review]="testimonials[0]" />
       </cx-stack>
-    </section>
-    <cx-lightbox
-      [images]="gotlandGalleryImages"
-      [open]="gotlandGalleryOpen()"
-      [index]="gotlandGalleryIndex()"
-      (indexChange)="gotlandGalleryIndex.set($event)"
-      (openChange)="gotlandGalleryOpen.set($event)"
-      [ariaLabel]="evidence.caseTitle"
-      [previousAriaLabel]="gotlandCopy.previous"
-      [nextAriaLabel]="gotlandCopy.next"
-    /> </cx-stack
-></fp-site-shell>
+      <cx-stack gap="lg">
+        <h2 id="gotland-life-title" class="cx-text-title-1 cx-font-serif cx-font-regular">
+          {{ editorial.caseLife }}
+        </h2>
+        <fp-customer-quote [review]="testimonials[1]" />
+      </cx-stack>
+    </cx-grid>
+  </section>
+  <cx-lightbox
+    [images]="gotlandGalleryImages"
+    [open]="gotlandGalleryOpen()"
+    [index]="gotlandGalleryIndex()"
+    (indexChange)="gotlandGalleryIndex.set($event)"
+    (openChange)="gotlandGalleryOpen.set($event)"
+    [ariaLabel]="evidence.caseTitle"
+    [previousAriaLabel]="gotlandCopy.previous"
+    [nextAriaLabel]="gotlandCopy.next"
+  />
+</fp-site-shell>

@@ -8,14 +8,9 @@ import {
   FAUNAPOOLEN_LOGO,
 } from './content/faunapoolen-brand';
 import {
-  FAUNAPOOLEN_CARE_PRICE,
   FAUNAPOOLEN_COPY,
-  FAUNAPOOLEN_FEATURES,
   FAUNAPOOLEN_PACKAGES,
   FAUNAPOOLEN_PROCESS,
-  FAUNAPOOLEN_SITE_OPTIONS,
-  FAUNAPOOLEN_SIZE_OPTIONS,
-  FAUNAPOOLEN_TEAM,
   type FaunapoolenGuideId,
   type FaunapoolenLocale,
   type FaunapoolenPage,
@@ -56,16 +51,12 @@ export abstract class SitePage {
   protected readonly testimonials = FAUNAPOOLEN_TESTIMONIALS;
   protected readonly aquascape = AQUASCAPE_REFERENCES;
   protected readonly networkProjects = AQUASCAPE_PROJECTS;
-  protected readonly carePrice = FAUNAPOOLEN_CARE_PRICE;
   protected readonly logo = FAUNAPOOLEN_LOGO;
   protected readonly images = FAUNAPOOLEN_IMAGES;
+  protected readonly projectPhoto = GOTLAND_MEDIA.find((item) => item.kind === 'photo')!;
   protected readonly aquascapeImages = AQUASCAPE_IMAGES;
   protected readonly packages = FAUNAPOOLEN_PACKAGES;
   protected readonly process = FAUNAPOOLEN_PROCESS;
-  protected readonly team = FAUNAPOOLEN_TEAM;
-  protected readonly features = FAUNAPOOLEN_FEATURES;
-  protected readonly siteOptions = FAUNAPOOLEN_SITE_OPTIONS;
-  protected readonly sizeOptions = FAUNAPOOLEN_SIZE_OPTIONS;
   protected readonly guides = BLOG_ARTICLES;
   protected readonly guide =
     BLOG_ARTICLES.find((article) => article.id === this.guideId) ?? BLOG_ARTICLES[0];
@@ -81,12 +72,12 @@ export abstract class SitePage {
   protected readonly configureHref = this.routeFor('configure');
 
   protected readonly navItems: CxMastheadItem[] = [
+    this.navItem('home', this.copy.nav.home),
     this.navItem('nature-pools', this.copy.nav.naturePools),
     this.navItem('projects', this.copy.nav.projects),
     this.navItem('waterscapes', this.copy.nav.waterscapes),
     this.navItem('guides', this.copy.nav.guides),
     this.navItem('about', this.copy.nav.about),
-    this.navItem('configure', $localize`:@@site.ui.contact:Contact`),
   ];
 
   protected routeFor(
@@ -117,7 +108,7 @@ export abstract class SitePage {
     return this.configureHref + '?package=' + id;
   }
   private navItem(
-    page: Exclude<FaunapoolenPage, 'home' | 'guide' | 'gotland'>,
+    page: Exclude<FaunapoolenPage, 'guide' | 'gotland'>,
     label: string,
   ): CxMastheadItem {
     if (page === 'guides' && this.page === 'guide') {

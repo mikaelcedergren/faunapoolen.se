@@ -33,9 +33,9 @@ export function writeSitemap(browserDirectory) {
     }
   }
   visit(browserDirectory);
-  if (urls.size !== 60)
+  if (urls.size !== 63)
     throw new Error(
-      `Expected 60 public locale pages, found ${urls.size}. Review the route catalogue.`,
+      `Expected 63 public locale pages, found ${urls.size}. Review the route catalogue.`,
     );
   const body = [...urls]
     .sort(([a], [b]) => a.localeCompare(b))

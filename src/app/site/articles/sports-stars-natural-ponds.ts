@@ -27,6 +27,6 @@ export const BODY_HTML = $localize`:@@blog.sports-stars-natural-ponds.bodyHtml:<
 <h2>Join the movement</h2>
 <p>At Faunapoolen, we have helped property owners, sports profiles, and environmentally conscious families design living water systems that promote health and harmony with nature. Whether you are an elite athlete seeking a private recovery space or a family wanting to future-proof your home – natural swimming ponds are the way to live with water in the future.</p>
 <p>Want to know more or start sketching your own retreat?</p>
-<p>Call Benjamin at +46 73 540 6757</p>
+<p>Call us at +46 73 540 6757</p>
 <p>Visit www.faunapoolen.se</p>
 <p>Email us at info&#64;faunapoolen.se</p>`;

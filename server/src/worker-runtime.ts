@@ -1,3 +1,4 @@
+import { createSocialAi } from './social-ai.js';
 import { loadProductManifestFile } from '@mikaelcedergren/cx-framework/server/product-manifest';
 import { configureFaunapoolenLogging, log } from './logging.js';
 import { assertServerProcessRole } from '@mikaelcedergren/cx-framework/server/process-role';
@@ -216,6 +217,19 @@ export async function startFaunapoolenWorker({
       });
     }
     const worker = createCampaignGenerationWorker({
+      additionalHandlers: environment.generationEnabled
+        ? createSocialAi(persistence.database.sqlite, persistence.jobs, true).handlers(
+            (repository) =>
+              createOpenAiResponsesProvider({
+                apiKey: environment.providerApiKey!,
+                model: environment.providerModel,
+                repository,
+                ...(environment.providerBaseUrl === undefined
+                  ? {}
+                  : { baseUrl: environment.providerBaseUrl }),
+              }),
+          )
+        : {},
       campaigns: persistence.campaigns,
       enabled: environment.generationEnabled,
       generations: persistence.generations,

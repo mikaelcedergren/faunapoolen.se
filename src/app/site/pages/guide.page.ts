@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, SecurityContext } from '@an
 import { DomSanitizer } from '@angular/platform-browser';
 import {
   CxStackComponent,
+  CxInlineComponent,
+  CxGridComponent,
   CxButtonComponent,
-  CxTagComponent,
-  CxDividerComponent,
   CxCardComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
@@ -13,9 +13,9 @@ import { SiteShellComponent } from '../site-shell.component';
   selector: 'fp-guide-page',
   imports: [
     CxStackComponent,
+    CxInlineComponent,
+    CxGridComponent,
     CxButtonComponent,
-    CxTagComponent,
-    CxDividerComponent,
     CxCardComponent,
     SiteShellComponent,
   ],
@@ -28,10 +28,13 @@ export class GuidePage extends SitePage {
     const article = this.document.createElement('div');
     article.innerHTML =
       sanitizer.sanitize(SecurityContext.HTML, this.routeSnapshot.data['bodyHtml'] as string) ?? '';
+    article.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((heading) => {
+      heading.classList.add('cx-font-regular');
+    });
     const sections = Array.from(article.querySelectorAll('h2')).map((heading, index) => {
       const id = `guide-section-${index + 1}`;
       heading.id = id;
-      heading.classList.add('cx-scroll-target');
+      heading.classList.add('fp-anchor');
       return { id, title: heading.textContent ?? '' };
     });
     // Only generated heading IDs/classes are added after sanitizing the article. Preserve

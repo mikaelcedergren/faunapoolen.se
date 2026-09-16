@@ -13,19 +13,21 @@ const loaders = {
   gotland: () => import('./pages/gotland.page').then((m) => m.GotlandPage),
   waterscapes: () => import('./pages/waterscapes.page').then((m) => m.WaterscapesPage),
   guides: () => import('./pages/guides.page').then((m) => m.GuidesPage),
+  faq: () => import('./pages/faq.page').then((m) => m.FaqPage),
   about: () => import('./pages/about.page').then((m) => m.AboutPage),
   configure: () => import('./pages/configure.page').then((m) => m.ConfigurePage),
   guide: () => import('./pages/guide.page').then((m) => m.GuidePage),
 };
 const titles = {
-  home: $localize`:@@seo.home.title:Nature pools for your garden | Faunapoolen`,
+  home: $localize`:@@seo.home.title:Natural pools, ponds and streams | Faunapoolen`,
   'nature-pools': $localize`:@@seo.nature-pools.title:Nature pools · Faunapoolen`,
   projects: $localize`:@@seo.projects.title:Projects · Faunapoolen`,
   gotland: $localize`:@@seo.gotland.title:Nature pool on Gotland · Faunapoolen`,
-  waterscapes: $localize`:@@seo.waterscapes.title:Waterscapes · Faunapoolen`,
+  waterscapes: $localize`:@@seo.waterscapes.title:Ponds, streams and waterfalls | Faunapoolen`,
   guides: $localize`:@@seo.guides.title:Guides · Faunapoolen`,
+  faq: $localize`:@@seo.faq.title:Frequently asked questions · Faunapoolen`,
   about: $localize`:@@seo.about.title:About · Faunapoolen`,
-  configure: $localize`:@@seo.configure.title:Start with your place · Faunapoolen`,
+  configure: $localize`:@@seo.configure.title:Garden consultation | Faunapoolen`,
 };
 const descriptions = {
   home: FAUNAPOOLEN_COPY.home.ingress,
@@ -34,6 +36,7 @@ const descriptions = {
   gotland: $localize`:@@seo.gotland.description:Photographs and films of Faunapoolen’s completed nature pool on Gotland.`,
   waterscapes: FAUNAPOOLEN_COPY.waterscapes.ingress,
   guides: FAUNAPOOLEN_COPY.guides.ingress,
+  faq: $localize`:@@seo.faq.description:Answers about water features, costs, consultations and maintenance.`,
   about: FAUNAPOOLEN_COPY.about.ingress,
   configure: FAUNAPOOLEN_COPY.configure.ingress,
 };
@@ -64,6 +67,7 @@ export const siteRoutes: Routes = [
   pageRoute('waterscapes'),
   pageRoute('guides'),
   pageRoute('about'),
+  pageRoute('faq'),
   pageRoute('configure'),
   ...BLOG_ARTICLES.map((article) => ({
     path: sitePath('guide', locale, article.id).slice(languageBase(locale).length),

@@ -9,6 +9,11 @@ const root = resolve(import.meta.dirname, '..');
 const baseline = JSON.parse(
   readFileSync(join(root, 'tests/fixtures/blog-seo-baseline.json'), 'utf8'),
 );
+// Owner requested company contact wording instead of Benjamin on 2026-09-16.
+// Keep the original SEO baseline intact; only this exact article text change is approved.
+const approvedContactCopy = JSON.parse(
+  readFileSync(join(root, 'tests/fixtures/blog-approved-contact-copy.json'), 'utf8'),
+);
 const parser = new HtmlParser();
 function walk(nodes, predicate) {
   return nodes.flatMap((n) => [...(predicate(n) ? [n] : []), ...walk(n.children ?? [], predicate)]);
@@ -47,7 +52,7 @@ for (const [slug, locales] of Object.entries(baseline))
       });
       assert.equal(
         createHash('sha256').update(plain(body.children)).digest('hex'),
-        original.bodyHash,
+        slug === 'sports-stars-natural-ponds' ? approvedContactCopy[locale] : original.bodyHash,
         'Protected article body changed',
       );
       assert.equal(
@@ -121,8 +126,8 @@ for (const [slug, locales] of Object.entries(baseline))
 test('sitemap contains only the complete public canonical catalogue', () => {
   const xml = readFileSync(join(root, 'dist/browser/sitemap.xml'), 'utf8');
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-  assert.equal(urls.length, 60);
-  assert.equal(new Set(urls).size, 60);
+  assert.equal(urls.length, 63);
+  assert.equal(new Set(urls).size, 63);
   assert.ok(!urls.some((url) => /admin|404/.test(url)));
   for (const url of urls) {
     const path = new URL(url).pathname;

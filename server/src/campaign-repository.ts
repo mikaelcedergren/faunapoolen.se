@@ -856,7 +856,8 @@ export function createCampaignRepository(
   return Object.freeze(repository);
 }
 
-function consumeGenerationAllowance(
+/** Consume the shared paid-work quota inside the caller's admission transaction. */
+export function consumeGenerationAllowance(
   database: SyncSqliteDatabase,
   now: number,
   policy: GenerationWindowPolicy,

@@ -53,6 +53,7 @@ Development runs the browser on `http://127.0.0.1:4240` and its local API on
 On the personal Mac, `cx faunapoolen.se` selects `pnpm dev:owner` on the same ports. This mode
 creates its own `data/owner-development/faunapoolen.db`, skips private environment files, and
 disables paid generation. The Mac mini's `pnpm dev` continues using its existing shared store.
+The personal-Mac admin login is `dev` / `dev`.
 
 Angular's build dependency carries a tracked pnpm patch that clears stale template-update
 metadata when browser JavaScript is rebuilt. Template and stylesheet hot updates remain enabled.

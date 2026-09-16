@@ -13,7 +13,7 @@ const notFound = {
 };
 
 export const routes: Routes = [
-  ...['admin', 'admin/enquiries', 'admin/campaigns'].map((path) => ({
+  ...['admin', 'admin/enquiries', 'admin/campaigns', 'admin/social-posts'].map((path) => ({
     path,
     canDeactivate: [(component: { canLeave(): Promise<boolean> }) => component.canLeave()],
     loadComponent: () => import('./pages/admin/admin.component').then((m) => m.AdminComponent),

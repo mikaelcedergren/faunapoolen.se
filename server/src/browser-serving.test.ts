@@ -172,7 +172,7 @@ test('all 60 public locale outputs retain their section or literal-file URL', as
       requests += 1;
     }
   }
-  assert.equal(requests, 60);
+  assert.equal(requests, 63);
   for (const [from, to] of Object.entries(LEGACY_REDIRECTS)) {
     const response = await fetch(baseUrl + from + '?source=old-link', { redirect: 'manual' });
     assert.equal(response.status, 301, from);
