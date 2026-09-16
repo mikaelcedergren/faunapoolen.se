@@ -35,4 +35,11 @@
   <section class="fp-section" [attr.aria-label]="evidence.caseTitle">
     <fp-customer-quote [review]="testimonials[0]" />
   </section>
+  <section class="fp-section cx-editorial" aria-labelledby="projects-next-title">
+    <h2 id="projects-next-title" class="cx-font-regular">{{ commercial.projectBridgeTitle }}</h2>
+    <p>{{ commercial.projectBridgeBody }}</p>
+    <p>
+      <a [href]="routeFor('pricing')">{{ commercial.packageLink }} →</a>
+    </p>
+  </section>
 </fp-site-shell>

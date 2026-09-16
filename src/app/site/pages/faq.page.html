@@ -13,9 +13,37 @@
         <cx-list-item [itemId]="item.id" [heading]="item.question" [expandable]="true">
           <div class="cx-editorial">
             <p>{{ item.answer }}</p>
+            @if (item.id === 'filtration') {
+              <p>
+                <a [href]="guideHref('how-filtering-works-with-nature-pools')"
+                  >{{ commercial.filterLink }} →</a
+                >
+              </p>
+            }
+            @if (item.id === 'care') {
+              <p>
+                <a [href]="guideHref('skotsel-av-naturpool-under-aret')"
+                  >{{ commercial.seasonalCareLink }} →</a
+                >
+              </p>
+            }
+            @if (item.id === 'space') {
+              <p>
+                <a [href]="guideHref('hur-mycket-plats-behover-en-naturpool')"
+                  >{{ editorial.spaceTitle }} →</a
+                >
+              </p>
+            }
+            @if (item.id === 'location') {
+              <p>
+                <a [href]="routeFor('nature-pools') + '#service-area-title'"
+                  >{{ commercial.areaTitle }} →</a
+                >
+              </p>
+            }
             @if (item.id === 'price') {
               <p>
-                <a [href]="routeFor('nature-pools') + '#packages'">{{ editorial.priceLink }} →</a>
+                <a [href]="routeFor('pricing')">{{ editorial.priceLink }} →</a>
               </p>
             }
           </div>

@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('FAQ answers open by keyboard and language changes keep the FAQ page', async ({ page }) => {
   await page.goto('/en/faq/');
   const first = page.getByRole('button', {
-    name: 'Could this work in my garden?',
+    name: 'Could a nature pool work in my garden?',
     exact: true,
   });
   await first.press('Enter');
@@ -14,15 +14,19 @@ test('FAQ answers open by keyboard and language changes keep the FAQ page', asyn
       { exact: true },
     ),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'How much space does a pool need?', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'How much space does a nature pool need?', exact: true })
+    .click();
   await expect(first).toHaveAttribute('aria-expanded', 'false');
   await page.getByRole('button', { name: 'Language: English', exact: true }).click();
   await page.getByRole('option', { name: /Svenska/ }).click();
-  await expect(page).toHaveURL(/\/vanliga-fragor\/?$/);
-  await expect(page.getByRole('heading', { name: 'Vanliga frågor', exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\/faq\/?$/);
+  await expect(
+    page.getByRole('heading', { name: 'Vanliga frågor om naturpooler', exact: true }),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
   await page.getByRole('option', { name: /Dansk/ }).click();
-  await expect(page).toHaveURL(/\/da\/spoergsmaal\/?$/);
+  await expect(page).toHaveURL(/\/da\/faq\/?$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'da');
   await expect(page.locator('cx-list-item')).toHaveCount(15);
 });

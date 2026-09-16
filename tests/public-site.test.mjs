@@ -4,16 +4,28 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 import { HtmlParser } from '@angular/compiler';
+import {
+  PUBLIC_CANONICAL_PATHS,
+  PUBLIC_PAGES,
+  GUIDE_SLUGS,
+  LEGACY_REDIRECTS,
+  PROTECTED_GUIDE_IDS,
+} from '../server/src/public-routes.ts';
 
 const root = resolve(import.meta.dirname, '..');
 const baseline = JSON.parse(
   readFileSync(join(root, 'tests/fixtures/blog-seo-baseline.json'), 'utf8'),
 );
-// Owner requested company contact wording instead of Benjamin on 2026-09-16.
-// Keep the original SEO baseline intact; only this exact article text change is approved.
-const approvedContactCopy = JSON.parse(
-  readFileSync(join(root, 'tests/fixtures/blog-approved-contact-copy.json'), 'utf8'),
+// The owner authorized rewrites of the ten other articles on 2026-09-17.
+// The historical fixture remains unchanged; the two winning article families stay exact.
+const protectedLocales = JSON.parse(
+  readFileSync(join(root, 'tests/fixtures/protected-guide-locales.json'), 'utf8'),
 );
+const browserRoot = process.env.SITE_RELEASE_BROWSER_DIR
+  ? resolve(process.env.SITE_RELEASE_BROWSER_DIR)
+  : process.env.SITE_RELEASE_DIR
+    ? resolve(process.env.SITE_RELEASE_DIR, 'browser')
+    : join(root, 'dist/browser');
 const parser = new HtmlParser();
 function walk(nodes, predicate) {
   return nodes.flatMap((n) => [...(predicate(n) ? [n] : []), ...walk(n.children ?? [], predicate)]);
@@ -29,9 +41,11 @@ function plain(nodes) {
     .trim();
 }
 function read(path) {
-  return parser.parse(readFileSync(join(root, 'dist/browser', path), 'utf8'), path).rootNodes;
+  return parser.parse(readFileSync(join(browserRoot, path), 'utf8'), path).rootNodes;
 }
-for (const [slug, locales] of Object.entries(baseline))
+for (const [slug, locales] of Object.entries(baseline).filter(([slug]) =>
+  PROTECTED_GUIDE_IDS.some((id) => GUIDE_SLUGS[id] === slug + '.html'),
+))
   for (const [locale, original] of Object.entries(locales)) {
     test(`${locale}: ${slug} retains its existing article and SEO`, () => {
       const prefix = locale === 'sv' ? '' : locale + '/';
@@ -39,6 +53,11 @@ for (const [slug, locales] of Object.entries(baseline))
       const nodes = read(path);
       const body = walk(nodes, (n) => attr(n, 'id') === 'guide-body')[0];
       assert.ok(body, 'Article is rendered before JavaScript');
+      assert.equal(
+        plain(walk(nodes, (n) => attr(n, 'id') === 'guide-intro')[0].children),
+        original.intro.replace(/\s+/g, ' ').trim(),
+        'Original introduction remains visible',
+      );
       const headings = walk(body.children, (n) => n.name === 'h2');
       assert.ok(headings.length, 'Article has a reading structure');
       headings.forEach((heading, index) => {
@@ -52,7 +71,7 @@ for (const [slug, locales] of Object.entries(baseline))
       });
       assert.equal(
         createHash('sha256').update(plain(body.children)).digest('hex'),
-        slug === 'sports-stars-natural-ponds' ? approvedContactCopy[locale] : original.bodyHash,
+        original.bodyHash,
         'Protected article body changed',
       );
       assert.equal(
@@ -124,13 +143,164 @@ for (const [slug, locales] of Object.entries(baseline))
     });
   }
 test('sitemap contains only the complete public canonical catalogue', () => {
-  const xml = readFileSync(join(root, 'dist/browser/sitemap.xml'), 'utf8');
+  const xml = readFileSync(join(browserRoot, 'sitemap.xml'), 'utf8');
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-  assert.equal(urls.length, 63);
-  assert.equal(new Set(urls).size, 63);
+  assert.deepEqual(
+    [...urls].sort(),
+    PUBLIC_CANONICAL_PATHS.map((path) => 'https://faunapoolen.se' + path).sort(),
+  );
+  assert.equal(new Set(urls).size, urls.length);
   assert.ok(!urls.some((url) => /admin|404/.test(url)));
   for (const url of urls) {
     const path = new URL(url).pathname;
     read(path.endsWith('/') ? path.slice(1) + 'index.html' : path.slice(1));
   }
 });
+
+const pathFile = (path) => (path.endsWith('/') ? path.slice(1) + 'index.html' : path.slice(1));
+const translations = Object.fromEntries(
+  ['en', 'sv', 'da'].map((locale) => [
+    locale,
+    JSON.parse(readFileSync(join(root, `src/locale/messages.${locale}.json`), 'utf8')).translations,
+  ]),
+);
+for (const locale of ['en', 'sv', 'da']) {
+  for (const id of PROTECTED_GUIDE_IDS) {
+    test(`${locale}: protected ${id} retains every localized content field and introduction`, () => {
+      const original = protectedLocales[locale][id];
+      for (const [key, value] of Object.entries(original))
+        assert.equal(translations[locale][key], value, key);
+      const prefix = locale === 'sv' ? '' : '/' + locale;
+      const nodes = read(pathFile(prefix + '/blog/posts/' + GUIDE_SLUGS[id]));
+      const body = walk(nodes, (n) => attr(n, 'id') === 'guide-body')[0];
+      assert.equal(
+        plain(body.children),
+        plain(parser.parse(original[`blog.${id}.bodyHtml`], id).rootNodes),
+      );
+      assert.equal(
+        plain(walk(nodes, (n) => attr(n, 'id') === 'guide-intro')[0].children),
+        original[`blog.${id}.intro`].replace(/\s+/g, ' ').trim(),
+      );
+      const article = walk(nodes, (n) => n.name === 'article')[0];
+      const relatedSections = walk(
+        article.children,
+        (n) => n.name === 'section' && walk(n.children, (child) => child.name === 'cx-card').length,
+      );
+      assert.equal(relatedSections.length, 1, 'Protected article has one related-reading section');
+      const recommendations = walk(relatedSections[0].children, (n) => n.name === 'cx-card').map(
+        (card) => {
+          const links = walk(card.children, (n) => n.name === 'a' && attr(n, 'href'));
+          assert.equal(links.length, 1, 'Each related card has one destination');
+          return {
+            href: attr(links[0], 'href'),
+            title: attr(links[0], 'aria-label'),
+            text: plain(card.children),
+          };
+        },
+      );
+      assert.deepEqual(
+        recommendations,
+        protectedLocales.related[locale][id].map(({ title, description, href }) => ({
+          href,
+          title,
+          text: `${title} ${description}`.replace(/\s+/g, ' ').trim(),
+        })),
+        'Historical related titles, descriptions, destinations and order remain unchanged',
+      );
+      assert.equal(
+        walk(nodes, (n) => attr(n, 'id') === 'measurement-title').length,
+        0,
+        'No new optional UI on frozen articles',
+      );
+    });
+  }
+  for (const [page, path] of Object.entries(PUBLIC_PAGES[locale])) {
+    test(`${locale}: ${page} uses English page slugs and localized SEO before JavaScript`, () => {
+      const nodes = read(pathFile(path));
+      assert.equal(
+        plain(walk(nodes, (n) => n.name === 'title')[0].children),
+        translations[locale][`seo.${page}.title`],
+      );
+      assert.equal(
+        attr(
+          walk(nodes, (n) => n.name === 'meta' && attr(n, 'name') === 'description')[0],
+          'content',
+        ),
+        translations[locale][`seo.${page}.description`],
+      );
+      assert.equal(walk(nodes, (n) => n.name === 'h1').length, 1);
+      assert.ok(plain(nodes).length > 200, 'Useful page content is prerendered');
+    });
+  }
+  for (const [id, slug] of Object.entries(GUIDE_SLUGS)) {
+    if (PROTECTED_GUIDE_IDS.includes(id)) continue;
+    test(`${locale}: revised/new guide ${id} renders its authored translation and useful links`, () => {
+      const prefix = locale === 'sv' ? '' : '/' + locale;
+      const nodes = read(pathFile(prefix + '/blog/posts/' + slug));
+      const body = walk(nodes, (n) => attr(n, 'id') === 'guide-body')[0];
+      const authored = parser.parse(translations[locale][`blog.${id}.bodyHtml`], id).rootNodes;
+      assert.equal(plain(body.children), plain(authored), 'Localized article is complete');
+      assert.equal(
+        plain(walk(nodes, (n) => n.name === 'h1')[0].children),
+        translations[locale][`blog.${id}.title`],
+      );
+      assert.ok(walk(body.children, (n) => n.name === 'h2').length >= 3);
+      const links = walk(body.children, (n) => n.name === 'a').map((n) => attr(n, 'href'));
+      assert.ok(
+        links.some(
+          (href) =>
+            href?.startsWith(prefix + '/nature-pools/') ||
+            href?.startsWith(prefix + '/waterscapes/') ||
+            href?.startsWith(prefix + '/configure/'),
+        ),
+        'Article has a relevant offer route',
+      );
+      for (const href of links.filter((href) => href?.startsWith('/'))) {
+        const target = new URL(href, 'https://faunapoolen.se').pathname;
+        assert.ok(
+          PUBLIC_CANONICAL_PATHS.includes(target) || LEGACY_REDIRECTS[target.replace(/\/$/, '')],
+          `Broken internal article destination: ${href}`,
+        );
+      }
+    });
+  }
+}
+for (const path of PUBLIC_CANONICAL_PATHS) {
+  test(`canonical identity and reciprocal alternates: ${path}`, () => {
+    const nodes = read(pathFile(path));
+    const canonical = walk(nodes, (n) => n.name === 'link' && attr(n, 'rel') === 'canonical');
+    assert.equal(canonical.length, 1);
+    assert.equal(attr(canonical[0], 'href'), 'https://faunapoolen.se' + path);
+    const alternates = walk(nodes, (n) => n.name === 'link' && attr(n, 'hreflang'));
+    assert.deepEqual(alternates.map((n) => attr(n, 'hreflang')).sort(), [
+      'da',
+      'en',
+      'sv',
+      'x-default',
+    ]);
+    for (const alternate of alternates) {
+      const target = new URL(attr(alternate, 'href')).pathname;
+      assert.ok(PUBLIC_CANONICAL_PATHS.includes(target));
+      const counterpart = read(pathFile(target));
+      assert.ok(
+        walk(
+          counterpart,
+          (n) =>
+            n.name === 'link' &&
+            attr(n, 'rel') === 'alternate' &&
+            attr(n, 'href') === 'https://faunapoolen.se' + path,
+        ).length,
+      );
+    }
+    assert.equal(
+      walk(
+        nodes,
+        (n) =>
+          n.name === 'meta' &&
+          attr(n, 'name') === 'robots' &&
+          /noindex/.test(attr(n, 'content') ?? ''),
+      ).length,
+      0,
+    );
+  });
+}

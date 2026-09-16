@@ -6,6 +6,13 @@
           ><cx-button [text]="ui.all_guides" icon="arrow-left" [href]="routeFor('guides')"
         /></cx-inline>
         <h1 class="cx-text-display cx-font-serif cx-font-regular">{{ guide.title }}</h1>
+        @if (guideId !== 'build' && guideId !== 'difference') {
+          <p class="cx-text-muted">
+            <a [href]="routeFor('about')">Faunapoolen</a> · {{ updatedLabel }}
+            <time [attr.datetime]="guide.seo.dateModified">{{ updatedDate }}</time>
+          </p>
+        }
+        <p id="guide-intro" class="cx-text-body-lg fp-reading">{{ guide.intro }}</p>
         <img
           class="fp-photo"
           [src]="guide.image"

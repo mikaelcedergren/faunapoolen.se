@@ -21,7 +21,7 @@
               <p class="cx-text-body-lg cx-text-muted">{{ copy.common.inclVat }}</p>
             </cx-stack>
             <div class="cx-editorial">
-              @if (page === 'nature-pools') {
+              @if (page === 'nature-pools' || page === 'pricing') {
                 <cx-stack gap="lg">
                   @for (benefit of item.includes; track benefit; let i = $index) {
                     <cx-stack gap="sm">
@@ -46,6 +46,9 @@
               [text]="copy.common.viewPackage"
               appendIcon="arrow-right"
               [href]="packageHref(item.id)"
+              (click)="
+                measurement.track('package_interest', { packageId: item.id, service: 'pool' })
+              "
               size="large"
             />
           </cx-stack>
@@ -55,5 +58,10 @@
     <p class="cx-text-body-lg cx-measure-lg-start">
       {{ editorial.priceScope }}
     </p>
+    @if (page !== 'pricing') {
+      <p class="cx-text-body-lg">
+        <a [href]="routeFor('pricing')">{{ pricingLink }} →</a>
+      </p>
+    }
   </cx-stack>
 </section>

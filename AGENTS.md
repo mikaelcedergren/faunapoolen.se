@@ -106,6 +106,9 @@ work.
 ## Public content and URL contract
 
 English is the source editing locale at `/en/`; Swedish remains at the root and Danish at `/da/`.
+Public page route segments are English in all three languages (owner decision, 17 September
+2026). Previous translated paths redirect in one hop through the shared route catalogue. Existing
+article slugs remain unchanged; new article slugs may be Swedish.
 Every public canonical route is prerendered. Browser preferences suggest a language without
 redirecting visitors away from explicit URLs. Literal article `.html` URLs stay unchanged;
 `scripts/flatten.mjs` preserves them. Retired product and section paths receive one-hop redirects
@@ -129,6 +132,42 @@ Never regress these high-ranking Swedish pages:
 Keep existing URL spelling, redirects, canonicals, hreflang, structured data, image URLs, and
 indexability unless the owner explicitly chooses a product/SEO change. Headings and UI use
 European sentence case. `public/CNAME` is intentionally absent because nginx hosts the site.
+
+The Swedish SEO programme prioritizes Skåne, Halland, Blekinge and Småland without limiting the
+offer to those regions. Public commercial copy serves all of Sweden and welcomes Denmark;
+EU-wide delivery is a future ambition, not a current blanket promise. The owner confirmed package
+starting prices of 495,000 / 695,000 / 995,000 SEK including VAT on 17 September 2026. Keep scope
+and site qualifications beside prices and use the shared package source.
+
+The ten other original articles were authorized for substantive SEO revisions on that date.
+Retain the historical blog fixture, guard the two protected families separately in all locales,
+and verify revised articles against their reviewed localized content. Historical recommendation
+labels on protected articles have a small explicit presentation owner; never copy whole articles
+or restore a parallel legacy renderer. See [implementation notes](docs/SEO-IMPLEMENTATION.md).
+
+## Photography and AI imagery
+
+The owner-approved direction is beautiful, candid photography that feels natural and lived in
+(17 September 2026). Use the real Gotland case-study photographs as the reference for believable
+light, garden scale, materials and everyday character. Preserve those real photographs.
+
+- Keep images appealing and well composed, with unposed moments, relaxed gestures, ordinary
+  gardens, irregular planting and naturally weathered materials. Imperfection must feel incidental,
+  never deliberately ugly, dirty or degraded.
+- Use available light, restrained natural colour, softer optical detail and plausible reflections.
+  Allow uneven exposure, dark areas that lose detail and occasional washed-out highlights, as in
+  a normal single-exposure photograph.
+- Absolutely no HDR, tone mapping, lifted shadows everywhere, enhanced local contrast, crunchy
+  textures, oversharpening, glowing water, cinematic colour grading or artificial grain. Avoid
+  perfectly staged people and glossy luxury-advertising scenes.
+- The approved evening gathering after a swim and hand touching water are established motifs.
+  Preserve their subject when revising them unless the owner requests a new motif. Other scenes
+  may change when requested; apply this photographic direction throughout the set.
+- Inspect generated images for anatomy, reflections and believable interactions before use.
+  AI concept imagery must not be presented as evidence of a completed customer installation.
+
+The current five-image set and its generation prompts are recorded in
+[the editorial image record](docs/EDITORIAL-IMAGE-GENERATION.md).
 
 ## Campaign studio
 

@@ -15,7 +15,14 @@
       class="fp-anchor cx-measure-lg-start"
       [attr.aria-label]="copy.configure.title"
     >
-      <form method="post" novalidate (submit)="$event.preventDefault(); submitProject()">
+      <form
+        method="post"
+        novalidate
+        (input)="
+          measurement.track('enquiry_start', { packageId: packageId(), service: serviceId() })
+        "
+        (submit)="$event.preventDefault(); submitProject()"
+      >
         <cx-stack gap="xl">
           @if (submitted()) {
             <cx-alert [heading]="receivedTitle" mood="success">{{ receivedBody }}</cx-alert>
@@ -74,6 +81,9 @@
             />
             @if (serviceId() === 'pool') {
               <cx-stack gap="md">
+                <p>
+                  <a [href]="routeFor('pricing')">{{ comparePackages }} →</a>
+                </p>
                 <cx-dropdown
                   [disabled]="!ready() || !!pendingRequest()"
                   [label]="copy.configure.packageTitle"

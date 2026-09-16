@@ -1,3 +1,4 @@
+import type { GUIDE_SLUGS } from '../../../../server/src/public-routes';
 export type FaunapoolenLocale = 'en' | 'sv' | 'da';
 export type FaunapoolenPage =
   | 'home'
@@ -9,21 +10,14 @@ export type FaunapoolenPage =
   | 'about'
   | 'faq'
   | 'configure'
+  | 'pricing'
+  | 'skane'
+  | 'halland'
+  | 'blekinge'
+  | 'smaland'
   | 'guide';
 
-export type FaunapoolenGuideId =
-  | 'build'
-  | 'difference'
-  | '5-common-problems-installing-a-nature-pool'
-  | 'how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams'
-  | 'pool-conversions'
-  | 'sports-stars-natural-ponds'
-  | 'can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option'
-  | 'creating-harmony-intergrating-water-features-with-your-landscape'
-  | 'small-features-for-small-spaces'
-  | 'algae-control-and-maintenance-tips'
-  | 'how-filtering-works-with-nature-pools'
-  | 'why-you-should-get-a-natural-pool';
+export type FaunapoolenGuideId = keyof typeof GUIDE_SLUGS;
 
 export interface FaunapoolenPackage {
   readonly id: 'glade' | 'summer' | 'horizon';
@@ -79,6 +73,7 @@ interface FaunapoolenSiteCopy {
   readonly nav: {
     readonly home: string;
     readonly naturePools: string;
+    readonly pricing: string;
     readonly projects: string;
     readonly waterscapes: string;
     readonly guides: string;
@@ -164,6 +159,7 @@ export const FAUNAPOOLEN_COPY = {
   nav: {
     home: $localize`:@@site.copy.nav.home:Start`,
     naturePools: $localize`:@@site.copy.nav.naturePools:Nature pools`,
+    pricing: $localize`:@@site.copy.nav.pricing:Prices`,
     projects: $localize`:@@site.copy.nav.projects:Projects`,
     waterscapes: $localize`:@@site.copy.nav.waterscapes:Waterscapes`,
     guides: $localize`:@@site.copy.nav.guides:Blog`,
@@ -172,10 +168,10 @@ export const FAUNAPOOLEN_COPY = {
   home: {
     eyebrow: $localize`:@@site.copy.home.eyebrow:Nature pools for your garden`,
     title: $localize`:@@site.copy.home.title:Make your garden the best part of being home.`,
-    ingress: $localize`:@@site.copy.home.ingress:We design and build natural pools, ponds and streams for morning swims, long summer evenings and time together.`,
+    ingress: $localize`:@@site.copy.home.ingress:We design and build nature pools throughout Sweden and in Denmark for morning swims, long summer evenings and time together.`,
     primary: $localize`:@@site.copy.home.primary:Request a consultation`,
     secondary: $localize`:@@site.copy.home.secondary:See a completed natural pool`,
-    packagesTitle: $localize`:@@site.copy.home.packagesTitle:Find the right scale for your garden.`,
+    packagesTitle: $localize`:@@site.copy.home.packagesTitle:Find the right nature pool for your garden.`,
     packagesBody: $localize`:@@site.copy.home.packagesBody:Compare swimming areas and indicative starting prices. We develop the design with you.`,
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
@@ -184,8 +180,8 @@ export const FAUNAPOOLEN_COPY = {
   naturePools: {
     eyebrow: $localize`:@@site.copy.naturePools.eyebrow:Nature pools`,
     title: $localize`:@@site.copy.naturePools.title:Your own swimming spot, just outside.`,
-    ingress: $localize`:@@site.copy.naturePools.ingress:Start the day with a dip or spend an afternoon by the water. We design and build your pool to suit the way you swim and the garden around it.`,
-    careTitle: $localize`:@@site.copy.naturePools.careTitle:Know what caring for your pool involves.`,
+    ingress: $localize`:@@site.copy.naturePools.ingress:Start the day with a dip or spend an afternoon by the water. We design and build nature pools throughout Sweden and in Denmark, around the way you swim and the garden you want to enjoy.`,
+    careTitle: $localize`:@@site.copy.naturePools.careTitle:What care does a nature pool need?`,
     careBody: $localize`:@@site.copy.naturePools.careBody:Biological filtration still needs routine care. At handover, we show you the tasks for your system and provide a maintenance plan.`,
     carePoints: [
       $localize`:@@site.copy.naturePools.carePoints.0:Remove leaves and debris, and check water level and circulation.`,
@@ -195,8 +191,8 @@ export const FAUNAPOOLEN_COPY = {
   },
   projects: {
     eyebrow: $localize`:@@site.copy.projects.eyebrow:Projects`,
-    title: $localize`:@@site.copy.projects.title:A natural pool on Gotland.`,
-    ingress: $localize`:@@site.copy.projects.ingress:Built by us on southern Gotland. Hear from Brita about the build and life with the pool.`,
+    title: $localize`:@@site.copy.projects.title:See a finished nature pool.`,
+    ingress: $localize`:@@site.copy.projects.ingress:Explore the nature pool we built beside Brita’s home on southern Gotland. Her photographs and account show the result and what it means to live with it.`,
   },
   waterscapes: {
     eyebrow: $localize`:@@site.copy.waterscapes.eyebrow:Waterscapes`,
@@ -228,7 +224,7 @@ export const FAUNAPOOLEN_COPY = {
   about: {
     eyebrow: $localize`:@@site.copy.about.eyebrow:About Faunapoolen`,
     title: $localize`:@@site.copy.about.title:About Faunapoolen`,
-    ingress: $localize`:@@site.copy.about.ingress:We design and build nature pools and water features throughout Sweden, with selected projects elsewhere in the EU.`,
+    ingress: $localize`:@@site.copy.about.ingress:We design and build nature pools throughout Sweden and in Denmark. We help you understand the choices, bring the build together and show you how to care for the finished installation.`,
     methodTitle: $localize`:@@site.copy.about.methodTitle:You should not have to become a pool expert.`,
     methodBody: $localize`:@@site.copy.about.methodBody:We explain the choices and what affects the cost, then plan and build the solution for your property. At handover, we show you how to care for it.`,
     teamTitle: $localize`:@@site.copy.about.teamTitle:The team behind the water`,

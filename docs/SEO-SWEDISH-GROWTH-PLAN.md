@@ -4,6 +4,8 @@
 
 **Reading routes:** [priorities and findings](#1-the-outcome) · [keywords](#4-keyword-strategy-and-page-ownership) · [every current public page](#6-every-existing-public-page) · [price and regional pages](#7-new-commercial-and-regional-pages) · [every editable article](#8-existing-and-proposed-editorial-content) · [new guides](#9-new-guides-that-fill-genuine-buyer-questions) · [execution sequence](#15-implementation-sequence-and-priorities).
 
+> **Owner-approved implementation, 17 September 2026:** all non-blog route slugs remain English in every language. Starting prices are confirmed at 495,000 / 695,000 / 995,000 kr including VAT. Service covers all Sweden, with Denmark welcome; the four southern areas are search priorities, not a service boundary. See [implementation and verification](SEO-IMPLEMENTATION.md) for the final scope and external follow-through.
+
 ## 1. The outcome
 
 Make Faunapoolen easier to find when Swedish homeowners are considering a naturpool, particularly in **Skåne, Halland, Blekinge and Småland**, and help that interest become a suitable project enquiry through the pool packages.
@@ -32,11 +34,11 @@ The local browser was inspected without submitting an enquiry: the homepage, a p
 
 **Three evidence levels must stay separate:**
 
-| Evidence | What it establishes | What it does not establish |
-| --- | --- | --- |
-| Repository and local browser | Current page copy, route intentions, package choices and predictable behaviour | What has been published or indexed |
-| Live public pages and crawl | What the public site currently returns and links to | Google's chosen canonical, exact rankings or user behaviour |
-| Search research and Google documentation | Relevant vocabulary, intent differences and current search guidance | Keyword volumes, difficulty, traffic, backlinks or conversion attribution |
+| Evidence                                 | What it establishes                                                            | What it does not establish                                                |
+| ---------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Repository and local browser             | Current page copy, route intentions, package choices and predictable behaviour | What has been published or indexed                                        |
+| Live public pages and crawl              | What the public site currently returns and links to                            | Google's chosen canonical, exact rankings or user behaviour               |
+| Search research and Google documentation | Relevant vocabulary, intent differences and current search guidance            | Keyword volumes, difficulty, traffic, backlinks or conversion attribution |
 
 Search Console, analytics access, backlink reports, field performance data and regional enquiry outcomes were not available in this audit. The keyword priorities are therefore based on product relevance and purchase intent, not fabricated volume estimates.
 
@@ -46,20 +48,20 @@ The repository's accepted direction is documented in [the sales-story brief](COP
 
 ### Findings that determine the plan
 
-| Finding | Evidence in the current repository | Consequence and correction |
-| --- | --- | --- |
-| Southern Sweden is not the clear service-area message | About and FAQ still describe Sweden and selected EU work; the four priority areas are absent from key commercial copy | State the southern priority clearly while preserving truthful availability elsewhere |
-| Several public search titles are generic | `site.routes.ts` and Swedish `seo.*` translations include “Projekt”, “Guider”, “Om oss” and “Naturpooler” | Give each title a specific search and sales purpose |
-| Descriptions reuse page introductions | `site.routes.ts` maps most descriptions directly to sales ingress | Author search descriptions separately where the sales sentence lacks topic, location or next-step detail |
-| Price intent has no dedicated current destination | Legacy `/pricing/` maps to `/konfigurera/`; the form only shows a price after a package is selected | Add a real price/package page and redirect price links there |
-| Packages have useful commercial structure but unconfirmed commercial facts | Three shared packages with starting prices and swimming areas; existing briefs explicitly require confirmation | Keep the three-card structure; settle price, included scope and exclusions before publishing price-led claims |
-| The public article renderer omits stored introductions | `guide.page.html` renders title, image, contents and body, but not catalogue intro | Restore original introductions as preservation work before publishing the rebuild; do not write new intros for the two protected posts |
-| Current article protection is incomplete | Tests protect body hashes and selected SEO fields but do not protect intro or the full article presentation | Expand protection before shared article changes |
-| Editorial routes into the offer are weak | Six editable Swedish bodies have no contextual links; other bodies mainly point to the homepage | Add helpful, topic-specific paths to the naturpool page, package comparison and appropriate enquiry |
-| Shared related-reading content can change protected pages indirectly | Related cards use other articles' current titles/descriptions | Keep protected recommendation presentation stable while editing other articles |
-| Real proof is concentrated in one project | Gotland photographs/films and two quotations from Brita; separate supplier-network examples | Build depth around the real case; do not imply multiple local projects or customers |
-| Measurement could disappear in the rebuild | Live pages contain Google tags; the current public source has no equivalent integration | Decide and verify measurement continuity before release |
-| Search-to-lead attribution is incomplete | Enquiries record service/package/location/language but not a complete landing-source or qualification history | Introduce a minimal, explicit measurement design and a qualified-lead review process |
+| Finding                                                                    | Evidence in the current repository                                                                                    | Consequence and correction                                                                                                             |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Southern Sweden is not the clear service-area message                      | About and FAQ still describe Sweden and selected EU work; the four priority areas are absent from key commercial copy | State the southern priority clearly while preserving truthful availability elsewhere                                                   |
+| Several public search titles are generic                                   | `site.routes.ts` and Swedish `seo.*` translations include “Projekt”, “Guider”, “Om oss” and “Naturpooler”             | Give each title a specific search and sales purpose                                                                                    |
+| Descriptions reuse page introductions                                      | `site.routes.ts` maps most descriptions directly to sales ingress                                                     | Author search descriptions separately where the sales sentence lacks topic, location or next-step detail                               |
+| Price intent has no dedicated current destination                          | Legacy `/pricing/` maps to `/konfigurera/`; the form only shows a price after a package is selected                   | Add a real price/package page and redirect price links there                                                                           |
+| Packages have useful commercial structure but unconfirmed commercial facts | Three shared packages with starting prices and swimming areas; existing briefs explicitly require confirmation        | Keep the three-card structure; settle price, included scope and exclusions before publishing price-led claims                          |
+| The public article renderer omits stored introductions                     | `guide.page.html` renders title, image, contents and body, but not catalogue intro                                    | Restore original introductions as preservation work before publishing the rebuild; do not write new intros for the two protected posts |
+| Current article protection is incomplete                                   | Tests protect body hashes and selected SEO fields but do not protect intro or the full article presentation           | Expand protection before shared article changes                                                                                        |
+| Editorial routes into the offer are weak                                   | Six editable Swedish bodies have no contextual links; other bodies mainly point to the homepage                       | Add helpful, topic-specific paths to the naturpool page, package comparison and appropriate enquiry                                    |
+| Shared related-reading content can change protected pages indirectly       | Related cards use other articles' current titles/descriptions                                                         | Keep protected recommendation presentation stable while editing other articles                                                         |
+| Real proof is concentrated in one project                                  | Gotland photographs/films and two quotations from Brita; separate supplier-network examples                           | Build depth around the real case; do not imply multiple local projects or customers                                                    |
+| Measurement could disappear in the rebuild                                 | Live pages contain Google tags; the current public source has no equivalent integration                               | Decide and verify measurement continuity before release                                                                                |
+| Search-to-lead attribution is incomplete                                   | Enquiries record service/package/location/language but not a complete landing-source or qualification history         | Introduce a minimal, explicit measurement design and a qualified-lead review process                                                   |
 
 These are priorities for the plan, not an assertion that all are current production defects. The missing introduction, redirect destination and tracking discontinuity are especially important **pending-rebuild** concerns.
 
@@ -109,36 +111,36 @@ The existing commercial site has other legitimate services. Optimizing every pub
 
 ### Priority by customer intent
 
-| Family | Swedish phrases | Preferred owner | Commercial purpose |
-| --- | --- | --- | --- |
-| Category | naturpool, naturpooler, naturlig pool | `/naturpooler/` | Understand and choose a professionally built naturpool |
-| Broad regional brand/service | naturpooler i södra Sverige, naturpooler Sverige | `/` | Discover Faunapoolen's offer and actual service area |
-| Construction | anlägga naturpool, bygga naturpool, bygga naturpool med hjälp | `/naturpooler/` | Move from interest to site suitability and professional delivery |
-| Investment | naturpool pris, naturpool kostnad, vad kostar en naturpool, kostnad att anlägga naturpool, naturpool paket | Proposed `/naturpooler/pris/` | Compare packages and understand the investment |
-| Regional supplier | naturpool Skåne/Halland/Blekinge/Småland; anlägga/bygga naturpool i respektive område | Proposed regional pages, initially a useful section on `/naturpooler/` | Establish service availability and a local next step |
-| Overlapping category vocabulary | baddamm, anlägga baddamm, simdamm, ekologisk pool, biologisk pool, ekopool, biopool | Explanatory sections on `/naturpooler/` and the benefits/filtration articles | Meet different vocabulary without multiplying duplicate pages |
-| Alternative treatment | pool utan klor, klorfri pool | Filtration article and clarification on `/naturpooler/` | Explain the actual biological system and ownership requirements |
-| Existing pool | konvertera pool till naturpool, göra om pool till naturpool | Existing conversion article | Qualify an assessment of an existing installation |
-| Ownership decisions | naturpool skötsel, naturpool vinter, naturpool liten trädgård | Dedicated guides with distinct questions | Reduce uncertainty before package selection |
-| Existing winning intent | naturpool eller vanlig pool; bygga naturpool själv | The two frozen articles | Preserve established discovery routes |
-| Adjacent water features | anlägga damm, koidamm, bäck i trädgården, vattenfall i trädgården | `/vattenmiljoer/` and relevant existing guides | Serve a separate, legitimate enquiry path |
+| Family                          | Swedish phrases                                                                                            | Preferred owner                                                              | Commercial purpose                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Category                        | naturpool, naturpooler, naturlig pool                                                                      | `/naturpooler/`                                                              | Understand and choose a professionally built naturpool           |
+| Broad regional brand/service    | naturpooler i södra Sverige, naturpooler Sverige                                                           | `/`                                                                          | Discover Faunapoolen's offer and actual service area             |
+| Construction                    | anlägga naturpool, bygga naturpool, bygga naturpool med hjälp                                              | `/naturpooler/`                                                              | Move from interest to site suitability and professional delivery |
+| Investment                      | naturpool pris, naturpool kostnad, vad kostar en naturpool, kostnad att anlägga naturpool, naturpool paket | Proposed `/naturpooler/pris/`                                                | Compare packages and understand the investment                   |
+| Regional supplier               | naturpool Skåne/Halland/Blekinge/Småland; anlägga/bygga naturpool i respektive område                      | Proposed regional pages, initially a useful section on `/naturpooler/`       | Establish service availability and a local next step             |
+| Overlapping category vocabulary | baddamm, anlägga baddamm, simdamm, ekologisk pool, biologisk pool, ekopool, biopool                        | Explanatory sections on `/naturpooler/` and the benefits/filtration articles | Meet different vocabulary without multiplying duplicate pages    |
+| Alternative treatment           | pool utan klor, klorfri pool                                                                               | Filtration article and clarification on `/naturpooler/`                      | Explain the actual biological system and ownership requirements  |
+| Existing pool                   | konvertera pool till naturpool, göra om pool till naturpool                                                | Existing conversion article                                                  | Qualify an assessment of an existing installation                |
+| Ownership decisions             | naturpool skötsel, naturpool vinter, naturpool liten trädgård                                              | Dedicated guides with distinct questions                                     | Reduce uncertainty before package selection                      |
+| Existing winning intent         | naturpool eller vanlig pool; bygga naturpool själv                                                         | The two frozen articles                                                      | Preserve established discovery routes                            |
+| Adjacent water features         | anlägga damm, koidamm, bäck i trädgården, vattenfall i trädgården                                          | `/vattenmiljoer/` and relevant existing guides                               | Serve a separate, legitimate enquiry path                        |
 
 Page ownership is an editorial decision, not a claim that Google will always rank that page. Measure query/page overlap before deciding that two appearances are harmful. Several relevant pages ranking is not automatically cannibalization.
 
 ### Use phrases where they help
 
-| Surface | Planned use | Limit |
-| --- | --- | --- |
-| Search title | Main topic plus useful distinction or geography, then Faunapoolen | Concise and descriptive; no rigid character rule or promise that Google will display it verbatim |
-| Meta description | Summarize the specific offer/answer and useful next step | A search-result pitch, not a direct ranking lever or duplicate of every page's introduction |
-| H1 | Clear page promise; retain approved emotional H1s on sales pages | No forced list of synonyms or regions |
-| First visible paragraph | Name naturpooler, our role and relevant service area early | Preserve the customer's desired outcome and readable Swedish |
-| H2/H3 | Real questions about suitability, price, construction and care | Do not add headings solely to repeat the keyword |
-| Body | Answer the question with precise terms, examples and evidence | Explain related names; never imply all filtration systems are identical |
-| Links | Describe the destination: prices, filtration, case or package comparison | No repetitive blocks of exact-match links |
-| Images | Accurate alt text and useful captions for actual subject/project | Do not label a concept image as a completed Skåne project |
-| URLs | Preserve existing useful addresses; descriptive Swedish slugs for new content | No renaming the inherited article URLs to chase keywords |
-| Structured data | Represent visible, verified facts consistently | No invented prices, locations, dates, authors, ratings or guaranteed rich results |
+| Surface                 | Planned use                                                                   | Limit                                                                                            |
+| ----------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Search title            | Main topic plus useful distinction or geography, then Faunapoolen             | Concise and descriptive; no rigid character rule or promise that Google will display it verbatim |
+| Meta description        | Summarize the specific offer/answer and useful next step                      | A search-result pitch, not a direct ranking lever or duplicate of every page's introduction      |
+| H1                      | Clear page promise; retain approved emotional H1s on sales pages              | No forced list of synonyms or regions                                                            |
+| First visible paragraph | Name naturpooler, our role and relevant service area early                    | Preserve the customer's desired outcome and readable Swedish                                     |
+| H2/H3                   | Real questions about suitability, price, construction and care                | Do not add headings solely to repeat the keyword                                                 |
+| Body                    | Answer the question with precise terms, examples and evidence                 | Explain related names; never imply all filtration systems are identical                          |
+| Links                   | Describe the destination: prices, filtration, case or package comparison      | No repetitive blocks of exact-match links                                                        |
+| Images                  | Accurate alt text and useful captions for actual subject/project              | Do not label a concept image as a completed Skåne project                                        |
+| URLs                    | Preserve existing useful addresses; descriptive Swedish slugs for new content | No renaming the inherited article URLs to chase keywords                                         |
+| Structured data         | Represent visible, verified facts consistently                                | No invented prices, locations, dates, authors, ratings or guaranteed rich results                |
 
 Google's [SEO starter guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) supports natural language and useful organization; its [title guidance](https://developers.google.com/search/docs/appearance/title-link) explains that result titles can draw on several page signals. The implementation should pursue clearer answers, not mechanically repeat every variation.
 
@@ -171,11 +173,11 @@ This is a navigation strategy, not a requirement to make every visitor complete 
 
 ### Existing package truth to preserve and verify
 
-| Swedish package | Existing identifier | Swimming area shown | Current repository starting price |
-| --- | --- | --- | --- |
-| Dagliga dopp | glade | 12–18 m² badyta | 495 000 kr inkl. moms |
-| Bada tillsammans | summer | 24–36 m² badyta | 695 000 kr inkl. moms |
-| Mer plats | horizon | 40–60 m² badyta | 995 000 kr inkl. moms |
+| Swedish package  | Existing identifier | Swimming area shown | Current repository starting price |
+| ---------------- | ------------------- | ------------------- | --------------------------------- |
+| Dagliga dopp     | glade               | 12–18 m² badyta     | 495 000 kr inkl. moms             |
+| Bada tillsammans | summer              | 24–36 m² badyta     | 695 000 kr inkl. moms             |
+| Mer plats        | horizon             | 40–60 m² badyta     | 995 000 kr inkl. moms             |
 
 These are current repository values, **not independently confirmed commercial offers**. The existing sales brief calls for confirmation. Before publishing a price-focused page, the business must confirm price validity, VAT treatment, what is designed versus installed, included groundwork, filtration, access assumptions, transport and disposal, planting, electrical work, optional features and service. Do not infer an exclusion or an inclusion from silence.
 
@@ -399,12 +401,12 @@ Create the four candidates below only after each can stand alone as a useful ser
 
 The common service can be explained consistently, but each separate page needs useful area-specific content. No fabricated completed project, office, local expert, soil condition or planning rule. A regional project is strong evidence, but is not the only way to make a page useful: actual coverage, consultation logistics, a sourced local question and accurately labelled nearby/reference work can help. If the page would only swap a place name, do not publish it yet.
 
-| Candidate | Title | H1 | Main query families |
-| --- | --- | --- | --- |
-| `/naturpooler/skane/` | `Naturpool i Skåne – från idé till bad \| Faunapoolen` | `En naturpool för din trädgård i Skåne` | naturpool Skåne; bygga/anlägga naturpool i Skåne |
-| `/naturpooler/halland/` | `Naturpool i Halland – utformning och bygge \| Faunapoolen` | `En naturpool för din trädgård i Halland` | naturpool Halland; bygga/anlägga naturpool i Halland |
-| `/naturpooler/blekinge/` | `Naturpool i Blekinge – från idé till bad \| Faunapoolen` | `En naturpool för din trädgård i Blekinge` | naturpool Blekinge; bygga/anlägga naturpool i Blekinge |
-| `/naturpooler/smaland/` | `Naturpool i Småland – utformning och bygge \| Faunapoolen` | `En naturpool för din trädgård i Småland` | naturpool Småland; bygga/anlägga naturpool i Småland |
+| Candidate                | Title                                                       | H1                                         | Main query families                                    |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------ |
+| `/naturpooler/skane/`    | `Naturpool i Skåne – från idé till bad \| Faunapoolen`      | `En naturpool för din trädgård i Skåne`    | naturpool Skåne; bygga/anlägga naturpool i Skåne       |
+| `/naturpooler/halland/`  | `Naturpool i Halland – utformning och bygge \| Faunapoolen` | `En naturpool för din trädgård i Halland`  | naturpool Halland; bygga/anlägga naturpool i Halland   |
+| `/naturpooler/blekinge/` | `Naturpool i Blekinge – från idé till bad \| Faunapoolen`   | `En naturpool för din trädgård i Blekinge` | naturpool Blekinge; bygga/anlägga naturpool i Blekinge |
+| `/naturpooler/smaland/`  | `Naturpool i Småland – utformning och bygge \| Faunapoolen` | `En naturpool för din trädgård i Småland`  | naturpool Småland; bygga/anlägga naturpool i Småland   |
 
 **Skåne brief:** Explain actual service coverage and how a property visit is arranged. Investigate genuine project/partner material and relevant customer questions for Malmö/Lund, Helsingborg or Kristianstad only where the company serves them. Do not insert all towns as a keyword block. Candidate description: `Vi utformar och bygger naturpooler i Skåne. Utforska poolpaket och prata med oss om din tomt, dina idéer och nästa steg.`
 
@@ -435,8 +437,6 @@ The two protected articles remain unchanged. Their useful pattern—recognizable
 - Apply edits through the current English source and Swedish/Danish catalogues. Check all published translations; do not introduce a separate Swedish article authority.
 
 **Important sales constraint:** the existing enquiry supports `pool`, `pond`, `stream` and `unsure`. There are no dedicated golf, maintenance, rainwater or conversion service identifiers. Use the supported choice or neutral enquiry with the existing notes field; confirm the service before advertising it.
-
-
 
 ### E01 — Five common problems
 
@@ -720,9 +720,7 @@ Do not sell guaranteed year-round ice-free operation. Discuss desired use and si
 
 **Links and CTA:** rainwater, algae, `/vattenmiljoer/`; existing general configurator with accurate service selection and notes. CTA **Beskriv banans vattenmiljöer**. Keep pool packages discoverable through normal navigation; do not pretend residential packages solve golf irrigation. If the business no longer wants golf leads, retain useful factual article and lower editorial prominence; do not delete/noindex without a separate traffic and business decision.
 
-
 ## 9. New guides that fill genuine buyer questions
-
 
 Publish in this order only when evidence exists. These are proposed new subjects, not additional versions of the frozen comparison or DIY guide. New paths below are proposals, not existing routes.
 
@@ -777,25 +775,25 @@ The purpose of an internal link is to resolve the visitor's next question. A rel
 
 ### Commercial links to establish
 
-| From | Where the link belongs | Destination | Suggested Swedish label |
-| --- | --- | --- | --- |
-| Homepage | First service explanation | Naturpool service | `Så fungerar en naturpool` |
-| Homepage | Existing package section | New price page | `Se priser och vad som ingår` |
-| Homepage | Real customer/project evidence | Gotland case | `Se naturpoolen på Gotland` |
-| Naturpool service | Investment/three-card section | New price page | `Vad kostar en naturpool?` |
-| Naturpool service | Service-area section | Published regional pages | `Naturpool i Skåne`, and equivalent useful area links |
-| Naturpool service | Brief explanation of biological treatment | Filtration article | `Så fungerar den biologiska reningen` |
-| Price page | Each existing package action | Enquiry with that package | `Fråga om den här poolen` |
-| Price page | Space explanation | New space guide | `Hur mycket plats behöver en naturpool?` |
-| Price page | Proof | Gotland case | `Se ett färdigt projekt` |
-| Each regional page | Scope/investment | Price page | `Jämför våra naturpoolspaket` |
-| Each regional page | Service explanation | Naturpool service | `Läs om våra naturpooler` |
-| Project index | Each actual project | Its case page | Project-specific descriptive title |
-| Gotland case | After experience and scale | Price page | `Hitta ett poolpaket för din trädgård` |
-| About | Offer and genuine area coverage | Naturpool service/area pages | Natural contextual labels, not a town list |
-| FAQ | End of the concise answer | Owning price/space/care/service page | The relevant next question |
-| Enquiry | Undecided package help | Price page | `Jämför poolpaketen` |
-| Water features | Separate swimming-interest branch | Naturpool service | `Vill du också kunna bada?` |
+| From               | Where the link belongs                    | Destination                          | Suggested Swedish label                               |
+| ------------------ | ----------------------------------------- | ------------------------------------ | ----------------------------------------------------- |
+| Homepage           | First service explanation                 | Naturpool service                    | `Så fungerar en naturpool`                            |
+| Homepage           | Existing package section                  | New price page                       | `Se priser och vad som ingår`                         |
+| Homepage           | Real customer/project evidence            | Gotland case                         | `Se naturpoolen på Gotland`                           |
+| Naturpool service  | Investment/three-card section             | New price page                       | `Vad kostar en naturpool?`                            |
+| Naturpool service  | Service-area section                      | Published regional pages             | `Naturpool i Skåne`, and equivalent useful area links |
+| Naturpool service  | Brief explanation of biological treatment | Filtration article                   | `Så fungerar den biologiska reningen`                 |
+| Price page         | Each existing package action              | Enquiry with that package            | `Fråga om den här poolen`                             |
+| Price page         | Space explanation                         | New space guide                      | `Hur mycket plats behöver en naturpool?`              |
+| Price page         | Proof                                     | Gotland case                         | `Se ett färdigt projekt`                              |
+| Each regional page | Scope/investment                          | Price page                           | `Jämför våra naturpoolspaket`                         |
+| Each regional page | Service explanation                       | Naturpool service                    | `Läs om våra naturpooler`                             |
+| Project index      | Each actual project                       | Its case page                        | Project-specific descriptive title                    |
+| Gotland case       | After experience and scale                | Price page                           | `Hitta ett poolpaket för din trädgård`                |
+| About              | Offer and genuine area coverage           | Naturpool service/area pages         | Natural contextual labels, not a town list            |
+| FAQ                | End of the concise answer                 | Owning price/space/care/service page | The relevant next question                            |
+| Enquiry            | Undecided package help                    | Price page                           | `Jämför poolpaketen`                                  |
+| Water features     | Separate swimming-interest branch         | Naturpool service                    | `Vill du också kunna bada?`                           |
 
 Do not add all these links to every page. Keep established navigation recognizable; use contextual links and a concise service-area section before considering more top-level navigation items. Regional pages should be reached from the service hub rather than requiring four new main-menu choices. Keep the contact action easy to find.
 
@@ -803,23 +801,23 @@ Do not add all these links to every page. Keep established navigation recognizab
 
 Each editable article's brief already names its contextual links. The following matrix controls related reading so it follows a meaningful next question rather than the same generic list everywhere.
 
-| Article | Most useful next reading | Commercial destination |
-| --- | --- | --- |
-| Five problems | Filtration; algae; frozen DIY where appropriate | Price page after professional-planning explanation |
-| Filtration | Five problems; algae; seasonal care when published | Naturpool service, then price page |
-| Algae | Filtration; seasonal care | Existing-installation help if offered; service page for prospective owners |
-| Life with a naturpool | Gotland; frozen comparison; seasonal care | Price page |
-| Conversion | Filtration; frozen comparison | Pool assessment enquiry; new-build price page only as an alternative |
-| Cold bathing | Seasonal care; appropriate actual project evidence | Price page, with system/winter scope kept honest |
-| Landscape design | Gotland; small water features; space guide | Naturpool or water-feature service according to the section |
-| Small water features | Landscape design; space guide for swimmers | Water-feature service |
-| Rainwater | Water-feature service; filtration where relevant | Neutral service enquiry for confirmed offered work |
-| Golf water management | Algae; rainwater where relevant | Relevant general enquiry |
-| New space guide | Five problems; small water alternatives | Price page |
-| New care guide | Filtration; algae | Packages for buyers; relevant assistance for owners |
-| New process guide | Gotland; space; price page | Selected package or pool enquiry |
-| New safety/permissions guide | Space and professional process | Professional assessment enquiry |
-| Conditional operating-cost guide | Care; filtration | Current price page |
+| Article                          | Most useful next reading                           | Commercial destination                                                     |
+| -------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------------- |
+| Five problems                    | Filtration; algae; frozen DIY where appropriate    | Price page after professional-planning explanation                         |
+| Filtration                       | Five problems; algae; seasonal care when published | Naturpool service, then price page                                         |
+| Algae                            | Filtration; seasonal care                          | Existing-installation help if offered; service page for prospective owners |
+| Life with a naturpool            | Gotland; frozen comparison; seasonal care          | Price page                                                                 |
+| Conversion                       | Filtration; frozen comparison                      | Pool assessment enquiry; new-build price page only as an alternative       |
+| Cold bathing                     | Seasonal care; appropriate actual project evidence | Price page, with system/winter scope kept honest                           |
+| Landscape design                 | Gotland; small water features; space guide         | Naturpool or water-feature service according to the section                |
+| Small water features             | Landscape design; space guide for swimmers         | Water-feature service                                                      |
+| Rainwater                        | Water-feature service; filtration where relevant   | Neutral service enquiry for confirmed offered work                         |
+| Golf water management            | Algae; rainwater where relevant                    | Relevant general enquiry                                                   |
+| New space guide                  | Five problems; small water alternatives            | Price page                                                                 |
+| New care guide                   | Filtration; algae                                  | Packages for buyers; relevant assistance for owners                        |
+| New process guide                | Gotland; space; price page                         | Selected package or pool enquiry                                           |
+| New safety/permissions guide     | Space and professional process                     | Professional assessment enquiry                                            |
+| Conditional operating-cost guide | Care; filtration                                   | Current price page                                                         |
 
 Preserve existing meaningful incoming links to the two frozen articles. Do not change their own related sections, headings or link labels while changing the rest of the catalogue. Where an editable title appears inside a frozen page, the freeze policy must protect that existing presentation explicitly.
 
@@ -870,17 +868,17 @@ These are implementation requirements for a later work phase. No application cha
 
 The source currently declares these nine public non-article families:
 
-| Family | Swedish | English | Danish |
-| --- | --- | --- | --- |
-| Home | `/` | `/en/` | `/da/` |
-| Naturpool | `/naturpooler/` | `/en/nature-pools/` | `/da/naturpooler/` |
-| Projects | `/projekt/` | `/en/projects/` | `/da/projekter/` |
-| Gotland | `/projekt/gotland/` | `/en/projects/gotland/` | `/da/projekter/gotland/` |
-| Water features | `/vattenmiljoer/` | `/en/waterscapes/` | `/da/vandmiljoer/` |
-| Guides | `/blog/` | `/en/blog/` | `/da/blog/` |
-| About | `/om/` | `/en/about/` | `/da/om/` |
-| FAQ | `/vanliga-fragor/` | `/en/faq/` | `/da/spoergsmaal/` |
-| Enquiry | `/konfigurera/` | `/en/configure/` | `/da/konfigurer/` |
+| Family         | Swedish             | English                 | Danish                   |
+| -------------- | ------------------- | ----------------------- | ------------------------ |
+| Home           | `/`                 | `/en/`                  | `/da/`                   |
+| Naturpool      | `/naturpooler/`     | `/en/nature-pools/`     | `/da/naturpooler/`       |
+| Projects       | `/projekt/`         | `/en/projects/`         | `/da/projekter/`         |
+| Gotland        | `/projekt/gotland/` | `/en/projects/gotland/` | `/da/projekter/gotland/` |
+| Water features | `/vattenmiljoer/`   | `/en/waterscapes/`      | `/da/vandmiljoer/`       |
+| Guides         | `/blog/`            | `/en/blog/`             | `/da/blog/`              |
+| About          | `/om/`              | `/en/about/`            | `/da/om/`                |
+| FAQ            | `/vanliga-fragor/`  | `/en/faq/`              | `/da/spoergsmaal/`       |
+| Enquiry        | `/konfigurera/`     | `/en/configure/`        | `/da/konfigurer/`        |
 
 Together with twelve articles in three languages, that is 63 current canonical outputs. The FAQ is part of the current uncommitted tree. There is no assumption that all current outputs have already been published or indexed.
 
@@ -900,21 +898,21 @@ Package and service parameters on the enquiry page represent visitor choices, no
 
 The current catalogue owns 38 locale-expanded legacy redirects. Keep that one authoritative catalogue and preserve a direct 301 to the final useful destination. The thirteen patterns are:
 
-| Legacy pattern, with applicable locale prefix | Current destination family | Planned treatment |
-| --- | --- | --- |
-| `/about` | About | Preserve |
-| `/services` | Water features | Preserve |
-| `/pricing` | Enquiry | Change to the corresponding new price page when it exists |
-| `/contact` | Enquiry | Preserve |
-| `/suppliers` | About | Preserve truthful supplier context on the destination |
-| `/sweden-expert-naturpooler-biopooler-ecopooler-kemikaliefria-pooler-baddammar` | Naturpool | Preserve |
-| `/nature-pools.html` | Naturpool | Preserve |
-| `/koi-pond-series.html` | Water features | Preserve relevant koi information |
-| `/swim-series.html` | Naturpool | Preserve |
-| `/waterfront-series.html` | Water features | Preserve relevant water-feature information |
-| `/plunge-series.html` | Naturpool | Preserve |
-| `/pond-packages-landing.html` | Naturpool | Preserve |
-| `/campaigns/pond-packages` | Naturpool | Preserve |
+| Legacy pattern, with applicable locale prefix                                   | Current destination family | Planned treatment                                         |
+| ------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------- |
+| `/about`                                                                        | About                      | Preserve                                                  |
+| `/services`                                                                     | Water features             | Preserve                                                  |
+| `/pricing`                                                                      | Enquiry                    | Change to the corresponding new price page when it exists |
+| `/contact`                                                                      | Enquiry                    | Preserve                                                  |
+| `/suppliers`                                                                    | About                      | Preserve truthful supplier context on the destination     |
+| `/sweden-expert-naturpooler-biopooler-ecopooler-kemikaliefria-pooler-baddammar` | Naturpool                  | Preserve                                                  |
+| `/nature-pools.html`                                                            | Naturpool                  | Preserve                                                  |
+| `/koi-pond-series.html`                                                         | Water features             | Preserve relevant koi information                         |
+| `/swim-series.html`                                                             | Naturpool                  | Preserve                                                  |
+| `/waterfront-series.html`                                                       | Water features             | Preserve relevant water-feature information               |
+| `/plunge-series.html`                                                           | Naturpool                  | Preserve                                                  |
+| `/pond-packages-landing.html`                                                   | Naturpool                  | Preserve                                                  |
+| `/campaigns/pond-packages`                                                      | Naturpool                  | Preserve                                                  |
 
 There are 38 rather than 39 entries because the English About route already identifies its canonical destination. Do not redirect the two protected article addresses, change inherited article spelling or create intermediate hops through the configurator.
 
@@ -962,15 +960,15 @@ Search Console provides queries, pages, countries and devices; it does not provi
 
 Keep a stable set of query groups:
 
-| Group | Include examples | Main question |
-| --- | --- | --- |
-| Brand | Faunapoolen and actual observed spelling variants | Are people finding the intended business? |
-| Naturpool category | naturpool/naturpooler, relevant baddamm/biopool/ekopool variants | Is category discovery improving on useful pages? |
-| Price | naturpool with pris/kostnad/paket | Is price intent reaching a page that answers it? |
-| Professional construction | anlägga/bygga naturpool; split explicit själv/DIY | Are we attracting prospective commissioned projects? |
-| Regions | Relevant pool terms with Skåne, Halland, Blekinge, Småland and actual served towns | Are regional queries finding their intended pages? |
-| Practical questions | rening, skötsel, vinter, storlek, alger, ombyggnad | Which uncertainties are attracting useful readers? |
-| Secondary services | damm, fontän, bäck, rainwater/golf-related terms | Are those enquiries appropriate to the separate offer? |
+| Group                     | Include examples                                                                   | Main question                                          |
+| ------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Brand                     | Faunapoolen and actual observed spelling variants                                  | Are people finding the intended business?              |
+| Naturpool category        | naturpool/naturpooler, relevant baddamm/biopool/ekopool variants                   | Is category discovery improving on useful pages?       |
+| Price                     | naturpool with pris/kostnad/paket                                                  | Is price intent reaching a page that answers it?       |
+| Professional construction | anlägga/bygga naturpool; split explicit själv/DIY                                  | Are we attracting prospective commissioned projects?   |
+| Regions                   | Relevant pool terms with Skåne, Halland, Blekinge, Småland and actual served towns | Are regional queries finding their intended pages?     |
+| Practical questions       | rening, skötsel, vinter, storlek, alger, ombyggnad                                 | Which uncertainties are attracting useful readers?     |
+| Secondary services        | damm, fontän, bäck, rainwater/golf-related terms                                   | Are those enquiries appropriate to the separate offer? |
 
 Groups can overlap. Define inclusion rules consistently and do not sum overlapping groups as though they were unique people. Monitor synonyms, but promote them into new pages only when query intent and missing content justify it.
 
@@ -980,14 +978,14 @@ The deployed HTML has Google tracking tags; the inspected pending source does no
 
 A minimal proposed funnel is:
 
-| Proposed signal | Trigger | Useful limited context | What it must not imply |
-| --- | --- | --- | --- |
-| Landing/page view | Actual eligible page view | Canonical path, language, permitted source/campaign context | A regional page visitor lives in that region |
-| Package comparison viewed | Comparison genuinely enters view, once per relevant visit | Page and placement | All three packages were considered |
-| Package enquiry selected | Click on a package action | Stable package ID, source page, placement | A qualified lead or purchase occurred |
-| Enquiry started | First meaningful form interaction | Supported package/service, language | Submission or consent to unrelated marketing |
-| Enquiry received | Confirmed accepted receipt, counted once | Supported package/service and permitted source context | The project is suitable or won |
-| Form problem | Validation or submission problem | Non-sensitive category | Raw contact fields or enquiry text |
+| Proposed signal           | Trigger                                                   | Useful limited context                                      | What it must not imply                       |
+| ------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------- |
+| Landing/page view         | Actual eligible page view                                 | Canonical path, language, permitted source/campaign context | A regional page visitor lives in that region |
+| Package comparison viewed | Comparison genuinely enters view, once per relevant visit | Page and placement                                          | All three packages were considered           |
+| Package enquiry selected  | Click on a package action                                 | Stable package ID, source page, placement                   | A qualified lead or purchase occurred        |
+| Enquiry started           | First meaningful form interaction                         | Supported package/service, language                         | Submission or consent to unrelated marketing |
+| Enquiry received          | Confirmed accepted receipt, counted once                  | Supported package/service and permitted source context      | The project is suitable or won               |
+| Form problem              | Validation or submission problem                          | Non-sensitive category                                      | Raw contact fields or enquiry text           |
 
 Keep personal names, emails, phone numbers, notes and precise addresses out of third-party analytics and URLs. Do not expose durable internal request identifiers merely to deduplicate an analytics event. Use the existing retry/receipt behaviour to ensure one accepted submission is not counted several times; account separately for receipt recovery and interrupted responses.
 
@@ -1016,15 +1014,15 @@ Diagnostic actions should follow the evidence: impressions without clicks sugges
 
 Use small reviewable batches, each with a clear purpose and measurement date. The phases below are a sequence, not a ranking-growth deadline. Do not publish incomplete regional pages merely to fill the calendar.
 
-| Phase | Deliverables | Dependency | Completion signal |
-| --- | --- | --- | --- |
-| 0 — Protect and establish facts | Two-article preservation record; pending intro discrepancy resolved; baseline data; package/coverage fact sheet; claim ledger | Current source/live comparison and business facts | Known protected output, known offer facts, measurement continuity decision |
-| 1 — Make the existing offer discoverable | Swedish title/description/ingress and contextual-link work for all nine public pages; clear southern coverage; preserve emotional H1s | Phase 0 boundaries | Every page has a distinct useful purpose and consistent next step |
-| 2 — Answer price intent | New translated price hub; shared package facts; old pricing redirects; enquiry-choice continuity; essential funnel measurement | Confirmed package scope and price | A price visitor can understand the offer and enquire about the intended package |
-| 3 — Repair and deepen existing articles | Correct unsupported/outdated claims first; rewrite filtration, problems, ownership and conversion; complete remaining six; relevant links/related reading | Evidence and technical review for claims | Ten useful revised articles, original URLs intact, frozen output unchanged |
-| 4 — Build regional relevance | Publish the first evidence-ready regional page, review it, then remaining useful area pages | Real coverage and distinct local material | Each published page answers a local service question and links to the offer |
-| 5 — Fill buyer uncertainties | Space and care first; professional process next; safety with current sources; operating cost only with sound inputs | Real diagrams, process/care facts, specialist sources | Distinct questions answered without duplicating protected or commercial pages |
-| 6 — Refine from evidence | Monthly query/page/lead review; improve weak steps; add real case material | Sufficient traffic and lead history | Decisions tied to qualified demand rather than article count |
+| Phase                                    | Deliverables                                                                                                                                              | Dependency                                            | Completion signal                                                               |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 0 — Protect and establish facts          | Two-article preservation record; pending intro discrepancy resolved; baseline data; package/coverage fact sheet; claim ledger                             | Current source/live comparison and business facts     | Known protected output, known offer facts, measurement continuity decision      |
+| 1 — Make the existing offer discoverable | Swedish title/description/ingress and contextual-link work for all nine public pages; clear southern coverage; preserve emotional H1s                     | Phase 0 boundaries                                    | Every page has a distinct useful purpose and consistent next step               |
+| 2 — Answer price intent                  | New translated price hub; shared package facts; old pricing redirects; enquiry-choice continuity; essential funnel measurement                            | Confirmed package scope and price                     | A price visitor can understand the offer and enquire about the intended package |
+| 3 — Repair and deepen existing articles  | Correct unsupported/outdated claims first; rewrite filtration, problems, ownership and conversion; complete remaining six; relevant links/related reading | Evidence and technical review for claims              | Ten useful revised articles, original URLs intact, frozen output unchanged      |
+| 4 — Build regional relevance             | Publish the first evidence-ready regional page, review it, then remaining useful area pages                                                               | Real coverage and distinct local material             | Each published page answers a local service question and links to the offer     |
+| 5 — Fill buyer uncertainties             | Space and care first; professional process next; safety with current sources; operating cost only with sound inputs                                       | Real diagrams, process/care facts, specialist sources | Distinct questions answered without duplicating protected or commercial pages   |
+| 6 — Refine from evidence                 | Monthly query/page/lead review; improve weak steps; add real case material                                                                                | Sufficient traffic and lead history                   | Decisions tied to qualified demand rather than article count                    |
 
 Some research and writing can run in parallel. Price destination and its redirect changes must ship together. Improvements to unsupported claims should not wait for every regional page or every new guide.
 
@@ -1038,18 +1036,18 @@ This is an indicative work cadence, not a promise that Google will recrawl or im
 
 ### Work packages for implementation
 
-| Work package | Scope and owning source | Main risk to check |
-| --- | --- | --- |
-| SEO-01 Preservation | Shared guide rendering, blog catalogue, locale text, historical fixtures and public tests | Accidentally changing the frozen pages through shared output |
-| SEO-02 Commercial copy | Main page compositions, content/editorial/FAQ records, localized metadata and translations | Losing the homeowner story or introducing unsupported service claims |
-| SEO-03 Price destination | Route catalogue, price page composition, shared packages, legacy redirect destination | Price/scope inconsistency; query choice loss; irrelevant old fragments |
-| SEO-04 Existing articles | Ten bodies/catalogue records/translations and scoped related reading | False claims; intent dilution; altering frozen related-card text |
-| SEO-05 Regional pages | Four conditional page families and service-area links | Cloned content; invented offices, local rules or projects |
-| SEO-06 New guides | Four core briefs and one conditional cost brief | Duplicating existing intent or publishing before evidence exists |
-| SEO-07 Discoverability | Canonicals, language alternates, metadata/schema where eligible, sitemap and redirect tests | Missing/duplicate routes; false alternates; schema changes on frozen pages |
-| SEO-08 Conversion continuity | Existing package links, footer/suggestion language links, enquiry return path | Adding friction or dropping selected package/service |
-| SEO-09 Measurement | Chosen public analytics interface; optional bounded attribution/outcome extension | Lost tracking, duplicate leads, personal data leakage or a second data authority |
-| SEO-10 Evidence and review | Project material, accurate captions, claim sources, mobile sales-path review | Mistaking inspiration for proof; publishing unverified offer facts |
+| Work package                 | Scope and owning source                                                                     | Main risk to check                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| SEO-01 Preservation          | Shared guide rendering, blog catalogue, locale text, historical fixtures and public tests   | Accidentally changing the frozen pages through shared output                     |
+| SEO-02 Commercial copy       | Main page compositions, content/editorial/FAQ records, localized metadata and translations  | Losing the homeowner story or introducing unsupported service claims             |
+| SEO-03 Price destination     | Route catalogue, price page composition, shared packages, legacy redirect destination       | Price/scope inconsistency; query choice loss; irrelevant old fragments           |
+| SEO-04 Existing articles     | Ten bodies/catalogue records/translations and scoped related reading                        | False claims; intent dilution; altering frozen related-card text                 |
+| SEO-05 Regional pages        | Four conditional page families and service-area links                                       | Cloned content; invented offices, local rules or projects                        |
+| SEO-06 New guides            | Four core briefs and one conditional cost brief                                             | Duplicating existing intent or publishing before evidence exists                 |
+| SEO-07 Discoverability       | Canonicals, language alternates, metadata/schema where eligible, sitemap and redirect tests | Missing/duplicate routes; false alternates; schema changes on frozen pages       |
+| SEO-08 Conversion continuity | Existing package links, footer/suggestion language links, enquiry return path               | Adding friction or dropping selected package/service                             |
+| SEO-09 Measurement           | Chosen public analytics interface; optional bounded attribution/outcome extension           | Lost tracking, duplicate leads, personal data leakage or a second data authority |
+| SEO-10 Evidence and review   | Project material, accurate captions, claim sources, mobile sales-path review                | Mistaking inspiration for proof; publishing unverified offer facts               |
 
 The content work uses the existing framework as-is. If the chosen presentation reveals a genuine missing framework capability, handle it as separately scoped work; this SEO plan does not authorize changes to the shared framework.
 
@@ -1088,16 +1086,16 @@ These are requirements for later implementation. They are not tests run or passe
 
 These are focused dependencies, not a request to stop planning or answer a large questionnaire now.
 
-| Fact to settle | Why it matters | Work affected |
-| --- | --- | --- |
-| Current price, VAT, scope and assumptions for all three packages | A price page must represent the actual offer | Price hub, metadata with prices, repeated package facts |
-| Exact regional availability and visit/travel arrangements | Local pages need a truthful service promise | Homepage/FAQ coverage, four regional candidates, Business Profile |
-| Free first phone call and paid-site-visit terms | Avoid promising free design or assessment | All enquiry invitations and process explanations |
-| Actual technology, water monitoring, care and winter guidance | Advice must fit the system sold | Filtration, algae, care, cold bathing, space and FAQ |
-| Available project permissions, original imagery and quote provenance | Distinguish real proof from inspiration | Gotland, conversions, About, regional pages |
-| Services actually offered beyond new naturpool builds | Avoid attracting enquiries the business cannot serve | Conversion, maintenance, golf, rainwater and water features |
-| Existing Search Console/analytics access and selected tracking/consent approach | Establish baseline and avoid measurement loss | Attribution and outcome review |
-| Definition and recording of qualified/won leads | Traffic growth alone cannot prove the commercial result | Monthly commercial evaluation |
+| Fact to settle                                                                  | Why it matters                                          | Work affected                                                     |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------- |
+| Current price, VAT, scope and assumptions for all three packages                | A price page must represent the actual offer            | Price hub, metadata with prices, repeated package facts           |
+| Exact regional availability and visit/travel arrangements                       | Local pages need a truthful service promise             | Homepage/FAQ coverage, four regional candidates, Business Profile |
+| Free first phone call and paid-site-visit terms                                 | Avoid promising free design or assessment               | All enquiry invitations and process explanations                  |
+| Actual technology, water monitoring, care and winter guidance                   | Advice must fit the system sold                         | Filtration, algae, care, cold bathing, space and FAQ              |
+| Available project permissions, original imagery and quote provenance            | Distinguish real proof from inspiration                 | Gotland, conversions, About, regional pages                       |
+| Services actually offered beyond new naturpool builds                           | Avoid attracting enquiries the business cannot serve    | Conversion, maintenance, golf, rainwater and water features       |
+| Existing Search Console/analytics access and selected tracking/consent approach | Establish baseline and avoid measurement loss           | Attribution and outcome review                                    |
+| Definition and recording of qualified/won leads                                 | Traffic growth alone cannot prove the commercial result | Monthly commercial evaluation                                     |
 
 No further information is required to assess this plan. Implementation can start with the parts whose facts are already known once that work is requested; unresolved claims remain out of publishable copy until supported.
 

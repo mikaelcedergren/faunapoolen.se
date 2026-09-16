@@ -9,6 +9,10 @@
       <p body>{{ editorial.caseStory }}</p>
     </cx-hero>
   </div>
+  <section class="fp-section cx-editorial" aria-labelledby="gotland-story-title">
+    <h2 id="gotland-story-title" class="cx-font-regular">{{ commercial.caseStoryTitle }}</h2>
+    <p>{{ commercial.caseStoryBody }}</p>
+  </section>
   <section class="fp-section" [attr.aria-label]="evidence.caseTitle">
     <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
       @for (item of gotlandMedia; track item.id) {
@@ -54,6 +58,13 @@
         <fp-customer-quote [review]="testimonials[1]" />
       </cx-stack>
     </cx-grid>
+  </section>
+  <section class="fp-section cx-editorial" aria-labelledby="gotland-next-title">
+    <h2 id="gotland-next-title" class="cx-font-regular">{{ commercial.projectBridgeTitle }}</h2>
+    <p>{{ commercial.projectBridgeBody }}</p>
+    <p>
+      <a [href]="routeFor('pricing')">{{ commercial.packageLink }} →</a>
+    </p>
   </section>
   <cx-lightbox
     [images]="gotlandGalleryImages"

@@ -1,38 +1,18 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
-export const BODY_HTML = $localize`:@@blog.algae-control-and-maintenance-tips.bodyHtml:<h2>Understanding algae: nature's double-edged sword</h2>
-<p>Algae are a natural part of all aquatic ecosystems. They contribute to oxygen production and serve as food for fish and other aquatic organisms. However, when algae grow excessively, they can cloud the water and disrupt the balance in your aquatic environment, leading to green hues and unpleasant odors. Understanding the causes of algal blooms is the first step towards better control.</p>
-<h2>Common causes of algal growth</h2>
-<p><strong>Nutrient imbalance:</strong> Excess nutrients, often from fertilizers or decaying organic material, can drive algal growth. This imbalance is often due to runoff, neglected debris, or overfeeding fish.</p>
-<p><strong>Lack of vegetation:</strong> Aquatic plants absorb nutrients and compete with algae. A lack of healthy plants can lead to increased algal blooms.</p>
-<p><strong>Sunlight:</strong> While some sun is good, too much direct sunlight can promote algae growth. Therefore, it is important to balance sunny and shaded areas.</p>
-<h2>Proven methods for algae control</h2>
-<h3>Promote healthy aquatic plants</h3>
-<p>Using multiple types of aquatic plants is one of the most effective ways to combat algae. Native plants thrive in the local environment and help create a balanced ecosystem. Plants like water lilies, water hyacinths, and submerged plants provide shade and absorb excess nutrients, limiting algae growth.</p>
-<p><strong>Expert tips:</strong> Aquascape's product design team recommends a plant-to-water ratio of about 50% to effectively control algae while also beautifying the aquatic environment.</p>
-<h3>Use beneficial bacteria</h3>
-<p>Beneficial bacteria can help break down organic material and reduce the nutrients that algae feed on. These natural bacteria products are designed to restore balance and clarity to the aquatic environment.</p>
-<p><strong>Customer example:</strong> One of Faunapoolen's customers had recurring problems with algae in their koi pond. After consulting with a certified Aquascape contractor, they began using beneficial bacteria regularly, resulting in clearer water and healthier fish. The pond developed into a vibrant ecosystem with natural balance.</p>
-<h3>Regular maintenance routines</h3>
-<p>A simple maintenance routine can prevent algae before problems grow. By regularly removing debris, checking water levels, and monitoring water quality, you can keep your aquatic environment healthy and balanced.</p>
-<p><strong>Maintenance checklist:</strong></p>
-<ul>
-<li>Clean filters and pumps monthly.</li>
-<li>Remove leaves and debris that accumulate in and around the feature.</li>
-<li>Test water quality regularly for pH, ammonia, and nutrient levels.</li>
-</ul>
-<h3>Shade and reduce sunlight</h3>
-<p>Strategically placed plants, paving, or other fixed elements can create shade that reduces the risk of heavy algae growth. If your aquatic environment receives too much direct sunlight, a pergola or nearby trees can filter the sun's rays.</p>
-<h3>Choose the right filtration system</h3>
-<p>A high-quality filtration system is essential for clean and clear water. Advanced systems for aquatic environments can effectively remove excess nutrients and particles, reducing the risk of algal blooms.</p>
-<h2>Collaborate with certified Aquascape contractors</h2>
-<p>While these methods can make a significant difference in your aquatic environment, it may sometimes be best to seek help from certified professionals. Certified Aquascape contractors have the knowledge and experience needed to design, install, and maintain aquatic environments with care.</p>
-<p><strong>Why seek help from certified professionals?</strong></p>
-<ul>
-<li>Expertise in balanced aquatic ecosystems.</li>
-<li>Access to high-quality Aquascape products specifically designed for effective algae control.</li>
-<li>Ongoing maintenance that keeps the aquatic environment in good condition year-round.</li>
-</ul>
-<h2>Summary: enjoy a healthy aquatic environment</h2>
-<p>With the right algae control and maintenance, you can enjoy a beautiful aquatic environment without worrying about heavy algal blooms. Faunapoolen helps you create and maintain a harmonious outdoor environment that reflects nature's tranquility.</p>
-<h2>Ready to take care of your aquatic environment?</h2>
-<p>If you have problems with your aquatic environment or want to install a new one, book a design consultation with Faunapoolen. We will guide you through the process and ensure that the aquatic environment remains a beautiful and healthy part of your property for many years to come.</p>`;
+export const BODY_HTML = $localize`:@@blog.algae-control-and-maintenance-tips.bodyHtml:<h2>Start with the appearance of the problem</h2>
+<p>Algae attached to stones or plants are different from green water throughout the pond. Aquascape's <a href="https://support.aquascapeinc.com/hc/en-us/articles/48381303844116-How-do-I-get-rid-of-algae">guide to identifying algae</a> distinguishes string algae from suspended algae. Identifying the appearance is a starting point, not a complete diagnosis.</p>
+<p>Take photographs from the same spot and note when the change began. Is it concentrated near a waterfall, on the bottom or across the water? Has the colour or smell changed suddenly?</p>
+<h2>Look for what has entered the water</h2>
+<p>Check for leaves, cut grass, soil washed from a bed or recent work beside the pool. In a fish pond, record feeding and changes in the fish population too. A recurring problem after rain calls for a look at the surrounding ground as well as the filter.</p>
+<p>Remove accessible loose debris according to the care plan. Avoid making several changes at once: you want to understand what helped and whether the cause remains.</p>
+<h2>Check collection points and circulation</h2>
+<p>Compare the current water level and flow with the normal operation shown at handover. Is a collection basket full? Is the return flow different? Has a pump stopped or been switched to a different setting? Follow the equipment instructions before opening or cleaning components.</p>
+<p>Mechanical collection and biological treatment have different jobs. Read <a href="/en/blog/posts/how-filtering-works-with-nature-pools.html">how nature-pool filtration works</a> before assuming that every part of the system should be cleaned in the same way.</p>
+<h2>Separate advice for swimming water and fish ponds</h2>
+<p>A product sold for an ornamental pond is not automatically suitable for a swimming pool. Nor can a fish pond's care routine simply be copied into a bathing installation. Before using an additive or changing treatment, check the intended use, the system instructions and the cause of the problem.</p>
+<p>Plant choice and quantity also belong to the individual design. Adding an unfamiliar species or shading the whole surface is not a universal remedy.</p>
+<h2>When the water needs assessment</h2>
+<p>Appearance alone cannot establish whether water is suitable for bathing. Follow your monitoring plan and seek an assessment if quality is uncertain, especially after an unexplained change. Keep your observations, recent maintenance and equipment details together so the person assessing the system has something concrete to work from.</p>
+<h2>Prevent the same problem returning</h2>
+<p>Use the <a href="/en/blog/posts/skotsel-av-naturpool-under-aret.html">seasonal care guide</a> to plan debris removal and routine checks, then adapt the schedule to your own installation. Repeated problems need an explanation, not just repeated treatment.</p>
+<p><a href="/en/configure/">Tell us about your existing water feature</a> and the change you have noticed. If you are planning a new pool, <a href="/en/nature-pools/">see how we approach its design and care</a>.</p>`;

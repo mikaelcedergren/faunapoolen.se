@@ -1,24 +1,24 @@
 // Buying and ownership questions, based on the established public services and consultation policy.
-export const FAQ_TITLE = $localize`:@@site.faq.title:Frequently asked questions`;
+export const FAQ_TITLE = $localize`:@@site.faq.title:Questions about nature pools`;
 export const FAQ_ITEMS = [
   {
     id: 'site',
-    question: $localize`:@@site.faq.site.question:Could this work in my garden?`,
+    question: $localize`:@@site.faq.site.question:Could a nature pool work in my garden?`,
     answer: $localize`:@@site.faq.site.answer:We assess available space, access for construction, ground conditions and levels. You can start with a conversation about your garden before deciding on a design.`,
   },
   {
     id: 'space',
-    question: $localize`:@@site.faq.space.question:How much space does a pool need?`,
-    answer: $localize`:@@site.faq.space.answer:The package areas describe the space for swimming. Filtration, pool edges and access need additional room, which depends on the design. If space is limited, a small pond, fountain or pondless waterfall may be an option.`,
+    question: $localize`:@@site.faq.space.question:How much space does a nature pool need?`,
+    answer: $localize`:@@site.faq.space.answer:The package areas describe swimming space. Filtration, pool edges and access need additional room, depending on the design. We assess the whole layout before proposing a size; the swimming area alone does not tell you whether a pool will fit.`,
   },
   {
     id: 'price',
-    question: $localize`:@@site.faq.price.question:What should I budget?`,
+    question: $localize`:@@site.faq.price.question:What does a nature pool cost?`,
     answer: $localize`:@@site.faq.price.answer:Our pool options show indicative starting prices including VAT. Ground conditions, access, size and materials affect the quotation. Ponds, streams and other water features are quoted individually.`,
   },
   {
     id: 'care',
-    question: $localize`:@@site.faq.care.question:How much care will it need?`,
+    question: $localize`:@@site.faq.care.question:How do I care for a nature pool?`,
     answer: $localize`:@@site.faq.care.answer:Routine care includes removing leaves and debris, checking water level and circulation, and caring for plants. We explain the tasks for your system at handover. Servicing, cleaning and seasonal help are also available.`,
   },
   {
@@ -58,7 +58,7 @@ export const FAQ_ITEMS = [
   },
   {
     id: 'winter',
-    question: $localize`:@@site.faq.winter.question:What happens in winter?`,
+    question: $localize`:@@site.faq.winter.question:What happens to a nature pool in winter?`,
     answer: $localize`:@@site.faq.winter.answer:Winter care depends on the system and site. We explain whether your installation should keep running or be prepared for winter closing, and can help with the work.`,
   },
   {
@@ -68,8 +68,8 @@ export const FAQ_ITEMS = [
   },
   {
     id: 'location',
-    question: $localize`:@@site.faq.location.question:Where do you work?`,
-    answer: $localize`:@@site.faq.location.answer:We work throughout Sweden and take on selected projects elsewhere in the EU. Tell us where your property is so we can discuss the possibilities and logistics.`,
+    question: $localize`:@@site.faq.location.question:Where do you build nature pools?`,
+    answer: $localize`:@@site.faq.location.answer:We build nature pools throughout Sweden and in Denmark, including Skåne, Halland, Blekinge and Småland. Tell us your town or postcode so we can discuss the property and agree the next step.`,
   },
   {
     id: 'existing',

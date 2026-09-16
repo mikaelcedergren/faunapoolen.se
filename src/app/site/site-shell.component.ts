@@ -1,4 +1,13 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+  inject,
+} from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   CxMastheadComponent,
   CxLanguageSelectorComponent,
@@ -12,6 +21,7 @@ import {
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from './site-page';
 import { LANGUAGE_NAMES, preferredLanguage } from './language';
+import { SiteMeasurement } from './site-measurement';
 
 @Component({
   selector: 'fp-site-shell',
@@ -29,6 +39,47 @@ import { LANGUAGE_NAMES, preferredLanguage } from './language';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteShellComponent extends SitePage implements OnInit {
+  private readonly router = inject(Router);
+  protected readonly measurement = inject(SiteMeasurement);
+  protected readonly showMeasurementSettings = signal(false);
+  protected readonly measurementTitle = $localize`:@@site.measurement.title:Optional website statistics`;
+  protected readonly measurementBody = $localize`:@@site.measurement.body:May we use Google Analytics cookies to understand which pages and pool packages lead to enquiries? Contact details and messages are never included. You can change this choice here at any time.`;
+  protected readonly allowMeasurement = $localize`:@@site.measurement.allow:Allow statistics`;
+  protected readonly declineMeasurement = $localize`:@@site.measurement.decline:No statistics`;
+  protected readonly measurementSettings = $localize`:@@site.measurement.settings:Statistics settings`;
+  protected readonly measurementPrivacy = $localize`:@@site.measurement.privacy:How Google uses this data`;
+
+  protected chooseMeasurement(allow: boolean): void {
+    this.measurement.choose(allow ? 'allowed' : 'denied');
+    this.showMeasurementSettings.set(false);
+  }
+  private readonly navigationContext = signal('');
+
+  protected languageHref(href: string): string {
+    return href + this.navigationContext();
+  }
+
+  private refreshNavigationContext(): void {
+    const browser = this.document.defaultView;
+    if (!browser) return;
+    const query = new URLSearchParams(browser.location.search);
+    const kept = new URLSearchParams();
+    if (this.page === 'configure') {
+      const service = query.get('service');
+      const selected = query.get('package');
+      if (service && ['pool', 'pond', 'stream', 'unsure'].includes(service))
+        kept.set('service', service);
+      if (selected && ['glade', 'summer', 'horizon'].includes(selected))
+        kept.set('package', selected);
+    }
+    this.navigationContext.set((kept.size ? '?' + kept.toString() : '') + browser.location.hash);
+    const suggestion = this.suggestion();
+    if (suggestion)
+      this.suggestion.set({
+        ...suggestion,
+        href: suggestion.href.split(/[?#]/)[0] + this.navigationContext(),
+      });
+  }
   protected readonly languageOptions = this.languages.map((language) => ({
     id: language.locale,
     label: language.label,
@@ -40,7 +91,8 @@ export class SiteShellComponent extends SitePage implements OnInit {
     const browser = this.document.defaultView;
     if (language && browser && id !== this.locale) {
       this.rememberLanguage(id);
-      browser.location.assign(language.href + browser.location.search + browser.location.hash);
+      this.refreshNavigationContext();
+      browser.location.assign(this.languageHref(language.href));
     }
   }
 
@@ -61,7 +113,13 @@ export class SiteShellComponent extends SitePage implements OnInit {
 
   constructor() {
     super();
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
+      if (event instanceof NavigationEnd) this.refreshNavigationContext();
+    });
     afterNextRender(() => {
+      this.refreshNavigationContext();
+      this.measurement.initialize();
+      this.measurement.track('page_view');
       const browser = this.document.defaultView;
       if (!browser) return;
       try {
@@ -79,7 +137,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
       }
       this.suggestion.set({
         text: LANGUAGE_NAMES[preferred],
-        href: this.routeFor(this.page, preferred, this.guideId),
+        href: this.languageHref(this.routeFor(this.page, preferred, this.guideId)),
       });
     });
   }

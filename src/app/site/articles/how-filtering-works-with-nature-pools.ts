@@ -1,22 +1,19 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
-export const BODY_HTML = $localize`:@@blog.how-filtering-works-with-nature-pools.bodyHtml:<h2>Natural filtration system</h2>
-<p>Nature pools use a biofiltration system that mimics processes found in nature. Instead of chemical treatments, these pools use a combination of plants, gravel, and beneficial bacteria:</p>
-<h3>Plants</h3>
-<p>Aquatic plants, such as reeds and water lilies, absorb nutrients like nitrogen and phosphorus, preventing algae growth. The roots create an environment for beneficial bacteria that break down organic material.</p>
-<h3>Gravel and stones</h3>
-<p> The bottom of a nature pool is often covered with gravel and stones that act as a mechanical filter to capture debris and sediment.</p>
-<h3>Beneficial bacteria</h3>
-<p> These microorganisms help break down organic material and maintain water quality.</p>
-<h2>Circulation system</h2>
-<p>Nature pools often have a circulation system that pumps water through the filtration areas to ensure that the water is continuously filtered and purified.</p>
-<h2>Why nature pools are good for the environment</h2>
-<h3>Environmentally friendly</h3>
-<p>Nature pools reduce the need for harmful chemicals, protecting the surrounding environment and preventing chemical runoff into nearby waterways.</p>
-<h3>Biodiversity</h3>
-<p>They create habitats for various plants and animals, promoting biological diversity and attracting birds and other wildlife.</p>
-<h3>Water conservation</h3>
-<p>Nature pools use less water than traditional pools, thus contributing to water savings.</p>
-<h3>Improved water quality</h3>
-<p>By filtering water naturally, these pools help reduce pollution and promote cleaner waterways, benefiting both wildlife and local communities. In summary, nature pools offer a unique and beautiful way to enjoy water while making a positive impact on the environment.</p>
-<h2>Summary</h2>
-<p>Nature pools offer a unique and beautiful opportunity to enjoy water while making a positive impact on the environment. Do you want your own eco-friendly oasis in your garden? Contact us today, and we will help you design and install a nature pool that suits your style and promotes nature.</p>`;
+export const BODY_HTML = $localize`:@@blog.how-filtering-works-with-nature-pools.bodyHtml:<h2>Follow the water through the system</h2>
+<p>A useful way to understand a proposal is to follow one complete circuit: water leaves the swimming area, passes through collection and treatment, then returns. The exact arrangement depends on the design. A planted regeneration zone and a constructed wetland filter are not interchangeable simply because both contain plants.</p>
+<p><strong>Water route in principle:</strong> Swimming area → debris collection → biological treatment → return to the swimming area.</p>
+<p>Ask where debris is collected, where the biological filter sits and how the water returns. These three points should be clear on your plan.</p>
+<h2>Collecting leaves and other debris</h2>
+<p>Mechanical collection captures material that needs removing from the system. A skimmer or a designed collection area can make leaves easier to reach before they settle elsewhere. Emptying that collection point is part of the owner's routine; collecting debris does not make it disappear.</p>
+<h2>What the biological filter does</h2>
+<p>Filter material provides surfaces where microorganisms can develop. Biological processes help break down organic waste, while plants take up nutrients as they grow. This is different from simply straining particles out of the water.</p>
+<p>Aquascape describes this distinction in its <a href="https://www.aquascapeinc.com/water-gardening/how-to/pond-filtration">overview of pond filtration</a>. That explanation concerns pond systems; it is not a specification or a bathing-water assessment for an individual swimming pool.</p>
+<h2>Plants have a role, but are not the whole filter</h2>
+<p>The planting plan needs to suit the treatment design, water depth and local conditions. A decorative plant at the edge is not a substitute for correctly planned filtration. There is no universal percentage of planting that can be applied to every type of nature pool.</p>
+<p>Plant care also needs access. Removing cut stems and leaves is easier when it has been allowed for in the design.</p>
+<h2>Circulation connects the parts</h2>
+<p>Pump selection depends on the route the water travels, including pipework, level changes and equipment. The stated maximum pump capacity alone does not describe the flow through a completed installation. Plan servicing access alongside the water route.</p>
+<p>Our guide to <a href="/en/blog/posts/5-common-problems-installing-a-nature-pool.html">problems to prevent before building</a> explains why these decisions belong together.</p>
+<h2>What you still need to check</h2>
+<p>At handover, establish how to check water level, collection points and circulation, and which cleaning and seasonal tasks apply. Follow the system's monitoring plan: clear-looking water alone does not establish bathing-water quality.</p>
+<p>If the appearance changes, use the <a href="/en/blog/posts/algae-control-and-maintenance-tips.html">algae guide</a> to record useful observations before changing equipment or treatment. To plan a new installation, <a href="/en/nature-pools/pricing/">compare our nature-pool options</a> and discuss the site with us.</p>`;

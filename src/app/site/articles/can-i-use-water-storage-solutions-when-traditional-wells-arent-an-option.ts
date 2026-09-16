@@ -1,33 +1,18 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
-export const BODY_HTML = $localize`:@@blog.can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.bodyHtml:<h2>Understanding water storage solutions</h2>
-<p>Rainwater harvesting involves collecting, filtering, and storing rainwater for irrigation, ponds, or other needs on the property. The system can be customized to the location and reduce dependence on municipal water or traditional wells.</p>
-<h2>Benefits of using water storage solutions</h2>
-<h3>Sustainable resource management</h3>
-<p>Water storage solutions allow you to collect and use rainwater, reducing dependence on municipal water. It saves water and helps manage stormwater runoff, which can reduce erosion and pollution.</p>
-<h3>Cost savings</h3>
-<p>Although the initial investment in a water storage system can vary, the long-term savings on water bills can be significant. With rising water costs, having your own water source can be financially advantageous.</p>
-<h3>Flexibility</h3>
-<p>The systems can be tailored to different needs and properties. Whether you want to irrigate a garden, fill a pond, or maintain a natural swimming pond, water storage offers a flexibility that traditional wells may not always provide.</p>
-<h3>Drought preparedness</h3>
-<p>In a world where climate patterns are changing, having a reliable water source becomes essential. A water storage system ensures that you have access to water during dry periods, keeping your landscape healthy and vibrant.</p>
-<h2>Rainwater collection systems</h2>
-<p>Rainwater harvesting involves directing rainwater from roofs or hard surfaces to storage tanks. The method is sustainable and effective for those who want to make the most of their water resources. According to Greg Wittstock, a leading figure in water landscaping, rainwater harvesting in outdoor environments can enhance both function and appearance.</p>
-<p>If space is limited or if the solution needs to be discreet, the system can be adapted to the location. The AquaBlox system can store water without disrupting the garden's expression while still providing access to water when needed.</p>
-<h2>Before you choose a system: things to consider</h2>
-<p>Before investing in a water storage solution, you should consider the following factors:</p>
-<h3>Local regulations</h3>
-<p>Always check local regulations regarding rainwater harvesting and water storage systems. Some areas have specific guidelines that must be followed.</p>
-<h3>System size</h3>
-<p>Determine how much water you need to store based on your usage needs. This will help you choose the right system size and type.</p>
-<h3>Maintenance</h3>
-<p>Although water storage solutions are generally low-maintenance, regular cleaning and monitoring are needed to ensure water quality. Certified Aquascape contractors recommend a clear maintenance schedule to keep the system in good condition.</p>
-<h3>Integration with existing water features</h3>
-<p>Consider how the water storage will work alongside existing ponds, water features, or irrigation systems. A well-designed system enhances the garden while providing practical benefits.</p>
-<h2>Example: homeowners choosing water storage</h2>
-<p>Many homeowners have integrated water storage into their outdoor environments with great results. One customer in a residential area had restrictions on well drilling due to local regulations. By installing a rainwater harvesting system, they were able to both enhance their garden and significantly reduce their water bill.</p>
-<p>The garden became an oasis with vibrant plants and a beautiful pond, sustained by collected rainwater.</p>
-<h2>Conclusion: a smart choice for sustainable living</h2>
-<p>Water storage solutions offer a practical and eco-friendly alternative when traditional wells are not viable. With the right system, you achieve sustainable landscaping, lower water costs, and better water management.</p>
-<h2>Ready to enhance your outdoor environment?</h2>
-<p>At Faunapoolen, we help you create an outdoor environment that meets your needs. Whether you want to install water storage, create a beautiful water feature, or explore other eco-friendly options, our experienced team is here to assist you.</p>
-<p>Contact us to schedule a design consultation and start planning a sustainable oasis in your garden.</p>`;
+export const BODY_HTML = $localize`:@@blog.can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.bodyHtml:<p>Collecting rainwater can supplement garden watering when a well is not available. It does not create a continuous supply: the result depends on rainfall, the collecting surface, storage and demand. Begin with the intended use, then calculate whether the water available is useful for that purpose.</p>
+<h2>What will the collected water be used for?</h2>
+<p>Watering planting, replenishing a decorative feature and supplying a swimming system are different uses. Record them separately, including when each needs water. The quality requirements and equipment must match the use. Water collected from a roof should not be assumed to be drinking water or ready for bathing.</p>
+<p>For a pond or other feature, start with the kind of <a href="/en/waterscapes/">garden water landscape</a> you are planning. Its water needs belong in the same discussion as the collection system.</p>
+<h2>How much can the roof and storage provide?</h2>
+<p>One millimetre of rain over one square metre corresponds to one litre before losses. For example, 10 millimetres on a 100-square-metre roof gives a theoretical 1,000 litres. This is an illustrative calculation, not a prediction of the amount reaching a tank: collection losses, filtering, overflow and existing tank contents affect what can be stored.</p>
+<p>Compare local rainfall patterns with the periods when you need water. Annual rainfall alone does not show whether a tank will contain enough during a dry spell. Estimate demand over that period and examine both a small and a larger storage option before choosing a size.</p>
+<h2>Plan cleaning, filtration and access</h2>
+<p>Draw the route from the roof through collection and filtering to storage and intended use. Consider how leaves and sediment are removed, how equipment is reached and where overflow goes. Cleaning should remain possible after paving and planting are in place.</p>
+<p>Aquascape describes modular storage in its <a href="https://www.aquascapeinc.com/rainwater-collection-products">rainwater collection products</a>, including AquaBlox used within a lined reservoir. The modules provide storage structure; the full installation still needs a design for its site and use. This product example does not establish what is included in a Faunapoolen quotation.</p>
+<h2>Assess suitability before using it in a nature pool</h2>
+<p>Discuss the proposed water source with the person responsible for the pool's design and water-quality plan. What reaches the roof and storage can affect the water collected. A general <a href="/en/blog/posts/how-filtering-works-with-nature-pools.html">biological cleaning system</a> does not by itself establish that every source is suitable for swimming.</p>
+<h2>Allow for drought and check current local conditions</h2>
+<p>When no rain arrives, a store can run out. Plan which uses take priority and what happens when the level is low. Before agreeing the installation or a filling plan, check current requirements with the relevant water provider and municipality. Any connection to another water supply needs appropriate professional assessment.</p>
+<h2>Plan storage together with the garden</h2>
+<p>Location affects excavation, access, the route to planting and future servicing. The <a href="/en/blog/posts/creating-harmony-intergrating-water-features-with-your-landscape.html">garden-planning guide</a> helps you consider those relationships before the visible surfaces are finished.</p>
+<p>Have a roof sketch, photographs, intended uses and an estimate of demand ready. <a href="/en/configure/">Describe your garden and water-storage question</a> in the enquiry notes, so we can discuss the scope and whether we can help with your project.</p>`;

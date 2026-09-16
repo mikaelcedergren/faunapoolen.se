@@ -21,12 +21,43 @@
   </div>
   <div class="fp-section">
     <cx-stack gap="2xl">
+      <section class="cx-editorial" aria-labelledby="pool-definition-title">
+        <h2 id="pool-definition-title" class="cx-font-regular">{{ commercial.definitionTitle }}</h2>
+        <p>{{ commercial.definitionBody }}</p>
+      </section>
       <section class="cx-editorial" aria-labelledby="pool-space-title">
         <h2 id="pool-space-title" class="cx-font-regular">{{ editorial.spaceTitle }}</h2>
         <p>{{ editorial.spaceBody }}</p>
+        <p>
+          <a [href]="guideHref('hur-mycket-plats-behover-en-naturpool')"
+            >{{ commercial.spaceGuideLink }} →</a
+          >
+        </p>
       </section>
       <fp-package-comparison />
+      <section class="cx-editorial" aria-labelledby="pool-proof-title">
+        <h2 id="pool-proof-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
+        <p>{{ editorial.caseStory }}</p>
+        <p>
+          <a [href]="routeFor('gotland')">{{ evidence.caseLink }} →</a>
+        </p>
+      </section>
+      <fp-process />
+      <div class="cx-editorial">
+        <p>
+          <a [href]="guideHref('naturpool-fran-forsta-samtal-till-bad')"
+            >{{ commercial.processGuideLink }} →</a
+          >
+        </p>
+      </div>
       <fp-technology />
+      <div class="cx-editorial">
+        <p>
+          <a [href]="guideHref('how-filtering-works-with-nature-pools')"
+            >{{ commercial.filterLink }} →</a
+          >
+        </p>
+      </div>
 
       <section aria-labelledby="care-title">
         <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
@@ -36,6 +67,11 @@
             </div>
             <div class="cx-editorial">
               <p>{{ copy.naturePools.careBody }}</p>
+              <p>
+                <a [href]="guideHref('algae-control-and-maintenance-tips')"
+                  >{{ commercial.careLink }} →</a
+                >
+              </p>
             </div>
             <cx-stack gap="sm">
               @for (point of copy.naturePools.carePoints; track point) {
@@ -71,6 +107,6 @@
           </p>
         </div>
       </section>
-    </cx-stack>
-  </div></fp-site-shell
->
+      <fp-service-area />
+    </cx-stack></div
+></fp-site-shell>

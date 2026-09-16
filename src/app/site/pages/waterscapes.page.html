@@ -74,6 +74,23 @@
           </cx-stack>
         </cx-grid>
       </section>
+      <section class="cx-editorial" aria-labelledby="waterscape-swimming-title">
+        <h2 id="waterscape-swimming-title" class="cx-font-regular">
+          {{ commercial.swimmingTitle }}
+        </h2>
+        <p>{{ commercial.swimmingBody }}</p>
+        <p>
+          <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
+        </p>
+      </section>
+      <section class="cx-editorial">
+        <p>{{ commercial.waterscapeArea }}</p>
+        <p>
+          <a [href]="guideHref('creating-harmony-intergrating-water-features-with-your-landscape')"
+            >{{ commercial.gardenGuideLink }} →</a
+          >
+        </p>
+      </section>
     </cx-stack>
   </div></fp-site-shell
 >

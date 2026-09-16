@@ -23,6 +23,12 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuidePage extends SitePage {
+  protected readonly updatedLabel = $localize`:@@site.guides.updated:Updated`;
+  protected readonly updatedDate = this.guide.seo.dateModified
+    ? new Intl.DateTimeFormat(this.locale, { dateStyle: 'long', timeZone: 'UTC' }).format(
+        new Date(this.guide.seo.dateModified),
+      )
+    : '';
   protected readonly guideReading = (() => {
     const sanitizer = inject(DomSanitizer);
     const article = this.document.createElement('div');

@@ -5,6 +5,7 @@ import {
   CxGridComponent,
   CxButtonComponent,
 } from '@mikaelcedergren/cx-framework';
+import { ServiceAreaComponent } from '../sections/service-area.component';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 import { CustomerQuoteComponent } from '../sections/customer-quote.component';
@@ -13,6 +14,7 @@ import { ProcessComponent } from '../sections/process.component';
 @Component({
   selector: 'fp-home-page',
   imports: [
+    ServiceAreaComponent,
     CxHeroComponent,
     CxStackComponent,
     CxGridComponent,

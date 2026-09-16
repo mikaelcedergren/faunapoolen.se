@@ -4,6 +4,7 @@ import type { CxLightboxImage } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 import { CxMasonryComponent, CxLightboxComponent } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
+import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import { SiteShellComponent } from '../site-shell.component';
 import { CustomerQuoteComponent } from '../sections/customer-quote.component';
 import { GotlandFilmComponent } from '../sections/gotland-film.component';
@@ -23,6 +24,7 @@ import { GotlandFilmComponent } from '../sections/gotland-film.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GotlandPage extends SitePage {
+  protected readonly commercial = FAUNAPOOLEN_COMMERCIAL;
   protected readonly gotlandCopy = GOTLAND_COPY;
   protected readonly gotlandMedia = GOTLAND_MEDIA;
   protected readonly gotlandPhotos = GOTLAND_MEDIA.filter((item) => item.kind === 'photo');

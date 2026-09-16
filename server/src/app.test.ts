@@ -360,11 +360,11 @@ function createEnvironment(root: string, browserDirectory: string): FaunapoolenE
 
 function writeBrowserFixture(browserDirectory: string): void {
   fs.mkdirSync(path.join(browserDirectory, 'admin'), { recursive: true });
-  fs.mkdirSync(path.join(browserDirectory, 'om'), { recursive: true });
+  fs.mkdirSync(path.join(browserDirectory, 'about'), { recursive: true });
   fs.mkdirSync(path.join(browserDirectory, 'api', 'admin', 'config'), { recursive: true });
   fs.writeFileSync(path.join(browserDirectory, 'index.html'), '<p>target-root</p>');
   fs.writeFileSync(path.join(browserDirectory, 'admin', 'index.html'), '<p>target-admin</p>');
-  fs.writeFileSync(path.join(browserDirectory, 'om', 'index.html'), '<p>target-about</p>');
+  fs.writeFileSync(path.join(browserDirectory, 'about', 'index.html'), '<p>target-about</p>');
   fs.writeFileSync(
     path.join(browserDirectory, 'api', 'admin', 'config', 'index.html'),
     '<p>must-never-shadow-api</p>',
@@ -503,7 +503,7 @@ test('route order preserves health, identity, static output, noindex, security, 
   assert.equal(shadowedConfig.status, 401);
   assert.doesNotMatch(await shadowedConfig.text(), /must-never-shadow-api/);
 
-  const staticPage = await fetch(`${fixture.baseUrl}/om/`);
+  const staticPage = await fetch(`${fixture.baseUrl}/about/`);
   assert.equal(staticPage.status, 200);
   assert.match(await staticPage.text(), /target-about/);
   const literal = await fetch(`${fixture.baseUrl}/synthetic-page.html`);

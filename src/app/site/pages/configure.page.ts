@@ -24,6 +24,8 @@ import {
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
+import { Router } from '@angular/router';
+import { SiteMeasurement } from '../site-measurement';
 @Component({
   selector: 'fp-configure-page',
   imports: [
@@ -42,6 +44,9 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfigurePage extends SitePage {
+  private readonly router = inject(Router);
+  protected readonly measurement = inject(SiteMeasurement);
+  protected readonly comparePackages = $localize`:@@enquiry.comparePackages:Compare pool packages and prices`;
   protected readonly ready = signal(false);
   private readonly injector = inject(Injector);
   protected readonly packageId = signal<FaunapoolenPackage['id'] | 'unsure'>('unsure');
@@ -96,9 +101,25 @@ export class ConfigurePage extends SitePage {
   }
   protected selectPackage(id: string | undefined): void {
     this.packageId.set(this.packages.find((item) => item.id === id)?.id ?? 'unsure');
+    if (this.packageId() !== 'unsure') this.serviceId.set('pool');
+    this.updateChoiceUrl();
   }
   protected selectService(id: string | undefined): void {
     this.serviceId.set(this.services.find((item) => item.id === id)?.id ?? 'unsure');
+    if (this.serviceId() !== 'pool') this.packageId.set('unsure');
+    this.updateChoiceUrl();
+  }
+
+  private updateChoiceUrl(): void {
+    void this.router.navigate([], {
+      queryParams: {
+        package: this.packageId() === 'unsure' ? null : this.packageId(),
+        service: this.serviceId() === 'unsure' ? null : this.serviceId(),
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+      preserveFragment: true,
+    });
   }
 
   protected fieldError(value: string, message: string): string | undefined {
@@ -120,6 +141,7 @@ export class ConfigurePage extends SitePage {
     if (this.sending() || this.submitted()) return;
     this.submitAttempted.set(true);
     if (!this.contactName().trim() || this.emailError() || !this.contactLocation().trim()) {
+      this.measurement.track('enquiry_error', { error: 'validation' });
       afterNextRender(
         () => {
           this.document.querySelector<HTMLElement>('#configurator [aria-invalid="true"]')?.focus();
@@ -155,6 +177,9 @@ export class ConfigurePage extends SitePage {
         signal: AbortSignal.timeout(20000),
       });
       if (!response.ok) {
+        this.measurement.track('enquiry_error', {
+          error: response.status === 429 ? 'rate_limit' : 'unconfirmed',
+        });
         // A gateway/server failure can happen after persistence; retry the same reference.
         if (response.status < 500) this.pendingRequest.set(undefined);
         this.deliveryError.set(
@@ -169,8 +194,13 @@ export class ConfigurePage extends SitePage {
       const receipt = (await response.json()) as { id?: string };
       if (receipt.id !== input.requestId) throw new Error('Invalid enquiry receipt');
       this.submitted.set(true);
+      this.measurement.track('generate_lead', {
+        packageId: input.packageId,
+        service: input.service,
+      });
       this.scrollToConfigurator();
     } catch {
+      this.measurement.track('enquiry_error', { error: 'unconfirmed' });
       this.deliveryError.set(this.unconfirmedMessage);
     } finally {
       this.sending.set(false);

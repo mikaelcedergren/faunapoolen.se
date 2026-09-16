@@ -1,40 +1,18 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
-export const BODY_HTML = $localize`:@@blog.small-features-for-small-spaces.bodyHtml:<h2>The power of water in a small space</h2>
-<p>Even small gardens can have great character with the right water features. A compact fountain, mini-pond, or pond-free waterfall can create calm, movement, and a natural focal point without taking over the space.</p>
-<img alt="Small fountain and mini pond in garden corner" decoding="async" loading="lazy" src="/assets/images/blog/aquabasin-pump-fountain.webp">
-<h2>The right placement makes small water features feel larger</h2>
-<p>Water has a natural ability to make even small spaces feel larger by drawing the eye and creating a calming atmosphere. For those with a small garden or patio, a water feature can enhance the experience, improve air quality, attract beneficial wildlife, and create a personal sanctuary.</p>
-<h2>Key benefits:</h2>
-<ul>
-<li>Aesthetic appeal – A well-placed water feature creates a natural focal point and adds depth and movement.</li>
-<li>Relaxation and stress relief – The sound of flowing water dampens city noise and creates a sense of calm.</li>
-<li>Wildlife – Even a small fountain can attract birds and pollinators, contributing to local biodiversity.</li>
-<li>Cooling effect – Water features help regulate temperature during warm months and provide natural cooling.</li>
-<li>Eco-friendly solutions – Modern constructions focus on sustainability with recirculating pumps and low energy consumption.</li>
-</ul>
-<h2>Choosing the right water feature for small spaces</h2>
-<h3>Pond-free waterfall</h3>
-<p>Perfect for small spaces. A pond-free waterfall creates the same atmosphere as a traditional water installation, but without the maintenance of a stagnant pond. The water flows over natural stone and disappears into a hidden reservoir, making it an excellent option for those who love the sound of running water but have limited space.</p>
-<h3>Koi pond</h3>
-<p>A small pond with koi or aquatic plants can be as compact as 1.5–2 meters in diameter, making it ideal for patios and smaller gardens. These self-sustaining ponds require minimal digging and can even be built above ground with a sleek stone frame.</p>
-<h3>Fountains and urns</h3>
-<p>If space is very limited, a bubbling stone fountain or a ceramic urn fountain is a perfect alternative. The water circulates in a hidden reservoir, making the solution both low-maintenance and energy-efficient.</p>
-<h2>Eco-friendly solutions: sustainable choices</h2>
-<p>To keep your water feature environmentally friendly, you can choose solutions such as:</p>
-<ul>
-<li>Recirculating systems – Reduce water consumption with pumps that continuously reuse water.</li>
-<li>Solar-powered pumps – Reduce energy consumption and operating costs.</li>
-<li>Native plants – Plant local species around the water feature for better water retention and biodiversity.</li>
-<li>Rainwater harvesting – Use natural rainwater to refill the system when possible.</li>
-</ul>
-<h2>Customize for your garden</h2>
-<p>Every small garden is unique, and good planning ensures that the water feature blends naturally into the outdoor environment. This is especially important to consider:</p>
-<ul>
-<li>Garden layout and size – To ensure proportional placement.</li>
-<li>Light and shadow conditions – Choosing plants and materials that thrive in specific environments.</li>
-<li>Material choices – Using natural stone, ceramics, or metal to match your aesthetic vision.</li>
-</ul>
-<h2>Next steps: realize your vision</h2>
-<p>If you dream of a peaceful oasis in your small garden, it's time to explore the possibilities. Whether it's a rushing, chemical-free waterfall, a charming mini pond, or an elegant bubbling fountain, the right water feature can transform your garden into a relaxing and beautiful place.</p>
-<p>Do you know someone considering a water feature for their small garden? Share this post with them and help others discover how water can create tranquility in the outdoor environment.</p>
-<p>Ready to create your own water feature? Contact us to start planning your design.</p>`;
+export const BODY_HTML = $localize`:@@blog.small-features-for-small-spaces.bodyHtml:<p>In a small garden, choose the experience you want before choosing the water feature. A fountain brings visible movement close to a seat. A waterfall can lead the eye through planting. A small pond offers a still water surface and a place for aquatic plants. Each needs room beyond the water itself.</p>
+<h2>Do you want to see water, hear it or swim?</h2>
+<p>Mark where you spend time and where a water feature would be visible from indoors. Listen to the garden before adding another sound. The result depends on the flow, drop, surfaces and surroundings, so a photograph cannot tell you how a waterfall will sound beside your terrace.</p>
+<p>If swimming is the real wish, establish that first. A decorative feature is not a small swimming pool. The <a href="/en/blog/posts/creating-harmony-intergrating-water-features-with-your-landscape.html">garden-planning article</a> helps you connect the feature to paths, seating and views.</p>
+<h2>A fountain beside a small seating area</h2>
+<p>A fountain can concentrate the visible water in one spot. Consider the reservoir beneath it, the pump's access point and where splashing may reach. Leave space to lift out equipment and clean the collection area, even if the visible feature is modest.</p>
+<figure><img src="/assets/images/blog/aquabasin-pump-fountain.webp" alt="Illuminated bowl fountains among stone and plants" loading="lazy" /><figcaption>The visible fountain is only part of the installation; the reservoir and pump also need space and access.</figcaption></figure>
+<h2>A waterfall with a hidden reservoir</h2>
+<p>A pondless waterfall returns water to a reservoir hidden beneath the surface instead of a visible open pond at the bottom. The stream route, reservoir and access to the pump still require planning. Discuss the full footprint rather than only the width of the falling water.</p>
+<p>Check how leaves can be removed and how water level is monitored. The absence of an open pond does not remove the need for supervision and an assessment of access around the feature.</p>
+<h2>A small planted pond, with or without fish</h2>
+<p>A pond can be planned around plants and the view of its water surface. Fish introduce further requirements for water volume, depth, oxygen, filtration and ongoing care. A small diameter alone cannot establish that a pond is suitable for koi. Decide whether fish belong in the plan before settling its size and equipment.</p>
+<h2>Leave room for installation and care</h2>
+<ul><li>Measure access for materials and future equipment replacement.</li><li>Plan an appropriate electrical supply with the installer.</li><li>Make topping up, cleaning and pump access practical.</li><li>Discuss overflow, nearby surfaces and seasonal shutdown or operation.</li><li>Keep the route through the garden usable after the feature is installed.</li></ul>
+<p>A sketch showing those details makes it easier to choose between options. Explore <a href="/en/waterscapes/">our garden water features</a> to start with the kind of water you want.</p>
+<h2>If you would rather take a dip</h2>
+<p>For bathing, read <a href="/en/blog/posts/hur-mycket-plats-behover-en-naturpool.html">how much space a nature pool needs</a>. Cleaning, edges and access come in addition to the swimming area. Our <a href="/en/nature-pools/pricing/">pool options and starting prices</a> give a separate starting point for that conversation.</p>`;

@@ -7,8 +7,8 @@ for (const [path, heading, cta, contact] of [
     'Request a consultation',
     '/en/configure/',
   ],
-  ['/', 'Gör trädgården till hemmets bästa plats.', 'Be om rådgivning', '/konfigurera/'],
-  ['/da/', 'Gør haven til hjemmets bedste sted.', 'Bed om rådgivning', '/da/konfigurer/'],
+  ['/', 'Gör trädgården till hemmets bästa plats.', 'Be om rådgivning', '/configure/'],
+  ['/da/', 'Gør haven til hjemmets bedste sted.', 'Bed om rådgivning', '/da/configure/'],
 ]) {
   test(`the ${path} sales story leads to a consultation without choosing a pool`, async ({
     page,

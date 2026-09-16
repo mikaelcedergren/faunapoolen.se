@@ -27,4 +27,14 @@ export const ARTICLE_LOADERS = {
     import('./articles/how-filtering-works-with-nature-pools').then((m) => m.BODY_HTML),
   'why-you-should-get-a-natural-pool': () =>
     import('./articles/why-you-should-get-a-natural-pool').then((m) => m.BODY_HTML),
+  'hur-mycket-plats-behover-en-naturpool': () =>
+    import('./articles/hur-mycket-plats-behover-en-naturpool').then((m) => m.BODY_HTML),
+  'skotsel-av-naturpool-under-aret': () =>
+    import('./articles/skotsel-av-naturpool-under-aret').then((m) => m.BODY_HTML),
+  'naturpool-fran-forsta-samtal-till-bad': () =>
+    import('./articles/naturpool-fran-forsta-samtal-till-bad').then((m) => m.BODY_HTML),
+  'naturpool-sakerhet-och-tillstand': () =>
+    import('./articles/naturpool-sakerhet-och-tillstand').then((m) => m.BODY_HTML),
+  'vad-kostar-det-att-aga-en-naturpool': () =>
+    import('./articles/vad-kostar-det-att-aga-en-naturpool').then((m) => m.BODY_HTML),
 } as const;

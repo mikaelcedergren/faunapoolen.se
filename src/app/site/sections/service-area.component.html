@@ -1,0 +1,13 @@
+<section aria-labelledby="service-area-title">
+  <cx-stack gap="lg">
+    <div class="cx-editorial">
+      <h2 id="service-area-title" class="cx-font-regular">{{ commercial.areaTitle }}</h2>
+      <p>{{ commercial.areaBody }}</p>
+    </div>
+    <cx-inline gap="xl" [wrap]="true">
+      @for (region of regions; track region.id) {
+        <a [href]="routeFor(region.id)">{{ region.name }} →</a>
+      }
+    </cx-inline>
+  </cx-stack>
+</section>

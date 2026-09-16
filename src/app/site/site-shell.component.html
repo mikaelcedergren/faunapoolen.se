@@ -56,6 +56,31 @@
   </main>
   <footer class="fp-band" [attr.aria-label]="ui.footer">
     <cx-divider [discreet]="true" />
+    @if (measurement.available() && guideId !== 'build' && guideId !== 'difference') {
+      <div class="fp-section">
+        @if (measurement.preference() === 'unset' || showMeasurementSettings()) {
+          <section class="cx-editorial" aria-labelledby="measurement-title">
+            <cx-stack gap="lg" align="start">
+              <h2 id="measurement-title" class="cx-font-regular">{{ measurementTitle }}</h2>
+              <p>
+                {{ measurementBody }}
+                <a
+                  href="https://policies.google.com/technologies/partner-sites"
+                  rel="noopener noreferrer"
+                  >{{ measurementPrivacy }}</a
+                >
+              </p>
+              <cx-inline gap="lg" [wrap]="true">
+                <cx-button [text]="allowMeasurement" (click)="chooseMeasurement(true)" />
+                <cx-button [text]="declineMeasurement" (click)="chooseMeasurement(false)" />
+              </cx-inline>
+            </cx-stack>
+          </section>
+        } @else {
+          <cx-button [text]="measurementSettings" (click)="showMeasurementSettings.set(true)" />
+        }
+      </div>
+    }
     <div class="fp-section">
       <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
         <cx-stack gap="lg" align="start">
@@ -88,7 +113,7 @@
           <cx-inline gap="lg" [wrap]="true">
             @for (language of languages; track language.locale) {
               <a
-                [href]="language.href"
+                [href]="languageHref(language.href)"
                 (click)="rememberLanguage(language.locale)"
                 [attr.hreflang]="language.locale"
                 [attr.lang]="language.locale"

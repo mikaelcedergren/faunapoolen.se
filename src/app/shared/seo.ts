@@ -10,7 +10,7 @@ const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/assets/images/og-image.jpg`;
 export interface PageSeo {
   /** Swedish canonical path, e.g. '/' or '/koi-pond-series.html'. */
   path: string;
-  /** Equivalent English route; the public site owns translated URL segments. */
+  /** Equivalent English-language route; page slugs remain English in every locale. */
   enPath?: string;
   daPath?: string;
   defaultLanguage?: 'en' | 'sv';
@@ -20,6 +20,8 @@ export interface PageSeo {
   ogDescription?: string;
   /** Absolute image URL; defaults to the site og-image. */
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   /** og:type — 'website' (default) or 'article' for blog posts. */
   ogType?: string;
   /** Blog posts only: publish date (ISO 8601; date-only is fine). */
@@ -120,8 +122,8 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:image', content: ogImage });
     this.meta.updateTag({ property: 'og:title', content: ogTitle });
     this.meta.updateTag({ property: 'og:description', content: ogDescription });
-    this.meta.updateTag({ property: 'og:image:width', content: '1200' });
-    this.meta.updateTag({ property: 'og:image:height', content: '630' });
+    this.meta.updateTag({ property: 'og:image:width', content: String(seo.ogImageWidth ?? 1200) });
+    this.meta.updateTag({ property: 'og:image:height', content: String(seo.ogImageHeight ?? 630) });
     if (seo.ogType === 'article' && seo.datePublished) {
       this.meta.updateTag({ property: 'article:published_time', content: seo.datePublished });
       this.meta.updateTag({

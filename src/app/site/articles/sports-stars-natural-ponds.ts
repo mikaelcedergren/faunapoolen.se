@@ -1,32 +1,17 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
-export const BODY_HTML = $localize`:@@blog.sports-stars-natural-ponds.bodyHtml:<h2>A new wave of health in elite homes</h2>
-<p>Unlike traditional pools, natural ponds use biological filtration systems, wet zones, and Aquascape® technology to keep the water crystal clear – without chlorine or harsh chemicals. These eco-friendly systems create a self-sustaining water environment that blends into the landscape while promoting recovery, relaxation, and well-being.</p>
-<h2>Athlete stars leading the way</h2>
-<p>David Beckham made headlines when he received permission to build a natural eco-pool on his estate in the UK. The pool is designed to use collected rainwater and wetland filtration, reflecting a growing interest among celebrities in sustainable health solutions with low environmental impact.</p>
-<p>Shaquille O’Neal took it a step further – he installed a 22 x 15 meter koi pond with a 21-meter-long waterfall, wetland filter, sandy beach, and more. The project, carried out in collaboration with Aquascape Inc., became a groundbreaking example of natural pond construction.</p>
-<p>Logan Paul, YouTuber and now sports personality, had a viral koi ecosystem built in Los Angeles – complete with urn fountains, wooden bridges, and lush aquatic life. His pond was also developed by Aquascape's elite team.</p>
-<p>Even football stars like Neymar Jr. are building custom water environments for privacy, health, and rest – far from the spotlight, but perfectly aligned with their performance needs.</p>
-<h2>Cold water baths meet natural design</h2>
-<p>Athletes are aware of the benefits of cold water baths: improved blood circulation, reduced inflammation, and faster muscle recovery. A natural swimming pond offers these benefits without the sterile, clinical feel of an ice bath. Imagine stepping into a cold, clean waterway with natural stone underfoot and birdsong in the air.</p>
-<p>Combine this with an outdoor sauna, rainwater-fed showers, and a deck for breathing exercises or yoga – and you have the ultimate recovery environment right outside your door.</p>
-<h2>Purposeful real estate investment</h2>
-<p>Natural swimming ponds are not just about well-being – they are also a wise long-term investment. These systems:</p>
-<li>Increase property value</li>
-<li>Reduce environmental impact</li>
-<li>Help meet new EU and Swedish regulations for stormwater management and LOD (local management of stormwater)</li>
-<li>Can reuse rainwater for irrigation or toilet use</li>
-<p>With the right team, ponds can be designed to blend into both rural and urban environments – becoming both a lifestyle marker and a functional asset.</p>
-<h2>Why the trend is growing in Europe</h2>
-<p>As municipalities tighten stormwater regulations and health becomes increasingly important in daily life, athletes and wellness-conscious homeowners see the value in ready-made, low-maintenance, and entirely natural water systems.</p>
-<p>Faunapoolen's L-package combines:</p>
-<li>Large swimming area</li>
-<li>Wetland filtration with AquaBlox</li>
-<li>Sauna, deck, and rainwater storage</li>
-<li>Zones for wildlife and observation</li>
-<p>…for a seamless nature experience where recovery and sustainability are at the center.</p>
-<h2>Join the movement</h2>
-<p>At Faunapoolen, we have helped property owners, sports profiles, and environmentally conscious families design living water systems that promote health and harmony with nature. Whether you are an elite athlete seeking a private recovery space or a family wanting to future-proof your home – natural swimming ponds are the way to live with water in the future.</p>
-<p>Want to know more or start sketching your own retreat?</p>
-<p>Call us at +46 73 540 6757</p>
-<p>Visit www.faunapoolen.se</p>
-<p>Email us at info&#64;faunapoolen.se</p>`;
+export const BODY_HTML = $localize`:@@blog.sports-stars-natural-ponds.bodyHtml:<p>A nature pool can be planned around your wish to take a short dip and spend time beside the water. If you also want to bathe during colder months, discuss that from the start: the design and operating plan must support the intended use. A summer pool is not automatically ready for winter bathing.</p>
+<h2>Decide how you want to use the place</h2>
+<p>Picture an ordinary visit: changing indoors, walking to the water, entering, getting out and returning to warmth. A short dip asks different things of the layout than swimming lengths or gathering with family. Explain your priorities before choosing a size.</p>
+<p>Sports personalities and spectacular pool photos can inspire a project, but they do not demonstrate health or recovery benefits. Our focus here is the place, its everyday use and the questions needed for a workable design.</p>
+<h2>Plan the route between house, sauna and water</h2>
+<p>The shortest route on a drawing may cross a lawn that becomes wet or a step that is difficult to see. Consider the walking surface, changes in level, a place for towels and how the entrance is lit. If you have a sauna, include its position in the conversation. Sauna construction is a separate scope to agree, not an assumed part of a pool package.</p>
+<h2>Establish the limits of winter operation</h2>
+<p>Ask how pumps, pipes and water movement are managed in cold conditions and which parts of the system need winter preparation. Desired bathing use must be reconciled with the equipment instructions and the site's conditions. Do not assume the water will remain ice-free.</p>
+<p>The guide to <a href="/en/blog/posts/skotsel-av-naturpool-under-aret.html">nature-pool care through the year</a> helps you frame the seasonal questions. The operating plan for your installation should give the actual instructions.</p>
+<h2>Make access part of the design</h2>
+<p>Discuss entry and exit, handholds where needed, visibility after dark and how access to the water is controlled. Review how those details will work when surfaces are wet or icy. The <a href="/en/blog/posts/naturpool-sakerhet-och-tillstand.html">guide to safety and planning questions</a> gives a starting point for the wider assessment.</p>
+<p>This is a guide to planning a bathing place, not an assessment of whether cold-water swimming is suitable for an individual. Pool design does not remove the risks associated with cold water.</p>
+<h2>Look at documented projects for relevant inspiration</h2>
+<p>Our <a href="/en/projects/gotland/">completed nature pool on southern Gotland</a> shows how a bathing place can become part of a garden. Use it for ideas about the setting and edges. The images and owner story do not establish winter operating conditions for another site.</p>
+<h2>A small bathing area or room for longer strokes?</h2>
+<p>A compact pool may suit the wish for a dip; swimming and shared use may call for more room. The swimming area is only part of the total space, which also includes cleaning, edges and access. <a href="/en/nature-pools/pricing/">Compare bathing areas and starting prices</a>, then tell us how you hope to use the water.</p>`;

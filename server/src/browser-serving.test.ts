@@ -9,7 +9,12 @@ import { assertBrowserServingForStartup } from '@mikaelcedergren/cx-framework/se
 import express from 'express';
 
 import { createFaunapoolenBrowserServing, mountFaunapoolenBrowser } from './browser-serving.js';
-import { PUBLIC_PAGES, LEGACY_REDIRECTS } from './public-routes.js';
+import {
+  PUBLIC_PAGES,
+  LEGACY_REDIRECTS,
+  GUIDE_SLUGS,
+  PUBLIC_CANONICAL_PATHS,
+} from './public-routes.js';
 import type { FaunapoolenEnvironment } from './environment.js';
 
 const sections = (locale: 'sv' | 'en' | 'da') =>
@@ -17,20 +22,7 @@ const sections = (locale: 'sv' | 'en' | 'da') =>
     p.replace(/^\/(en|da)/, '').replace(/^\/|\/$/g, ''),
   );
 
-const PUBLIC_LITERAL_HTML_ROUTES = [
-  'blog/posts/5-common-problems-installing-a-nature-pool.html',
-  'blog/posts/algae-control-and-maintenance-tips.html',
-  'blog/posts/build-your-own-nature-pool.html',
-  'blog/posts/can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.html',
-  'blog/posts/creating-harmony-intergrating-water-features-with-your-landscape.html',
-  'blog/posts/difference-between-normal-pool-and-natural-pool.html',
-  'blog/posts/how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.html',
-  'blog/posts/how-filtering-works-with-nature-pools.html',
-  'blog/posts/pool-conversions.html',
-  'blog/posts/small-features-for-small-spaces.html',
-  'blog/posts/sports-stars-natural-ponds.html',
-  'blog/posts/why-you-should-get-a-natural-pool.html',
-] as const;
+const PUBLIC_LITERAL_HTML_ROUTES = Object.values(GUIDE_SLUGS).map((slug) => 'blog/posts/' + slug);
 
 function createEnvironment(root: string, browserDirectory: string): FaunapoolenEnvironment {
   return {
@@ -57,10 +49,10 @@ function createEnvironment(root: string, browserDirectory: string): FaunapoolenE
 }
 
 function writeFixture(browserDirectory: string): void {
-  fs.mkdirSync(path.join(browserDirectory, 'om'), { recursive: true });
+  fs.mkdirSync(path.join(browserDirectory, 'about'), { recursive: true });
   fs.mkdirSync(path.join(browserDirectory, 'assets'), { recursive: true });
   fs.writeFileSync(path.join(browserDirectory, 'index.html'), '<p>root-page</p>');
-  fs.writeFileSync(path.join(browserDirectory, 'om', 'index.html'), '<p>about-page</p>');
+  fs.writeFileSync(path.join(browserDirectory, 'about', 'index.html'), '<p>about-page</p>');
   fs.writeFileSync(path.join(browserDirectory, 'synthetic-page.html'), '<p>literal-page</p>');
   fs.writeFileSync(path.join(browserDirectory, '404.html'), '<p>not-found-page</p>');
   fs.writeFileSync(path.join(browserDirectory, 'main-abcdef12.js'), 'hashed');
@@ -112,8 +104,8 @@ test('SSG sections, literal HTML, three cache tiers, and the real 404 stay exact
 
   for (const [pathname, marker] of [
     ['/', 'root-page'],
-    ['/om', 'about-page'],
-    ['/om/', 'about-page'],
+    ['/about', 'about-page'],
+    ['/about/', 'about-page'],
     ['/synthetic-page.html', 'literal-page'],
   ] as const) {
     const response = await fetch(`${baseUrl}${pathname}`);
@@ -144,7 +136,7 @@ test('SSG sections, literal HTML, three cache tiers, and the real 404 stay exact
   assert.equal(await missingAsset.text(), 'Asset not found');
 });
 
-test('all 60 public locale outputs retain their section or literal-file URL', async (t) => {
+test('all public locale outputs retain their section or literal-file URL', async (t) => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'faunapoolen-browser-route-matrix-'));
   t.after(() => fs.rmSync(root, { force: true, recursive: true }));
   const browserDirectory = path.join(root, 'browser');
@@ -172,7 +164,7 @@ test('all 60 public locale outputs retain their section or literal-file URL', as
       requests += 1;
     }
   }
-  assert.equal(requests, 63);
+  assert.equal(requests, PUBLIC_CANONICAL_PATHS.length);
   for (const [from, to] of Object.entries(LEGACY_REDIRECTS)) {
     const response = await fetch(baseUrl + from + '?source=old-link', { redirect: 'manual' });
     assert.equal(response.status, 301, from);

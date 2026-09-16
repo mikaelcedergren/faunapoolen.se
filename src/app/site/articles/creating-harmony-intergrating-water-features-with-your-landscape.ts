@@ -1,55 +1,20 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
-export const BODY_HTML = $localize`:@@blog.creating-harmony-intergrating-water-features-with-your-landscape.bodyHtml:<h2>Introduction</h2>
-<p>A well-designed water feature should feel like a natural extension of the surrounding landscape. Whether it's a pondless waterfall, a koi pond, or a bubbling fountain, careful planning, expert design, and a sustainable approach are required for the water to seamlessly blend into the outdoor environment.</p>
-<p>This guide shows how water features can interact with the garden's existing elements and enhance both appearance and function. With the right placement, materials, and ecological balance, the water feature becomes the heart of the garden – attracting wildlife, improving air quality, and creating a soothing environment year-round.</p>
-<h2>Understand your garden before adding water</h2>
-<p>Before installing a water feature, it's important to assess the terrain, elevation changes, and existing vegetation in your outdoor environment. Key factors to consider include:</p>
-<h3>Topography</h3>
-<p>Sloping areas are perfect for waterfalls, while flat surfaces are better suited for still ponds or fountains.</p>
-<h3>Light conditions</h3>
-<p>Some aquatic plants require full sunlight, while others thrive in shade.</p>
-<h3>Soil type</h3>
-<p>Sandy soil drains quickly, while clay soil retains water. This affects how stable the water feature will be.</p>
-<h3>Existing plants &amp; hard surfaces</h3>
-<p>Harmonizing water with paved paths, decks, or flower beds creates a cohesive whole.</p>
-<h2>Benefits of integrated water features</h2>
-<h3>Aesthetic appeal</h3>
-<p>A water feature creates a natural focal point.</p>
-<h3>Environmental benefits</h3>
-<p>Supports biodiversity by attracting birds, frogs, and pollinators.</p>
-<h3>Microclimate regulation</h3>
-<p>Water helps cool the surroundings during warm months.</p>
-<h3>Stress reduction</h3>
-<p>The sound of flowing water promotes relaxation and mindfulness.</p>
-<h2>Choose the right water feature for your garden</h2>
-<h3>1. Pondless waterfall: a natural cascade</h3>
-<p>Best suited for: Small gardens, sloping landscapes, and low-maintenance solutions.</p>
-<p>Pondless waterfalls are ideal for those who love the sound of trickling water but want to avoid the maintenance of a traditional pond. The water circulates through a hidden underground reservoir, making it an eco-friendly and easy-to-maintain option.</p>
-<h3>2. Koi pond: a living ecosystem</h3>
-<p>Best suited for: Larger gardens, nature lovers, and vibrant outdoor environments.</p>
-<p>A well-balanced koi pond combines aquatic plants, fish, and biological filtration. Aquascape Inc's BioFalls® filter creates a self-sustaining ecosystem with clear water.</p>
-<h3>3. Bubbling stone fountains: a smart solution for small spaces</h3>
-<p>Best suited for: Courtyards, patios, and urban gardens.</p>
-<p>A bubbling stone or urn is a perfect solution for small areas. It provides the soothing sound of water without the need for extensive construction.</p>
-<h2>Sustainable design principles</h2>
-<p>A water feature should be integrated in an environmentally friendly way. Here are some sustainable solutions:</p>
-<h3>Recirculating water systems</h3>
-<p>Reduces water consumption by continuously reusing water.</p>
-<h3>Solar-powered pumps</h3>
-<p>Reduces energy consumption and operating costs.</p>
-<h3>Natural vegetation</h3>
-<p>Native plants around the water feature support local wildlife.</p>
-<h3>Rainwater harvesting</h3>
-<p>A sustainable way to replace water loss due to evaporation.</p>
-<h2>Customize your water feature</h2>
-<h3>Material choices</h3>
-<p>Using natural stone, aged wood, or ceramics for an authentic feel.</p>
-<h3>Lighting effects</h3>
-<p>Discreet LED lighting enhances the atmosphere in the evening.</p>
-<h3>Seasonal adjustments</h3>
-<p>Winter preparations ensure sustainability in cold climates.</p>
-<h2>Summary: create your dream garden</h2>
-<p>A well-integrated water feature enhances the entire garden experience. By customizing size, placement, and materials to the existing environment, even a small installation can create a harmonious and inviting oasis.</p>
-<h2>Your next step</h2>
-<p>Do you know someone considering a water feature but has limited space? Share this post with them and help others discover how water can transform a garden.</p>
-<p>Ready to create your own water feature? Contact us to start planning your project.</p>`;
+export const BODY_HTML = $localize`:@@blog.creating-harmony-intergrating-water-features-with-your-landscape.bodyHtml:<p>A nature pool, pond or waterfall works best in a garden when its position supports the way you want to use the place. Begin with where you sit, walk and look out from the house. Then plan the water together with its surroundings, including the space needed for care.</p>
+<h2>Start with the places where you want to spend time</h2>
+<p>Mark the breakfast spot, the terrace and a quieter corner on a simple plan. Note which views matter from indoors and where you would enjoy hearing moving water. A waterfall near a seat becomes part of that experience; farther away, its visual connection may matter more.</p>
+<p>Try viewing the proposed location at different times of day. Record shade, wind exposure and nearby trees as observations for the design conversation, rather than choosing a location from a single photograph.</p>
+<h2>Place swimming, seating and paths together</h2>
+<p>For a nature pool, sketch the route from changing to entering the water and the space for sitting afterwards. Leave room to pass someone at the edge and to reach equipment without crossing a crowded seating area. A larger swimming area is useful only if the whole arrangement still works.</p>
+<p>The guide to <a href="/en/blog/posts/hur-mycket-plats-behover-en-naturpool.html">how much space a nature pool needs</a> explains why the advertised swimming area is only one part of the footprint.</p>
+<h2>Use changes in level with care</h2>
+<p>A slope can suggest a stream or waterfall, but also raises questions about access, ground support and where surface water goes. Ask for those questions to be assessed before fixing the shape. Make collection points and equipment reachable without dismantling the landscape around them.</p>
+<h2>Choose materials that connect the garden</h2>
+<p>Look at the existing house, terrace and paths before adding a new material. Repeating a stone tone or an edge detail can help the water feel at home. Discuss how the surface feels underfoot, how it meets the water and how it will be maintained, as well as how it looks when newly installed.</p>
+<h2>Plan plants, views and lighting together</h2>
+<p>Consider mature plant size so that a clear view today does not become blocked later. Keep the access points and maintenance routes readable. Lighting can help people see the route and changes in level; its position should also consider glare from the water and the view from neighbouring properties.</p>
+<p>Our <a href="/en/projects/gotland/">nature-pool project on southern Gotland</a> offers a real example of water within a garden. Use the images to discuss details you like, while planning the arrangement around your own site.</p>
+<h2>When a pond, stream or fountain fits better</h2>
+<p>If you mainly want moving water beside a seat, a fountain or waterfall may answer the wish without a bathing area. A planted pond creates a different focal point; a koi pond also brings fish-care requirements that must shape the design. These are different uses with different maintenance needs.</p>
+<p>Explore our <a href="/en/waterscapes/">garden water features</a> and the article on <a href="/en/blog/posts/small-features-for-small-spaces.html">water in a small garden</a> for those options.</p>
+<h2>Turn inspiration into a proposal for your site</h2>
+<p>Bring a simple plan, photographs and a short list of the moments you want the garden to make possible. Distinguish your essentials from details that can change. If swimming is the priority, <a href="/en/nature-pools/pricing/">compare nature-pool options for your garden</a> as a starting point for the conversation.</p>`;

@@ -29,6 +29,7 @@ import {
 } from './content/faunapoolen-editorial';
 import { GOTLAND_COPY, GOTLAND_MEDIA } from './content/faunapoolen-gotland';
 import { BLOG_ARTICLES } from './content/blog-catalog';
+import { PROTECTED_RECOMMENDATIONS } from './content/protected-guide-presentation';
 
 import { sitePath } from './site-paths';
 import { SITE_UI } from './content/site-ui';
@@ -62,7 +63,19 @@ export abstract class SitePage {
     BLOG_ARTICLES.find((article) => article.id === this.guideId) ?? BLOG_ARTICLES[0];
   protected readonly relatedGuides = this.guide.related
     .map((id) => BLOG_ARTICLES.find((article) => article.id === id)!)
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((article) => {
+      if (this.guideId !== 'build' && this.guideId !== 'difference') return article;
+      const retained =
+        PROTECTED_RECOMMENDATIONS[article.id as keyof typeof PROTECTED_RECOMMENDATIONS];
+      return retained
+        ? {
+            ...article,
+            title: retained.title,
+            seo: { ...article.seo, description: retained.description },
+          }
+        : article;
+    });
   protected readonly languages = SUPPORTED_LANGUAGES.map((locale) => ({
     locale,
     label: LANGUAGE_NAMES[locale],
@@ -74,6 +87,7 @@ export abstract class SitePage {
   protected readonly navItems: CxMastheadItem[] = [
     this.navItem('home', this.copy.nav.home),
     this.navItem('nature-pools', this.copy.nav.naturePools),
+    this.navItem('pricing', this.copy.nav.pricing),
     this.navItem('projects', this.copy.nav.projects),
     this.navItem('waterscapes', this.copy.nav.waterscapes),
     this.navItem('guides', this.copy.nav.guides),
@@ -115,6 +129,12 @@ export abstract class SitePage {
       return { id: page, label, href: this.routeFor(page), active: true };
     }
     if (page === 'projects' && this.page === 'gotland') {
+      return { id: page, label, href: this.routeFor(page), active: true };
+    }
+    if (
+      page === 'nature-pools' &&
+      ['skane', 'halland', 'blekinge', 'smaland'].includes(this.page)
+    ) {
       return { id: page, label, href: this.routeFor(page), active: true };
     }
     return { id: page, label, href: this.routeFor(page), active: page === this.page };
