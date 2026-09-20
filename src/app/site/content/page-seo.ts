@@ -13,10 +13,6 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
     title: $localize`:@@seo.pricing.title:Nature pool prices – compare packages | Faunapoolen`,
     description: $localize`:@@seo.pricing.description:Compare nature pool packages, swimming areas and starting prices including VAT. Find out what affects the cost and what needs assessing before a quotation.`,
   },
-  projects: {
-    title: $localize`:@@seo.projects.title:Nature pool projects and inspiration | Faunapoolen`,
-    description: $localize`:@@seo.projects.description:Explore Faunapoolen’s completed nature pool on Gotland and hear Brita’s story. See how swimming, natural stone and a garden come together in a real project.`,
-  },
   gotland: {
     title: $localize`:@@seo.gotland.title:Nature pool on Gotland – Brita’s garden | Faunapoolen`,
     description: $localize`:@@seo.gotland.description:Photographs and films of the nature pool we built in southern Gotland. Brita shares her experience of the build and family life beside the water.`,
@@ -32,6 +28,10 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
   about: {
     title: $localize`:@@seo.about.title:About Faunapoolen – nature pool design and construction`,
     description: $localize`:@@seo.about.description:Meet Faunapoolen and learn how we approach design, construction and care. We build nature pools across Sweden and welcome projects in Denmark.`,
+  },
+  cookies: {
+    title: $localize`:@@seo.cookies.title:Cookies and website statistics | Faunapoolen`,
+    description: $localize`:@@seo.cookies.description:Choose whether to allow website statistics and learn how Faunapoolen uses cookies and browser storage.`,
   },
   faq: {
     title: $localize`:@@seo.faq.title:Frequently asked questions about nature pools | Faunapoolen`,

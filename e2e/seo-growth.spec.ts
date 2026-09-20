@@ -16,7 +16,6 @@ const publicSlugs = [
   'nature-pools/halland',
   'nature-pools/blekinge',
   'nature-pools/smaland',
-  'projects',
   'projects/gotland',
   'waterscapes',
   'about',
@@ -53,14 +52,17 @@ test('old translated page addresses and price links redirect once to the matchin
 }) => {
   const redirects = [
     ['/naturpooler/', '/nature-pools/'],
-    ['/projekt/', '/projects/'],
+    ['/projekt/', '/projects/gotland/'],
+    ['/projects/', '/projects/gotland/'],
+    ['/en/projects/', '/en/projects/gotland/'],
     ['/projekt/gotland/', '/projects/gotland/'],
     ['/vattenmiljoer/', '/waterscapes/'],
     ['/om/', '/about/'],
     ['/vanliga-fragor/', '/faq/'],
     ['/konfigurera/', '/configure/'],
     ['/da/naturpooler/', '/da/nature-pools/'],
-    ['/da/projekter/', '/da/projects/'],
+    ['/da/projekter/', '/da/projects/gotland/'],
+    ['/da/projects/', '/da/projects/gotland/'],
     ['/da/projekter/gotland/', '/da/projects/gotland/'],
     ['/da/vandmiljoer/', '/da/waterscapes/'],
     ['/da/om/', '/da/about/'],
@@ -139,13 +141,18 @@ test('a changed package survives refresh and both footer language changes', asyn
   await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
     'Bada tillsammans',
   );
-  await page.locator('footer').getByRole('link', { name: 'English', exact: true }).click();
+  await page.locator('footer').getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
+  await page.getByRole('option', { name: /English/ }).click();
   await expect.poll(() => new URL(page.url()).pathname).toBe('/en/configure/');
   await expect.poll(() => new URL(page.url()).searchParams.get('package')).toBe('summer');
   await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
     'Swim together',
   );
-  await page.locator('footer').getByRole('link', { name: 'Dansk', exact: true }).click();
+  await page
+    .locator('footer')
+    .getByRole('button', { name: 'Language: English', exact: true })
+    .click();
+  await page.getByRole('option', { name: /Dansk/ }).click();
   await expect.poll(() => new URL(page.url()).pathname).toBe('/da/configure/');
   await expect.poll(() => new URL(page.url()).searchParams.get('package')).toBe('summer');
   await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
@@ -307,19 +314,28 @@ test('statistics require opt-in and stop after the visitor withdraws it', async 
   expect(googleRequests).toEqual([]);
 
   await page
-    .locator('footer')
-    .getByRole('button', { name: 'Allow statistics', exact: true })
+    .getByRole('region', { name: 'Cookie settings' })
+    .getByRole('button', { name: 'Accept', exact: true })
     .click();
   await expect.poll(() => events.filter((event) => event.name === 'page_view').length).toBe(1);
+  // GA uses site-wide cookies, independent of the page where consent is given.
+  const cookieUrl = new URL('/', page.url()).href;
+  await page.context().addCookies([
+    { name: '_ga', value: 'synthetic-browser', url: cookieUrl },
+    { name: '_ga_E1BFSP43WZ', value: 'synthetic-session', url: cookieUrl },
+  ]);
+  await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
   await page
-    .locator('footer')
-    .getByRole('button', { name: 'Statistics settings', exact: true })
+    .getByRole('region', { name: 'Cookie settings' })
+    .getByRole('button', { name: 'Reject', exact: true })
     .click();
-  await page.locator('footer').getByRole('button', { name: 'No statistics', exact: true }).click();
+  expect(
+    (await page.context().cookies()).filter((cookie) => /^_ga(?:_|$)/.test(cookie.name)),
+  ).toEqual([]);
   const countAfterWithdrawal = events.length;
   await page.goto('/en/nature-pools/pricing/');
   await expect(
-    page.locator('footer').getByRole('button', { name: 'Statistics settings', exact: true }),
+    page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }),
   ).toBeVisible();
   await page
     .locator('#packages')
@@ -341,8 +357,8 @@ test('a lead is measured once after the confirmed retry and never includes conta
   await page.goto('/en/configure/?package=summer&private=synthetic-query-marker');
   await expect(page.locator('form textarea')).toBeEnabled();
   await page
-    .locator('footer')
-    .getByRole('button', { name: 'Allow statistics', exact: true })
+    .getByRole('region', { name: 'Cookie settings' })
+    .getByRole('button', { name: 'Accept', exact: true })
     .click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
@@ -392,4 +408,71 @@ test('a lead is measured once after the confirmed retry and never includes conta
     references[0],
   ])
     expect(serialized).not.toContain(value);
+});
+
+for (const [path, settings, reject, details] of [
+  ['/en/', 'Cookie settings', 'Reject', 'Cookie details'],
+  ['/', 'Inställningar för kakor', 'Avvisa', 'Om kakor'],
+  ['/da/', 'Cookieindstillinger', 'Afvis', 'Om cookies'],
+]) {
+  test(`compact cookie notice supports rejection and details at ${path}`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.goto(path);
+    const notice = page.getByRole('region', { name: settings, exact: true });
+    await expect(notice).toBeVisible();
+    expect(await page.evaluate(() => document.activeElement?.tagName)).toBe('BODY');
+    const box = await notice.boundingBox();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(320);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(640);
+    await notice.getByRole('link', { name: details, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`${path}cookies/?$`));
+    await page
+      .getByRole('region', { name: settings, exact: true })
+      .getByRole('button', { name: reject, exact: true })
+      .click();
+    await expect(notice).toHaveCount(0);
+    await page.reload();
+    await expect(
+      page.locator('footer').getByRole('link', { name: settings, exact: true }),
+    ).toBeVisible();
+    await expect(notice).toHaveCount(0);
+    // Withdrawal remains reachable at the top of the details page.
+    const settingsButton = page
+      .locator('main')
+      .getByRole('button', { name: settings, exact: true });
+    await settingsButton.click();
+    await expect(notice.getByRole('button', { name: reject, exact: true })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(notice).toHaveCount(0);
+    await expect(settingsButton).toBeFocused();
+  });
+}
+
+test('cookie choices persist between locales and remain reachable on protected articles', async ({
+  page,
+}) => {
+  await page.goto('/en/');
+  await page
+    .getByRole('region', { name: 'Cookie settings' })
+    .getByRole('button', { name: 'Accept', exact: true })
+    .click();
+  await page.goto('/blog/posts/build-your-own-nature-pool.html');
+  const settings = page
+    .locator('footer')
+    .getByRole('link', { name: 'Inställningar för kakor', exact: true });
+  await expect(settings).toBeVisible();
+  await expect(
+    page.getByRole('region', { name: 'Inställningar för kakor', exact: true }),
+  ).toHaveCount(0);
+  await settings.click();
+  await page
+    .getByRole('region', { name: 'Inställningar för kakor', exact: true })
+    .getByRole('button', { name: 'Avvisa', exact: true })
+    .click();
+  await expect(settings).toBeFocused();
+  await page.goto('/da/');
+  await expect(page.getByRole('region', { name: 'Cookieindstillinger', exact: true })).toHaveCount(
+    0,
+  );
 });

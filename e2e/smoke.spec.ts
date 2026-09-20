@@ -95,10 +95,43 @@ test('a blog post loads', async ({ page }) => {
   expect(res?.status()).toBe(200);
 });
 
-test('English mirror loads', async ({ page }) => {
+test('English header and footer share navigation and the closing invitation leads to prices', async ({
+  page,
+}) => {
   const res = await page.goto('/en/');
   expect(res?.status()).toBe(200);
   await expect(page.locator('html')).toHaveAttribute('lang', /en/);
+  const headerLinks = await page
+    .locator('cx-masthead .cx-masthead__nav a')
+    .evaluateAll((links) =>
+      links.map((link) => ({ href: link.getAttribute('href'), text: link.textContent?.trim() })),
+    );
+  const footerLinks = await page
+    .locator('footer nav a')
+    .evaluateAll((links) =>
+      links.map((link) => ({ href: link.getAttribute('href'), text: link.textContent?.trim() })),
+    );
+  expect(headerLinks.map((link) => link.href)).toEqual([
+    '/en/',
+    '/en/nature-pools/',
+    '/en/nature-pools/pricing/',
+    '/en/waterscapes/',
+    '/en/blog/',
+    '/en/about/',
+  ]);
+  expect(footerLinks).toEqual(headerLinks);
+  const footer = page.locator('footer');
+  await expect(footer.getByRole('link', { name: 'Faunapoolen', exact: true })).toHaveText('');
+  await expect(footer.locator('.fp-brand img')).toBeVisible();
+  await expect(footer.locator('a[href="mailto:info@faunapoolen.se"]')).toBeVisible();
+  await expect(footer.locator('a[href^="tel:"], a[href="/en/configure/"]')).toHaveCount(0);
+  await expect(
+    footer.getByRole('button', { name: 'Language: English', exact: true }),
+  ).toBeVisible();
+  const invitation = page.locator('section[aria-labelledby="contact-invitation-title"]');
+  await invitation.getByRole('link', { name: 'See prices', exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/nature-pools\/pricing\/$/);
+  await expect(page.locator('#packages cx-card')).toHaveCount(3);
 });
 
 test('the admin is excluded from search and every public page stays indexable', async ({

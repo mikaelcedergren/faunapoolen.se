@@ -30,22 +30,22 @@
       </div>
     }
     <ng-content />
-    @if (page !== 'configure') {
-      <div class="fp-band">
+    @if (page !== 'configure' && page !== 'cookies') {
+      <div class="fp-price-invitation">
         <section class="fp-section" aria-labelledby="contact-invitation-title">
           <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
             <div class="cx-editorial">
               <h2 id="contact-invitation-title" class="cx-font-regular">
                 {{ copy.common.talkTitle }}
               </h2>
-              <p>{{ editorial.firstContact }}</p>
+              <p>{{ priceInvitation }}</p>
             </div>
             <cx-inline>
               <cx-button
-                [text]="copy.common.talkButton"
+                [text]="pricesLabel"
                 mood="primary"
                 size="large"
-                [href]="page === 'waterscapes' ? configureHref + '?service=pond' : configureHref"
+                [href]="routeFor('pricing')"
                 appendIcon="arrow-right"
               />
             </cx-inline>
@@ -54,74 +54,34 @@
       </div>
     }
   </main>
-  <footer class="fp-band" [attr.aria-label]="ui.footer">
-    <cx-divider [discreet]="true" />
-    @if (measurement.available() && guideId !== 'build' && guideId !== 'difference') {
-      <div class="fp-section">
-        @if (measurement.preference() === 'unset' || showMeasurementSettings()) {
-          <section class="cx-editorial" aria-labelledby="measurement-title">
-            <cx-stack gap="lg" align="start">
-              <h2 id="measurement-title" class="cx-font-regular">{{ measurementTitle }}</h2>
-              <p>
-                {{ measurementBody }}
-                <a
-                  href="https://policies.google.com/technologies/partner-sites"
-                  rel="noopener noreferrer"
-                  >{{ measurementPrivacy }}</a
-                >
-              </p>
-              <cx-inline gap="lg" [wrap]="true">
-                <cx-button [text]="allowMeasurement" (click)="chooseMeasurement(true)" />
-                <cx-button [text]="declineMeasurement" (click)="chooseMeasurement(false)" />
-              </cx-inline>
-            </cx-stack>
-          </section>
-        } @else {
-          <cx-button [text]="measurementSettings" (click)="showMeasurementSettings.set(true)" />
-        }
-      </div>
-    }
+  <footer class="fp-band fp-footer" [attr.aria-label]="ui.footer">
     <div class="fp-section">
       <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
         <cx-stack gap="lg" align="start">
           <a class="fp-brand" [href]="homeHref" aria-label="Faunapoolen">
             <img class="fp-logo" [src]="logo" alt="" width="64" height="64" />
-            <span>Faunapoolen</span>
           </a>
-          <p class="cx-text-body-lg cx-text-muted">{{ ui.nature_pools_ponds_and_streams }}</p>
         </cx-stack>
         <nav [attr.aria-label]="copy.menuLabel">
           <cx-grid [columns]="2" [columnsMobile]="2" gap="lg">
-            <cx-stack gap="lg" align="start">
-              <a [href]="routeFor('nature-pools')">{{ copy.nav.naturePools }}</a>
-              <a [href]="routeFor('waterscapes')">{{ copy.nav.waterscapes }}</a>
-              <a [href]="routeFor('projects')">{{ copy.nav.projects }}</a>
-            </cx-stack>
-            <cx-stack gap="lg" align="start">
-              <a [href]="routeFor('guides')">{{ copy.nav.guides }}</a>
-              <a [href]="routeFor('about')">{{ copy.nav.about }}</a>
-              <a [href]="routeFor('faq')">{{ faqLabel }}</a>
-            </cx-stack>
+            @for (item of navItems; track item.id) {
+              <a [href]="item.href" [attr.aria-current]="item.active ? 'page' : null">{{
+                item.label
+              }}</a>
+            }
           </cx-grid>
         </nav>
-        <cx-stack gap="xl" align="start">
-          <cx-stack gap="md" align="start">
-            <a href="mailto:info@faunapoolen.se">info&#64;faunapoolen.se</a>
-            <a href="tel:+46735406757">+46 735 40 67 57</a>
-            <a [href]="configureHref">{{ contactLabel }}</a>
-          </cx-stack>
-          <cx-inline gap="lg" [wrap]="true">
-            @for (language of languages; track language.locale) {
-              <a
-                [href]="languageHref(language.href)"
-                (click)="rememberLanguage(language.locale)"
-                [attr.hreflang]="language.locale"
-                [attr.lang]="language.locale"
-                [attr.aria-current]="language.locale === locale ? 'true' : null"
-                >{{ language.label }}</a
-              >
-            }
-          </cx-inline>
+        <cx-stack gap="lg" align="start">
+          <a href="mailto:info@faunapoolen.se">info&#64;faunapoolen.se</a>
+          @if (measurement.available()) {
+            <fp-cookie-notice [detailsHref]="routeFor('cookies')" />
+          }
+          <cx-language-selector
+            [languages]="languageOptions"
+            [value]="locale"
+            [translations]="{ ariaLabel: languageLabel }"
+            (valueChange)="changeLanguage($event)"
+          />
         </cx-stack>
       </cx-grid>
     </div>

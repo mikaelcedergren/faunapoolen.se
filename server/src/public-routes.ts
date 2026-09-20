@@ -8,12 +8,12 @@ const pagePaths = {
   halland: '/nature-pools/halland/',
   blekinge: '/nature-pools/blekinge/',
   smaland: '/nature-pools/smaland/',
-  projects: '/projects/',
   gotland: '/projects/gotland/',
   waterscapes: '/waterscapes/',
   guides: '/blog/',
   about: '/about/',
   faq: '/faq/',
+  cookies: '/cookies/',
   configure: '/configure/',
 } as const;
 export type PublicPage = keyof typeof pagePaths;
@@ -62,6 +62,7 @@ const legacy = {
   services: 'waterscapes',
   pricing: 'pricing',
   contact: 'configure',
+  projects: 'gotland',
   suppliers: 'about',
   'sweden-expert-naturpooler-biopooler-ecopooler-kemikaliefria-pooler-baddammar': 'nature-pools',
   'nature-pools.html': 'nature-pools',
@@ -75,7 +76,6 @@ const legacy = {
 const translatedPaths: Partial<Record<PublicLanguage, Partial<Record<PublicPage, string>>>> = {
   sv: {
     'nature-pools': '/naturpooler',
-    projects: '/projekt',
     gotland: '/projekt/gotland',
     waterscapes: '/vattenmiljoer',
     about: '/om',
@@ -84,7 +84,6 @@ const translatedPaths: Partial<Record<PublicLanguage, Partial<Record<PublicPage,
   },
   da: {
     'nature-pools': '/da/naturpooler',
-    projects: '/da/projekter',
     gotland: '/da/projekter/gotland',
     waterscapes: '/da/vandmiljoer',
     about: '/da/om',
@@ -103,6 +102,8 @@ export const LEGACY_REDIRECTS: Readonly<Record<string, string>> = Object.freeze(
       });
       return [
         ...inherited,
+        ...(locale === 'sv' ? [['/projekt', PUBLIC_PAGES.sv.gotland]] : []),
+        ...(locale === 'da' ? [['/da/projekter', PUBLIC_PAGES.da.gotland]] : []),
         ...Object.entries(translatedPaths[locale] ?? {}).map(([page, from]) => [
           from,
           PUBLIC_PAGES[locale][page as PublicPage],

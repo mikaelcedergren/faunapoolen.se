@@ -14,22 +14,24 @@ These decisions supersede the corresponding draft assumptions in the plan.
 
 ## Routes and content
 
-The shared public catalogue owns 93 canonical paths: fourteen commercial/index page families and seventeen guides in three languages. It also owns fifty one-hop aliases, including the previous Swedish/Danish page paths and inherited legacy routes.
+The shared public catalogue owns 93 canonical paths: fourteen commercial/index page families and seventeen guides in three languages. It also owns fifty-three one-hop aliases, including the previous Swedish/Danish page paths and inherited legacy routes.
 
-| Purpose                       | Swedish-language canonical                                                                            |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Service                       | `/nature-pools/`                                                                                      |
-| Prices and the three packages | `/nature-pools/pricing/`                                                                              |
-| Regional service detail       | `/nature-pools/skane/`, `/nature-pools/halland/`, `/nature-pools/blekinge/`, `/nature-pools/smaland/` |
-| Projects and case             | `/projects/`, `/projects/gotland/`                                                                    |
-| Other water features          | `/waterscapes/`                                                                                       |
-| Company and questions         | `/about/`, `/faq/`                                                                                    |
-| Enquiry                       | `/configure/`                                                                                         |
-| Guides                        | `/blog/` and preserved/new literal `.html` article paths                                              |
+| Purpose                        | Swedish-language canonical                                                                            |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Service                        | `/nature-pools/`                                                                                      |
+| Prices and the three packages  | `/nature-pools/pricing/`                                                                              |
+| Regional service detail        | `/nature-pools/skane/`, `/nature-pools/halland/`, `/nature-pools/blekinge/`, `/nature-pools/smaland/` |
+| Gotland case                   | `/projects/gotland/`                                                                                  |
+| Other water features           | `/waterscapes/`                                                                                       |
+| Company, questions and cookies | `/about/`, `/faq/`, `/cookies/`                                                                       |
+| Enquiry                        | `/configure/`                                                                                         |
+| Guides                         | `/blog/` and preserved/new literal `.html` article paths                                              |
+
+The Projects overview has been removed. Its former addresses redirect directly to the localized Gotland case, which remains linked from the start page. Header and footer share one navigation list, including Prices. The footer uses the shared language selector, a logo without a wordmark, email and a Cookie settings link on the alternate surface. The water-image invitation above it links to localized prices.
 
 Prefix the same paths with `/en` or `/da` for the other languages. `/pricing/` and its counterparts go straight to the price hub. Its water-feature quotation section retains the planned `#waterfall` and `#fountains` fragment destinations; fragments cannot be inspected by a server redirect.
 
-All nine original main pages have distinct search titles/descriptions and relevant links. The new price hub explains starting prices, cost drivers, total footprint, scope and ownership. Four regional pages use actual local authority guidance and accurately located Gotland evidence, without invented offices or local projects. The guide index groups planning, water/care and other garden water subjects.
+All retained main pages have distinct search titles/descriptions and relevant links. The new price hub explains starting prices, cost drivers, total footprint, scope and ownership. Four regional pages use actual local authority guidance and accurately located Gotland evidence, without invented offices or local projects. The guide index groups planning, water/care and other garden water subjects.
 
 Ten eligible guides have been rewritten in English, Swedish and Danish. Five additional guides cover space, care through the year, the commissioned build process, Swedish safety/permission questions and ownership costs. Numerical operating-cost examples are explicitly hypothetical, with declared assumptions; they are not a promise about installed equipment or running costs.
 
@@ -37,13 +39,13 @@ Ten eligible guides have been rewritten in English, Swedish and Danish. Five add
 
 The two successful article bodies, titles, translations, URLs, image URLs and metadata remain preserved. Their original stored introductions are restored in the shared renderer after the omission identified in the planning audit. Historical related-reading labels stay stable even though the linked articles are revised.
 
-The historical Swedish/English fixture is retained. A separate pre-change fixture extends the exact localized content protection to Danish. Shared public navigation follows the owner's new English-slug decision; article-owned old links remain untouched and continue through the redirect catalogue. New optional statistics controls are excluded from the protected article presentation.
+The historical Swedish/English fixture is retained. A separate pre-change fixture extends the exact localized content protection to Danish. Shared public navigation follows the owner's new English-slug decision; article-owned old links remain untouched and continue through the redirect catalogue. Article content remains protected. The shared floating cookie notice and footer preference control are available on every public page, including the protected articles.
 
 ## Enquiry and measurement
 
 Package actions carry their stable choice into the enquiry. Changes to package/service update the non-personal URL state, so refresh and header/footer/suggested-language navigation preserve it. Canonicals stay clean. The form still accepts a conversation without a package and still confirms a lead only after a durable accepted receipt.
 
-The existing public GA4 property has a **disabled production transport**: its public configuration currently enables automatic history, form and user-provided-data collection, which would bypass the sanitized event boundary. The adapter and opt-in interface can be verified locally; production hides the statistics controls and loads no Google tag. Enable `GOOGLE_COLLECTION_REVIEWED` only after the property settings are corrected and actual payloads verified. See [Google’s page-view guidance](https://developers.google.com/analytics/devguides/collection/ga4/views). There are no analytics requests, analytics cookies or visit-context storage before the visitor allows statistics. Advertising tags are not enabled. Visitors can change the choice in the footer. Development and isolated tests never load Google; the same sanitized event contract can be inspected locally.
+The existing public GA4 property has a **disabled production transport**: its public configuration currently enables automatic history, form and user-provided-data collection, which would bypass the sanitized event boundary. The adapter and opt-in interface can be verified locally; production hides the statistics controls and loads no Google tag. Enable `GOOGLE_COLLECTION_REVIEWED` only after the property settings are corrected and actual payloads verified. See [Google’s page-view guidance](https://developers.google.com/analytics/devguides/collection/ga4/views). There are no analytics requests, analytics cookies or visit-context storage before the visitor allows statistics. Advertising tags are not enabled. A compact, non-modal framework popover offers equally styled Reject and Accept actions. The choice persists across public pages and locales; visitors can reopen it through Cookie settings in every public footer, including protected articles. Localized /cookies/ pages explain the purpose, storage, lifetimes and withdrawal, with settings available at the top. Development and isolated tests never load Google; the same sanitized event contract can be inspected locally.
 
 | Event                     | Meaning                                                            |
 | ------------------------- | ------------------------------------------------------------------ |

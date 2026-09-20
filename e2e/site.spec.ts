@@ -18,13 +18,19 @@ test('FAQ answers open by keyboard and language changes keep the FAQ page', asyn
     .getByRole('button', { name: 'How much space does a nature pool need?', exact: true })
     .click();
   await expect(first).toHaveAttribute('aria-expanded', 'false');
-  await page.getByRole('button', { name: 'Language: English', exact: true }).click();
+  await page
+    .locator('cx-masthead')
+    .getByRole('button', { name: 'Language: English', exact: true })
+    .click();
   await page.getByRole('option', { name: /Svenska/ }).click();
   await expect(page).toHaveURL(/\/faq\/?$/);
   await expect(
     page.getByRole('heading', { name: 'Vanliga frågor om naturpooler', exact: true }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
+  await page
+    .locator('cx-masthead')
+    .getByRole('button', { name: 'Språk: Svenska', exact: true })
+    .click();
   await page.getByRole('option', { name: /Dansk/ }).click();
   await expect(page).toHaveURL(/\/da\/faq\/?$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'da');
@@ -86,11 +92,17 @@ test('mobile language selector keeps the article and includes Danish without hor
   await expect
     .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
     .toBeLessThanOrEqual(0);
-  await page.getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
+  await page
+    .locator('cx-masthead')
+    .getByRole('button', { name: 'Språk: Svenska', exact: true })
+    .click();
   await page.getByRole('option', { name: /Dansk/ }).click();
   await expect(page).toHaveURL(/\/da\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'da');
-  await page.getByRole('button', { name: 'Sprog: Dansk', exact: true }).click();
+  await page
+    .locator('cx-masthead')
+    .getByRole('button', { name: 'Sprog: Dansk', exact: true })
+    .click();
   await page.getByRole('option', { name: /English/ }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('#guide-body')).toBeVisible();

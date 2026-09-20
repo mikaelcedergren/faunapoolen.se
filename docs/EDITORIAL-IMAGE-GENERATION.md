@@ -10,6 +10,12 @@ The original generated PNG files remain in the Codex generation folder. Website 
 
 ## Final prompts
 
+### water-ripples.webp
+
+The shared invitation above the footer uses a decorative water image generated with the built-in image generation tool on 17 September 2026. The output is saved at `public/assets/images/faunapoolen/water-ripples.webp`, 2172 × 724 pixels, exported at WebP quality 88 without creative retouching. It is concept imagery, not a documented installation. The section links to the localized pricing page.
+
+Use case: photorealistic-natural. Asset type: wide website section background photograph for a Scandinavian natural swimming pool company. Primary request: just water, a calm tactile water surface that feels fresh and natural. Scene: close overhead photograph of gently rippling clear deep teal-blue pond water, soft natural daylight reflected in delicate moving lines. Entire frame is water, no edge or horizon. Composition: panoramic landscape, subtle low contrast ripples across frame; left half especially calm and dark enough for white website heading overlaid later, more glancing light toward right. Mood: quiet, elegant, inviting real water, restrained Scandinavian editorial photography. Avoid: people, hands, plants, stones, architecture, tiles, objects, typography, logos, graphics, strong sun flare, harsh white highlights, overtly artificial cyan. No text. Generate 2400x800 if supported.
+
 ### hero-family.webp
 
 Reference assets: `gotland/1528.webp`, `gotland/1451.webp`.

@@ -12,8 +12,16 @@
   padding: var(--space-2xl) var(--gutter-page);
 }
 
+.fp-price-invitation {
+  background: var(--surface) url('/assets/images/faunapoolen/water-ripples.webp') center / cover;
+}
+
 .fp-band {
   background: var(--surface-alt);
+}
+
+.fp-footer {
+  border-top: var(--line);
 }
 
 .fp-brand {

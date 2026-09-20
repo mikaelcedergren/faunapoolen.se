@@ -4,6 +4,7 @@ import {
   Component,
   OnInit,
   signal,
+  viewChild,
   inject,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
@@ -15,13 +16,13 @@ import {
   CxInlineComponent,
   CxButtonComponent,
   CxGridComponent,
-  CxDividerComponent,
   CxAlertComponent,
   CX_THEMES,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from './site-page';
 import { LANGUAGE_NAMES, preferredLanguage } from './language';
 import { SiteMeasurement } from './site-measurement';
+import { CookieNoticeComponent } from './cookie-notice.component';
 
 @Component({
   selector: 'fp-site-shell',
@@ -32,8 +33,8 @@ import { SiteMeasurement } from './site-measurement';
     CxInlineComponent,
     CxButtonComponent,
     CxGridComponent,
-    CxDividerComponent,
     CxAlertComponent,
+    CookieNoticeComponent,
   ],
   templateUrl: './site-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,17 +42,10 @@ import { SiteMeasurement } from './site-measurement';
 export class SiteShellComponent extends SitePage implements OnInit {
   private readonly router = inject(Router);
   protected readonly measurement = inject(SiteMeasurement);
-  protected readonly showMeasurementSettings = signal(false);
-  protected readonly measurementTitle = $localize`:@@site.measurement.title:Optional website statistics`;
-  protected readonly measurementBody = $localize`:@@site.measurement.body:May we use Google Analytics cookies to understand which pages and pool packages lead to enquiries? Contact details and messages are never included. You can change this choice here at any time.`;
-  protected readonly allowMeasurement = $localize`:@@site.measurement.allow:Allow statistics`;
-  protected readonly declineMeasurement = $localize`:@@site.measurement.decline:No statistics`;
-  protected readonly measurementSettings = $localize`:@@site.measurement.settings:Statistics settings`;
-  protected readonly measurementPrivacy = $localize`:@@site.measurement.privacy:How Google uses this data`;
+  private readonly cookieNotice = viewChild(CookieNoticeComponent);
 
-  protected chooseMeasurement(allow: boolean): void {
-    this.measurement.choose(allow ? 'allowed' : 'denied');
-    this.showMeasurementSettings.set(false);
+  openCookieSettings(event: Event): void {
+    this.cookieNotice()?.openSettings(event);
   }
   private readonly navigationContext = signal('');
 
@@ -104,8 +98,8 @@ export class SiteShellComponent extends SitePage implements OnInit {
     }
   }
 
-  protected readonly faqLabel = $localize`:@@site.nav.faq:FAQ`;
-  protected readonly contactLabel = $localize`:@@site.ui.contact:Contact`;
+  protected readonly pricesLabel = $localize`:@@site.invitation.prices:See prices`;
+  protected readonly priceInvitation = $localize`:@@site.invitation.body:Explore our nature pool packages, prices and what’s included.`;
   protected readonly languageLabel = $localize`:@@site.language.label:Language`;
   protected readonly suggestionHeading = $localize`:@@site.language.suggestion:Read this page in your preferred language`;
   protected readonly suggestion = signal<{ text: string; href: string } | undefined>(undefined);

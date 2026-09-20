@@ -3,12 +3,12 @@ export type FaunapoolenLocale = 'en' | 'sv' | 'da';
 export type FaunapoolenPage =
   | 'home'
   | 'nature-pools'
-  | 'projects'
   | 'gotland'
   | 'waterscapes'
   | 'guides'
   | 'about'
   | 'faq'
+  | 'cookies'
   | 'configure'
   | 'pricing'
   | 'skane'
@@ -74,7 +74,6 @@ interface FaunapoolenSiteCopy {
     readonly home: string;
     readonly naturePools: string;
     readonly pricing: string;
-    readonly projects: string;
     readonly waterscapes: string;
     readonly guides: string;
     readonly about: string;
@@ -85,8 +84,6 @@ interface FaunapoolenSiteCopy {
     readonly ingress: string;
     readonly primary: string;
     readonly secondary: string;
-    readonly packagesTitle: string;
-    readonly packagesBody: string;
     readonly processTitle: string;
     readonly waterscapeTitle: string;
     readonly waterscapeBody: string;
@@ -98,11 +95,6 @@ interface FaunapoolenSiteCopy {
     readonly careTitle: string;
     readonly careBody: string;
     readonly carePoints: readonly string[];
-  };
-  readonly projects: {
-    readonly eyebrow: string;
-    readonly title: string;
-    readonly ingress: string;
   };
   readonly waterscapes: {
     readonly eyebrow: string;
@@ -148,7 +140,6 @@ interface FaunapoolenSiteCopy {
     readonly viewPackage: string;
     readonly talkTitle: string;
     readonly talkBody: string;
-    readonly talkButton: string;
     readonly guideLabel: string;
   };
 }
@@ -160,7 +151,6 @@ export const FAUNAPOOLEN_COPY = {
     home: $localize`:@@site.copy.nav.home:Start`,
     naturePools: $localize`:@@site.copy.nav.naturePools:Nature pools`,
     pricing: $localize`:@@site.copy.nav.pricing:Prices`,
-    projects: $localize`:@@site.copy.nav.projects:Projects`,
     waterscapes: $localize`:@@site.copy.nav.waterscapes:Waterscapes`,
     guides: $localize`:@@site.copy.nav.guides:Blog`,
     about: $localize`:@@site.copy.nav.about:About`,
@@ -171,8 +161,6 @@ export const FAUNAPOOLEN_COPY = {
     ingress: $localize`:@@site.copy.home.ingress:We design and build nature pools throughout Sweden and in Denmark for morning swims, long summer evenings and time together.`,
     primary: $localize`:@@site.copy.home.primary:Request a consultation`,
     secondary: $localize`:@@site.copy.home.secondary:See a completed natural pool`,
-    packagesTitle: $localize`:@@site.copy.home.packagesTitle:Find the right nature pool for your garden.`,
-    packagesBody: $localize`:@@site.copy.home.packagesBody:Compare swimming areas and indicative starting prices. We develop the design with you.`,
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
     waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. We build water features around the way you want to spend time outdoors.`,
@@ -188,11 +176,6 @@ export const FAUNAPOOLEN_COPY = {
       $localize`:@@site.copy.naturePools.carePoints.1:Care for the plants and follow the seasonal plan for your system.`,
       $localize`:@@site.copy.naturePools.carePoints.2:We also offer servicing, spring start-up and winter preparation.`,
     ],
-  },
-  projects: {
-    eyebrow: $localize`:@@site.copy.projects.eyebrow:Projects`,
-    title: $localize`:@@site.copy.projects.title:See a finished nature pool.`,
-    ingress: $localize`:@@site.copy.projects.ingress:Explore the nature pool we built beside Brita’s home on southern Gotland. Her photographs and account show the result and what it means to live with it.`,
   },
   waterscapes: {
     eyebrow: $localize`:@@site.copy.waterscapes.eyebrow:Waterscapes`,
@@ -248,7 +231,6 @@ export const FAUNAPOOLEN_COPY = {
     viewPackage: $localize`:@@site.copy.common.viewPackage:Enquire about this pool`,
     talkTitle: $localize`:@@site.copy.common.talkTitle:Find out what suits your garden.`,
     talkBody: $localize`:@@site.copy.common.talkBody:A nature pool, a pond or the beginning of an idea. Tell us about the site and what you have in mind.`,
-    talkButton: $localize`:@@site.copy.common.talkButton:Request a consultation`,
     guideLabel: $localize`:@@site.copy.common.guideLabel:Guide`,
   },
 } as const satisfies FaunapoolenSiteCopy;

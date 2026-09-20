@@ -210,7 +210,7 @@ for (const locale of ['en', 'sv', 'da']) {
       assert.equal(
         walk(nodes, (n) => attr(n, 'id') === 'measurement-title').length,
         0,
-        'No new optional UI on frozen articles',
+        'The oversized editorial statistics section is absent',
       );
     });
   }

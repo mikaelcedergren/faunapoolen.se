@@ -45,7 +45,7 @@ test('all public introductions reserve navigation clearance', async ({ page }) =
     '/da/',
     '/en/nature-pools/',
     '/en/waterscapes/',
-    '/en/projects/',
+    '/en/nature-pools/pricing/',
     '/en/projects/gotland/',
     '/en/blog/',
     '/en/about/',

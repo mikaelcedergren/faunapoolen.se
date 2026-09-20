@@ -1,6 +1,5 @@
 export const SITE_UI = {
   footer: $localize`:@@site.ui.footer:Footer`,
-  nature_pools_ponds_and_streams: $localize`:@@site.ui.nature_pools_ponds_and_streams:Nature pools, ponds and streams.`,
   child_watching_koi_in_a_garden_pond_with_a_natural_stream: $localize`:@@site.ui.child_watching_koi_in_a_garden_pond_with_a_natural_stream:Child watching koi in a garden pond with a natural stream`,
   water_ripples_wet_stone_and_reeds_in_close_detail: $localize`:@@site.ui.water_ripples_wet_stone_and_reeds_in_close_detail:Water ripples, wet stone and reeds in close detail`,
   quiet_evening_beside_a_nature_pool_with_family_timber_and_granite: $localize`:@@site.ui.quiet_evening_beside_a_nature_pool_with_family_timber_and_granite:Quiet evening beside a nature pool with family, timber and granite`,

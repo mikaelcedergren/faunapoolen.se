@@ -88,7 +88,6 @@ export abstract class SitePage {
     this.navItem('home', this.copy.nav.home),
     this.navItem('nature-pools', this.copy.nav.naturePools),
     this.navItem('pricing', this.copy.nav.pricing),
-    this.navItem('projects', this.copy.nav.projects),
     this.navItem('waterscapes', this.copy.nav.waterscapes),
     this.navItem('guides', this.copy.nav.guides),
     this.navItem('about', this.copy.nav.about),
@@ -126,9 +125,6 @@ export abstract class SitePage {
     label: string,
   ): CxMastheadItem {
     if (page === 'guides' && this.page === 'guide') {
-      return { id: page, label, href: this.routeFor(page), active: true };
-    }
-    if (page === 'projects' && this.page === 'gotland') {
       return { id: page, label, href: this.routeFor(page), active: true };
     }
     if (
