@@ -82,7 +82,9 @@ test('API and test-process transports cannot reach another origin', async ({ req
 test('home renders the real Faunapoolen site', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/Faunapoolen/i);
-  await expect(page.locator('cx-masthead')).toBeVisible();
+  const masthead = page.getByRole('banner');
+  await expect(masthead).toBeInViewport({ ratio: 1 });
+  await expect(masthead.getByRole('link', { name: 'Faunapoolen', exact: true })).toBeVisible();
 });
 
 test('a product page (.html) loads', async ({ page }) => {
