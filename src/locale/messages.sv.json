@@ -134,7 +134,7 @@
     "cookies.storageTitle": "Vad som sparas och hur länge",
     "cookies.title": "Kakor och besöksstatistik",
     "cookies.visitStorage": "fp-analytics-visit: valfri sessionslagring av din ingångssida och övergripande källa. Används bara efter samtycke och tas bort när du avvisar statistik eller avslutar webbläsarsessionen.",
-    "cookies.withdrawal": "Öppna Inställningar för kakor i sidfoten på valfri offentlig sida och välj Avvisa för att återkalla ditt samtycke. Då stoppas framtida statistikhändelser och webbplatsens Google Analytics-kakor och besöksuppgifter tas bort. Statistik som redan har skickats påverkas inte. Du kan även rensa sparade val i webbläsaren.",
+    "cookies.withdrawal": "Öppna inställningar för kakor i sidfoten på valfri offentlig sida och välj avvisa för att återkalla ditt samtycke. Då stoppas framtida statistikhändelser och webbplatsens Google Analytics-kakor och besöksuppgifter tas bort. Statistik som redan har skickats påverkas inte. Du kan även rensa sparade val i webbläsaren.",
     "cookies.withdrawalTitle": "Ändra ditt val",
     "enquiry.comparePackages": "Jämför poolpaket och priser",
     "enquiry.emailRequired": "Ange din e-postadress.",

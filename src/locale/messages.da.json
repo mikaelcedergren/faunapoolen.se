@@ -134,7 +134,7 @@
     "cookies.storageTitle": "Hvad der gemmes og hvor længe",
     "cookies.title": "Cookies og besøgsstatistik",
     "cookies.visitStorage": "fp-analytics-visit: valgfri sessionslagring af din landingsside og overordnede kilde. Bruges kun efter samtykke og fjernes, når du afviser statistik eller afslutter browsersessionen.",
-    "cookies.withdrawal": "Åbn Cookieindstillinger i sidefoden på en offentlig side, og vælg Afvis for at trække dit samtykke tilbage. Det stopper fremtidige statistikhændelser og fjerner hjemmesidens Google Analytics-cookies og besøgsoplysninger. Statistik, der allerede er sendt, påvirkes ikke. Du kan også rydde gemte valg i browseren.",
+    "cookies.withdrawal": "Åbn cookieindstillinger i sidefoden på en offentlig side, og vælg afvis for at trække dit samtykke tilbage. Det stopper fremtidige statistikhændelser og fjerner hjemmesidens Google Analytics-cookies og besøgsoplysninger. Statistik, der allerede er sendt, påvirkes ikke. Du kan også rydde gemte valg i browseren.",
     "cookies.withdrawalTitle": "Ændr dit valg",
     "enquiry.comparePackages": "Sammenlign poolpakker og priser",
     "enquiry.emailRequired": "Indtast din e-mailadresse.",
