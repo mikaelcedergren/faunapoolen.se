@@ -1,5 +1,8 @@
 # faunapoolen.se
 
+Current-site maintenance belongs on `main`; the upcoming website lives on `codex/redesign`.
+Read [the branch workflow](BRANCH-WORKFLOW.md) before switching or merging these lines of work.
+
 ## Everyday development
 
 Wolfie uses the product with real records, fixes problems in development as they appear, and
