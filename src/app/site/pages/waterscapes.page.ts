@@ -1,10 +1,12 @@
-import { CxHeroComponent } from '@mikaelcedergren/cx-framework';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
+  CxHeroComponent,
+  CxImageComponent,
+  CxCardComponent,
   CxStackComponent,
   CxGridComponent,
   CxButtonComponent,
 } from '@mikaelcedergren/cx-framework';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SitePage } from '../site-page';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import { SiteShellComponent } from '../site-shell.component';
@@ -16,6 +18,8 @@ import { SiteShellComponent } from '../site-shell.component';
     CxGridComponent,
     CxButtonComponent,
     SiteShellComponent,
+    CxImageComponent,
+    CxCardComponent,
   ],
   templateUrl: './waterscapes.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

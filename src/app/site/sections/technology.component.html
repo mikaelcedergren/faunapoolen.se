@@ -1,43 +1,39 @@
-<section id="aquascape" aria-labelledby="aquascape-title" class="fp-anchor">
-  <div class="fp-band">
-    <cx-stack gap="xl">
-      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="lg" [align]="'center'">
-        <div class="cx-editorial">
-          <h2 id="aquascape-title" class="cx-font-regular">
-            {{ evidence.technologyTitle }}
-          </h2>
-          <p>{{ evidence.technologyBody }}</p>
-          @if (page === 'home') {
-            <p>
-              <a [href]="routeFor('nature-pools') + '#aquascape'"
-                >{{ editorial.technologyDetails }} →</a
-              >
-            </p>
-          } @else {
-            <p>
-              <a [href]="aquascape.technology">{{ evidence.technologyLink }} ↗</a>
-            </p>
-          }
-        </div>
-        <cx-stack gap="md" align="start">
-          <img
-            class="fp-photo"
-            [src]="aquascapeImages.recreationalPond"
-            [alt]="editorial.supplierAlt"
-            width="1200"
-            loading="lazy"
-          />
-          <p class="cx-text-body-lg cx-text-muted">
-            {{ evidence.videoCaption }}
+<section id="aquascape" aria-labelledby="aquascape-title" class="cx-scroll-target">
+  <cx-card>
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="lg" [align]="'center'">
+      <div class="cx-editorial">
+        <h2 id="aquascape-title" class="cx-font-regular">
+          {{ evidence.technologyTitle }}
+        </h2>
+        <p>{{ evidence.technologyBody }}</p>
+        @if (page === 'home') {
+          <p>
+            <a [href]="routeFor('nature-pools') + '#aquascape'"
+              >{{ editorial.technologyDetails }} →</a
+            >
           </p>
-          <cx-button
-            [text]="editorial.videoLink"
-            [href]="aquascape.video"
-            icon="play"
-            size="large"
-          />
-        </cx-stack>
-      </cx-grid>
-    </cx-stack>
-  </div>
+        } @else {
+          <p>
+            <a [href]="aquascape.technology">{{ evidence.technologyLink }} ↗</a>
+          </p>
+        }
+      </div>
+      <cx-stack gap="md" align="start">
+        <cx-image
+          class="cx-w-full"
+          [image]="{
+            src: aquascapeImages.recreationalPond,
+            alt: editorial.supplierAlt,
+            loading: 'lazy',
+            intrinsicWidth: 1200,
+            borderRadius: 'large',
+          }"
+        />
+        <p class="cx-text-body-lg cx-text-muted">
+          {{ evidence.videoCaption }}
+        </p>
+        <cx-button [text]="editorial.videoLink" [href]="aquascape.video" icon="play" size="large" />
+      </cx-stack>
+    </cx-grid>
+  </cx-card>
 </section>

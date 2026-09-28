@@ -6,14 +6,17 @@ import { activeLanguage, languageBase } from '../../site/language';
   selector: 'fp-not-found',
   imports: [CxStackComponent, CxButtonComponent],
   template: `
-    <main class="cx-page__content">
-      <cx-stack gap="lg">
-        <h1 class="cx-text-display" i18n="@@notfound.h1">Page not found</h1>
-        <cx-button [text]="homeLabel" [href]="homeHref" />
-      </cx-stack>
-    </main>
+    <div class="cx-page">
+      <main class="cx-container cx-py-2xl">
+        <cx-stack gap="lg" align="start">
+          <h1 class="cx-text-display cx-font-serif cx-font-regular" i18n="@@notfound.h1">
+            Page not found
+          </h1>
+          <cx-button [text]="homeLabel" [href]="homeHref" icon="arrow-left" size="large" />
+        </cx-stack>
+      </main>
+    </div>
   `,
-  styles: [':host { display: contents; }'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFoundComponent {

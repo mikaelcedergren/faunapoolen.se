@@ -1,5 +1,5 @@
 <fp-site-shell>
-  <div hero class="fp-intro">
+  <div hero class="cx-measure-xl">
     <cx-hero
       [underMasthead]="true"
       headingClass="cx-font-regular"
@@ -9,53 +9,50 @@
       <p body>{{ copy.about.ingress }}</p>
     </cx-hero>
   </div>
-  <div class="fp-section">
-    <cx-stack gap="2xl">
-      <section id="certification" class="fp-anchor" aria-labelledby="about-method-title">
-        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-          <cx-stack gap="lg">
-            <div class="cx-editorial">
-              <h2 id="about-method-title" class="cx-font-regular">{{ copy.about.methodTitle }}</h2>
-            </div>
-            <div class="cx-editorial">
-              <p>{{ copy.about.methodBody }}</p>
-            </div>
+  <div class="cx-container cx-py-2xl">
+    <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+        <div class="cx-editorial">
+          <h2 id="about-method-title" class="cx-font-regular">{{ copy.about.methodTitle }}</h2>
+          <p>{{ copy.about.methodBody }}</p>
+        </div>
+        <cx-card>
+          <cx-stack gap="md">
+            <fp-certification />
+            <p class="cx-text-body-lg cx-text-muted">
+              {{ evidence.certificationDetail }}
+            </p>
+            <cx-button
+              [text]="evidence.certificationLink"
+              [href]="aquascape.certification"
+              appendIcon="open-new"
+            />
           </cx-stack>
-          <cx-card>
-            <cx-stack gap="md">
-              <fp-certification />
-              <p class="cx-text-body-lg cx-text-muted">
-                {{ evidence.certificationDetail }}
-              </p>
-              <cx-button
-                [text]="evidence.certificationLink"
-                [href]="aquascape.certification"
-                appendIcon="open-new"
-              />
-            </cx-stack>
-          </cx-card>
-        </cx-grid>
-      </section>
-      <section aria-labelledby="about-proof-title">
+        </cx-card>
+      </cx-grid>
+    </section>
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <section aria-labelledby="about-proof-title">
+      <cx-card>
         <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
-          <a
-            class="fp-project-link"
-            [href]="routeFor('gotland')"
-            [attr.aria-label]="evidence.caseLink"
-          >
-            <img
-              class="fp-photo"
-              [src]="projectPhoto.src"
-              [alt]="projectPhoto.alt"
-              width="1920"
-              height="1440"
-              loading="lazy"
+          <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
+            <cx-image
+              class="cx-w-full"
+              [image]="{
+                src: projectPhoto.src,
+                alt: projectPhoto.alt,
+                loading: 'lazy',
+                intrinsicWidth: 1920,
+                intrinsicHeight: 1440,
+                borderRadius: 'large',
+              }"
             />
           </a>
           <cx-stack gap="xl" align="start">
-            <h2 id="about-proof-title" class="cx-text-title-1 cx-font-serif cx-font-regular">
-              {{ evidence.caseTitle }}
-            </h2>
+            <div class="cx-editorial">
+              <h2 id="about-proof-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
+            </div>
             <fp-customer-quote [review]="testimonials[0]" />
             <cx-button
               [text]="evidence.caseLink"
@@ -64,15 +61,20 @@
             />
           </cx-stack>
         </cx-grid>
-      </section>
-      <section class="cx-editorial">
-        <p>
-          <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
-        </p>
-        <p>
-          <a [href]="routeFor('pricing')">{{ commercial.packageLink }} →</a>
-        </p>
-      </section>
-      <fp-service-area />
-    </cx-stack></div
-></fp-site-shell>
+      </cx-card>
+    </section>
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <section class="cx-editorial">
+      <p>
+        <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
+      </p>
+      <p>
+        <a [href]="routeFor('pricing')">{{ commercial.packageLink }} →</a>
+      </p>
+    </section>
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <fp-service-area />
+  </div>
+</fp-site-shell>

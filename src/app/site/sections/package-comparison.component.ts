@@ -11,13 +11,20 @@ import {
   CxCardComponent,
   CxGridComponent,
   CxButtonComponent,
+  CxMetricComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { SiteMeasurement } from '../site-measurement';
 
 @Component({
   selector: 'fp-package-comparison',
-  imports: [CxStackComponent, CxCardComponent, CxGridComponent, CxButtonComponent],
+  imports: [
+    CxStackComponent,
+    CxCardComponent,
+    CxGridComponent,
+    CxButtonComponent,
+    CxMetricComponent,
+  ],
   templateUrl: './package-comparison.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

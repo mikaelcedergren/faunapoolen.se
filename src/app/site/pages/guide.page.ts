@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, inject, SecurityContext } from '@an
 import { DomSanitizer } from '@angular/platform-browser';
 import {
   CxStackComponent,
-  CxInlineComponent,
   CxGridComponent,
   CxButtonComponent,
   CxCardComponent,
+  CxDividerComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
@@ -13,11 +13,11 @@ import { SiteShellComponent } from '../site-shell.component';
   selector: 'fp-guide-page',
   imports: [
     CxStackComponent,
-    CxInlineComponent,
     CxGridComponent,
     CxButtonComponent,
     CxCardComponent,
     SiteShellComponent,
+    CxDividerComponent,
   ],
   templateUrl: './guide.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

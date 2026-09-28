@@ -4,6 +4,9 @@ import {
   CxGridComponent,
   CxHeroComponent,
   CxStackComponent,
+  CxImageComponent,
+  CxCardComponent,
+  CxDividerComponent,
 } from '@mikaelcedergren/cx-framework';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import { PackageComparisonComponent } from '../sections/package-comparison.component';
@@ -21,6 +24,9 @@ import { SiteShellComponent } from '../site-shell.component';
     PackageComparisonComponent,
     ProcessComponent,
     SiteShellComponent,
+    CxImageComponent,
+    CxCardComponent,
+    CxDividerComponent,
   ],
   templateUrl: './pricing.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,11 +1,11 @@
-import { CxHeroComponent } from '@mikaelcedergren/cx-framework';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
+  CxHeroComponent,
   CxStackComponent,
   CxGridComponent,
   CxCardComponent,
   CxImageComponent,
 } from '@mikaelcedergren/cx-framework';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({

@@ -1,4 +1,15 @@
-import { CxHeroComponent } from '@mikaelcedergren/cx-framework';
+import {
+  CxHeroComponent,
+  CxCardComponent,
+  CxStackComponent,
+  CxAlertComponent,
+  CxGridComponent,
+  CxDropdownComponent,
+  CxTextFieldComponent,
+  CxTextAreaComponent,
+  CxEmailFieldComponent,
+  CxButtonComponent,
+} from '@mikaelcedergren/cx-framework';
 import type { CxDropdownOption } from '@mikaelcedergren/cx-framework';
 import type { EnquiryInput } from '../../../../server/src/enquiry-contracts';
 import type { FaunapoolenPackage } from '../content/faunapoolen-content';
@@ -12,16 +23,6 @@ import {
   Injector,
   afterNextRender,
 } from '@angular/core';
-import {
-  CxStackComponent,
-  CxAlertComponent,
-  CxGridComponent,
-  CxDropdownComponent,
-  CxTextFieldComponent,
-  CxTextAreaComponent,
-  CxEmailFieldComponent,
-  CxButtonComponent,
-} from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 import { Router } from '@angular/router';
@@ -39,6 +40,7 @@ import { SiteMeasurement } from '../site-measurement';
     CxEmailFieldComponent,
     CxButtonComponent,
     SiteShellComponent,
+    CxCardComponent,
   ],
   templateUrl: './configure.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

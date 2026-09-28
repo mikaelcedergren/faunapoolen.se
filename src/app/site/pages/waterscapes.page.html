@@ -1,5 +1,5 @@
 <fp-site-shell>
-  <div hero class="fp-intro">
+  <div hero class="cx-measure-xl">
     <cx-hero
       [underMasthead]="true"
       headingClass="cx-font-regular"
@@ -15,7 +15,6 @@
         [href]="configureHref + '?service=pond'"
       />
       <img
-        class="fp-photo"
         media
         [src]="images.waterscape"
         [alt]="editorial.waterscapeAlt"
@@ -25,72 +24,78 @@
       />
     </cx-hero>
   </div>
-  <div class="fp-section">
-    <cx-stack gap="2xl">
-      <section aria-labelledby="water-types-title">
-        <cx-stack gap="xl">
-          <div class="cx-editorial">
-            <h2 id="water-types-title" class="cx-font-regular">
-              {{ copy.waterscapes.typesTitle }}
-            </h2>
-          </div>
-          <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
-            @for (item of copy.waterscapes.types; track item.title; let i = $index) {
+  <div class="cx-container cx-py-2xl">
+    <section aria-labelledby="water-types-title">
+      <cx-stack gap="xl">
+        <div class="cx-editorial">
+          <h2 id="water-types-title" class="cx-font-regular">
+            {{ copy.waterscapes.typesTitle }}
+          </h2>
+        </div>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
+          @for (item of copy.waterscapes.types; track item.title; let i = $index) {
+            <cx-card variant="border">
               <cx-stack gap="md">
                 <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">
                   {{ item.title }}
                 </h3>
                 <p class="cx-text-body-lg cx-text-muted">{{ item.body }}</p>
+              </cx-stack>
+              <cx-stack slot="footer" align="start">
                 <cx-button
                   [text]="editorial.discussService"
                   [href]="configureHref + '?service=' + (i === 1 ? 'stream' : 'pond')"
                   appendIcon="arrow-right"
                 />
               </cx-stack>
-            }
-          </cx-grid>
-        </cx-stack>
-      </section>
-
-      <section aria-labelledby="waterscape-method-title">
-        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
-          <cx-stack gap="sm"
-            ><img
-              class="fp-photo"
-              [src]="images.detail"
-              [alt]="ui.water_ripples_wet_stone_and_reeds_in_close_detail"
-              width="1536"
-              loading="lazy"
-          /></cx-stack>
-          <cx-stack gap="lg">
-            <div class="cx-editorial">
-              <h2 id="waterscape-method-title" class="cx-font-regular">
-                {{ copy.waterscapes.methodTitle }}
-              </h2>
-            </div>
-            <div class="cx-editorial">
-              <p>{{ copy.waterscapes.methodBody }}</p>
-            </div>
-          </cx-stack>
+            </cx-card>
+          }
         </cx-grid>
-      </section>
-      <section class="cx-editorial" aria-labelledby="waterscape-swimming-title">
-        <h2 id="waterscape-swimming-title" class="cx-font-regular">
-          {{ commercial.swimmingTitle }}
-        </h2>
-        <p>{{ commercial.swimmingBody }}</p>
-        <p>
-          <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
-        </p>
-      </section>
-      <section class="cx-editorial">
-        <p>{{ commercial.waterscapeArea }}</p>
-        <p>
-          <a [href]="guideHref('creating-harmony-intergrating-water-features-with-your-landscape')"
-            >{{ commercial.gardenGuideLink }} →</a
-          >
-        </p>
-      </section>
-    </cx-stack>
-  </div></fp-site-shell
->
+      </cx-stack>
+    </section>
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <section aria-labelledby="waterscape-method-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-image
+          class="cx-w-full"
+          [image]="{
+            src: images.detail,
+            alt: ui.water_ripples_wet_stone_and_reeds_in_close_detail,
+            loading: 'lazy',
+            intrinsicWidth: 1536,
+            intrinsicHeight: 1024,
+            borderRadius: 'large',
+          }"
+        />
+        <div class="cx-editorial">
+          <h2 id="waterscape-method-title" class="cx-font-regular">
+            {{ copy.waterscapes.methodTitle }}
+          </h2>
+          <p>{{ copy.waterscapes.methodBody }}</p>
+        </div>
+      </cx-grid>
+    </section>
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <section class="cx-editorial" aria-labelledby="waterscape-swimming-title">
+      <h2 id="waterscape-swimming-title" class="cx-font-regular">
+        {{ commercial.swimmingTitle }}
+      </h2>
+      <p>{{ commercial.swimmingBody }}</p>
+      <p>
+        <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
+      </p>
+    </section>
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <section class="cx-editorial">
+      <p>{{ commercial.waterscapeArea }}</p>
+      <p>
+        <a [href]="guideHref('creating-harmony-intergrating-water-features-with-your-landscape')"
+          >{{ commercial.gardenGuideLink }} →</a
+        >
+      </p>
+    </section>
+  </div>
+</fp-site-shell>

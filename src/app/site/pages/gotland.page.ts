@@ -1,8 +1,14 @@
-import { CxStackComponent, CxGridComponent, CxHeroComponent } from '@mikaelcedergren/cx-framework';
+import {
+  CxStackComponent,
+  CxGridComponent,
+  CxHeroComponent,
+  CxCardComponent,
+  CxMasonryComponent,
+  CxLightboxComponent,
+} from '@mikaelcedergren/cx-framework';
 import { GOTLAND_COPY, GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
 import type { CxLightboxImage } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
-import { CxMasonryComponent, CxLightboxComponent } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import { SiteShellComponent } from '../site-shell.component';
@@ -19,6 +25,7 @@ import { GotlandFilmComponent } from '../sections/gotland-film.component';
     CxLightboxComponent,
     SiteShellComponent,
     GotlandFilmComponent,
+    CxCardComponent,
   ],
   templateUrl: './gotland.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

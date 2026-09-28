@@ -33,35 +33,39 @@
     />
   </cx-hero>
 
-  <section class="fp-section" aria-labelledby="home-case-title">
-    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
-      <a class="fp-project-link" [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
-        <img
-          class="fp-photo"
-          [src]="projectPhoto.src"
-          [alt]="projectPhoto.alt"
-          width="1920"
-          height="1440"
-          loading="lazy"
-        />
-      </a>
-      <cx-stack gap="xl" align="start">
-        <div class="cx-editorial">
-          <h2 id="home-case-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
-        </div>
-        <fp-customer-quote [review]="testimonials[1]" />
-        <cx-button
-          actions
-          [text]="evidence.caseLink"
-          [href]="routeFor('gotland')"
-          appendIcon="arrow-right"
-          size="large"
-        />
-      </cx-stack>
-    </cx-grid>
+  <section class="cx-container cx-py-2xl" aria-labelledby="home-case-title">
+    <cx-card>
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
+          <cx-image
+            class="cx-w-full"
+            [image]="{
+              src: projectPhoto.src,
+              alt: projectPhoto.alt,
+              loading: 'lazy',
+              intrinsicWidth: 1920,
+              intrinsicHeight: 1440,
+              borderRadius: 'large',
+            }"
+          />
+        </a>
+        <cx-stack gap="xl" align="start">
+          <div class="cx-editorial">
+            <h2 id="home-case-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
+          </div>
+          <fp-customer-quote [review]="testimonials[1]" />
+          <cx-button
+            [text]="evidence.caseLink"
+            [href]="routeFor('gotland')"
+            appendIcon="arrow-right"
+            size="large"
+          />
+        </cx-stack>
+      </cx-grid>
+    </cx-card>
   </section>
 
-  <section class="fp-section" aria-labelledby="home-life-title">
+  <section class="cx-container cx-py-2xl" aria-labelledby="home-life-title">
     <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
       <div class="cx-editorial">
         <h2 id="home-life-title" class="cx-font-regular">{{ editorial.lifeTitle }}</h2>
@@ -70,28 +74,38 @@
           <a [href]="routeFor('nature-pools')">{{ editorial.lifeLink }} →</a>
         </p>
       </div>
-      <img
-        class="fp-photo"
-        [src]="images.architecture"
-        [alt]="editorial.architectureAlt"
-        width="1536"
-        height="1024"
-        loading="lazy"
+      <cx-image
+        class="cx-w-full"
+        [image]="{
+          src: images.architecture,
+          alt: editorial.architectureAlt,
+          loading: 'lazy',
+          intrinsicWidth: 1536,
+          intrinsicHeight: 1024,
+          borderRadius: 'large',
+        }"
       />
     </cx-grid>
   </section>
 
-  <div class="fp-band"><fp-package-comparison class="fp-section" /></div>
+  <div class="cx-bg-surface-alt">
+    <div class="cx-container cx-py-2xl">
+      <fp-package-comparison />
+    </div>
+  </div>
 
-  <section class="fp-section" aria-labelledby="home-waterscape-title">
+  <section class="cx-container cx-py-2xl" aria-labelledby="home-waterscape-title">
     <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
-      <img
-        class="fp-photo"
-        [src]="images.waterscape"
-        [alt]="editorial.waterscapeAlt"
-        width="1536"
-        height="1024"
-        loading="lazy"
+      <cx-image
+        class="cx-w-full"
+        [image]="{
+          src: images.waterscape,
+          alt: editorial.waterscapeAlt,
+          loading: 'lazy',
+          intrinsicWidth: 1536,
+          intrinsicHeight: 1024,
+          borderRadius: 'large',
+        }"
       />
       <div class="cx-editorial">
         <h2 id="home-waterscape-title" class="cx-font-regular">{{ copy.home.waterscapeTitle }}</h2>
@@ -102,6 +116,10 @@
       </div>
     </cx-grid>
   </section>
-  <fp-process class="fp-section" />
-  <fp-service-area class="fp-section" />
+  <div class="cx-container cx-py-2xl">
+    <fp-process />
+  </div>
+  <div class="cx-container cx-py-2xl">
+    <fp-service-area />
+  </div>
 </fp-site-shell>

@@ -1,14 +1,13 @@
 <div class="cx-page">
   <cx-masthead
+    heading="Faunapoolen"
+    [logoSrc]="logo"
+    [homeHref]="homeHref"
     [items]="navItems"
     [menuAriaLabel]="copy.menuLabel"
     [frostOnScroll]="true"
     [overlay]="page !== 'guide'"
   >
-    <a brand class="fp-brand cx-fill" [href]="homeHref" aria-label="Faunapoolen">
-      <img class="fp-logo cx-p-xs" [src]="logo" alt="" width="40" height="40" />
-      <span class="cx-truncate">Faunapoolen</span>
-    </a>
     <cx-language-selector
       actions
       [languages]="languageOptions"
@@ -20,7 +19,7 @@
   <main>
     <ng-content select="cx-hero, [hero]" />
     @if (suggestion(); as language) {
-      <div class="fp-section">
+      <div class="cx-container cx-pt-2xl">
         <cx-alert
           [heading]="suggestionHeading"
           [action]="language"
@@ -31,8 +30,8 @@
     }
     <ng-content />
     @if (page !== 'configure' && page !== 'cookies') {
-      <div class="fp-price-invitation">
-        <section class="fp-section" aria-labelledby="contact-invitation-title">
+      <section class="cx-container cx-py-2xl" aria-labelledby="contact-invitation-title">
+        <cx-card>
           <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
             <div class="cx-editorial">
               <h2 id="contact-invitation-title" class="cx-font-regular">
@@ -40,7 +39,7 @@
               </h2>
               <p>{{ priceInvitation }}</p>
             </div>
-            <cx-inline>
+            <cx-stack align="start">
               <cx-button
                 [text]="pricesLabel"
                 mood="primary"
@@ -48,28 +47,38 @@
                 [href]="routeFor('pricing')"
                 appendIcon="arrow-right"
               />
-            </cx-inline>
+            </cx-stack>
           </cx-grid>
-        </section>
-      </div>
+        </cx-card>
+      </section>
     }
   </main>
-  <footer class="fp-band fp-footer" [attr.aria-label]="ui.footer">
-    <div class="fp-section">
+  <cx-divider />
+  <footer class="cx-bg-surface-alt" [attr.aria-label]="ui.footer">
+    <div class="cx-container cx-py-2xl">
       <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
         <cx-stack gap="lg" align="start">
-          <a class="fp-brand" [href]="homeHref" aria-label="Faunapoolen">
-            <img class="fp-logo" [src]="logo" alt="" width="64" height="64" />
+          <a [href]="homeHref" aria-label="Faunapoolen">
+            <cx-image
+              [image]="{
+                src: logo,
+                alt: '',
+                width: '80',
+                height: '80',
+                objectFit: 'contain',
+                borderRadius: 'default',
+              }"
+            />
           </a>
         </cx-stack>
         <nav [attr.aria-label]="copy.menuLabel">
-          <cx-grid [columns]="2" [columnsMobile]="2" gap="lg">
+          <cx-stack gap="md" align="start">
             @for (item of navItems; track item.id) {
               <a [href]="item.href" [attr.aria-current]="item.active ? 'page' : null">{{
                 item.label
               }}</a>
             }
-          </cx-grid>
+          </cx-stack>
         </nav>
         <cx-stack gap="lg" align="start">
           <a href="mailto:info@faunapoolen.se">info&#64;faunapoolen.se</a>

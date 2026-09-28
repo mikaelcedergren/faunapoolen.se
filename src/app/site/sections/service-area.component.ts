@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CxInlineComponent, CxStackComponent } from '@mikaelcedergren/cx-framework';
+import {
+  CxStackComponent,
+  CxButtonComponent,
+  CxInlineComponent,
+} from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import { FAUNAPOOLEN_REGIONS, type FaunapoolenRegionId } from '../content/faunapoolen-regions';
 
 @Component({
   selector: 'fp-service-area',
-  imports: [CxInlineComponent, CxStackComponent],
+  imports: [CxStackComponent, CxButtonComponent, CxInlineComponent],
   templateUrl: './service-area.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,10 +1,13 @@
-import { CxHeroComponent } from '@mikaelcedergren/cx-framework';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
+  CxHeroComponent,
+  CxImageComponent,
+  CxDividerComponent,
+  CxCardComponent,
   CxStackComponent,
   CxGridComponent,
   CxButtonComponent,
 } from '@mikaelcedergren/cx-framework';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ServiceAreaComponent } from '../sections/service-area.component';
 import { ProcessComponent } from '../sections/process.component';
 import { SitePage } from '../site-page';
@@ -24,6 +27,9 @@ import { PackageComparisonComponent } from '../sections/package-comparison.compo
     SiteShellComponent,
     TechnologyComponent,
     PackageComparisonComponent,
+    CxImageComponent,
+    CxDividerComponent,
+    CxCardComponent,
   ],
   templateUrl: './nature-pools.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -14,7 +14,7 @@ import { SiteMeasurement } from '../site-measurement';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <fp-site-shell #shell>
-      <div hero class="fp-intro">
+      <div hero class="cx-measure-xl">
         <cx-hero
           [underMasthead]="true"
           headingClass="cx-font-regular"
@@ -22,7 +22,7 @@ import { SiteMeasurement } from '../site-measurement';
           variant="stacked"
         />
       </div>
-      <section class="fp-section">
+      <section class="cx-container cx-py-2xl">
         <cx-stack gap="lg" align="start">
           @if (measurement.available()) {
             <p>{{ choice }}</p>

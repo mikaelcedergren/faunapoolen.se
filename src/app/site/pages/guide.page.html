@@ -1,10 +1,10 @@
 <fp-site-shell>
   <article>
-    <header class="fp-section">
+    <header class="cx-container cx-py-2xl">
       <cx-stack gap="xl">
-        <cx-inline
-          ><cx-button [text]="ui.all_guides" icon="arrow-left" [href]="routeFor('guides')"
-        /></cx-inline>
+        <cx-stack align="start">
+          <cx-button [text]="ui.all_guides" icon="arrow-left" [href]="routeFor('guides')" />
+        </cx-stack>
         <h1 class="cx-text-display cx-font-serif cx-font-regular">{{ guide.title }}</h1>
         @if (guideId !== 'build' && guideId !== 'difference') {
           <p class="cx-text-muted">
@@ -12,9 +12,9 @@
             <time [attr.datetime]="guide.seo.dateModified">{{ updatedDate }}</time>
           </p>
         }
-        <p id="guide-intro" class="cx-text-body-lg fp-reading">{{ guide.intro }}</p>
+        <p id="guide-intro" class="cx-text-body-lg cx-measure-lg-start">{{ guide.intro }}</p>
         <img
-          class="fp-photo"
+          class="cx-w-full cx-rounded-lg"
           [src]="guide.image"
           [alt]="guide.title"
           width="1536"
@@ -22,37 +22,41 @@
         />
       </cx-stack>
     </header>
-    <div class="fp-section">
-      <cx-stack gap="2xl">
-        <nav [attr.aria-label]="editorial.guideContents" class="cx-editorial fp-reading">
-          <cx-stack gap="md">
+    <div class="cx-container cx-py-2xl">
+      <nav [attr.aria-label]="editorial.guideContents">
+        <cx-card variant="border" [heading]="editorial.guideContents">
+          <cx-stack gap="md" align="start">
             @for (section of guideReading.sections; track section.id) {
               <a [href]="guideHref(guide.id) + '#' + section.id">{{ section.title }}</a>
             }
           </cx-stack>
-        </nav>
-        <div id="guide-body" class="cx-editorial fp-reading" [innerHTML]="guideReading.html"></div>
-        <section [attr.aria-label]="ui.continue_reading">
-          <cx-stack gap="xl">
-            <div class="cx-editorial">
-              <h2 class="cx-font-regular">{{ ui.continue_reading }}</h2>
-            </div>
-            <cx-grid [columns]="2" [columnsMobile]="1" gap="xl">
-              @for (item of relatedGuides; track item.id) {
-                @if (item.id !== guide.id) {
-                  <cx-card
-                    [heading]="item.title"
-                    [href]="guideHref(item.id)"
-                    [ariaLabel]="item.title"
-                  >
-                    <p class="cx-text-body-lg">{{ item.seo.description }}</p>
-                  </cx-card>
-                }
+        </cx-card>
+      </nav>
+    </div>
+    <div class="cx-container cx-py-2xl">
+      <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading.html"></div>
+    </div>
+    <div class="cx-container cx-py-2xl">
+      <section [attr.aria-label]="ui.continue_reading">
+        <cx-stack gap="xl">
+          <div class="cx-editorial">
+            <h2 class="cx-font-regular">{{ ui.continue_reading }}</h2>
+          </div>
+          <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+            @for (item of relatedGuides; track item.id) {
+              @if (item.id !== guide.id) {
+                <cx-card
+                  [heading]="item.title"
+                  [href]="guideHref(item.id)"
+                  [ariaLabel]="item.title"
+                >
+                  <p class="cx-text-body-lg">{{ item.seo.description }}</p>
+                </cx-card>
               }
-            </cx-grid>
-          </cx-stack>
-        </section>
-      </cx-stack>
+            }
+          </cx-grid>
+        </cx-stack>
+      </section>
     </div>
   </article>
 </fp-site-shell>

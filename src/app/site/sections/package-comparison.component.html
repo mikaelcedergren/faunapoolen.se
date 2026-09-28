@@ -1,6 +1,6 @@
-<section id="packages" class="fp-anchor">
+<section id="packages" class="cx-scroll-target">
   <cx-stack gap="xl">
-    <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+    <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
       @for (item of packages; track item.id) {
         <cx-card variant="border">
           <cx-stack gap="lg">
@@ -11,9 +11,7 @@
               <p class="cx-text-body-lg">{{ item.area }}</p>
             </cx-stack>
             <cx-stack gap="sm" align="start">
-              <p class="cx-text-title-1 cx-font-bold">
-                {{ copy.common.from }} {{ packagePrice(item) }}
-              </p>
+              <cx-metric [label]="copy.common.from" [value]="packagePrice(item)" size="large" />
               <p class="cx-text-body-lg cx-text-muted">{{ copy.common.inclVat }}</p>
             </cx-stack>
             <div class="cx-editorial">
