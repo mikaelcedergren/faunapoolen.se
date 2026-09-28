@@ -9,9 +9,9 @@ checkout. A commit or push does not publish the website.
 
 On 28 September 2026, the running browser and server both proved release `logging-20260907`, built
 from clean commit `672e1f2696caf258a89100a121ccf2c5c91f3dcb`. The tag
-`production-baseline-2026-09-28` preserves that source. Main's restoration keeps its application,
-dependencies, tests and configuration unchanged; this workflow and its instruction link are the
-only additions to that baseline.
+`production-baseline-2026-09-28` preserves that source. Main retains the current website's pages,
+copy, public routes, images, server implementation and database schema. Its tooling has been
+updated for today's registered development and release contracts as described below.
 
 The tag `redesign-preserved-2026-09-28` preserves the complete redesign at
 `e51e4a3544be3a3350a36a414ca072a4b569a171`, including the two commits that had not yet been pulled
@@ -31,6 +31,19 @@ The initial restoration is recorded as merged into `codex/redesign` while retain
 redesign tree. This deliberate one-time reconciliation lets later fixes merge normally and keeps
 a future merge of the redesign from silently retaining the restoration. Do not repeat the
 keep-our-tree merge strategy for ordinary fixes.
+
+## Maintenance tooling
+
+Both branches use the published framework's current Node contract. Main consumes the published
+package through the existing GitHub `main` dependency and keeps its exact revision in the lockfile.
+The matching Playwright version, development favicon format, full style audit and removal of a
+retired admin styling hook follow the package's upgrade notes. The public campaign stylesheet's
+local variables were replaced with their exact existing values, preserving its colours.
+
+This resolves the older package's conflict with the registered development manager without
+changing shared framework or server-ops source, weakening a check, or migrating product data.
+The framework refresh makes a future production release a paired browser/server release; it is
+not a browser-only change. Publication remains a separate explicit instruction.
 
 ## Launching the redesign
 
