@@ -873,108 +873,6 @@ fp-campaign-pond-packages ~ footer {
   width: 1px !important;
 }
 
-.campaign-form-heading {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.campaign-form-heading > span {
-  align-items: center;
-  background: #00a1e4;
-  border-radius: 50%;
-  color: #fff;
-  display: flex;
-  flex: 0 0 auto;
-  font-size: 0.8rem;
-  font-weight: 900;
-  height: 2.2rem;
-  justify-content: center;
-  width: 2.2rem;
-}
-
-.campaign-form-heading h3 {
-  font-family: "Literata", Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 400;
-  margin: 0;
-}
-
-.campaign-form-kicker {
-  color: #00a1e4;
-  font-size: 0.66rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  margin: 0 0 0.15rem;
-  text-transform: uppercase;
-}
-
-.campaign-choice-grid {
-  border: 0;
-  display: grid;
-  gap: 0.7rem;
-  grid-template-columns: repeat(2, 1fr);
-  margin: 0 0 1.5rem;
-  padding: 0;
-}
-
-.campaign-choice-grid label {
-  cursor: pointer;
-  display: block;
-  margin: 0;
-  position: relative;
-}
-
-.campaign-choice-grid input {
-  height: 1px;
-  opacity: 0;
-  position: absolute;
-  width: 1px;
-}
-
-.campaign-choice-grid label > span {
-  background: rgba(0, 19, 26, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 0.7rem;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 0.9rem 1rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-.campaign-form .campaign-choice-grid label > span {
-  display: flex;
-  gap: 0.15rem;
-}
-
-.campaign-choice-grid label:hover > span {
-  border-color: rgba(0, 161, 228, 0.6);
-}
-
-.campaign-choice-grid input:checked + span {
-  background: rgba(0, 161, 228, 0.16);
-  border-color: #00a1e4;
-  box-shadow: 0 0 0 2px rgba(0, 161, 228, 0.12);
-}
-
-.campaign-choice-grid input:focus-visible + span {
-  outline: 3px solid rgba(0, 161, 228, 0.3);
-  outline-offset: 2px;
-}
-
-.campaign-choice-grid strong {
-  font-size: 0.82rem;
-}
-
-.campaign-choice-grid small {
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 0.68rem;
-  line-height: 1.45;
-  margin-top: 0.15rem;
-}
-
 .campaign-form-row {
   display: grid;
   gap: 0.8rem;
@@ -1047,12 +945,6 @@ fp-campaign-pond-packages ~ footer {
   opacity: 1;
 }
 
-.campaign-form-divider {
-  background: rgba(255, 255, 255, 0.12);
-  height: 1px;
-  margin: 1.3rem 0 2rem;
-}
-
 .campaign-submit {
   align-items: center;
   background: #00a1e4;
@@ -1073,60 +965,6 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-submit:hover {
   background: #16b8f3;
-}
-
-.campaign-submit:disabled {
-  cursor: wait;
-  opacity: 0.7;
-}
-
-.campaign-form-error {
-  background: rgba(255, 159, 113, 0.11);
-  border: 1px solid rgba(255, 159, 113, 0.35);
-  border-radius: 0.6rem;
-  color: #ffd4c1;
-  font-size: 0.75rem;
-  line-height: 1.55;
-  margin: 0 0 1rem;
-  padding: 0.8rem 0.9rem;
-}
-
-.campaign-form-success {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 560px;
-  outline: none;
-  text-align: center;
-}
-
-.campaign-form-success > .material-symbols-outlined {
-  color: #00d3c8;
-  font-size: 4rem;
-  margin-bottom: 1.2rem;
-}
-
-.campaign-form-success h3 {
-  font-family: "Literata", Georgia, serif;
-  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
-  font-weight: 300;
-  line-height: 1.15;
-  margin: 0 0 1.2rem;
-  max-width: 520px;
-}
-
-.campaign-form-success > p:not(.campaign-form-kicker) {
-  color: rgba(255, 255, 255, 0.68);
-  line-height: 1.65;
-  margin: 0;
-  max-width: 500px;
-}
-
-.campaign-form-success .campaign-form-success-note {
-  color: rgba(255, 255, 255, 0.48) !important;
-  font-size: 0.78rem;
-  margin-top: 1rem !important;
 }
 
 .campaign-form .campaign-form-fineprint {
@@ -1207,22 +1045,6 @@ fp-campaign-pond-packages ~ footer {
 
 .campaign-mobile-cta {
   display: none;
-}
-
-.campaign-page .campaign-visually-hidden {
-  border: 0 !important;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  display: block !important;
-  height: 1px !important;
-  margin: -1px !important;
-  max-height: 1px !important;
-  max-width: 1px !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  position: absolute !important;
-  white-space: nowrap;
-  width: 1px !important;
 }
 
 @media (max-width: 900px) {
@@ -1544,29 +1366,6 @@ fp-campaign-pond-packages ~ footer {
     grid-template-columns: 1fr;
   }
 
-  .campaign-form-heading {
-    gap: 0.8rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .campaign-form-heading > span {
-    height: 2rem;
-    width: 2rem;
-  }
-
-  .campaign-form-heading h3 {
-    font-size: 1.2rem;
-  }
-
-  .campaign-choice-grid {
-    gap: 0.6rem;
-  }
-
-  .campaign-choice-grid label > span {
-    min-height: 4.35rem;
-    padding: 0.75rem;
-  }
-
   .campaign-form label > span {
     font-size: 0.76rem;
   }
@@ -1661,17 +1460,12 @@ fp-campaign-pond-packages ~ footer {
 
   .campaign-page a,
   .campaign-page button,
-  .campaign-page summary,
-  .campaign-choice-grid label {
+  .campaign-page summary {
     touch-action: manipulation;
   }
 }
 
 @media (max-width: 360px) {
-  .campaign-choice-grid {
-    grid-template-columns: 1fr;
-  }
-
   .campaign-hero-actions .campaign-cta {
     font-size: 0.9rem;
     padding-left: 1rem;
@@ -1744,16 +1538,6 @@ fp-campaign-pond-packages ~ footer {
 
   .campaign-form-shell {
     scroll-margin-top: 0.75rem;
-  }
-
-  .campaign-form-success {
-    min-height: 360px;
-    padding-bottom: 2rem;
-    padding-top: 2rem;
-  }
-
-  .campaign-form-success > .material-symbols-outlined {
-    font-size: 3.2rem;
   }
 
   .campaign-form-success h3 {

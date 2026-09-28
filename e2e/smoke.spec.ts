@@ -41,6 +41,131 @@ test.afterEach(async ({ context }) => {
   expect(unexpectedExternalRequests.get(context) ?? []).toEqual([]);
 });
 
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnnaekgl';
+const ENQUIRY_ROUTES = [
+  '/contact/',
+  '/pond-packages-landing.html',
+  '/plunge-series.html',
+  '/swim-series.html',
+  '/waterfront-series.html',
+  '/koi-pond-series.html',
+  '/campaigns/pond-packages/',
+];
+
+for (const locale of ['', '/en']) {
+  for (const path of ENQUIRY_ROUTES) {
+    test(`six-field enquiry validates and submits: ${locale}${path}`, async ({ page }) => {
+      const campaign = path.startsWith('/campaigns/');
+      let submission: Record<string, FormDataEntryValue> | undefined;
+      // Page routes take precedence over the external-request guard. No email is sent.
+      await page.route(FORMSPREE_ENDPOINT, async (route) => {
+        const request = route.request();
+        expect(request.method()).toBe('POST');
+        const body = new Response(request.postDataBuffer(), {
+          headers: { 'content-type': request.headers()['content-type'] },
+        });
+        submission = Object.fromEntries(await body.formData());
+        expect(request.isNavigationRequest()).toBe(true);
+        await route.fulfill({
+          status: 200,
+          contentType: 'text/html',
+          body: '<p>Test enquiry accepted</p>',
+        });
+      });
+      await page.goto(`${locale}${path}?utm_source=form-test&utm_campaign=synthetic`);
+      const form = page.locator(`form[action="${FORMSPREE_ENDPOINT}"]`);
+      // The campaign honeypot is visually hidden with opacity, not display:none.
+      const visibleFields = form.locator(
+        'input:visible:not([name="_gotcha"]), select:visible, textarea:visible',
+      );
+      expect(
+        await visibleFields.evaluateAll((fields) =>
+          fields.map((field) => ({
+            name: field.getAttribute('name'),
+            required: field.hasAttribute('required'),
+          })),
+        ),
+      ).toEqual([
+        { name: 'kategori', required: true },
+        { name: campaign ? 'location' : 'plats', required: true },
+        { name: campaign ? 'name' : 'firstName', required: true },
+        { name: 'email', required: true },
+        { name: 'phone', required: false },
+        { name: 'message', required: true },
+      ]);
+      const submit = form.locator('button[type="submit"]');
+      await submit.click();
+      expect(submission).toBeUndefined();
+      await form
+        .locator('[name="kategori"]')
+        .selectOption({ label: locale ? 'Natural pool' : 'Naturpool' });
+      await form.locator(`[name="${campaign ? 'location' : 'plats'}"]`).fill('Lund');
+      await form.locator(`[name="${campaign ? 'name' : 'firstName'}"]`).fill('Synthetic test');
+      await form.locator('[name="email"]').fill('invalid-email');
+      await form.locator('[name="message"]').fill('A small natural pool for our garden.');
+      await submit.click();
+      expect(submission).toBeUndefined();
+      await form.locator('[name="email"]').fill('enquiry@example.com');
+      await form.locator('[name="message"]').fill('');
+      await submit.click();
+      expect(submission).toBeUndefined();
+      await form.locator('[name="message"]').fill('A small natural pool for our garden.');
+      await submit.click();
+      await expect.poll(() => submission).toBeDefined();
+      expect(submission).toMatchObject({
+        kategori: locale ? 'Natural pool' : 'Naturpool',
+        [campaign ? 'location' : 'plats']: 'Lund',
+        [campaign ? 'name' : 'firstName']: 'Synthetic test',
+        email: 'enquiry@example.com',
+        phone: '',
+        message: 'A small natural pool for our garden.',
+      });
+      if (campaign) {
+        expect(submission).toMatchObject({
+          utm_source: 'form-test',
+          utm_campaign: 'synthetic',
+          _gotcha: '',
+        });
+      } else {
+        expect(Object.keys(submission!).sort()).toEqual([
+          'email',
+          'firstName',
+          'kategori',
+          'message',
+          'phone',
+          'plats',
+        ]);
+      }
+      await expect(page.getByText('Test enquiry accepted')).toBeVisible();
+    });
+  }
+}
+
+test('campaign form sends an optional phone number on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let phone: string | null = null;
+  await page.route(FORMSPREE_ENDPOINT, (route) => {
+    expect(route.request().isNavigationRequest()).toBe(true);
+    phone = new URLSearchParams(route.request().postData() ?? '').get('phone');
+    return route.fulfill({
+      status: 200,
+      contentType: 'text/html',
+      body: '<p>Test enquiry accepted</p>',
+    });
+  });
+  await page.goto('/campaigns/pond-packages/');
+  const form = page.locator('#campaign-nature-pool-form');
+  await form.locator('[name="kategori"]').selectOption({ label: 'Naturpool' });
+  await form.locator('[name="location"]').fill('Lund');
+  await form.locator('[name="name"]').fill('Synthetic test');
+  await form.locator('[name="email"]').fill('enquiry@example.com');
+  await form.locator('[name="phone"]').fill('0701234567');
+  await form.locator('[name="message"]').fill('A small natural pool for our garden.');
+  await form.locator('button[type="submit"]').click();
+  await expect(page.getByText('Test enquiry accepted')).toBeVisible();
+  expect(phone).toBe('0701234567');
+});
+
 test('the browser records and blocks every origin except its exact E2E server', async ({
   context,
   page,
@@ -880,7 +1005,12 @@ test('a fresh browser session recovers failed work before its campaign row exist
     });
   });
 
+  // Wait for the hydrated application before filling server-rendered login inputs.
+  const sessionLoaded = page.waitForResponse(
+    (response) => new URL(response.url()).pathname === '/api/admin/session',
+  );
   await page.goto('/admin');
+  await sessionLoaded;
   await page.getByRole('textbox', { name: 'Username' }).fill('faunapoolen-e2e-owner');
   await page.getByRole('textbox', { name: 'Password' }).fill('faunapoolen-e2e-owner-password');
   await page.getByRole('button', { name: 'Sign in' }).click();

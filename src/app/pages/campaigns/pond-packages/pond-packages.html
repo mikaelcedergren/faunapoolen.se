@@ -198,23 +198,12 @@
         </div>
 
         <div class="campaign-form-shell" id="ansokan">
-          @if (submissionState() === 'success') {
-            <div class="campaign-form campaign-form-success" role="status" tabindex="-1">
-              <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
-              <p class="campaign-form-kicker">Inquiry sent</p>
-              <h3>Thank you! We will reply within 48 hours.</h3>
-              <p>We start by listening to what you want and what may be possible on your plot.</p>
-              <p class="campaign-form-success-note">You don't need to do anything more right now.</p>
-            </div>
-          } @else {
             <form
               id="campaign-nature-pool-form"
               class="campaign-form"
               action="https://formspree.io/f/xnnaekgl"
               method="POST"
               accept-charset="UTF-8"
-              [attr.aria-busy]="submissionState() === 'submitting'"
-              (submit)="submitForm($event)"
             >
               <input type="hidden" name="subject" value="Ny förfrågan om naturpool från kampanjsidan" />
               <input type="hidden" name="source" value="Meta – naturpoolkampanj" />
@@ -226,32 +215,18 @@
               <input type="hidden" name="fbclid" [value]="attribution.fbclid" />
               <input class="campaign-honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-              <div class="campaign-form-heading">
-                <span>1</span>
-                <div>
-                  <p class="campaign-form-kicker">Your natural pool</p>
-                  <h3>How do you want to use the pool?</h3>
-                </div>
-              </div>
-              <fieldset class="campaign-choice-grid">
-                <legend class="campaign-visually-hidden">Choose how you mainly want to use the natural pool</legend>
-                <label>
-                  <input type="radio" name="goal" value="Kallbad och avkoppling" required />
-                  <span><strong>Cold plunge &amp; relaxation</strong><small>For sauna, bathing and recovery</small></span>
-                </label>
-                <label>
-                  <input type="radio" name="goal" value="Bad med familjen" required />
-                  <span><strong>Swimming with the family</strong><small>A bathing spot at home</small></span>
-                </label>
-                <label>
-                  <input type="radio" name="goal" value="Simning och motion" required />
-                  <span><strong>Swimming &amp; exercise</strong><small>More room for laps and training</small></span>
-                </label>
-                <label>
-                  <input type="radio" name="goal" value="Hjälp att välja" required />
-                  <span><strong>I don't know yet</strong><small>Help me choose</small></span>
-                </label>
-              </fieldset>
+              <label class="campaign-field">
+                <span>Category</span>
+                <select name="kategori" required>
+                  <option disabled="" selected="" value="">Select category...</option>
+                  <option>Natural pool</option>
+                  <option>Koi pond</option>
+                  <option>Waterfall</option>
+                  <option>Rainwater collection</option>
+                  <option>Garden maintenance</option>
+                  <option>Other</option>
+                </select>
+              </label>
 
               <label class="campaign-field">
                 <span>Where is the plot?</span>
@@ -264,15 +239,6 @@
                   required
                 />
               </label>
-
-              <div class="campaign-form-divider"></div>
-              <div class="campaign-form-heading">
-                <span>2</span>
-                <div>
-                  <p class="campaign-form-kicker">Contact details</p>
-                  <h3>How do we reach you?</h3>
-                </div>
-              </div>
 
               <div class="campaign-form-row">
                 <label>
@@ -291,31 +257,21 @@
               </label>
 
               <label class="campaign-field">
-                <span>Anything we should know? <small>(optional)</small></span>
+                <span>Tell us more about your project</span>
                 <textarea
                   name="message"
+                  required
                   rows="3"
                   maxlength="1500"
-                  placeholder="For example the size of the plot, level differences or when you want to get started"
+                  placeholder="Briefly describe what you have in mind..."
                 ></textarea>
               </label>
 
-              @if (submissionState() === 'error') {
-                <p class="campaign-form-error" role="alert">{{ submissionError() }}</p>
-              }
-
-              <button class="campaign-submit" type="submit" [disabled]="submissionState() === 'submitting'">
-                @if (submissionState() === 'submitting') {
-                  Sending…
-                } @else {
-                  Send my inquiry
-                }
-              </button>
+              <button class="campaign-submit" type="submit">Send my inquiry</button>
               <p class="campaign-form-fineprint">
                 We reply within 48 hours by phone or email. The feedback is free and you commit to nothing.
               </p>
             </form>
-          }
         </div>
       </div>
     </section>
@@ -585,23 +541,12 @@
         </div>
 
         <div class="campaign-form-shell" id="ansokan">
-          @if (submissionState() === 'success') {
-            <div class="campaign-form campaign-form-success" role="status" tabindex="-1">
-              <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
-              <p class="campaign-form-kicker">Förfrågan skickad</p>
-              <h3>Tack! Vi svarar inom 48 timmar.</h3>
-              <p>Vi börjar med att lyssna på vad du vill ha och vad som kan vara möjligt på tomten.</p>
-              <p class="campaign-form-success-note">Du behöver inte göra något mer just nu.</p>
-            </div>
-          } @else {
             <form
               id="campaign-nature-pool-form"
               class="campaign-form"
               action="https://formspree.io/f/xnnaekgl"
               method="POST"
               accept-charset="UTF-8"
-              [attr.aria-busy]="submissionState() === 'submitting'"
-              (submit)="submitForm($event)"
             >
               <input type="hidden" name="subject" value="Ny förfrågan om naturpool från kampanjsidan" />
               <input type="hidden" name="source" value="Meta – naturpoolkampanj" />
@@ -613,32 +558,18 @@
               <input type="hidden" name="fbclid" [value]="attribution.fbclid" />
               <input class="campaign-honeypot" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-              <div class="campaign-form-heading">
-                <span>1</span>
-                <div>
-                  <p class="campaign-form-kicker">Din naturpool</p>
-                  <h3>Hur vill du använda poolen?</h3>
-                </div>
-              </div>
-              <fieldset class="campaign-choice-grid">
-                <legend class="campaign-visually-hidden">Välj hur du främst vill använda naturpoolen</legend>
-                <label>
-                  <input type="radio" name="goal" value="Kallbad och avkoppling" required />
-                  <span><strong>Kallbad &amp; avkoppling</strong><small>För bastu, bad och återhämtning</small></span>
-                </label>
-                <label>
-                  <input type="radio" name="goal" value="Bad med familjen" required />
-                  <span><strong>Bad med familjen</strong><small>En badplats hemma</small></span>
-                </label>
-                <label>
-                  <input type="radio" name="goal" value="Simning och motion" required />
-                  <span><strong>Simning &amp; motion</strong><small>Mer plats för längder och träning</small></span>
-                </label>
-                <label>
-                  <input type="radio" name="goal" value="Hjälp att välja" required />
-                  <span><strong>Jag vet inte än</strong><small>Hjälp mig att välja</small></span>
-                </label>
-              </fieldset>
+              <label class="campaign-field">
+                <span>Kategori</span>
+                <select name="kategori" required>
+                  <option value="" disabled="" selected="">Välj kategori...</option>
+                  <option>Naturpool</option>
+                  <option>Koidamm</option>
+                  <option>Vattenfall</option>
+                  <option>Regnvatteninsamling</option>
+                  <option>Trädgårdsskötsel</option>
+                  <option>Annat</option>
+                </select>
+              </label>
 
               <label class="campaign-field">
                 <span>Var finns tomten?</span>
@@ -651,15 +582,6 @@
                   required
                 />
               </label>
-
-              <div class="campaign-form-divider"></div>
-              <div class="campaign-form-heading">
-                <span>2</span>
-                <div>
-                  <p class="campaign-form-kicker">Kontaktuppgifter</p>
-                  <h3>Hur når vi dig?</h3>
-                </div>
-              </div>
 
               <div class="campaign-form-row">
                 <label>
@@ -678,31 +600,21 @@
               </label>
 
               <label class="campaign-field">
-                <span>Något vi bör veta? <small>(valfritt)</small></span>
+                <span>Berätta mer om ditt projekt</span>
                 <textarea
                   name="message"
+                  required
                   rows="3"
                   maxlength="1500"
-                  placeholder="Till exempel tomtens storlek, nivåskillnader eller när du vill komma igång"
+                  placeholder="Beskriv kort vad du har tänkt dig..."
                 ></textarea>
               </label>
 
-              @if (submissionState() === 'error') {
-                <p class="campaign-form-error" role="alert">{{ submissionError() }}</p>
-              }
-
-              <button class="campaign-submit" type="submit" [disabled]="submissionState() === 'submitting'">
-                @if (submissionState() === 'submitting') {
-                  Skickar…
-                } @else {
-                  Skicka min förfrågan
-                }
-              </button>
+              <button class="campaign-submit" type="submit">Skicka min förfrågan</button>
               <p class="campaign-form-fineprint">
                 Vi svarar inom 48 timmar via telefon eller e-post. Återkopplingen är kostnadsfri och du förbinder dig inte till något.
               </p>
             </form>
-          }
         </div>
       </div>
     </section>
