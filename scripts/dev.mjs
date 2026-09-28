@@ -1,29 +1,23 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
-import { existsSync, lstatSync, mkdirSync, realpathSync } from 'node:fs';
+import { lstatSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export function createDevelopmentEnvironments(ambient = process.env, { owner = false } = {}) {
+export function createDevelopmentEnvironments(ambient = process.env) {
   const server = {
     ...ambient,
     APP_BASE_URL: 'http://127.0.0.1:4240',
-    DATA_DIR: owner ? 'data/owner-development' : 'data',
+    DATA_DIR: 'data',
     CX_EXECUTION_SCOPE: 'development',
-    CX_DATA_MODE: owner ? 'isolated' : 'shared',
+    CX_DATA_MODE: 'shared',
     CX_SCHEDULE_OWNER: 'false',
-    CAMPAIGN_GENERATION_ENABLED: owner ? '0' : (ambient.CAMPAIGN_GENERATION_ENABLED ?? '0'),
-    DB_PATH: owner ? 'data/owner-development/faunapoolen.db' : 'data/faunapoolen.db',
-    ...(owner ? { FAUNAPOOLEN_LOAD_ENV_FILE: 'false' } : {}),
+    CAMPAIGN_GENERATION_ENABLED: ambient.CAMPAIGN_GENERATION_ENABLED ?? '0',
+    DB_PATH: 'data/faunapoolen.db',
     HOST: '127.0.0.1',
     NODE_ENV: 'development',
     PORT: '4241',
   };
-  if (owner) {
-    for (const key of ['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'OPENAI_API_KEY', 'SESSION_SECRET']) {
-      delete server[key];
-    }
-  }
   const browser = { ...server };
   delete browser.PORT;
   return Object.freeze({
@@ -32,23 +26,17 @@ export function createDevelopmentEnvironments(ambient = process.env, { owner = f
   });
 }
 
-export function prepareDevelopmentDataDirectory(root = process.cwd(), { owner = false } = {}) {
+export function prepareDevelopmentDataDirectory(root = process.cwd()) {
   const canonicalRoot = realpathSync(root);
   if (canonicalRoot !== resolve(root)) {
     throw new Error('Faunapoolen development must run from its canonical repository path.');
   }
-  const sharedDirectory = resolve(canonicalRoot, 'data');
-  const directory = owner ? resolve(sharedDirectory, 'owner-development') : sharedDirectory;
+  const directory = resolve(canonicalRoot, 'data');
   const database = resolve(directory, 'faunapoolen.db');
   for (const [candidate, kind] of [
-    ...(owner ? [[sharedDirectory, 'directory']] : []),
     [directory, 'directory'],
     [database, 'file'],
   ]) {
-    if (owner && !existsSync(candidate)) {
-      if (kind === 'file') continue;
-      mkdirSync(candidate, { mode: 0o700 });
-    }
     const metadata = lstatSync(candidate);
     if (
       (kind === 'directory' ? !metadata.isDirectory() : !metadata.isFile()) ||
@@ -56,17 +44,15 @@ export function prepareDevelopmentDataDirectory(root = process.cwd(), { owner = 
       metadata.uid !== process.getuid?.() ||
       realpathSync(candidate) !== candidate
     ) {
-      throw new Error(
-        `Unsafe Faunapoolen ${owner ? 'owner' : 'shared'} development store: ${candidate}`,
-      );
+      throw new Error(`Unsafe Faunapoolen shared development store: ${candidate}`);
     }
   }
   return directory;
 }
 
-export function startDevelopment({ owner = false } = {}) {
-  prepareDevelopmentDataDirectory(process.cwd(), { owner });
-  const environments = createDevelopmentEnvironments(process.env, { owner });
+export function startDevelopment() {
+  prepareDevelopmentDataDirectory();
+  const environments = createDevelopmentEnvironments();
   const children = [
     spawn('server/node_modules/.bin/tsx', ['watch', 'server/src/index.ts'], {
       env: environments.server,
@@ -139,8 +125,5 @@ export function startDevelopment({ owner = false } = {}) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  const unknownArguments = process.argv.slice(2).filter((argument) => argument !== '--owner');
-  if (unknownArguments.length > 0)
-    throw new Error(`Unknown development option: ${unknownArguments[0]}`);
-  startDevelopment({ owner: process.argv.includes('--owner') });
+  startDevelopment();
 }

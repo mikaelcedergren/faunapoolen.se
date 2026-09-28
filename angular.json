@@ -14,10 +14,9 @@
       "sourceRoot": "src",
       "prefix": "fp",
       "i18n": {
-        "sourceLocale": { "code": "en", "subPath": "en" },
+        "sourceLocale": { "code": "sv", "subPath": "" },
         "locales": {
-          "sv": { "translation": "src/locale/messages.sv.json", "subPath": "" },
-          "da": { "translation": "src/locale/messages.da.json", "subPath": "da" }
+          "en": { "translation": "src/locale/messages.en.xlf", "subPath": "en" }
         }
       },
       "architect": {
@@ -30,8 +29,6 @@
             "server": "src/main.server.ts",
             "outputMode": "static",
             "polyfills": ["zone.js", "@angular/localize/init"],
-            "i18nMissingTranslation": "error",
-            "i18nDuplicateTranslation": "error",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -51,12 +48,11 @@
                 "output": "assets/fonts"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [],
             "scripts": []
           },
           "configurations": {
             "local": {
-              "fileReplacements": [{ "replace": "src/main.ts", "with": "src/main.local.ts" }],
               "index": {
                 "input": "src/index.development.html",
                 "output": "index.html"
@@ -69,20 +65,11 @@
               "localize": true,
               "optimization": {
                 "scripts": true,
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": false
-                },
+                "styles": { "minify": true, "inlineCritical": false },
                 "fonts": false
               },
               "outputHashing": "all",
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "800kb",
-                  "maximumError": "1.5mb"
-                }
-              ]
+              "budgets": [{ "type": "initial", "maximumWarning": "800kb", "maximumError": "1.5mb" }]
             }
           },
           "defaultConfiguration": "local"

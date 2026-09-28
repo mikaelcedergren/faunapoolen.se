@@ -75,19 +75,6 @@ test('production web configuration accepts only the official origins and web-rol
   }
 });
 
-test('dev credentials are defaults only for isolated non-production environments', () => {
-  const local = loadFaunapoolenEnvironment({ NODE_ENV: 'development' });
-  assert.equal(local.adminUsername, 'dev');
-  assert.equal(local.adminPassword, 'dev');
-  for (const environment of [
-    { ...PRODUCTION_ENVIRONMENT, ADMIN_PASSWORD: 'dev' },
-    { ...PRODUCTION_ENVIRONMENT, NODE_ENV: 'development', ADMIN_PASSWORD: 'dev' },
-    { NODE_ENV: 'development', ADMIN_PASSWORD: 'dev' },
-  ]) {
-    assert.throws(() => loadFaunapoolenEnvironment(environment), /ADMIN_PASSWORD/);
-  }
-});
-
 test('production worker configuration requires no web-role secret', () => {
   const environment = loadFaunapoolenEnvironment(
     {
@@ -151,8 +138,8 @@ test('release validation is production-isolated inside one absolute runtime root
   assert.notEqual(environment.adminUsername, suppliedUsername);
   assert.notEqual(environment.adminPassword, suppliedPassword);
   assert.notEqual(environment.sessionSecret, suppliedSessionSecret);
-  assert.notEqual(environment.adminUsername, 'dev');
-  assert.notEqual(environment.adminPassword, 'dev');
+  assert.notEqual(environment.adminUsername, 'faunapoolen-local-owner');
+  assert.notEqual(environment.adminPassword, 'faunapoolen-local-development-password');
   assert.notEqual(environment.sessionSecret, 'faunapoolen-local-development-session-secret');
   assert.notEqual(environment.adminUsername, secondEnvironment.adminUsername);
   assert.notEqual(environment.adminPassword, secondEnvironment.adminPassword);

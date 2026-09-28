@@ -1,7 +1,4 @@
-import { SocialPostsComponent } from './social-posts.component';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-import { EnquiryInboxComponent } from './enquiry-inbox.component';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -64,11 +61,15 @@ type AuthResponse = { authenticated?: boolean; ok?: boolean };
 
 type Language = 'en' | 'sv';
 type EditableTextField =
-  'headline' | 'description' | 'primaryText' | 'fullCaption' | 'callToAction';
+  | 'headline'
+  | 'description'
+  | 'primaryText'
+  | 'fullCaption'
+  | 'callToAction';
 type CampaignStage = 'strategy' | 'copy' | 'complete';
 type GenerationStep = 'strategy' | 'copy' | 'prompts';
 type StepStatus = 'waiting' | 'active' | 'done' | 'failed';
-type View = 'list' | 'campaign' | 'inbox' | 'social';
+type View = 'list' | 'campaign';
 type CampaignSection = 'copy' | 'prompts' | 'strategy';
 type CopyEdit = {
   campaignId: string;
@@ -261,8 +262,6 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
 @Component({
   selector: 'fp-admin',
   imports: [
-    EnquiryInboxComponent,
-    SocialPostsComponent,
     CxAccountControlComponent,
     CxAlertComponent,
     CxButtonComponent,
@@ -295,17 +294,10 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  protected readonly authReady = signal(false);
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
-  private readonly initialView: View = inject(ActivatedRoute).snapshot.url.some(
-    (segment) => segment.path === 'enquiries',
-  )
-    ? 'inbox'
-    : inject(ActivatedRoute).snapshot.url.some((segment) => segment.path === 'social-posts')
-      ? 'social'
-      : 'list';
-  @ViewChild(SocialPostsComponent) private socialPosts?: SocialPostsComponent;
+  private readonly publicStylesheet = this.findPublicStylesheet();
+  private readonly publicStylesheetMedia = this.originalPublicStylesheetMedia();
   private copyResetTimer?: ReturnType<typeof setTimeout>;
   private generationPollSequence = 0;
   private copySaveQueue: Promise<void> = Promise.resolve();
@@ -337,7 +329,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly passwordValidation = signal<CxFieldValidation | undefined>(undefined);
   protected readonly requestError = signal('');
 
-  protected readonly view = signal<View>(this.initialView);
+  protected readonly view = signal<View>('list');
   protected readonly section = signal<CampaignSection>('copy');
   protected readonly listLoading = signal(true);
   protected readonly listError = signal('');
@@ -368,23 +360,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly sideNavItems: CxSideNavItem[] = [
     {
       id: 'campaign-studio',
-      label: 'Campaign studio',
+      label: 'Campaign Studio',
       icon: 'form',
       routerLink: '/admin',
-      routerLinkActiveOptions: { exact: true },
-    },
-    {
-      id: 'social-posts',
-      label: 'Social posts',
-      icon: 'share',
-      routerLink: '/admin/social-posts',
-      routerLinkActiveOptions: { exact: true },
-    },
-    {
-      id: 'enquiries',
-      label: 'Enquiry inbox',
-      icon: 'form',
-      routerLink: '/admin/enquiries',
       routerLinkActiveOptions: { exact: true },
     },
   ];
@@ -584,12 +562,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   );
 
   protected readonly topBarTitle = computed<CxTopBarTitle>(() => {
-    const root =
-      this.view() === 'social'
-        ? { id: 'social-posts', label: 'Social posts' }
-        : this.view() === 'inbox'
-          ? { id: 'enquiries', label: 'Enquiry inbox' }
-          : { id: 'campaign-studio', label: 'Campaign studio' };
+    const root = { id: 'campaign-studio', label: 'Campaign Studio' };
     if (this.view() === 'campaign') {
       return {
         kind: 'breadcrumbs',
@@ -607,7 +580,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     return {
       kind: 'breadcrumbs',
       items: [root],
-      currentId: root.id,
+      currentId: 'campaign-studio',
       ariaLabel: 'Campaign location',
     };
   });
@@ -641,7 +614,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   });
 
   public constructor() {
+    // The admin screens are a cx-framework surface inside a site whose public stylesheet is global.
+    // Suppressing that one link keeps the public-site cascade off /admin without touching either
+    // stylesheet; both are restored when the route is left.
     this.applyTheme(this.theme());
+    this.publicStylesheet?.setAttribute('media', 'not all');
   }
 
   public ngOnInit(): void {
@@ -660,6 +637,13 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.document.defaultView?.removeEventListener('beforeunload', this.protectUnsavedWork);
     this.generationPollSequence += 1;
     this.document.documentElement.classList.remove(`theme-${this.theme()}`);
+    if (this.publicStylesheet) {
+      if (this.publicStylesheetMedia === null) {
+        this.publicStylesheet.removeAttribute('media');
+      } else {
+        this.publicStylesheet.setAttribute('media', this.publicStylesheetMedia);
+      }
+    }
     this.clearCopyTimer();
   }
 
@@ -733,8 +717,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected async requestSignOut(): Promise<void> {
-    if (this.socialPosts && !(await this.socialPosts.canLeave())) return;
+  protected requestSignOut(): void {
     if (this.generating()) return;
     void this.leaveCampaign(() => {
       void this.signOut();
@@ -792,6 +775,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     if (id === 'campaign-studio') this.showCampaigns();
   }
 
+  protected onSideNavSelect(item: CxSideNavItem): void {
+    if (item.id === 'campaign-studio') this.showCampaigns();
+  }
+
   protected selectSection(id: string): void {
     if (id === 'copy' || id === 'prompts' || id === 'strategy') {
       void this.saveChanges();
@@ -820,7 +807,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   public async canLeave(): Promise<boolean> {
-    if (this.socialPosts) return this.socialPosts.canLeave();
     if (this.generating()) return false;
     await this.saveChanges();
     if (!this.hasUnsavedCopy() && !this.roughIdea().trim()) return true;
@@ -1420,13 +1406,10 @@ export class AdminComponent implements OnInit, OnDestroy {
       }
     } catch {
       // The login form remains available when the development auth server is not running.
-    } finally {
-      this.authReady.set(true);
     }
   }
 
   private async loadWorkspace(): Promise<void> {
-    if (this.initialView === 'inbox' || this.initialView === 'social') return;
     await Promise.all([this.loadConfig(), this.refreshCampaigns()]);
     if (!this.hasUnsavedCopy()) await this.recoverGenerationWork();
   }
@@ -1586,7 +1569,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.retryStage.set(retryable ? stage : undefined);
   }
 
-  protected expireSession(): void {
+  private expireSession(): void {
     this.generationPollSequence += 1;
     this.authenticated.set(false);
     this.requestError.set('Your session expired. Sign in again.');
@@ -1611,8 +1594,19 @@ export class AdminComponent implements OnInit, OnDestroy {
     return 'The campaign could not be created right now. Try again.';
   }
 
+  private findPublicStylesheet(): HTMLLinkElement | undefined {
+    return Array.from(
+      this.document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'),
+    ).find((link) => link.getAttribute('href')?.startsWith('/assets/styles/styles.css'));
+  }
+
+  private originalPublicStylesheetMedia(): string | null {
+    const media = this.publicStylesheet?.getAttribute('media') ?? null;
+    return media === 'not all' ? null : media;
+  }
+
   private resetStudio(): void {
-    this.view.set(this.initialView);
+    this.view.set('list');
     this.section.set('copy');
     this.copyEdits.set({});
     this.generationStatuses.set([]);

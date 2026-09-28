@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <g transform="matrix(0.451923 0 0 0.451923 -0.855769 2.019231)">
+    <path fill="#000000" d="M8 7h2v1h-2zM13 7h8v1h-8zM7 8h3v1h-3zM12 8h10v1h-10zM7 9h3v1h-3zM11 9h12v1h-12zM3 10h21v1h-21zM3 11h22v1h-22zM4 12h22v1h-22zM5 13h3v1h-3zM9 13h19v1h-19zM6 14h2v1h-2zM9 14h19v1h-19zM3 15h2v1h-2zM7 15h1v1h-1zM9 15h20v1h-20zM3 16h5v1h-5zM9 16h20v1h-20zM4 17h4v1h-4zM9 17h20v1h-20zM7 18h21v1h-21zM4 19h1v1h-1zM7 19h22v1h-22zM5 20h24v1h-24zM4 21h24v1h-24zM4 22h3v1h-3zM8 22h19v1h-19zM7 23h4v1h-4zM13 23h13v1h-13zM7 24h4v1h-4zM14 24h2v1h-2zM21 24h5v1h-5z" />
+  </g>
+  <path fill="#000000" d="M10.5 0H16V5.5h-1.75V1.75H10.5Z" />
+</svg>

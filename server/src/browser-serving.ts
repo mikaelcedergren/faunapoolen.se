@@ -11,7 +11,6 @@ import {
 import express from 'express';
 
 import type { FaunapoolenEnvironment } from './environment.js';
-import { legacyRedirect } from './public-routes.js';
 
 export function createFaunapoolenBrowserServing(
   environment: FaunapoolenEnvironment,
@@ -31,17 +30,6 @@ export function mountFaunapoolenBrowser(
   environment: FaunapoolenEnvironment,
   browserServing: BrowserServing,
 ): void {
-  app.use((request, response, next) => {
-    const target = legacyRedirect(request.path);
-    if (target && ['GET', 'HEAD'].includes(request.method)) {
-      const query = request.originalUrl.includes('?')
-        ? request.originalUrl.slice(request.originalUrl.indexOf('?'))
-        : '';
-      response.redirect(301, target + query);
-      return;
-    }
-    next();
-  });
   app.use(browserServing.staticMiddleware(staticFileOptions()));
   if (browserServing.useReleaseHistory) {
     app.use(retainedReleaseAssetMiddleware({ repoRoot: environment.operationalRoot }));
@@ -68,10 +56,8 @@ export function mountFaunapoolenBrowser(
       }
 
       response.status(404);
-      const localePrefix = /^\/(en|da)(\/|$)/.exec(request.path)?.[1];
-      const localeDirectory = requestBrowserDirectory + (localePrefix ? `/${localePrefix}` : '');
-      const notFoundFile = `${localeDirectory}/404.html`;
-      const csrShellFile = `${localeDirectory}/index.csr.html`;
+      const notFoundFile = `${requestBrowserDirectory}/404.html`;
+      const csrShellFile = `${requestBrowserDirectory}/index.csr.html`;
       browserServing.sendFileForRequest(
         request,
         response,

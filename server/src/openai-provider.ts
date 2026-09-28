@@ -35,7 +35,6 @@ interface EffectInput<Result> {
 }
 
 const LOG_OPERATIONS = new Set([
-  'social.adapt',
   'campaign.strategy',
   'campaign.copy.en',
   'campaign.copy.sv',

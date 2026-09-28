@@ -12,27 +12,18 @@
   },
   "type": "module",
   "packageManager": "pnpm@11.23.0+sha512.f00082e5b283a199b74e079da28d155c008fe232f44c8a06ea7ddfa014ecf719fc362f790ecc67b28106ddac2afb24c49a9a079159da560b2ce7d1e98efd11af",
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": "26.5.0",
-      "onFail": "error"
-    }
-  },
   "engines": {
-    "node": "26.5.0"
+    "node": ">=26 <27"
   },
   "scripts": {
     "dev": "pnpm favicon:check && node scripts/dev.mjs",
-    "dev:owner": "pnpm favicon:check && node scripts/dev.mjs --owner",
     "build": "pnpm run build:browser && pnpm run build:server",
-    "build:browser": "ng build --configuration prod && node scripts/flatten.mjs && node --test --test-isolation=none tests/public-site.test.mjs",
+    "build:browser": "ng build --configuration prod && node scripts/flatten.mjs",
     "build:server": "pnpm --filter faunapoolen-server run build",
     "build:server:release": "node server/node_modules/@mikaelcedergren/cx-framework/scripts/cx-server-artifact.mjs --package faunapoolen-server",
-    "build:release": "ng build --configuration prod --output-path \"$SITE_RELEASE_DIR\" && node scripts/flatten.mjs && node --test --test-isolation=none tests/public-site.test.mjs",
+    "build:release": "ng build --configuration prod --output-path \"$SITE_RELEASE_DIR\" && node scripts/flatten.mjs",
     "build:local": "pnpm favicon:check && ng build --configuration local && node scripts/flatten.mjs",
-    "extract-i18n": "ng extract-i18n --format=json --output-path src/locale --out-file messages.en.json",
-    "i18n:check": "node scripts/check-i18n.mjs",
+    "extract-i18n": "ng extract-i18n --output-path src/locale",
     "start": "pnpm run start:web",
     "start:web": "node server/dist/index.js",
     "start:worker": "node server/dist/worker.js",
@@ -42,7 +33,7 @@
     "typecheck:server": "pnpm --filter faunapoolen-server run typecheck",
     "test": "pnpm run test:server",
     "test:server": "pnpm run build:server && pnpm --filter faunapoolen-server run test && node --test tests/server/dev-launcher.test.mjs",
-    "test:verification": "node --test tests/change-verification.test.mjs tests/sitemap.test.mjs",
+    "test:verification": "node --test tests/change-verification.test.mjs",
     "e2e": "node scripts/run-e2e.mjs",
     "e2e:hmr": "node scripts/run-e2e.mjs --hmr",
     "e2e:install": "playwright install chromium",
@@ -52,8 +43,7 @@
     "favicon:check": "cx-development-favicon",
     "platform:check": "cx-platform-check --root .",
     "verify:change": "node scripts/verify-change.mjs",
-    "style:check": "cx-style-token-check --all",
-    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm style:check && pnpm i18n:check && pnpm run typecheck && pnpm run test:verification && pnpm run test && pnpm run build"
+    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm run typecheck && pnpm run test:verification && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@angular/cdk": "22.0.6",
@@ -90,9 +80,9 @@
     "@angular/build": "22.0.8",
     "@angular/cli": "22.0.8",
     "@angular/compiler-cli": "22.0.8",
-    "@playwright/test": "1.62.0",
+    "@playwright/test": "1.60.0",
     "pnpm": "11.23.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.8.1",
     "typescript": "~6.0.3"
   }
 }

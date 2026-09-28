@@ -1,16 +1,6 @@
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
-import {
-  chmodSync,
-  copyFileSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  realpathSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
-import os from 'node:os';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -47,7 +37,7 @@ test('LaunchDaemon source selects immutable web and listener-free worker roles',
   }
 });
 
-test('daemon installer is a thin delegate and never activates either service', (t) => {
+test('daemon installer is a thin delegate and never activates either service', () => {
   const source = readFileSync(installer, 'utf8');
   assert.match(source, /install-site-service-definitions\.mjs/);
   assert.match(source, /--site faunapoolen/);
@@ -56,50 +46,9 @@ test('daemon installer is a thin delegate and never activates either service', (
   assert.doesNotMatch(source, /\bsudo\b/);
   assert.doesNotMatch(source, /\.env\.|faunapoolen\.db|server\/dist/);
 
-  // Exercise this repo's real delegate in an isolated layout. The recorder only observes the
-  // operations handoff; the real validator and installer are tested inside server-ops.
-  const temporary = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'site-delegate.')));
-  t.after(() => rmSync(temporary, { recursive: true, force: true }));
-  const relocated = path.join(temporary, "repos with spaces & 'quotes'", 'faunapoolen.se');
-  const entrypoint = path.join(relocated, 'bin/install-server-daemon');
-  const recorder = path.join(relocated, '../server-ops/bin/install-site-service-definitions.mjs');
-  mkdirSync(path.dirname(entrypoint), { recursive: true });
-  mkdirSync(path.dirname(recorder), { recursive: true });
-  copyFileSync(installer, entrypoint);
-  chmodSync(entrypoint, 0o700);
-  writeFileSync(
-    recorder,
-    `
-    process.stdout.write(JSON.stringify({ args: process.argv.slice(2), cwd: process.cwd() }));
-    process.exitCode = process.argv.includes('--fixture-failure') ? 23 : 0;
-  `,
-  );
-  const environment = { HOME: temporary, PATH: '/usr/bin:/bin', TMPDIR: temporary };
-  for (const args of [[], ['--check'], ['--apply'], ['--fixture-failure']]) {
-    const result = spawnSync(entrypoint, args, {
-      cwd: temporary,
-      env: environment,
-      encoding: 'utf8',
-      timeout: 10_000,
-    });
-    assert.equal(result.error, undefined);
-    assert.equal(result.status, args.includes('--fixture-failure') ? 23 : 0, result.stderr);
-    assert.deepEqual(JSON.parse(result.stdout), {
-      args: ['--site', 'faunapoolen', '--repo', relocated, ...args],
-      cwd: temporary,
-    });
-  }
-  rmSync(recorder);
-  const missing = spawnSync(entrypoint, ['--check'], {
-    cwd: temporary,
-    env: environment,
-    encoding: 'utf8',
-    timeout: 10_000,
-  });
-  assert.notEqual(
-    missing.status,
-    0,
-    'A missing operations checkout must fail, never use another host path.',
-  );
-  assert.match(missing.stderr, /Cannot find module/);
+  const direct = execFileSync(installer, [], { cwd: repoRoot, encoding: 'utf8' });
+  assert.match(direct, /VALID: faunapoolen 2 registered LaunchDaemon definitions/);
+  assert.match(direct, /No service definition was installed/);
+  const explicit = execFileSync(installer, ['--check'], { cwd: repoRoot, encoding: 'utf8' });
+  assert.equal(explicit, direct);
 });

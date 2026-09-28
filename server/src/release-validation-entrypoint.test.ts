@@ -8,8 +8,8 @@ import test from 'node:test';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 
-const DEVELOPMENT_PASSWORD = 'dev';
-const DEVELOPMENT_USERNAME = 'dev';
+const DEVELOPMENT_PASSWORD = 'faunapoolen-local-development-password';
+const DEVELOPMENT_USERNAME = 'faunapoolen-local-owner';
 const MAX_OUTPUT_BYTES = 256 * 1024;
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const COMPILED_ENTRYPOINT = path.join(REPO_ROOT, 'server', 'dist', 'index.js');
@@ -70,12 +70,12 @@ test('compiled release-validation web entrypoint is secretless, ready, and denie
     assert.equal(denied.headers.get('set-cookie'), null);
     const denialBody = await denied.text();
     assert.match(denialBody, /invalid_credentials/);
-    assert.doesNotMatch(denialBody, new RegExp(`\\b${DEVELOPMENT_USERNAME}\\b`));
-    assert.doesNotMatch(denialBody, new RegExp(`\\b${DEVELOPMENT_PASSWORD}\\b`));
+    assert.doesNotMatch(denialBody, new RegExp(DEVELOPMENT_USERNAME));
+    assert.doesNotMatch(denialBody, new RegExp(DEVELOPMENT_PASSWORD));
 
     await stopServer(server);
-    assert.doesNotMatch(server.output(), new RegExp(`\\b${DEVELOPMENT_USERNAME}\\b`));
-    assert.doesNotMatch(server.output(), new RegExp(`\\b${DEVELOPMENT_PASSWORD}\\b`));
+    assert.doesNotMatch(server.output(), new RegExp(DEVELOPMENT_USERNAME));
+    assert.doesNotMatch(server.output(), new RegExp(DEVELOPMENT_PASSWORD));
   } finally {
     await forceStop(server);
     removeTemporaryRoot(root);

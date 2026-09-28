@@ -10,18 +10,12 @@ const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/assets/images/og-image.jpg`;
 export interface PageSeo {
   /** Swedish canonical path, e.g. '/' or '/koi-pond-series.html'. */
   path: string;
-  /** Equivalent English-language route; page slugs remain English in every locale. */
-  enPath?: string;
-  daPath?: string;
-  defaultLanguage?: 'en' | 'sv';
   description: string;
   keywords?: string;
   ogTitle?: string;
   ogDescription?: string;
   /** Absolute image URL; defaults to the site og-image. */
   ogImage?: string;
-  ogImageWidth?: number;
-  ogImageHeight?: number;
   /** og:type — 'website' (default) or 'article' for blog posts. */
   ogType?: string;
   /** Blog posts only: publish date (ISO 8601; date-only is fine). */
@@ -73,14 +67,19 @@ export class SeoTitleStrategy extends TitleStrategy {
     super();
   }
 
+  private get isEnglish(): boolean {
+    return this.localeId.toLowerCase().startsWith('en');
+  }
+
   override updateTitle(snapshot: RouterStateSnapshot): void {
     let route = snapshot.root;
     while (route.firstChild) route = route.firstChild;
 
     const seo = (route.data['seo'] as PageSeo | undefined) ?? { path: '/', description: '' };
     const title = this.buildTitle(snapshot) ?? 'Faunapoolen';
-    const lang = this.localeId.split('-')[0];
-    const inLanguage = lang === 'sv' ? 'sv-SE' : lang === 'da' ? 'da-DK' : 'en-US';
+    const isEn = this.isEnglish;
+    const lang = isEn ? 'en' : 'sv';
+    const inLanguage = isEn ? 'en-US' : 'sv-SE';
 
     if (seo.private) {
       this.renderPrivatePage(title, lang);
@@ -88,12 +87,11 @@ export class SeoTitleStrategy extends TitleStrategy {
     }
 
     const svPath = seo.path;
-    const enPath = seo.enPath ?? (svPath === '/' ? '/en/' : `/en${svPath}`);
+    const enPath = svPath === '/' ? '/en/' : `/en${svPath}`;
     const svUrl = SITE_ORIGIN + svPath;
     const enUrl = SITE_ORIGIN + enPath;
-    const daUrl = SITE_ORIGIN + (seo.daPath ?? `/da${svPath}`);
-    const canonical = lang === 'sv' ? svUrl : lang === 'da' ? daUrl : enUrl;
-    const siteBase = lang === 'sv' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}/${lang}/`;
+    const canonical = isEn ? enUrl : svUrl;
+    const siteBase = isEn ? `${SITE_ORIGIN}/en/` : `${SITE_ORIGIN}/`;
 
     const ogImage = seo.ogImage ?? DEFAULT_OG_IMAGE;
     const ogTitle = seo.ogTitle ?? title;
@@ -104,8 +102,6 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ name: 'description', content: seo.description });
     if (seo.keywords) {
       this.meta.updateTag({ name: 'keywords', content: seo.keywords });
-    } else {
-      this.meta.removeTag("name='keywords'");
     }
     // The source pages carry no robots meta on indexable pages (indexable is the default), so only
     // emit one to mark a page noindex — keeps parity with the live <head>.
@@ -118,12 +114,12 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:type', content: seo.ogType ?? 'website' });
     this.meta.updateTag({ property: 'og:url', content: canonical });
     this.meta.updateTag({ property: 'og:site_name', content: 'Faunapoolen' });
-    this.meta.updateTag({ property: 'og:locale', content: inLanguage.replace('-', '_') });
+    this.meta.updateTag({ property: 'og:locale', content: isEn ? 'en_US' : 'sv_SE' });
     this.meta.updateTag({ property: 'og:image', content: ogImage });
     this.meta.updateTag({ property: 'og:title', content: ogTitle });
     this.meta.updateTag({ property: 'og:description', content: ogDescription });
-    this.meta.updateTag({ property: 'og:image:width', content: String(seo.ogImageWidth ?? 1200) });
-    this.meta.updateTag({ property: 'og:image:height', content: String(seo.ogImageHeight ?? 630) });
+    this.meta.updateTag({ property: 'og:image:width', content: '1200' });
+    this.meta.updateTag({ property: 'og:image:height', content: '630' });
     if (seo.ogType === 'article' && seo.datePublished) {
       this.meta.updateTag({ property: 'article:published_time', content: seo.datePublished });
       this.meta.updateTag({
@@ -141,7 +137,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ name: 'twitter:image', content: ogImage });
 
     this.setCanonical(canonical);
-    this.setAlternates(svUrl, enUrl, daUrl, seo.defaultLanguage === 'sv' ? svUrl : enUrl);
+    this.setAlternates(svUrl, enUrl);
     this.setJsonLd(
       this.buildGraph(canonical, title, seo.description, inLanguage, ogImage, siteBase, seo),
     );
@@ -183,7 +179,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     link.setAttribute('href', url);
   }
 
-  private setAlternates(svUrl: string, enUrl: string, daUrl: string, defaultUrl: string): void {
+  private setAlternates(svUrl: string, enUrl: string): void {
     const head = this.document.head;
     head.querySelectorAll("link[rel='alternate'][hreflang]").forEach((el) => el.remove());
     const add = (hreflang: string, href: string): void => {
@@ -195,8 +191,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     };
     add('sv', svUrl);
     add('en', enUrl);
-    add('da', daUrl);
-    add('x-default', defaultUrl);
+    add('x-default', svUrl);
   }
 
   private buildGraph(

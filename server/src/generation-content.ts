@@ -70,7 +70,8 @@ export interface StructuredGenerationSpec<Result> {
 }
 
 export type ValidationResult<Result> =
-  { readonly ok: true; readonly value: Result } | { readonly error: string; readonly ok: false };
+  | { readonly ok: true; readonly value: Result }
+  | { readonly error: string; readonly ok: false };
 
 export interface GeneratedImageScene {
   readonly concept: (typeof IMAGE_CONCEPT_IDS)[number];
