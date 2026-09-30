@@ -15,7 +15,7 @@ for (const [path, heading, cta, contact] of [
   }) => {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
-    await page.locator('cx-hero').getByRole('link', { name: cta, exact: true }).click();
+    await page.locator('.fp-home-opening').getByRole('link', { name: cta, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(contact + '$'));
     await expect(page.locator('form input')).toHaveCount(4);
     await expect(page.locator('form cx-dropdown')).toHaveCount(1);

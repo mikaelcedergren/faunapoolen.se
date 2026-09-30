@@ -13,15 +13,11 @@ import {
   CxMastheadComponent,
   CxLanguageSelectorComponent,
   CxStackComponent,
-  CxButtonComponent,
-  CxGridComponent,
   CxAlertComponent,
   CX_THEMES,
-  CxDividerComponent,
-  CxImageComponent,
-  CxCardComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from './site-page';
+import { ContactInvitationComponent } from './sections/contact-invitation.component';
 import { LANGUAGE_NAMES, preferredLanguage } from './language';
 import { SiteMeasurement } from './site-measurement';
 import { CookieNoticeComponent } from './cookie-notice.component';
@@ -32,18 +28,27 @@ import { CookieNoticeComponent } from './cookie-notice.component';
     CxMastheadComponent,
     CxLanguageSelectorComponent,
     CxStackComponent,
-    CxButtonComponent,
-    CxGridComponent,
     CxAlertComponent,
     CookieNoticeComponent,
-    CxDividerComponent,
-    CxImageComponent,
-    CxCardComponent,
+    ContactInvitationComponent,
   ],
   templateUrl: './site-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteShellComponent extends SitePage implements OnInit {
+  protected readonly footerContact = $localize`:@@site.footer.contact:Contact`;
+  protected readonly footerGroups = [
+    {
+      label: $localize`:@@site.footer.explore:Explore`,
+      items: ['nature-pools', 'waterscapes', 'pricing'].map((id) =>
+        this.navItems.find((item) => item.id === id)!,
+      ),
+    },
+    {
+      label: 'Faunapoolen',
+      items: ['home', 'guides', 'about'].map((id) => this.navItems.find((item) => item.id === id)!),
+    },
+  ];
   private readonly router = inject(Router);
   protected readonly measurement = inject(SiteMeasurement);
   private readonly cookieNotice = viewChild(CookieNoticeComponent);
@@ -102,8 +107,6 @@ export class SiteShellComponent extends SitePage implements OnInit {
     }
   }
 
-  protected readonly pricesLabel = $localize`:@@site.invitation.prices:See prices`;
-  protected readonly priceInvitation = $localize`:@@site.invitation.body:Explore our nature pool packages, prices and what’s included.`;
   protected readonly languageLabel = $localize`:@@site.language.label:Language`;
   protected readonly suggestionHeading = $localize`:@@site.language.suggestion:Read this page in your preferred language`;
   protected readonly suggestion = signal<{ text: string; href: string } | undefined>(undefined);

@@ -1,6 +1,4 @@
 import {
-  CxHeroComponent,
-  CxCardComponent,
   CxStackComponent,
   CxAlertComponent,
   CxGridComponent,
@@ -30,7 +28,6 @@ import { SiteMeasurement } from '../site-measurement';
 @Component({
   selector: 'fp-configure-page',
   imports: [
-    CxHeroComponent,
     CxStackComponent,
     CxAlertComponent,
     CxGridComponent,
@@ -40,7 +37,6 @@ import { SiteMeasurement } from '../site-measurement';
     CxEmailFieldComponent,
     CxButtonComponent,
     SiteShellComponent,
-    CxCardComponent,
   ],
   templateUrl: './configure.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

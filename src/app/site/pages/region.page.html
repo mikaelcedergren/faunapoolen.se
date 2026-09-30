@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="region.title"
       variant="stacked"
@@ -22,7 +22,7 @@
       />
     </cx-hero>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="region-site-title">
       <h2 id="region-site-title" class="cx-font-regular">{{ region.focusTitle }}</h2>
       <p>{{ region.focusBody }}</p>
@@ -31,7 +31,7 @@
       </p>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="region-package-title">
       <cx-stack gap="xl">
         <div class="cx-editorial">
@@ -40,7 +40,7 @@
         </div>
         <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
           @for (item of packages; track item.id) {
-            <cx-card variant="border">
+            <div class="fp-column">
               <div class="cx-editorial">
                 <h3 class="cx-font-regular">{{ item.name }}</h3>
                 <p>
@@ -48,7 +48,7 @@
                   {{ copy.common.inclVat }}
                 </p>
               </div>
-            </cx-card>
+            </div>
           }
         </cx-grid>
         <div class="cx-editorial">
@@ -59,9 +59,9 @@
       </cx-stack>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="region-proof-title">
-      <cx-card>
+      <div>
         <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
           <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
             <cx-image
@@ -84,10 +84,10 @@
             </p>
           </div>
         </cx-grid>
-      </cx-card>
+      </div>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="region-planning-title">
       <cx-stack gap="xl">
         <div class="cx-editorial">
@@ -108,7 +108,7 @@
       </cx-stack>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="region-next-title">
       <h2 id="region-next-title" class="cx-font-regular">{{ regional.nextTitle }}</h2>
       <p>{{ regional.nextBody }}</p>

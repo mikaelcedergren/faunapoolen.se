@@ -2,7 +2,6 @@ import {
   CxStackComponent,
   CxGridComponent,
   CxHeroComponent,
-  CxCardComponent,
   CxMasonryComponent,
   CxLightboxComponent,
 } from '@mikaelcedergren/cx-framework';
@@ -25,7 +24,6 @@ import { GotlandFilmComponent } from '../sections/gotland-film.component';
     CxLightboxComponent,
     SiteShellComponent,
     GotlandFilmComponent,
-    CxCardComponent,
   ],
   templateUrl: './gotland.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,4 +1,6 @@
 export const ARTICLE_LOADERS = {
+  'naturpool-i-sodra-sverige': () =>
+    import('./articles/naturpool-i-sodra-sverige').then((m) => m.BODY_HTML),
   build: () => import('./articles/build-your-own-nature-pool').then((m) => m.BODY_HTML),
   difference: () =>
     import('./articles/difference-between-normal-pool-and-natural-pool').then((m) => m.BODY_HTML),

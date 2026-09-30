@@ -9,7 +9,11 @@ import { APP_BASE_HREF, DOCUMENT, registerLocaleData, ViewportScroller } from '@
 import sv from '@angular/common/locales/sv';
 import da from '@angular/common/locales/da';
 import { activeLanguage, languageBase } from './site/language';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import {
+  provideClientHydration,
+  withEventReplay,
+  withNoIncrementalHydration,
+} from '@angular/platform-browser';
 import { TitleStrategy, provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideCxKeyboardFocus } from '@mikaelcedergren/cx-framework';
 import { routes } from './app.routes';
@@ -23,7 +27,9 @@ export const appConfig: ApplicationConfig = {
     { provide: APP_BASE_HREF, useFactory: () => languageBase(activeLanguage()) },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideCxKeyboardFocus(),
-    provideClientHydration(withEventReplay()),
+    // There are no deferred hydration blocks. Release event capture after the
+    // initial hydration so later native document links keep their default action.
+    provideClientHydration(withNoIncrementalHydration(), withEventReplay()),
     provideAppInitializer(() => {
       const document = inject(DOCUMENT);
       inject(ViewportScroller).setOffset(() => {

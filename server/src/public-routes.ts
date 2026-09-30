@@ -29,6 +29,7 @@ export const PUBLIC_PAGES = {
 } as const;
 export type PublicLanguage = keyof typeof PUBLIC_PAGES;
 export const GUIDE_SLUGS = {
+  'naturpool-i-sodra-sverige': 'naturpool-i-sodra-sverige.html',
   build: 'build-your-own-nature-pool.html',
   difference: 'difference-between-normal-pool-and-natural-pool.html',
   '5-common-problems-installing-a-nature-pool': '5-common-problems-installing-a-nature-pool.html',

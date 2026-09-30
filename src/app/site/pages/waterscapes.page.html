@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="copy.waterscapes.title"
       variant="split"
@@ -16,6 +16,7 @@
       />
       <img
         media
+        class="fp-photo fp-photo--portrait"
         [src]="images.waterscape"
         [alt]="editorial.waterscapeAlt"
         width="1536"
@@ -24,7 +25,7 @@
       />
     </cx-hero>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="water-types-title">
       <cx-stack gap="xl">
         <div class="cx-editorial">
@@ -54,7 +55,7 @@
       </cx-stack>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="waterscape-method-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
         <cx-image
@@ -77,7 +78,7 @@
       </cx-grid>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="waterscape-swimming-title">
       <h2 id="waterscape-swimming-title" class="cx-font-regular">
         {{ commercial.swimmingTitle }}
@@ -88,7 +89,7 @@
       </p>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial">
       <p>{{ commercial.waterscapeArea }}</p>
       <p>

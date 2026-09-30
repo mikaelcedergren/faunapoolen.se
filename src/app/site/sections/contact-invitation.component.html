@@ -1,0 +1,23 @@
+<section class="cx-container fp-section" aria-labelledby="contact-invitation-title">
+  <div class="fp-invitation">
+    <div class="cx-editorial">
+      <h2 id="contact-invitation-title" class="cx-font-regular">
+        {{ copy.common.talkTitle }}
+      </h2>
+      <p>{{ invitationBody }}</p>
+      <p>{{ editorial.firstContact }}</p>
+    </div>
+    <cx-stack align="start" gap="lg">
+      <cx-button
+        [text]="copy.start"
+        mood="primary"
+        size="large"
+        [href]="configureHref"
+        appendIcon="arrow-right"
+      />
+      @if (page !== 'pricing') {
+        <a [href]="routeFor('pricing')">{{ pricesLabel }} →</a>
+      }
+    </cx-stack>
+  </div>
+</section>

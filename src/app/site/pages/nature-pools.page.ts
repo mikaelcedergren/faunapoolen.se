@@ -1,8 +1,6 @@
 import {
   CxHeroComponent,
   CxImageComponent,
-  CxDividerComponent,
-  CxCardComponent,
   CxStackComponent,
   CxGridComponent,
   CxButtonComponent,
@@ -28,8 +26,6 @@ import { PackageComparisonComponent } from '../sections/package-comparison.compo
     TechnologyComponent,
     PackageComparisonComponent,
     CxImageComponent,
-    CxDividerComponent,
-    CxCardComponent,
   ],
   templateUrl: './nature-pools.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

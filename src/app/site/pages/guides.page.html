@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="copy.guides.title"
       variant="stacked"
@@ -10,7 +10,7 @@
     </cx-hero>
   </div>
   @for (group of groups; track group.title) {
-    <div class="cx-container cx-py-2xl">
+    <div class="cx-container fp-section">
       <section [attr.aria-label]="group.title">
         <cx-stack gap="xl">
           <div class="cx-editorial">
@@ -18,16 +18,15 @@
           </div>
           <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="xl">
             @for (item of group.articles; track item.id) {
-              <cx-card variant="border" [href]="guideHref(item.id)" [ariaLabel]="item.title">
+              <a class="fp-article-link" [href]="guideHref(item.id)">
                 <cx-stack gap="lg">
-                  <cx-image
-                    [image]="{
-                      src: item.image,
-                      alt: item.title,
-                      height: '320',
-                      objectFit: 'cover',
-                      borderRadius: 'large',
-                    }"
+                  <img
+                    class="fp-article-photo"
+                    [src]="item.image"
+                    [alt]="item.title"
+                    width="1536"
+                    height="1024"
+                    [attr.loading]="$index < 2 ? 'eager' : 'lazy'"
                   />
                   <cx-stack gap="sm">
                     <h3 class="cx-text-title-1 cx-font-serif cx-font-regular">
@@ -37,14 +36,14 @@
                     <span class="cx-text-link">{{ copy.guides.read }} →</span>
                   </cx-stack>
                 </cx-stack>
-              </cx-card>
+              </a>
             }
           </cx-grid>
         </cx-stack>
       </section>
     </div>
   }
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <p class="cx-text-body-lg">
       <a [href]="routeFor('pricing')">{{ pricingLink }} →</a>
     </p>

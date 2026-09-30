@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { expectedGuideBody } from '../tests/guide-content-expectations.mjs';
 
 const locales = [
   { language: 'sv', prefix: '' },
@@ -104,7 +105,7 @@ for (const pool of [
   }) => {
     await page.goto('/nature-pools/pricing/');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Vad kostar en naturpool?');
-    const cards = page.locator('#packages cx-card');
+    const cards = page.locator('#packages article');
     await expect(cards).toHaveCount(3);
     await expect(cards.nth(pool.index)).toContainText(pool.name);
     await expect(cards.nth(pool.index)).toContainText(pool.price);
@@ -196,7 +197,7 @@ for (const [slug, name] of [
       .getByRole('link', { name: 'Jämför våra naturpoolspaket', exact: true })
       .click();
     await expect(page).toHaveURL(/\/nature-pools\/pricing\/$/);
-    await expect(page.locator('#packages cx-card')).toHaveCount(3);
+    await expect(page.locator('#packages article')).toHaveCount(3);
   });
 }
 
@@ -230,7 +231,7 @@ for (const { language, prefix } of locales) {
     }
     await page.locator(`#guide-body a[href="${prefix}/nature-pools/pricing/"]`).first().click();
     await expect.poll(() => new URL(page.url()).pathname).toBe(`${prefix}/nature-pools/pricing/`);
-    await expect(page.locator('#packages cx-card')).toHaveCount(3);
+    await expect(page.locator('#packages article')).toHaveCount(3);
   });
 }
 
@@ -253,26 +254,29 @@ for (const { language, prefix } of locales) {
       );
       await expect(page.locator('#guide-intro')).toHaveText(expected[`blog.${id}.intro`]);
       await expect(page).toHaveTitle(expected[`blog.${id}.seo.title`]);
-      const body = await page.locator('#guide-body').evaluate((element, original) => {
-        const template = document.createElement('template');
-        template.innerHTML = original;
-        const normalize = (text: string | null) => (text ?? '').replace(/\s+/g, ' ').trim();
-        const readLinks = (root: ParentNode) =>
-          Array.from(root.querySelectorAll('a')).map((anchor) => ({
-            text: normalize(anchor.textContent),
-            href: anchor.getAttribute('href'),
-          }));
-        const readImages = (root: ParentNode) =>
-          Array.from(root.querySelectorAll('img')).map((image) => image.getAttribute('src'));
-        return {
-          actualText: normalize(element.textContent),
-          originalText: normalize(template.content.textContent),
-          actualLinks: readLinks(element),
-          originalLinks: readLinks(template.content),
-          actualImages: readImages(element),
-          originalImages: readImages(template.content),
-        };
-      }, expected[`blog.${id}.bodyHtml`]);
+      const body = await page.locator('#guide-body').evaluate(
+        (element, original) => {
+          const template = document.createElement('template');
+          template.innerHTML = original;
+          const normalize = (text: string | null) => (text ?? '').replace(/\s+/g, ' ').trim();
+          const readLinks = (root: ParentNode) =>
+            Array.from(root.querySelectorAll('a')).map((anchor) => ({
+              text: normalize(anchor.textContent),
+              href: anchor.getAttribute('href'),
+            }));
+          const readImages = (root: ParentNode) =>
+            Array.from(root.querySelectorAll('img')).map((image) => image.getAttribute('src'));
+          return {
+            actualText: normalize(element.textContent),
+            originalText: normalize(template.content.textContent),
+            actualLinks: readLinks(element),
+            originalLinks: readLinks(template.content),
+            actualImages: readImages(element),
+            originalImages: readImages(template.content),
+          };
+        },
+        expectedGuideBody(expected[`blog.${id}.bodyHtml`], language, id),
+      );
       expect(body.actualText).toBe(body.originalText);
       expect(body.actualLinks).toEqual(body.originalLinks);
       expect(body.actualImages).toEqual(body.originalImages);

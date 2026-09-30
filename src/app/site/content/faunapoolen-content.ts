@@ -84,6 +84,7 @@ interface FaunapoolenSiteCopy {
     readonly ingress: string;
     readonly primary: string;
     readonly secondary: string;
+    readonly caseBody: string;
     readonly processTitle: string;
     readonly waterscapeTitle: string;
     readonly waterscapeBody: string;
@@ -152,7 +153,7 @@ export const FAUNAPOOLEN_COPY = {
     naturePools: $localize`:@@site.copy.nav.naturePools:Nature pools`,
     pricing: $localize`:@@site.copy.nav.pricing:Prices`,
     waterscapes: $localize`:@@site.copy.nav.waterscapes:Waterscapes`,
-    guides: $localize`:@@site.copy.nav.guides:Blog`,
+    guides: $localize`:@@site.copy.nav.guides:Guides`,
     about: $localize`:@@site.copy.nav.about:About`,
   },
   home: {
@@ -161,6 +162,7 @@ export const FAUNAPOOLEN_COPY = {
     ingress: $localize`:@@site.copy.home.ingress:We design and build nature pools throughout Sweden and in Denmark for morning swims, long summer evenings and time together.`,
     primary: $localize`:@@site.copy.home.primary:Request a consultation`,
     secondary: $localize`:@@site.copy.home.secondary:See a completed natural pool`,
+    caseBody: $localize`:@@site.copy.home.caseBody:We built this nature pool beside Brita’s home on southern Gotland, with natural stone edges that connect it to the surrounding garden. Today, it’s a place for her and her grandchildren to swim and spend time together.`,
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
     waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. We build water features around the way you want to spend time outdoors.`,
@@ -200,7 +202,7 @@ export const FAUNAPOOLEN_COPY = {
     methodBody: $localize`:@@site.copy.waterscapes.methodBody:The right choice depends on your space, budget and how much care you want to take on. We plan circulation and filtration, with equipment you can reach for servicing.`,
   },
   guides: {
-    title: $localize`:@@site.copy.guides.title:Get to know nature pools.`,
+    title: $localize`:@@site.copy.guides.title:Ideas and guides`,
     ingress: $localize`:@@site.copy.guides.ingress:Planning, filtration and care. Find answers before you build.`,
     read: $localize`:@@site.copy.guides.read:Read the guide`,
   },

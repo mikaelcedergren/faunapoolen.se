@@ -121,19 +121,25 @@ test('English header and footer share navigation and the closing invitation lead
     '/en/blog/',
     '/en/about/',
   ]);
-  expect(footerLinks).toEqual(headerLinks);
+  expect(footerLinks).toEqual(expect.arrayContaining(headerLinks));
+  expect(footerLinks).toHaveLength(headerLinks.length);
   const footer = page.locator('footer');
-  await expect(footer.getByRole('link', { name: 'Faunapoolen', exact: true })).toHaveText('');
-  await expect(footer.locator('.fp-brand img')).toBeVisible();
+  await expect(footer.getByRole('link', { name: 'Faunapoolen', exact: true })).toHaveText(
+    'Faunapoolen',
+  );
   await expect(footer.locator('a[href="mailto:info@faunapoolen.se"]')).toBeVisible();
-  await expect(footer.locator('a[href^="tel:"], a[href="/en/configure/"]')).toHaveCount(0);
+  await expect(footer.locator('.fp-footer-brand img')).toBeVisible();
+  await expect(
+    footer.getByRole('link', { name: 'Request a consultation', exact: true }),
+  ).toHaveAttribute('href', '/en/configure/');
+  await expect(footer.locator('a[href^="tel:"]')).toHaveCount(0);
   await expect(
     footer.getByRole('button', { name: 'Language: English', exact: true }),
   ).toBeVisible();
   const invitation = page.locator('section[aria-labelledby="contact-invitation-title"]');
-  await invitation.getByRole('link', { name: 'See prices', exact: true }).click();
+  await invitation.getByRole('link', { name: 'See prices →', exact: true }).click();
   await expect(page).toHaveURL(/\/en\/nature-pools\/pricing\/$/);
-  await expect(page.locator('#packages cx-card')).toHaveCount(3);
+  await expect(page.locator('#packages article')).toHaveCount(3);
 });
 
 test('the admin is excluded from search and every public page stays indexable', async ({

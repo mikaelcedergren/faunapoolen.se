@@ -8,22 +8,35 @@ for (const viewport of [
     await page.setViewportSize(viewport);
     await page.goto('/en/');
     const header = page.locator('cx-masthead > header');
-    const hero = page.locator('cx-hero > header');
+    const hero = page.locator('.fp-home-opening');
     await expect(header).toHaveClass(/cx-masthead--transparent/);
-    await expect(hero).toHaveClass(/cx-hero--under-masthead/);
+    await expect(hero).toBeVisible();
     await expect
       .poll(async () => {
         const navigation = await header.boundingBox();
         const introduction = await hero.boundingBox();
-        return Math.abs(navigation!.y - introduction!.y);
+        return introduction!.y - navigation!.y;
       })
-      .toBeLessThan(2);
+      .toBeCloseTo(0, 0);
     const brand = await page.locator('cx-masthead [brand]').boundingBox();
-    const language = await page.locator('cx-masthead cx-language-selector').boundingBox();
-    expect(brand!.x + brand!.width).toBeLessThan(language!.x);
-    await expect(page.locator('cx-masthead .fp-logo')).toHaveCSS('width', '40px');
+    const language = page.locator('cx-masthead cx-language-selector');
+    if (viewport.width > 719) {
+      const languageBox = await language.boundingBox();
+      expect(brand!.x + brand!.width).toBeLessThan(languageBox!.x);
+    } else {
+      await expect(language).toBeHidden();
+      const menu = await header
+        .getByRole('button', { name: 'Faunapoolen menu', exact: true })
+        .boundingBox();
+      expect(brand!.x + brand!.width).toBeLessThan(menu!.x);
+    }
+    await expect(page.locator('cx-masthead [brand] img')).toBeVisible();
+    await expect(page.locator('cx-masthead [brand]')).toHaveText('Faunapoolen');
+    const photograph = await hero.locator('img[media]').boundingBox();
     const heading = await page.locator('h1').boundingBox();
     const navigation = await header.boundingBox();
+    expect(photograph!.y).toBeLessThanOrEqual(navigation!.y);
+    expect(photograph!.y + photograph!.height).toBeGreaterThan(heading!.y + heading!.height);
     expect(heading!.y).toBeGreaterThan(navigation!.y + navigation!.height);
     await page.evaluate(() => window.scrollTo(0, 400));
     await expect(header).toHaveClass(/cx-masthead--frosted/);
@@ -33,6 +46,38 @@ for (const viewport of [
     await expect(header).toHaveCSS('backdrop-filter', 'blur(24px)');
     await page.evaluate(() => window.scrollTo(0, 0));
     await expect(header).toHaveClass(/cx-masthead--transparent/);
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
+      .toBeLessThanOrEqual(0);
+  });
+
+  test(`guide section navigation at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/en/blog/posts/build-your-own-nature-pool.html');
+    await page.getByRole('button', { name: 'Reject', exact: true }).click();
+    await page.evaluate(() => document.fonts.ready);
+    const contents = page.getByRole('navigation', { name: 'In this guide' });
+    await expect(contents).toBeVisible();
+    await expect(contents.getByText('In this guide', { exact: true })).toHaveCount(0);
+    const navigation = await contents.boundingBox();
+    const body = await page.locator('#guide-body').boundingBox();
+    if (viewport.width > 719) {
+      expect(navigation!.x).toBeGreaterThanOrEqual(body!.x + body!.width);
+    } else {
+      expect(navigation!.y + navigation!.height).toBeLessThanOrEqual(body!.y);
+    }
+    for (const index of [4, 0]) {
+      await contents.getByRole('link').nth(index).click();
+      const section = page.locator(`#guide-section-${index + 1}`);
+      await expect
+        .poll(() => section.evaluate((element) => element.getBoundingClientRect().top))
+        .toBeCloseTo(80, 0);
+      if (viewport.width > 719) {
+        await expect
+          .poll(() => contents.evaluate((element) => element.getBoundingClientRect().top))
+          .toBeCloseTo(80, 0);
+      }
+    }
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
       .toBeLessThanOrEqual(0);
@@ -53,25 +98,32 @@ test('all public introductions reserve navigation clearance', async ({ page }) =
     '/en/configure/',
   ]) {
     await page.goto(route);
-    await expect(page.locator('cx-hero .cx-hero--under-masthead')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const navigation = await page.locator('cx-masthead > header').boundingBox();
+    const title = await page.getByRole('heading', { level: 1 }).boundingBox();
+    expect(title!.y, route).toBeGreaterThanOrEqual(navigation!.y + navigation!.height);
     await expect(page.locator('cx-masthead > header')).toHaveClass(/cx-masthead--transparent/);
   }
 });
 
 test.describe('language suggestion', () => {
   test.use({ locale: 'fr-FR' });
-  test('stays below the hero and articles retain normal header clearance', async ({ page }) => {
+  test('stays below the hero while guide images extend behind navigation', async ({ page }) => {
     await page.goto('/');
     const alert = page.locator('cx-alert');
     await expect(alert).toBeVisible();
-    const hero = await page.locator('cx-hero').boundingBox();
+    const hero = await page.locator('.fp-home-opening').boundingBox();
     const suggestion = await alert.boundingBox();
     expect(suggestion!.y).toBeGreaterThanOrEqual(hero!.y + hero!.height);
     await page.goto('/blog/posts/build-your-own-nature-pool.html');
-    await expect(page.locator('cx-hero')).toHaveCount(0);
+    await expect(page.locator('cx-hero[data-variant="cover"]')).toBeVisible();
     await expect(page.locator('h1')).toBeVisible();
     const header = await page.locator('cx-masthead > header').boundingBox();
+    const guideHero = await page.locator('cx-hero').boundingBox();
+    const guideSuggestion = await alert.boundingBox();
     const title = await page.locator('h1').boundingBox();
+    expect(guideHero!.y).toBe(header!.y);
+    expect(guideSuggestion!.y).toBeGreaterThanOrEqual(guideHero!.y + guideHero!.height);
     expect(title!.y).toBeGreaterThanOrEqual(header!.height);
   });
 });

@@ -80,29 +80,24 @@ test.describe('unsupported browser language', () => {
   });
 });
 
-test('mobile language selector keeps the article and includes Danish without horizontal overflow', async ({
+test('mobile footer language selector keeps the article and includes Danish without horizontal overflow', async ({
   page,
 }) => {
   const errors: string[] = [];
   await page.setViewportSize({ width: 390, height: 844 });
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/blog/posts/build-your-own-nature-pool.html');
+  await page.getByRole('button', { name: 'Avvisa', exact: true }).click();
   await expect(page).toHaveURL(/\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'sv');
   await expect
     .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
     .toBeLessThanOrEqual(0);
-  await page
-    .locator('cx-masthead')
-    .getByRole('button', { name: 'Språk: Svenska', exact: true })
-    .click();
+  await page.locator('footer').getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
   await page.getByRole('option', { name: /Dansk/ }).click();
   await expect(page).toHaveURL(/\/da\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'da');
-  await page
-    .locator('cx-masthead')
-    .getByRole('button', { name: 'Sprog: Dansk', exact: true })
-    .click();
+  await page.locator('footer').getByRole('button', { name: 'Sprog: Dansk', exact: true }).click();
   await page.getByRole('option', { name: /English/ }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('#guide-body')).toBeVisible();

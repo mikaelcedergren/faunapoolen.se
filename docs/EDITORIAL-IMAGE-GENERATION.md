@@ -8,7 +8,20 @@ Existing image URLs and 1536 × 1024 dimensions are preserved. Existing alternat
 
 The original generated PNG files remain in the Codex generation folder. Website assets are WebP exports at quality 88, with no additional creative retouching. The evening image received an anatomy correction through the image generation tool before export.
 
-## Final prompts
+## Homepage hero revision — 30 September 2026
+
+The owner requested the intimate evening mood of the live site's hero: warm rim light,
+natural bokeh and a darker garden scene, with centred text. The replacement was generated
+with the built-in image tool and exported to the existing `hero-family.webp` URL at
+1536 × 1024, WebP quality 88. It depicts a couple in a natural pool at dusk and remains
+labelled as concept imagery. The original Gotland photographs remain unchanged.
+The homepage uses the framework cover hero with centred alignment, a 25% overlay and bottom fade.
+
+Generation prompt:
+
+Use case: photorealistic-natural. Create one beautiful photographic website hero, landscape 3:2 at 1536x1024. A real-feeling intimate Swedish garden at blue hour on a late summer evening. A modest natural swimming pond with irregular weathered granite edges, water plants and birch trees, and just a glimpse of an older timber cottage. Two adults, a couple in ordinary swimwear, quietly enjoying the water together near the far right edge of the pool, viewed from behind and in soft profile, immersed to their shoulders; relaxed candid moment, no posing or eye contact with camera. Keep them toward the lower right side, not behind the central headline area. Exactly two people with believable anatomy and natural proportions; visible arms/hands anatomically coherent and submerged parts obscured naturally by water. Emotional feeling: closeness, an evening you wish would last, a garden to come home to. Cool naturally dark blue-green water and foliage, small practical warm garden lamps along the distant edge softly tracing the couple's hair and shoulders with subtle warm rim light. A few distant amber lights dissolve into gentle authentic optical bokeh, some out-of-focus foreground leaves softly frame the side edges. Shallow but plausible depth of field, 50mm lens around f/2.8, softly resolved skin and stone. Keep the broad CENTRAL upper and middle area visually calm and dark with water/soft dark foliage for large white centered website text added later. Across the lower half the water is dark, with delicate broken reflections that blend naturally into a dark ocean blue website. Landscape must feel inviting and lived in, modest garden scale rather than a hotel or glossy luxury property. Ordinary single exposure with naturally dark shadows losing detail, soft photographic optics, restrained natural color and plausible warm-cool available light. No HDR, no tone mapping, no lifted shadows, no enhanced local contrast, no crunchy textures, no oversharpening, no glowing water, no cinematic color grading, no added artificial grain, no staged advertising tableau. No typography, no graphic fade, no logo, no borders or watermark. This is concept imagery, not a claimed completed installation.
+
+## Original image-set prompts
 
 ### water-ripples.webp
 

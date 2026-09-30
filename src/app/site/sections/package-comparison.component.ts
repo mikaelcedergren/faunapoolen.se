@@ -7,24 +7,17 @@ import {
   inject,
 } from '@angular/core';
 import {
+  CxMetricComponent,
   CxStackComponent,
-  CxCardComponent,
   CxGridComponent,
   CxButtonComponent,
-  CxMetricComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
 import { SiteMeasurement } from '../site-measurement';
 
 @Component({
   selector: 'fp-package-comparison',
-  imports: [
-    CxStackComponent,
-    CxCardComponent,
-    CxGridComponent,
-    CxButtonComponent,
-    CxMetricComponent,
-  ],
+  imports: [CxMetricComponent, CxStackComponent, CxGridComponent, CxButtonComponent],
   templateUrl: './package-comparison.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

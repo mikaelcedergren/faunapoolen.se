@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="commercial.pricingTitle"
       variant="stacked"
@@ -17,46 +17,46 @@
       />
     </cx-hero>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <fp-package-comparison />
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="price-scope-title">
       <h2 id="price-scope-title" class="cx-font-regular">{{ commercial.scopeTitle }}</h2>
       <p>{{ commercial.scopeBody }}</p>
       <p>{{ commercial.scopeDetail }}</p>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="price-factors-title">
       <cx-stack gap="xl">
         <div class="cx-editorial">
           <h2 id="price-factors-title" class="cx-font-regular">{{ commercial.costTitle }}</h2>
         </div>
         <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-          <cx-card variant="border">
+          <div class="fp-column">
             <div class="cx-editorial">
               <h3 class="cx-font-regular">{{ commercial.groundTitle }}</h3>
               <p>{{ commercial.groundBody }}</p>
             </div>
-          </cx-card>
-          <cx-card variant="border">
+          </div>
+          <div class="fp-column">
             <div class="cx-editorial">
               <h3 class="cx-font-regular">{{ commercial.sizeTitle }}</h3>
               <p>{{ commercial.sizeBody }}</p>
             </div>
-          </cx-card>
-          <cx-card variant="border">
+          </div>
+          <div class="fp-column">
             <div class="cx-editorial">
               <h3 class="cx-font-regular">{{ commercial.surroundingsTitle }}</h3>
               <p>{{ commercial.surroundingsBody }}</p>
             </div>
-          </cx-card>
+          </div>
         </cx-grid>
       </cx-stack>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
       <section class="cx-editorial" aria-labelledby="price-space-title">
         <h2 id="price-space-title" class="cx-font-regular">{{ commercial.footprintTitle }}</h2>
@@ -83,7 +83,7 @@
       </section>
     </cx-grid>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="water-feature-price-title">
       <cx-stack gap="xl">
         <div class="cx-editorial">
@@ -93,18 +93,18 @@
           <p>{{ commercial.waterPriceBody }}</p>
         </div>
         <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-          <cx-card id="waterfall" class="cx-scroll-target" variant="border">
+          <div id="waterfall" class="cx-scroll-target fp-column">
             <div class="cx-editorial">
               <h3 class="cx-font-regular">{{ commercial.waterfallPriceTitle }}</h3>
               <p>{{ commercial.waterfallPriceBody }}</p>
             </div>
-          </cx-card>
-          <cx-card id="fountains" class="cx-scroll-target" variant="border">
+          </div>
+          <div id="fountains" class="cx-scroll-target fp-column">
             <div class="cx-editorial">
               <h3 class="cx-font-regular">{{ commercial.fountainPriceTitle }}</h3>
               <p>{{ commercial.fountainPriceBody }}</p>
             </div>
-          </cx-card>
+          </div>
         </cx-grid>
         <div class="cx-editorial">
           <p>
@@ -114,12 +114,12 @@
       </cx-stack>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <fp-process />
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="price-proof-title">
-      <cx-card>
+      <div>
         <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
           <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
             <cx-image
@@ -142,10 +142,10 @@
             </p>
           </div>
         </cx-grid>
-      </cx-card>
+      </div>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="price-choice-title">
       <h2 id="price-choice-title" class="cx-font-regular">
         {{ commercial.pricingQuestionTitle }}

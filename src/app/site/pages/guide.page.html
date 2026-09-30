@@ -1,56 +1,58 @@
 <fp-site-shell>
+  <cx-hero
+    [heading]="guide.title"
+    headingClass="cx-font-regular"
+    variant="cover"
+    [underMasthead]="true"
+    [overlayOpacity]="65"
+    [fadeBottom]="true"
+  >
+    <cx-button context [text]="ui.all_guides" icon="arrow-left" [href]="routeFor('guides')" />
+    <p body id="guide-intro">{{ guide.intro }}</p>
+    @if (guideId !== 'build' && guideId !== 'difference') {
+      <p meta>
+        {{ updatedLabel }}
+        <time [attr.datetime]="guide.seo.dateModified">{{ updatedDate }}</time>
+      </p>
+    }
+    <img media [src]="guide.image" [alt]="guide.title" width="1536" fetchpriority="high" />
+  </cx-hero>
   <article>
-    <header class="cx-container cx-py-2xl">
-      <cx-stack gap="xl">
-        <cx-stack align="start">
-          <cx-button [text]="ui.all_guides" icon="arrow-left" [href]="routeFor('guides')" />
-        </cx-stack>
-        <h1 class="cx-text-display cx-font-serif cx-font-regular">{{ guide.title }}</h1>
-        @if (guideId !== 'build' && guideId !== 'difference') {
-          <p class="cx-text-muted">
-            <a [href]="routeFor('about')">Faunapoolen</a> · {{ updatedLabel }}
-            <time [attr.datetime]="guide.seo.dateModified">{{ updatedDate }}</time>
-          </p>
-        }
-        <p id="guide-intro" class="cx-text-body-lg cx-measure-lg-start">{{ guide.intro }}</p>
-        <img
-          class="cx-w-full cx-rounded-lg"
-          [src]="guide.image"
-          [alt]="guide.title"
-          width="1536"
-          fetchpriority="high"
-        />
-      </cx-stack>
-    </header>
     <div class="cx-container cx-py-2xl">
-      <nav [attr.aria-label]="editorial.guideContents">
-        <cx-card variant="border" [heading]="editorial.guideContents">
+      <cx-sidebar-layout>
+        <nav sidebar [attr.aria-label]="editorial.guideContents">
           <cx-stack gap="md" align="start">
             @for (section of guideReading.sections; track section.id) {
               <a [href]="guideHref(guide.id) + '#' + section.id">{{ section.title }}</a>
             }
           </cx-stack>
-        </cx-card>
-      </nav>
+        </nav>
+        <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading.html"></div>
+      </cx-sidebar-layout>
     </div>
-    <div class="cx-container cx-py-2xl">
-      <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading.html"></div>
-    </div>
+    <fp-contact-invitation />
     <div class="cx-container cx-py-2xl">
       <section [attr.aria-label]="ui.continue_reading">
-        <cx-stack gap="xl">
+        <cx-stack gap="lg">
           <div class="cx-editorial">
             <h2 class="cx-font-regular">{{ ui.continue_reading }}</h2>
           </div>
-          <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+          <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
             @for (item of relatedGuides; track item.id) {
               @if (item.id !== guide.id) {
-                <cx-card
-                  [heading]="item.title"
-                  [href]="guideHref(item.id)"
-                  [ariaLabel]="item.title"
-                >
-                  <p class="cx-text-body-lg">{{ item.seo.description }}</p>
+                <cx-card [href]="guideHref(item.id)" [ariaLabel]="item.title">
+                  <cx-stack gap="md">
+                    <img
+                      class="fp-article-photo"
+                      [src]="item.image"
+                      alt=""
+                      width="1536"
+                      height="1024"
+                      loading="lazy"
+                    />
+                    <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ item.title }}</h3>
+                    <p class="cx-text-body-lg cx-text-muted">{{ item.seo.description }}</p>
+                  </cx-stack>
                 </cx-card>
               }
             }

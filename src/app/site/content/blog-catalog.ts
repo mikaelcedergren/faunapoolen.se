@@ -10,6 +10,32 @@ export interface BlogArticle {
 }
 export const BLOG_ARTICLES: readonly BlogArticle[] = [
   {
+    id: 'naturpool-i-sodra-sverige',
+    title: $localize`:@@blog.naturpool-i-sodra-sverige.title:Nature pools in southern Sweden: planning your garden`,
+    intro: $localize`:@@blog.naturpool-i-sodra-sverige.intro:Planning a nature pool in Skåne, Halland, Blekinge or Småland? Start with how you want to swim, the space around your home and a realistic budget. Here is what to consider when commissioning a pool designed for your garden.`,
+    image: '/assets/images/faunapoolen/gotland/1455.webp',
+    related: [
+      'hur-mycket-plats-behover-en-naturpool',
+      'naturpool-fran-forsta-samtal-till-bad',
+      'vad-kostar-det-att-aga-en-naturpool',
+      'how-filtering-works-with-nature-pools',
+      'skotsel-av-naturpool-under-aret',
+      'why-you-should-get-a-natural-pool',
+    ],
+    seo: {
+      title: $localize`:@@blog.naturpool-i-sodra-sverige.seo.title:Nature pools in southern Sweden – Skåne, Halland, Blekinge & Småland | Faunapoolen`,
+      description: $localize`:@@blog.naturpool-i-sodra-sverige.seo.description:Planning a nature pool in southern Sweden? Explore space, design, budget and installation with Faunapoolen in Skåne, Halland, Blekinge and Småland.`,
+      path: '/blog/posts/naturpool-i-sodra-sverige.html',
+      enPath: '/en/blog/posts/naturpool-i-sodra-sverige.html',
+      daPath: '/da/blog/posts/naturpool-i-sodra-sverige.html',
+      defaultLanguage: 'sv',
+      ogImage: 'https://faunapoolen.se/assets/images/faunapoolen/gotland/1455.webp',
+      ogType: 'article',
+      datePublished: '2026-09-30',
+      dateModified: '2026-09-30',
+    },
+  },
+  {
     id: 'build',
     title: $localize`:@@blog.build.title:Building a nature pool – how to do it yourself`,
     intro: $localize`:@@blog.build.intro:Building a nature pool yourself is a dream for many who want to create a unique, eco-friendly, and harmonious place in their garden. A nature pool not only offers a swimming experience free from chemicals but also becomes an aesthetic part of the garden that blends into nature. Constructing a nature pool can seem like a big challenge, but it is possible with the right planning and knowledge. In this guide, you will learn how to do it, what risks exist, and how to avoid common mistakes.`,
@@ -20,6 +46,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'difference',
       'pool-conversions',
       'creating-harmony-intergrating-water-features-with-your-landscape',
+      'naturpool-fran-forsta-samtal-till-bad',
     ],
     seo: {
       title: $localize`:@@blog.build.seo.title:Faunapoolen | nature pools, bio pools, eco pools, and chemical-free pools - design and construction by experts in Sweden`,
@@ -46,6 +73,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'pool-conversions',
       'build',
       'creating-harmony-intergrating-water-features-with-your-landscape',
+      'naturpool-fran-forsta-samtal-till-bad',
     ],
     seo: {
       title: $localize`:@@blog.difference.seo.title:Faunapoolen | nature pools, bio pools, eco pools, and chemical-free pools - design and construction by experts in Sweden`,
@@ -69,6 +97,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'how-filtering-works-with-nature-pools',
       'algae-control-and-maintenance-tips',
       'build',
+      'hur-mycket-plats-behover-en-naturpool',
+      'naturpool-sakerhet-och-tillstand',
+      'naturpool-fran-forsta-samtal-till-bad',
     ],
     seo: {
       title: $localize`:@@blog.5-common-problems-installing-a-nature-pool.seo.title:Nature-pool problems: 5 planning risks | Faunapoolen`,
@@ -96,6 +127,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'algae-control-and-maintenance-tips',
       'can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option',
       'creating-harmony-intergrating-water-features-with-your-landscape',
+      'small-features-for-small-spaces',
+      'how-filtering-works-with-nature-pools',
+      'skotsel-av-naturpool-under-aret',
     ],
     seo: {
       title: $localize`:@@blog.how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.seo.title:Golf-course ponds: planning and maintenance | Faunapoolen`,
@@ -123,6 +157,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'how-filtering-works-with-nature-pools',
       'difference',
       'naturpool-fran-forsta-samtal-till-bad',
+      '5-common-problems-installing-a-nature-pool',
+      'hur-mycket-plats-behover-en-naturpool',
+      'vad-kostar-det-att-aga-en-naturpool',
     ],
     seo: {
       title: $localize`:@@blog.pool-conversions.seo.title:Convert a pool to a nature pool: what needs assessing? | Faunapoolen`,
@@ -149,6 +186,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'skotsel-av-naturpool-under-aret',
       'naturpool-sakerhet-och-tillstand',
       'why-you-should-get-a-natural-pool',
+      'creating-harmony-intergrating-water-features-with-your-landscape',
+      'how-filtering-works-with-nature-pools',
+      'vad-kostar-det-att-aga-en-naturpool',
     ],
     seo: {
       title: $localize`:@@blog.sports-stars-natural-ponds.seo.title:Cold bathing in a nature pool: plan for home | Faunapoolen`,
@@ -175,6 +215,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'creating-harmony-intergrating-water-features-with-your-landscape',
       'how-filtering-works-with-nature-pools',
       'small-features-for-small-spaces',
+      'how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams',
+      'algae-control-and-maintenance-tips',
+      'skotsel-av-naturpool-under-aret',
     ],
     seo: {
       title: $localize`:@@blog.can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.seo.title:Store rainwater for the garden and pond | Faunapoolen`,
@@ -204,6 +247,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'small-features-for-small-spaces',
       'hur-mycket-plats-behover-en-naturpool',
       'why-you-should-get-a-natural-pool',
+      'difference',
+      'naturpool-fran-forsta-samtal-till-bad',
+      'can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option',
     ],
     seo: {
       title: $localize`:@@blog.creating-harmony-intergrating-water-features-with-your-landscape.seo.title:Plan a nature pool and garden water features | Faunapoolen`,
@@ -233,6 +279,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'creating-harmony-intergrating-water-features-with-your-landscape',
       'hur-mycket-plats-behover-en-naturpool',
       'algae-control-and-maintenance-tips',
+      'can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option',
+      'how-filtering-works-with-nature-pools',
+      'why-you-should-get-a-natural-pool',
     ],
     seo: {
       title: $localize`:@@blog.small-features-for-small-spaces.seo.title:Water in a small garden: fountain, pond or waterfall | Faunapoolen`,
@@ -259,6 +308,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'how-filtering-works-with-nature-pools',
       'skotsel-av-naturpool-under-aret',
       '5-common-problems-installing-a-nature-pool',
+      'vad-kostar-det-att-aga-en-naturpool',
+      'creating-harmony-intergrating-water-features-with-your-landscape',
+      'how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams',
     ],
     seo: {
       title: $localize`:@@blog.algae-control-and-maintenance-tips.seo.title:Algae in nature pools and ponds: causes and checks | Faunapoolen`,
@@ -285,6 +337,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       '5-common-problems-installing-a-nature-pool',
       'algae-control-and-maintenance-tips',
       'why-you-should-get-a-natural-pool',
+      'skotsel-av-naturpool-under-aret',
+      'difference',
+      'vad-kostar-det-att-aga-en-naturpool',
     ],
     seo: {
       title: $localize`:@@blog.how-filtering-works-with-nature-pools.seo.title:How nature-pool filtration works | Faunapoolen`,
@@ -312,6 +367,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'difference',
       'skotsel-av-naturpool-under-aret',
       'creating-harmony-intergrating-water-features-with-your-landscape',
+      'hur-mycket-plats-behover-en-naturpool',
+      'naturpool-fran-forsta-samtal-till-bad',
+      'vad-kostar-det-att-aga-en-naturpool',
     ],
     seo: {
       title: $localize`:@@blog.why-you-should-get-a-natural-pool.seo.title:Life with a nature pool: swimming, garden and care | Faunapoolen`,
@@ -339,6 +397,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       '5-common-problems-installing-a-nature-pool',
       'small-features-for-small-spaces',
       'naturpool-fran-forsta-samtal-till-bad',
+      'difference',
+      'creating-harmony-intergrating-water-features-with-your-landscape',
+      'naturpool-sakerhet-och-tillstand',
     ],
     seo: {
       title: $localize`:@@blog.hur-mycket-plats-behover-en-naturpool.seo.title:How much space does a natural pool need? | Faunapoolen`,
@@ -362,6 +423,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'algae-control-and-maintenance-tips',
       'how-filtering-works-with-nature-pools',
       'vad-kostar-det-att-aga-en-naturpool',
+      '5-common-problems-installing-a-nature-pool',
+      'naturpool-sakerhet-och-tillstand',
+      'naturpool-fran-forsta-samtal-till-bad',
     ],
     seo: {
       title: $localize`:@@blog.skotsel-av-naturpool-under-aret.seo.title:Natural pool care through the four seasons | Faunapoolen`,
@@ -385,6 +449,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'hur-mycket-plats-behover-en-naturpool',
       'naturpool-sakerhet-och-tillstand',
       'skotsel-av-naturpool-under-aret',
+      'vad-kostar-det-att-aga-en-naturpool',
+      'why-you-should-get-a-natural-pool',
+      'difference',
     ],
     seo: {
       title: $localize`:@@blog.naturpool-fran-forsta-samtal-till-bad.seo.title:From the first conversation to your natural pool | Faunapoolen`,
@@ -408,6 +475,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'hur-mycket-plats-behover-en-naturpool',
       'naturpool-fran-forsta-samtal-till-bad',
       '5-common-problems-installing-a-nature-pool',
+      'skotsel-av-naturpool-under-aret',
+      'how-filtering-works-with-nature-pools',
+      'vad-kostar-det-att-aga-en-naturpool',
     ],
     seo: {
       title: $localize`:@@blog.naturpool-sakerhet-och-tillstand.seo.title:Natural pool safety and permissions to check in Sweden | Faunapoolen`,
@@ -431,6 +501,9 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'skotsel-av-naturpool-under-aret',
       'how-filtering-works-with-nature-pools',
       'naturpool-fran-forsta-samtal-till-bad',
+      'pool-conversions',
+      'difference',
+      '5-common-problems-installing-a-nature-pool',
     ],
     seo: {
       title: $localize`:@@blog.vad-kostar-det-att-aga-en-naturpool.seo.title:What does it cost to own a natural pool? | Faunapoolen`,

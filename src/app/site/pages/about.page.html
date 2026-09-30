@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="copy.about.title"
       variant="stacked"
@@ -9,14 +9,14 @@
       <p body>{{ copy.about.ingress }}</p>
     </cx-hero>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
         <div class="cx-editorial">
           <h2 id="about-method-title" class="cx-font-regular">{{ copy.about.methodTitle }}</h2>
           <p>{{ copy.about.methodBody }}</p>
         </div>
-        <cx-card>
+        <div>
           <cx-stack gap="md">
             <fp-certification />
             <p class="cx-text-body-lg cx-text-muted">
@@ -28,13 +28,13 @@
               appendIcon="open-new"
             />
           </cx-stack>
-        </cx-card>
+        </div>
       </cx-grid>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="about-proof-title">
-      <cx-card>
+      <div>
         <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
           <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
             <cx-image
@@ -61,10 +61,10 @@
             />
           </cx-stack>
         </cx-grid>
-      </cx-card>
+      </div>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial">
       <p>
         <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
@@ -74,7 +74,7 @@
       </p>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <fp-service-area />
   </div>
 </fp-site-shell>

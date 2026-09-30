@@ -1,10 +1,8 @@
 import {
   CxHeroComponent,
   CxImageComponent,
-  CxDividerComponent,
   CxStackComponent,
   CxGridComponent,
-  CxCardComponent,
   CxButtonComponent,
 } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
@@ -21,13 +19,11 @@ import { CertificationComponent } from '../sections/certification.component';
     CxHeroComponent,
     CxStackComponent,
     CxGridComponent,
-    CxCardComponent,
     CxButtonComponent,
     SiteShellComponent,
     CertificationComponent,
     CustomerQuoteComponent,
     CxImageComponent,
-    CxDividerComponent,
   ],
   templateUrl: './about.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

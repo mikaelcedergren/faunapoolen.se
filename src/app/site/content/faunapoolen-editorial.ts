@@ -1,6 +1,6 @@
 /** Buying questions and supporting copy shared by the bilingual page compositions. */
 export const FAUNAPOOLEN_EDITORIAL = {
-  heroAlt: $localize`:@@site.editorial.heroAlt:Concept image: a family beside a nature pool among birch, stone and timber.`,
+  heroAlt: $localize`:@@site.editorial.heroAlt:Concept image: a couple enjoying a nature pool at dusk, with warm garden lights.`,
   architectureAlt: $localize`:@@site.editorial.architectureAlt:Concept image: a view from a timber house towards water and woodland.`,
   waterscapeAlt: $localize`:@@site.editorial.waterscapeAlt:Concept image: a koi pond and a small stream in a leafy garden.`,
   supplierAlt: $localize`:@@site.editorial.supplierAlt:Aquascape’s own example of a recreational pond.`,

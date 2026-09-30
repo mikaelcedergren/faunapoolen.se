@@ -5,9 +5,11 @@ import {
   CxGridComponent,
   CxButtonComponent,
   CxCardComponent,
-  CxDividerComponent,
+  CxHeroComponent,
+  CxSidebarLayoutComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
+import { ContactInvitationComponent } from '../sections/contact-invitation.component';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-guide-page',
@@ -17,7 +19,9 @@ import { SiteShellComponent } from '../site-shell.component';
     CxButtonComponent,
     CxCardComponent,
     SiteShellComponent,
-    CxDividerComponent,
+    CxHeroComponent,
+    CxSidebarLayoutComponent,
+    ContactInvitationComponent,
   ],
   templateUrl: './guide.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,7 +44,7 @@ export class GuidePage extends SitePage {
     const sections = Array.from(article.querySelectorAll('h2')).map((heading, index) => {
       const id = `guide-section-${index + 1}`;
       heading.id = id;
-      heading.classList.add('fp-anchor');
+      heading.classList.add('cx-scroll-target');
       return { id, title: heading.textContent ?? '' };
     });
     // Only generated heading IDs/classes are added after sanitizing the article. Preserve

@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 import { HtmlParser } from '@angular/compiler';
+import { expectedGuideBody, removedGuideContact } from './guide-content-expectations.mjs';
 import {
   PUBLIC_CANONICAL_PATHS,
   PUBLIC_PAGES,
@@ -17,7 +18,7 @@ const baseline = JSON.parse(
   readFileSync(join(root, 'tests/fixtures/blog-seo-baseline.json'), 'utf8'),
 );
 // The owner authorized rewrites of the ten other articles on 2026-09-17.
-// The historical fixture remains unchanged; the two winning article families stay exact.
+// Historical fixtures stay unchanged; only the explicit approved contact-line deletion is allowed.
 const protectedLocales = JSON.parse(
   readFileSync(join(root, 'tests/fixtures/protected-guide-locales.json'), 'utf8'),
 );
@@ -58,6 +59,12 @@ for (const [slug, locales] of Object.entries(baseline).filter(([slug]) =>
         original.intro.replace(/\s+/g, ' ').trim(),
         'Original introduction remains visible',
       );
+      const id = PROTECTED_GUIDE_IDS.find((id) => GUIDE_SLUGS[id] === slug + '.html');
+      const removed = parser.parse(
+        removedGuideContact(locale, id),
+        'approved-contact-removal',
+      ).rootNodes;
+      const historicalBody = [...body.children, ...removed];
       const headings = walk(body.children, (n) => n.name === 'h2');
       assert.ok(headings.length, 'Article has a reading structure');
       headings.forEach((heading, index) => {
@@ -70,7 +77,7 @@ for (const [slug, locales] of Object.entries(baseline).filter(([slug]) =>
         );
       });
       assert.equal(
-        createHash('sha256').update(plain(body.children)).digest('hex'),
+        createHash('sha256').update(plain(historicalBody)).digest('hex'),
         original.bodyHash,
         'Protected article body changed',
       );
@@ -79,7 +86,7 @@ for (const [slug, locales] of Object.entries(baseline).filter(([slug]) =>
         original.title.replace(/\s+/g, ' ').trim(),
       );
       assert.deepEqual(
-        walk(body.children, (n) => n.name === 'a').map((n) => attr(n, 'href')),
+        walk(historicalBody, (n) => n.name === 'a').map((n) => attr(n, 'href')),
         original.links,
       );
       assert.deepEqual(
@@ -169,13 +176,20 @@ for (const locale of ['en', 'sv', 'da']) {
     test(`${locale}: protected ${id} retains every localized content field and introduction`, () => {
       const original = protectedLocales[locale][id];
       for (const [key, value] of Object.entries(original))
-        assert.equal(translations[locale][key], value, key);
+        assert.equal(
+          translations[locale][key],
+          key === `blog.${id}.bodyHtml` ? expectedGuideBody(value, locale, id) : value,
+          key,
+        );
       const prefix = locale === 'sv' ? '' : '/' + locale;
       const nodes = read(pathFile(prefix + '/blog/posts/' + GUIDE_SLUGS[id]));
       const body = walk(nodes, (n) => attr(n, 'id') === 'guide-body')[0];
       assert.equal(
         plain(body.children),
-        plain(parser.parse(original[`blog.${id}.bodyHtml`], id).rootNodes),
+        plain(
+          parser.parse(expectedGuideBody(original[`blog.${id}.bodyHtml`], locale, id), id)
+            .rootNodes,
+        ),
       );
       assert.equal(
         plain(walk(nodes, (n) => attr(n, 'id') === 'guide-intro')[0].children),
@@ -198,8 +212,13 @@ for (const locale of ['en', 'sv', 'da']) {
           };
         },
       );
+      assert.equal(
+        recommendations.length,
+        6,
+        'Six related guides include the approved extra recommendation',
+      );
       assert.deepEqual(
-        recommendations,
+        recommendations.slice(0, 5),
         protectedLocales.related[locale][id].map(({ title, description, href }) => ({
           href,
           title,
@@ -207,6 +226,12 @@ for (const locale of ['en', 'sv', 'da']) {
         })),
         'Historical related titles, descriptions, destinations and order remain unchanged',
       );
+      const extraId = 'naturpool-fran-forsta-samtal-till-bad';
+      assert.deepEqual(recommendations[5], {
+        href: prefix + '/blog/posts/' + GUIDE_SLUGS[extraId],
+        title: translations[locale][`blog.${extraId}.title`],
+        text: `${translations[locale][`blog.${extraId}.title`]} ${translations[locale][`blog.${extraId}.seo.description`]}`,
+      });
       assert.equal(
         walk(nodes, (n) => attr(n, 'id') === 'measurement-title').length,
         0,
@@ -268,6 +293,27 @@ for (const locale of ['en', 'sv', 'da']) {
 for (const path of PUBLIC_CANONICAL_PATHS) {
   test(`canonical identity and reciprocal alternates: ${path}`, () => {
     const nodes = read(pathFile(path));
+    if (path.includes('/blog/posts/')) {
+      const cards = walk(nodes, (n) => n.name === 'cx-card');
+      assert.equal(cards.length, 6, 'Every guide has six recommendations');
+      const destinations = cards.map((card) => {
+        const links = walk(card.children, (n) => n.name === 'a' && attr(n, 'href'));
+        const images = walk(card.children, (n) => n.name === 'img');
+        assert.equal(links.length, 1, 'A recommendation has one whole-card destination');
+        assert.equal(images.length, 1, 'A recommendation has one article photograph');
+        assert.equal(walk(card.children, (n) => n.name === 'h3').length, 1);
+        const href = attr(links[0], 'href');
+        assert.notEqual(href, path, 'A guide never recommends itself');
+        assert.ok(PUBLIC_CANONICAL_PATHS.includes(href));
+        const target = read(pathFile(href));
+        assert.ok(
+          walk(target, (n) => n.name === 'img' && attr(n, 'src') === attr(images[0], 'src')).length,
+          'Recommendation photography belongs to the linked article',
+        );
+        return href;
+      });
+      assert.equal(new Set(destinations).size, 6, 'Recommendations are distinct');
+    }
     const canonical = walk(nodes, (n) => n.name === 'link' && attr(n, 'rel') === 'canonical');
     assert.equal(canonical.length, 1);
     assert.equal(attr(canonical[0], 'href'), 'https://faunapoolen.se' + path);

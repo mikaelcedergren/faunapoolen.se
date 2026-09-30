@@ -5,7 +5,6 @@ import {
   CxHeroComponent,
   CxStackComponent,
   CxImageComponent,
-  CxCardComponent,
 } from '@mikaelcedergren/cx-framework';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import {
@@ -25,7 +24,6 @@ import { SiteShellComponent } from '../site-shell.component';
     CxStackComponent,
     SiteShellComponent,
     CxImageComponent,
-    CxCardComponent,
   ],
   templateUrl: './region.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

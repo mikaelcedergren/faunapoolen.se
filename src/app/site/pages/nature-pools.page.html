@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="copy.naturePools.title"
       variant="split"
@@ -10,6 +10,7 @@
       <cx-button actions [text]="copy.start" mood="primary" size="large" [href]="configureHref" />
       <img
         media
+        class="fp-photo fp-photo--portrait"
         [src]="images.detail"
         [alt]="ui.hand_touching_clear_water_beside_wet_granite_and_reeds"
         width="1536"
@@ -18,7 +19,7 @@
       />
     </cx-hero>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
       <section class="cx-editorial" aria-labelledby="pool-definition-title">
         <h2 id="pool-definition-title" class="cx-font-regular">
@@ -37,10 +38,10 @@
       </section>
     </cx-grid>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <fp-package-comparison />
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="pool-proof-title">
       <h2 id="pool-proof-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
       <p>{{ editorial.caseStory }}</p>
@@ -49,7 +50,7 @@
       </p>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <cx-stack gap="lg">
       <fp-process />
       <div class="cx-editorial">
@@ -61,7 +62,7 @@
       </div>
     </cx-stack>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <cx-stack gap="lg">
       <fp-technology />
       <div class="cx-editorial">
@@ -73,7 +74,7 @@
       </div>
     </cx-stack>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="care-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
         <cx-stack gap="lg">
@@ -109,9 +110,9 @@
       </cx-grid>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section [attr.aria-label]="copy.nav.guides">
-      <cx-card>
+      <div>
         <div class="cx-editorial">
           <h2 class="cx-font-regular">
             {{ ui.want_to_understand_the_difference }}
@@ -123,10 +124,10 @@
             <a [href]="guideHref('difference')">{{ guides[1].title }} →</a>
           </p>
         </div>
-      </cx-card>
+      </div>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <fp-service-area />
   </div>
 </fp-site-shell>

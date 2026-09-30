@@ -1,7 +1,7 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="evidence.caseTitle"
       variant="stacked"
@@ -9,13 +9,23 @@
       <p body>{{ editorial.caseStory }}</p>
     </cx-hero>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <figure class="cx-container fp-project-lead">
+    <img
+      class="fp-photo"
+      [src]="projectPhoto.src"
+      [alt]="projectPhoto.alt"
+      width="1920"
+      height="1440"
+      fetchpriority="high"
+    />
+  </figure>
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="gotland-story-title">
       <h2 id="gotland-story-title" class="cx-font-regular">{{ commercial.caseStoryTitle }}</h2>
       <p>{{ commercial.caseStoryBody }}</p>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section [attr.aria-label]="evidence.caseTitle">
       <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
         @for (item of gotlandMedia; track item.id) {
@@ -48,29 +58,29 @@
       </cx-masonry>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section aria-labelledby="gotland-life-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-        <cx-card>
+        <div>
           <cx-stack gap="lg">
             <h2 class="cx-text-title-1 cx-font-serif cx-font-regular">
               {{ editorial.caseExperience }}
             </h2>
             <fp-customer-quote [review]="testimonials[0]" />
           </cx-stack>
-        </cx-card>
-        <cx-card>
+        </div>
+        <div>
           <cx-stack gap="lg">
             <h2 id="gotland-life-title" class="cx-text-title-1 cx-font-serif cx-font-regular">
               {{ editorial.caseLife }}
             </h2>
             <fp-customer-quote [review]="testimonials[1]" />
           </cx-stack>
-        </cx-card>
+        </div>
       </cx-grid>
     </section>
   </div>
-  <div class="cx-container cx-py-2xl">
+  <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="gotland-next-title">
       <h2 id="gotland-next-title" class="cx-font-regular">{{ commercial.projectBridgeTitle }}</h2>
       <p>{{ commercial.projectBridgeBody }}</p>

@@ -1,13 +1,13 @@
 <fp-site-shell>
-  <div hero class="cx-measure-xl">
+  <div hero class="fp-hero-frame">
     <cx-hero
-      [underMasthead]="true"
+      [underMasthead]="false"
       headingClass="cx-font-regular"
       [heading]="title"
       variant="stacked"
     />
   </div>
-  <section class="cx-container cx-py-2xl" [attr.aria-label]="title">
+  <section class="cx-container fp-section" [attr.aria-label]="title">
     <cx-list>
       @for (item of items; track item.id) {
         <cx-list-item [itemId]="item.id" [heading]="item.question" [expandable]="true">

@@ -37,7 +37,7 @@ Ten eligible guides have been rewritten in English, Swedish and Danish. Five add
 
 ## Protected articles
 
-The two successful article bodies, titles, translations, URLs, image URLs and metadata remain preserved. Their original stored introductions are restored in the shared renderer after the omission identified in the planning audit. Historical related-reading labels stay stable even though the linked articles are revised.
+The two successful article bodies, titles, translations, URLs, image URLs and metadata remain preserved, with one owner-approved exception on 30 September 2026: the standalone closing contact paragraph in the build-your-own guide is removed in all three languages because the shared consultation invitation now serves that purpose. Historical fixtures stay unchanged; verification permits only that exact deletion. Their original stored introductions are restored in the shared renderer after the omission identified in the planning audit. Historical related-reading labels stay stable even though the linked articles are revised. On 30 September 2026, the owner approved six image-led recommendations in three columns; the original five recommendations keep their wording and order, followed by the guide to commissioning a natural pool.
 
 The historical Swedish/English fixture is retained. A separate pre-change fixture extends the exact localized content protection to Danish. Shared public navigation follows the owner's new English-slug decision; article-owned old links remain untouched and continue through the redirect catalogue. Article content remains protected. The shared floating cookie notice and footer preference control are available on every public page, including the protected articles.
 

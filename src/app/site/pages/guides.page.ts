@@ -1,23 +1,10 @@
-import {
-  CxHeroComponent,
-  CxStackComponent,
-  CxGridComponent,
-  CxCardComponent,
-  CxImageComponent,
-} from '@mikaelcedergren/cx-framework';
+import { CxHeroComponent, CxStackComponent, CxGridComponent } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-guides-page',
-  imports: [
-    CxHeroComponent,
-    CxStackComponent,
-    CxGridComponent,
-    CxCardComponent,
-    CxImageComponent,
-    SiteShellComponent,
-  ],
+  imports: [CxHeroComponent, CxStackComponent, CxGridComponent, SiteShellComponent],
   templateUrl: './guides.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -36,6 +23,7 @@ export class GuidesPage extends SitePage {
         'naturpool-fran-forsta-samtal-till-bad',
         'naturpool-sakerhet-och-tillstand',
         'vad-kostar-det-att-aga-en-naturpool',
+        'naturpool-i-sodra-sverige',
       ],
     },
     {

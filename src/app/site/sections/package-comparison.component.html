@@ -2,20 +2,25 @@
   <cx-stack gap="xl">
     <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
       @for (item of packages; track item.id) {
-        <cx-card variant="border">
+        <article class="fp-package">
           <cx-stack gap="lg">
             <cx-stack gap="md" align="start">
               <h2 class="cx-text-title-1 cx-font-serif cx-font-regular">
                 {{ item.name }}
               </h2>
+              @if (page !== 'nature-pools' && page !== 'pricing') {
+                <div class="cx-editorial">
+                  <p>{{ item.description }}</p>
+                </div>
+              }
               <p class="cx-text-body-lg">{{ item.area }}</p>
             </cx-stack>
             <cx-stack gap="sm" align="start">
-              <cx-metric [label]="copy.common.from" [value]="packagePrice(item)" size="large" />
+              <cx-metric [label]="copy.common.from" [value]="packagePrice(item)" />
               <p class="cx-text-body-lg cx-text-muted">{{ copy.common.inclVat }}</p>
             </cx-stack>
-            <div class="cx-editorial">
-              @if (page === 'nature-pools' || page === 'pricing') {
+            @if (page === 'nature-pools' || page === 'pricing') {
+              <div class="cx-editorial">
                 <cx-stack gap="lg">
                   @for (benefit of item.includes; track benefit; let i = $index) {
                     <cx-stack gap="sm">
@@ -30,30 +35,27 @@
                     </cx-stack>
                   }
                 </cx-stack>
-              } @else {
-                <p>{{ item.description }}</p>
-              }
-            </div>
+              </div>
+            }
           </cx-stack>
-          <cx-stack slot="footer" align="start">
-            <cx-button
-              [text]="copy.common.viewPackage"
-              appendIcon="arrow-right"
-              [href]="packageHref(item.id)"
-              (click)="
-                measurement.track('package_interest', { packageId: item.id, service: 'pool' })
-              "
-              size="large"
-            />
-          </cx-stack>
-        </cx-card>
+
+          <cx-button
+            [text]="copy.common.viewPackage"
+            appendIcon="arrow-right"
+            [href]="packageHref(item.id)"
+            (click)="measurement.track('package_interest', { packageId: item.id, service: 'pool' })"
+            size="large"
+          />
+        </article>
       }
     </cx-grid>
-    <p class="cx-text-body-lg cx-measure-lg-start">
-      {{ editorial.priceScope }}
-    </p>
+    @if (page !== 'home') {
+      <p class="cx-text-body-lg cx-measure-lg-start">
+        {{ editorial.priceScope }}
+      </p>
+    }
     @if (page !== 'pricing') {
-      <p class="cx-text-body-lg">
+      <p class="cx-text-body-lg" [class.fp-package-footer]="page === 'home'">
         <a [href]="routeFor('pricing')">{{ pricingLink }} →</a>
       </p>
     }
