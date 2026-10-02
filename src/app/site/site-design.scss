@@ -20,12 +20,6 @@
     border-radius: var(--radius-sm);
   }
 
-  .fp-hero-frame {
-    inline-size: 100%;
-    max-inline-size: calc(var(--measure-xl) + var(--gutter-page) * 2);
-    margin-inline: auto;
-  }
-
   .fp-section {
     padding-block: var(--space-2xl);
   }

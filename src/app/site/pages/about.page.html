@@ -1,14 +1,12 @@
 <fp-site-shell>
-  <div hero class="fp-hero-frame">
-    <cx-hero
-      [underMasthead]="false"
-      headingClass="cx-font-regular"
-      [heading]="copy.about.title"
-      variant="stacked"
-    >
-      <p body>{{ copy.about.ingress }}</p>
-    </cx-hero>
-  </div>
+  <cx-hero
+    [underMasthead]="false"
+    headingClass="cx-font-regular"
+    [heading]="copy.about.title"
+    variant="stacked"
+  >
+    <p body>{{ copy.about.ingress }}</p>
+  </cx-hero>
   <div class="cx-container fp-section">
     <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">

@@ -1,12 +1,10 @@
 <fp-site-shell>
-  <div hero class="fp-hero-frame">
-    <cx-hero
-      [underMasthead]="false"
-      headingClass="cx-font-regular"
-      [heading]="title"
-      variant="stacked"
-    />
-  </div>
+  <cx-hero
+    [underMasthead]="false"
+    headingClass="cx-font-regular"
+    [heading]="title"
+    variant="stacked"
+  />
   <section class="cx-container fp-section" [attr.aria-label]="title">
     <cx-list>
       @for (item of items; track item.id) {

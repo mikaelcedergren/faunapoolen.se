@@ -1,14 +1,12 @@
 <fp-site-shell>
-  <div hero class="fp-hero-frame">
-    <cx-hero
-      [underMasthead]="false"
-      headingClass="cx-font-regular"
-      [heading]="copy.guides.title"
-      variant="stacked"
-    >
-      <p body>{{ copy.guides.ingress }}</p>
-    </cx-hero>
-  </div>
+  <cx-hero
+    [underMasthead]="false"
+    headingClass="cx-font-regular"
+    [heading]="copy.guides.title"
+    variant="stacked"
+  >
+    <p body>{{ copy.guides.ingress }}</p>
+  </cx-hero>
   @for (group of groups; track group.title) {
     <div class="cx-container fp-section">
       <section [attr.aria-label]="group.title">

@@ -1,27 +1,20 @@
 <fp-site-shell>
-  <div hero class="fp-hero-frame">
-    <cx-hero
-      [underMasthead]="false"
-      headingClass="cx-font-regular"
-      [heading]="region.title"
-      variant="stacked"
-    >
-      <p body>{{ region.ingress }}</p>
-      <cx-button
-        actions
-        [text]="regional.packageLink"
-        [href]="routeFor('pricing')"
-        mood="primary"
-        size="large"
-      />
-      <cx-button
-        actions
-        [text]="copy.start"
-        [href]="configureHref + '?service=pool'"
-        size="large"
-      />
-    </cx-hero>
-  </div>
+  <cx-hero
+    [underMasthead]="false"
+    headingClass="cx-font-regular"
+    [heading]="region.title"
+    variant="stacked"
+  >
+    <p body>{{ region.ingress }}</p>
+    <cx-button
+      actions
+      [text]="regional.packageLink"
+      [href]="routeFor('pricing')"
+      mood="primary"
+      size="large"
+    />
+    <cx-button actions [text]="copy.start" [href]="configureHref + '?service=pool'" size="large" />
+  </cx-hero>
   <div class="cx-container fp-section">
     <section class="cx-editorial" aria-labelledby="region-site-title">
       <h2 id="region-site-title" class="cx-font-regular">{{ region.focusTitle }}</h2>

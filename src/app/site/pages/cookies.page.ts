@@ -14,14 +14,12 @@ import { SiteMeasurement } from '../site-measurement';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <fp-site-shell #shell>
-      <div hero class="cx-measure-xl">
-        <cx-hero
-          [underMasthead]="true"
-          headingClass="cx-font-regular"
-          [heading]="title"
-          variant="stacked"
-        />
-      </div>
+      <cx-hero
+        [underMasthead]="true"
+        headingClass="cx-font-regular"
+        [heading]="title"
+        variant="stacked"
+      />
       <section class="cx-container cx-py-2xl">
         <cx-stack gap="lg" align="start">
           @if (measurement.available()) {

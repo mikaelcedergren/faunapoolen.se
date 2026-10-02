@@ -1,22 +1,20 @@
 <fp-site-shell>
-  <div hero class="fp-hero-frame">
-    <cx-hero
-      [underMasthead]="false"
-      headingClass="cx-font-regular"
-      [heading]="commercial.pricingTitle"
-      variant="stacked"
-    >
-      <p body>{{ copy.common.from }} {{ packagePrice(packages[0]) }} · {{ copy.common.inclVat }}</p>
-      <p body>{{ commercial.pricingIntro }}</p>
-      <cx-button
-        actions
-        [text]="copy.start"
-        [href]="configureHref + '?service=pool'"
-        mood="primary"
-        size="large"
-      />
-    </cx-hero>
-  </div>
+  <cx-hero
+    [underMasthead]="false"
+    headingClass="cx-font-regular"
+    [heading]="commercial.pricingTitle"
+    variant="stacked"
+  >
+    <p body>{{ copy.common.from }} {{ packagePrice(packages[0]) }} · {{ copy.common.inclVat }}</p>
+    <p body>{{ commercial.pricingIntro }}</p>
+    <cx-button
+      actions
+      [text]="copy.start"
+      [href]="configureHref + '?service=pool'"
+      mood="primary"
+      size="large"
+    />
+  </cx-hero>
   <div class="cx-container fp-section">
     <fp-package-comparison />
   </div>
