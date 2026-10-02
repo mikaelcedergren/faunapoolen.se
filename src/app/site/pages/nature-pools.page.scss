@@ -1,0 +1,39 @@
+@use '@mikaelcedergren/cx-framework/tokens/breakpoints-scale' as bp;
+
+:host {
+  display: block;
+}
+
+.fp-pool-band {
+  background: var(--surface-alt);
+}
+
+.fp-pool-figure {
+  margin: 0;
+  display: grid;
+  gap: var(--space-md);
+}
+
+.fp-pool-illustration {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.fp-detail-number {
+  flex-shrink: 0;
+  color: var(--primary);
+  font-size: var(--font-size-title-2);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-heading);
+}
+
+.fp-care-photo {
+  object-position: 25% center;
+}
+
+@media (min-width: bp.$mobile) {
+  .fp-layout-figure {
+    order: -1;
+  }
+}

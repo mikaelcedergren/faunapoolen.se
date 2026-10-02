@@ -23,7 +23,7 @@ export const FAUNAPOOLEN_EDITORIAL = {
   enjoyAlt: $localize`:@@site.editorial.enjoyAlt:Concept image: a family relaxing beside the water after an evening swim.`,
   lifeTitle: $localize`:@@site.editorial.lifeTitle:You do not need a finished plan.`,
   lifeBody: $localize`:@@site.editorial.lifeBody:We help you find a solution for the way you want to use your garden, the conditions on your property and your budget.`,
-  lifeLink: $localize`:@@site.editorial.lifeLink:Explore our nature pools`,
+  lifeLink: $localize`:@@site.editorial.lifeLink:See how a nature pool could fit your garden`,
   customerTitle: $localize`:@@site.editorial.customerTitle:It’s the life around the pool that matters.`,
   britaContext: $localize`:@@site.editorial.britaContext:Brita shares her experience of the build and life with her nature pool on southern Gotland.`,
   casePreview: $localize`:@@site.editorial.casePreview:Explore the finished nature pool through photographs and films from Gotland.`,

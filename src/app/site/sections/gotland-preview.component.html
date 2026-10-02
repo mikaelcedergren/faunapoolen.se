@@ -56,5 +56,27 @@
         }
       </cx-stack>
     </cx-grid>
+    @if (detailed) {
+      <cx-grid class="cx-p-lg" [columns]="3" [columnsMobile]="1" gap="xl">
+        @for (item of details; track item.id) {
+          <figure class="fp-project-detail">
+            <img
+              class="fp-guidance-photo"
+              [src]="item.photo.preview"
+              [alt]="item.photo.alt"
+              [width]="item.photo.width"
+              [height]="item.photo.height"
+              loading="lazy"
+            />
+            <figcaption>
+              <cx-stack gap="sm">
+                <h3 class="cx-text-title-2">{{ item.title }}</h3>
+                <p class="cx-text-body">{{ item.body }}</p>
+              </cx-stack>
+            </figcaption>
+          </figure>
+        }
+      </cx-grid>
+    }
   </cx-card>
 </section>

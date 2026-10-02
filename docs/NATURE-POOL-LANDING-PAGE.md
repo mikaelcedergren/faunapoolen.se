@@ -12,15 +12,44 @@ a three-step plan and a free initial phone consultation. The message applies
 [StoryBrand's customer-as-hero framework](https://storybrand.com/downloads/your-brand-is-not-the-hero.pdf).
 Do not invent urgency, guarantees, customer quotes, build durations or measured conversion gains.
 
-The nature-pool page follows this order:
+The homepage is the introduction; the nature-pool page answers the buying questions in depth.
+It must also make sense to someone arriving directly from an advertisement. The accepted
+composition, updated on 2 October 2026, follows this order:
 
-1. The existing evening hero, with a free pool consultation action and reassurance.
-2. Shared natural-pool benefits, with an introduction addressing the buyer's uncertainty.
-3. Real Gotland photography, Brita's existing customer quote and concise Aquascape certification.
-4. A customer-facing three-step plan in the shared process presentation.
-5. Shared starting prices, with the features that distinguish the packages and scope qualifications.
-6. Practical answers about space, care, site visits, timing, disruption, budget and location.
-7. An inline enquiry form. No competing closing invitation follows it.
+1. The existing evening hero, with a short explanation, free pool consultation action and reassurance.
+2. A new water-circuit illustration and three explanations: debris collection, biological filtration,
+   and circulation. This replaces the repeated homepage benefits grid.
+3. A new garden-layout illustration distinguishing swimming space from the complete footprint,
+   with guidance about filtration, entry, depth, seating and construction access.
+4. The shared Gotland preview with a detailed presentation: three additional real photographs
+   explain its connection to the garden, natural stone and evening lighting. The existing customer
+   quote and certification remain. The homepage retains its shorter presentation.
+5. Shared starting prices, package differences and scope qualifications.
+6. The shared three-step plan, with the existing landing-page explanation of assessment,
+   quotation, approval and handover.
+7. Everyday care, seasonal preparation and separately arranged support, paired with a new
+   illustrative photograph of leaf collection.
+8. Remaining practical questions and the existing inline enquiry form.
+
+All new text and image alternatives have English, Swedish and Danish counterparts. The homepage
+nature-pool link now promises information about how a pool could fit the visitor's garden.
+The two architectural concept illustrations blend fine drafting lines with rendered water, stone
+and planting, following the homepage visual direction without repeating its composition. The
+filtration cutaway and garden plan are distinct transparent assets with localized alternative text;
+they are not construction plans and carry no dimensions or baked-in labels. Page structure uses
+the existing grid, stack, inline, button and list components. Captions explicitly distinguish illustrative
+layouts and care imagery from completed-project evidence.
+
+Image reuse is limited to reused sections: the Gotland presentation and the process background.
+The nature-pool hero remains distinct from the homepage hero. See the
+[image record](EDITORIAL-IMAGE-GENERATION.md#nature-pool-ownership-image-2-october-2026).
+
+Filtration explanations were checked against Aquascape's
+[recreational pond system](https://www.aquascapeinc.com/recreational-ponds),
+[wetland filtration](https://www.aquascapeinc.com/wetland-filtration) and
+[skimmer explanation](https://www.aquascapeinc.com/pond-skimmers).
+Care and paid seasonal support use the established site service scope. The page does not promise
+fixed running costs, maintenance intervals, build durations or suitability before assessment.
 
 The shared masthead remains visually identical, including navigation, language selector and accent
 Contact us button. On this landing page Contact us and the page's consultation actions lead to its
@@ -65,7 +94,7 @@ forms also omit the unrelated service choice and retain their optional package d
 contact forms retain their service choices. No new enquiry fields or database changes are needed.
 
 The Gotland preview supports the focused proof presentation; its homepage presentation remains
-unchanged. Benefits, process presentation and package source remain reusable. Package details are
+unchanged. The homepage benefits, process presentation and package source remain reusable. Package details are
 shown in the ad landing context. The homepage's accepted composition is preserved.
 
 ## Verification

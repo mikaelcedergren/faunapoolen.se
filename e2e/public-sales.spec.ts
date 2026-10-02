@@ -93,7 +93,12 @@ for (const prefix of ['', '/en', '/da']) {
       if (suffix === '/nature-pools/') {
         await expect(page).toHaveURL(new RegExp(prefix + '/nature-pools/?#consultation$'));
         await expect(page.locator('form cx-dropdown')).toHaveCount(0);
-        await expect(page.locator('fp-nature-pool-benefits')).toHaveCount(1);
+        await expect(page.locator('fp-nature-pool-benefits')).toHaveCount(0);
+        await expect(
+          page.locator('#how-it-works figure img, #garden-layout figure img'),
+        ).toHaveCount(2);
+        await expect(page.locator('fp-gotland-preview figure')).toHaveCount(3);
+        await expect(page.locator('#pool-care img')).toBeVisible();
         await expect(page.locator('fp-gotland-preview blockquote')).toBeVisible();
       } else {
         await expect(page).toHaveURL(new RegExp(prefix + '/configure/?\\?service=pool$'));

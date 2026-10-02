@@ -148,3 +148,36 @@ reflections in a nature pool. The supplied PNG is stored as
 1672 × 941 dimensions, encoded at WebP quality 90 without visual edits. It is concept
 imagery, identified as such in localized alternative text, not a completed-project
 photograph. The original hand-touching-water asset remains unchanged.
+
+## Architectural pool illustrations, 2 October 2026
+
+- Generated with the built-in image-generation tool (style-transfer).
+- Style reference: `public/assets/images/faunapoolen/editorial/pool-design-concept.webp`.
+- Final assets, both 1536 × 1024, WebP quality 90 with original alpha preserved:
+  - `public/assets/images/faunapoolen/editorial/pool-filtration-architecture.webp`
+  - `public/assets/images/faunapoolen/editorial/pool-garden-architecture.webp`
+- The filtration section uses an architectural cutaway; the layout section uses a separate overhead garden concept. These replace the simple SVG diagrams.
+- No baked-in text or numbered callouts. Localized alternative text and captions describe them as concepts, not construction drawings or completed installations. The three-point explanations remain ordinary page text.
+- Both assets were visually inspected for material continuity, readable linework, plausible water and planting, and fit against the page background. Existing Gotland photographs and homepage illustration are unchanged.
+
+### Filtration prompt
+
+> Create a premium landscape architect's explanatory concept illustration for a natural swimming pool website. Use the supplied image ONLY as a visual style reference: its exquisite fine ivory architectural drafting lines transitioning into realistic stone, water and planting. Do not reproduce its pool or deck arrangement. NEW COMPOSITION: a three-quarter overhead axonometric cutaway of a compact natural swimming pool system. On the left a deep open swimming basin edged in irregular pale natural stone; back left a small discreet intake/skimmer bay; on the right an adjacent raised planted gravel biological filtration bed with natural reeds and grasses. The front edge is sliced open to reveal water depth, gravel filter layers and a single understated connecting pipe route in architectural linework. A small return cascade connects filter to swimming water. The left third transitions into intricate white technical construction linework, while the right two thirds have finely rendered natural materials and muted clear teal water. Include delicate drafting extension lines and restrained contour details around the composition. Beautiful coherent architectural presentation, believable small garden scale, restrained natural colours, no HDR or glowing water. No people, no lettering, no numbers, no legends, no logos, no cartoon icons, no thick outlines, no dashed flow arrows. This is a conceptual illustration rather than an engineering construction plan. Isolated on a TRUE TRANSPARENT BACKGROUND, including space between the outside drafting lines. Designed to sit on very dark blue-green #001922; ivory linework must remain visible on that dark background. Full composition safely within the canvas, approximately 3:2 landscape format, no rectangular backdrop, no cast shadow rectangle.
+
+### Garden-layout prompt
+
+> Create a premium landscape architect's garden concept plan for a natural swimming pool website. Use the supplied image ONLY as a visual style reference: exquisite fine ivory architectural drafting lines seamlessly transitioning into realistic stone, water, timber and planting. NEW DISTINCT DESIGN, do not reproduce reference pool shape or deck arrangement. Strictly overhead orthographic plan of an elongated softly rectangular swimming basin oriented diagonally from lower left to upper right. Pale limestone steps enter at lower left from a small timber seating terrace with two simple chairs. Beyond the swimming basin on the upper right is a clearly separate shallow planted gravel filtration garden, with reeds, sedges and a narrow connecting water channel. Irregular boulders, herbaceous planting and a small tree tie the whole garden together. Make the open swimming water visually legible, and show that planting, filter bed and terrace occupy extra space around it. Lower left portion of the design is precise fine ivory architectural wireframe, contour lines and botanical plan symbols; upper right portion smoothly resolves into beautifully realistic natural materials and muted transparent teal water. Fine extension lines and construction guides extend beyond the design. Elegant richly detailed architectural study, believable ordinary garden scale, natural subdued colours, no HDR, no glowing water, no cartoon icons or thick outlines. No people, no lettering, no numbers, no labels, no measurements, no logos. Conceptual garden layout rather than a construction plan. TRUE TRANSPARENT BACKGROUND outside the garden and between drafting lines, NO rectangular backdrop. Intended for a very dark blue-green #00141b page so linework must be light ivory and clearly visible. Full composition entirely within canvas with generous breathing room, approximately 3:2 landscape format.
+
+## Nature-pool ownership image, 2 October 2026
+
+- Final asset: `public/assets/images/faunapoolen/editorial/pool-care-leaves.webp` (1536 × 1024).
+- Generated with the built-in image-generation tool; optimized to WebP for the site.
+- Purpose: show the actual routine described in the care section: removing fallen leaves.
+- The image is illustrative, not a Faunapoolen installation photograph. Its localized caption and
+  alternative text say so. The Gotland section continues to use untouched real project photography.
+- Visual inspection: plausible net, leaves, water intersection and reflection; no people or anatomy;
+  restrained overcast light and colour. The net remains the subject in the section's crop.
+
+Prompt:
+
+> Use case: photorealistic-natural. Create a single landscape 3:2 editorial photograph for a nature-pool website section about ordinary pool care. Close view of a simple dark fine-mesh pool skimming net on a slim pole being drawn across the surface near weathered pale limestone pool edging, collecting just four or five fallen birch leaves. The mesh and leaves are clearly readable, the net intersects the water plausibly and small irregular ripples radiate from it. Only the pole enters from the lower right edge, no hands, people or extra tools visible. Small Scandinavian garden natural swimming pond, muted green reeds near one edge, dark naturally clear water with real sky reflection, subtle underwater stones partly visible. Beautiful professional garden documentary photograph, quiet overcast daylight, natural restrained color, plausible single exposure with uneven shadows, optical softness toward background. Frame the net as the subject at mid-left with plenty of water around it; no wide landscape, house, seats or swimming figures. No HDR, no tone mapping, no lifted shadows, no crunchy detail, no cyan glowing water, no dramatic cinematic grade, no artificial grain, no text or logos, no perfectly staged landscaping. This is an illustrative care image, not evidence of a specific installation.

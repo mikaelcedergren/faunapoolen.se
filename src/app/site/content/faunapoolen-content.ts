@@ -170,7 +170,7 @@ export const FAUNAPOOLEN_COPY = {
   naturePools: {
     eyebrow: $localize`:@@site.copy.naturePools.eyebrow:Nature pools`,
     title: $localize`:@@site.copy.naturePools.title:Your own nature pool, just outside.`,
-    ingress: $localize`:@@site.copy.naturePools.ingress:Step outside for morning swims and long summer evenings by the water. We design and build your nature pool, with Aquascape™ certified expertise from first idea to handover.`,
+    ingress: $localize`:@@site.copy.naturePools.ingress:Swim in a pool shaped around your garden, with biological filtration instead of routine chlorine treatment. Discover how it works, what space you need and how we help you bring it home.`,
     careTitle: $localize`:@@site.copy.naturePools.careTitle:What care does a nature pool need?`,
     careBody: $localize`:@@site.copy.naturePools.careBody:Biological filtration still needs routine care. At handover, we show you the tasks for your system and provide a maintenance plan.`,
     carePoints: [
