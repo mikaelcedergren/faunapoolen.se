@@ -6,14 +6,17 @@ export const FAUNAPOOLEN_LOGO = `${ASSET_ROOT}/logo.png`;
 /** New editorial imagery made for this website. */
 export const FAUNAPOOLEN_IMAGES = {
   hero: `${ASSET_ROOT}/hero-family.webp`,
+  naturePoolHero: `${ASSET_ROOT}/editorial/nature-pool-evening.webp`,
   architecture: `${ASSET_ROOT}/architecture-threshold.webp`,
+  poolDesign: `${ASSET_ROOT}/editorial/pool-design-concept.webp`,
   detail: `${ASSET_ROOT}/water-touch.webp`,
   evening: `${ASSET_ROOT}/evening-deck.webp`,
   waterscape: `${ASSET_ROOT}/waterscape-koi.webp`,
+  waterscapePause: `${ASSET_ROOT}/editorial/waterscape-pause.webp`,
 } as const;
 
-/** Official supplier artwork; provenance is recorded in docs/IMAGERY.md. */
+/** Supplier imagery and the owner-supplied certification emblem. */
 export const AQUASCAPE_IMAGES = {
-  certification: `${ASSET_ROOT}/aquascape-certified.png`,
+  certificationEmblem: `${ASSET_ROOT}/aquascape-certified-emblem.png`,
   recreationalPond: `${ASSET_ROOT}/aquascape-recreational-pond.jpg`,
 } as const;

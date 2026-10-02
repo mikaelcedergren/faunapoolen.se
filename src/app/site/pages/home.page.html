@@ -6,8 +6,8 @@
     variant="cover"
     align="center"
     [underMasthead]="true"
+    [parallax]="true"
     [overlayOpacity]="25"
-    [fadeBottom]="true"
   >
     <p body>{{ copy.home.ingress }}</p>
     <cx-inline actions gap="lg" justify="center" [wrap]="true">
@@ -18,7 +18,13 @@
         [href]="configureHref"
         appendIcon="arrow-right"
       />
-      <a [href]="routeFor('gotland')">{{ copy.home.secondary }} →</a>
+      <cx-button
+        [text]="copy.home.secondary"
+        mood="default"
+        size="large"
+        [href]="routeFor('gotland')"
+        appendIcon="arrow-right"
+      />
     </cx-inline>
     <img
       media
@@ -30,34 +36,26 @@
     />
   </cx-hero>
 
-  <section class="cx-container fp-section" aria-labelledby="home-case-title">
-    <cx-card>
-      <cx-grid class="cx-p-lg" [columns]="2" [columnsMobile]="1" gap="xl" align="center">
-        <a class="fp-photo-link" [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
-          <img
-            class="fp-photo"
-            [src]="projectPhoto.src"
-            [alt]="projectPhoto.alt"
-            width="1920"
-            height="1440"
-            loading="lazy"
-          />
-        </a>
-        <div class="cx-editorial cx-text-start">
-          <h2 id="home-case-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
-          <p>{{ copy.home.caseBody }}</p>
-          <p>
-            <a [href]="routeFor('gotland')">{{ evidence.caseLink }} →</a>
-          </p>
+  <div afterHero class="fp-certification-strip">
+    <div class="cx-container">
+      <div class="fp-certification-line">
+        <span>{{ editorial.trustExpertise }}</span>
+        <div class="fp-certification-stamp">
+          <fp-certification-mark [large]="true" />
         </div>
-      </cx-grid>
-    </cx-card>
-  </section>
+        <span>{{ editorial.trustStandards }}</span>
+      </div>
+    </div>
+  </div>
+
+  <fp-nature-pool-benefits />
 
   <section class="fp-band" aria-labelledby="home-life-title">
     <div class="cx-container fp-section fp-feature fp-feature--portrait">
       <div class="cx-editorial fp-feature-copy">
-        <h2 id="home-life-title" class="cx-font-regular">{{ editorial.lifeTitle }}</h2>
+        <h2 id="home-life-title" class="fp-heading cx-font-regular">
+          {{ editorial.lifeTitle }}
+        </h2>
         <p>{{ editorial.lifeBody }}</p>
         <p>
           <a [href]="routeFor('nature-pools')">{{ editorial.lifeLink }} →</a>
@@ -65,34 +63,92 @@
       </div>
       <img
         class="fp-photo"
-        [src]="images.architecture"
-        [alt]="editorial.architectureAlt"
+        [src]="images.poolDesign"
+        [alt]="editorial.poolDesignAlt"
         width="1536"
         height="1024"
         loading="lazy"
       />
     </div>
+    <div class="cx-container fp-guidance">
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+        <section aria-labelledby="home-dream-title">
+          <cx-stack gap="lg">
+            <img
+              class="fp-guidance-photo"
+              [src]="images.detail"
+              [alt]="editorial.dreamAlt"
+              width="1536"
+              height="1024"
+              loading="lazy"
+            />
+            <div class="cx-editorial">
+              <h3 id="home-dream-title" class="fp-subheading cx-font-serif cx-font-regular">
+                {{ editorial.dreamTitle }}
+              </h3>
+              <p>{{ editorial.dreamBody }}</p>
+            </div>
+          </cx-stack>
+        </section>
+        <section aria-labelledby="home-build-title">
+          <cx-stack gap="lg">
+            <img
+              class="fp-guidance-photo"
+              src="/assets/images/faunapoolen/gotland/1423-small.webp"
+              [alt]="editorial.buildAlt"
+              width="960"
+              height="720"
+              loading="lazy"
+            />
+            <div class="cx-editorial">
+              <h3 id="home-build-title" class="fp-subheading cx-font-serif cx-font-regular">
+                {{ editorial.buildTitle }}
+              </h3>
+              <p>{{ editorial.buildBody }}</p>
+            </div>
+          </cx-stack>
+        </section>
+        <section aria-labelledby="home-enjoy-title">
+          <cx-stack gap="lg">
+            <img
+              class="fp-guidance-photo"
+              [src]="images.evening"
+              [alt]="editorial.enjoyAlt"
+              width="1536"
+              height="1024"
+              loading="lazy"
+            />
+            <div class="cx-editorial">
+              <h3 id="home-enjoy-title" class="fp-subheading cx-font-serif cx-font-regular">
+                {{ editorial.enjoyTitle }}
+              </h3>
+              <p>{{ editorial.enjoyBody }}</p>
+            </div>
+          </cx-stack>
+        </section>
+      </cx-grid>
+    </div>
   </section>
 
-  <section class="cx-container fp-section" [attr.aria-label]="copy.nav.pricing">
-    <div class="fp-section-heading cx-editorial">
-      <h2 class="cx-font-regular">{{ copy.nav.naturePools }}</h2>
-    </div>
-    <fp-package-comparison />
-  </section>
+  <fp-gotland-preview />
+  <fp-process />
+
+  <fp-package-comparison />
 
   <section class="cx-container fp-section" aria-labelledby="home-waterscape-title">
     <div class="fp-feature fp-feature--wide-image">
       <img
         class="fp-photo"
-        [src]="images.waterscape"
-        [alt]="editorial.waterscapeAlt"
+        [src]="images.waterscapePause"
+        [alt]="editorial.waterscapePauseAlt"
         width="1536"
         height="1024"
         loading="lazy"
       />
       <div class="cx-editorial">
-        <h2 id="home-waterscape-title" class="cx-font-regular">{{ copy.home.waterscapeTitle }}</h2>
+        <h2 id="home-waterscape-title" class="fp-heading cx-font-regular">
+          {{ copy.home.waterscapeTitle }}
+        </h2>
         <p>{{ copy.home.waterscapeBody }}</p>
         <p>
           <a [href]="routeFor('waterscapes')">{{ copy.nav.waterscapes }} →</a>
@@ -100,5 +156,5 @@
       </div>
     </div>
   </section>
-  <div class="cx-container fp-section"><fp-process /></div>
+  <fp-certification-story />
 </fp-site-shell>

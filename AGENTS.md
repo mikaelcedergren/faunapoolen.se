@@ -139,7 +139,7 @@ European sentence case. `public/CNAME` is intentionally absent because nginx hos
 The Swedish SEO programme prioritizes Skåne, Halland, Blekinge and Småland without limiting the
 offer to those regions. Public commercial copy serves all of Sweden and welcomes Denmark;
 EU-wide delivery is a future ambition, not a current blanket promise. The owner confirmed package
-starting prices of 495,000 / 695,000 / 995,000 SEK including VAT on 17 September 2026. Keep scope
+starting prices of 430,000 / 1,100,000 / 4,400,000 SEK excluding VAT and shipping on 2 October 2026. Keep scope
 and site qualifications beside prices and use the shared package source.
 
 The ten other original articles were authorized for substantive SEO revisions on that date.

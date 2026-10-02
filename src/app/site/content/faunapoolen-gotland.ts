@@ -34,7 +34,8 @@ function film(id: string, number: number, duration: string, portrait = false): G
   return { kind: 'film', id, number, duration, portrait };
 }
 
-// One browsing order for the masonry and photo lightbox. Provenance lives in docs/IMAGERY.md.
+// Original project media. Photo order is shared by the gallery and lightbox.
+// The portrait film remains in the archive but is not part of the page stories.
 export const GOTLAND_MEDIA: readonly (GotlandPhoto | GotlandFilm)[] = [
   photo(
     '1528',
@@ -107,6 +108,28 @@ export const GOTLAND_COPY = {
   enlarge: $localize`:@@site.gotland_copy.enlarge:Enlarge image`,
   previous: $localize`:@@site.gotland_copy.previous:Previous image`,
   next: $localize`:@@site.gotland_copy.next:Next image`,
-  film: $localize`:@@site.gotland_copy.film:Film`,
-  vimeo: $localize`:@@site.gotland_copy.vimeo:Open on Vimeo`,
+  attribution: $localize`:@@site.gotland_copy.attribution:From Britta`,
 } satisfies Record<string, string>;
+
+export const GOTLAND_STORIES = [
+  {
+    film: film('1226470321', 1, '0:32'),
+    heading: $localize`:@@site.gotland.story.home.heading:A swimming spot beside the house`,
+    body: $localize`:@@site.gotland.story.home.body:Just outside the house, the garden opens onto water. We built this nature pool to feel part of the surroundings, with room for a swim and a place to spend time together.`,
+  },
+  {
+    film: film('1226558236', 3, '0:14'),
+    heading: $localize`:@@site.gotland.story.stone.heading:Stone, water and a softer edge`,
+    body: $localize`:@@site.gotland.story.stone.body:Natural stone gives the pool its shape, while planting connects the water to the garden. The irregular edges make each view a little different as you move around the pool.`,
+  },
+  {
+    film: film('1226558237', 4, '0:12'),
+    heading: $localize`:@@site.gotland.story.garden.heading:Part of the garden, even between swims`,
+    body: $localize`:@@site.gotland.story.garden.body:A nature pool brings more to a garden than a place to swim. Reflections, ripples and planting give you something to enjoy from the water’s edge or from inside the house.`,
+  },
+  {
+    film: film('1226558235', 5, '0:10'),
+    heading: $localize`:@@site.gotland.story.life.heading:Room for everyday moments`,
+    body: $localize`:@@site.gotland.story.life.body:For Britta and her grandchildren, the pool has become a place to swim and enjoy being together. This is what we hope to create: a part of your garden that you want to use, day after day.`,
+  },
+] as const;

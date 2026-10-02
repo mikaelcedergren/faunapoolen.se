@@ -32,38 +32,38 @@ export const FAUNAPOOLEN_PACKAGES: readonly FaunapoolenPackage[] = [
   {
     id: 'glade',
     name: $localize`:@@site.packages.glade.name:Daily dips`,
-    area: $localize`:@@site.packages.glade.area:12–18 m² swim area`,
-    description: $localize`:@@site.packages.glade.description:A compact swimming area with planting and edging around the pool.`,
+    area: $localize`:@@site.packages.glade.area:From 17.5 m² swim area`,
+    description: $localize`:@@site.packages.glade.description:A compact plunge pool for cooling off, sauna breaks and smaller gardens.`,
     includes: [
-      $localize`:@@site.packages.glade.includes.0:Site assessment and design proposal`,
-      $localize`:@@site.packages.glade.includes.1:Biological filtration and circulation`,
-      $localize`:@@site.packages.glade.includes.2:Planting and edging around the pool`,
+      $localize`:@@site.packages.glade.includes.0:Aquascape BioFalls filtration`,
+      $localize`:@@site.packages.glade.includes.1:Aquatic plants for biological balance`,
+      $localize`:@@site.packages.glade.includes.2:Compact layout for smaller gardens`,
     ],
-    price: 495_000,
+    price: 430_000,
   },
   {
     id: 'summer',
     name: $localize`:@@site.packages.summer.name:Swim together`,
-    area: $localize`:@@site.packages.summer.area:24–36 m² swim area`,
-    description: $localize`:@@site.packages.summer.description:More swimming space, with a seating edge or steps into the water.`,
+    area: $localize`:@@site.packages.summer.area:From 24 m² swim area`,
+    description: $localize`:@@site.packages.summer.description:A 1.5 m deep pool for swimming, with natural stone, lighting and water jets.`,
     includes: [
-      $localize`:@@site.packages.summer.includes.0:Detailed site and water circulation assessment`,
-      $localize`:@@site.packages.summer.includes.1:Large biological filtration zone`,
-      $localize`:@@site.packages.summer.includes.2:Seating edge or steps into the pool`,
+      $localize`:@@site.packages.summer.includes.0:Wetland filtration and a separate water intake`,
+      $localize`:@@site.packages.summer.includes.1:Natural stone and integrated lighting`,
+      $localize`:@@site.packages.summer.includes.2:Water jets for circulation`,
     ],
-    price: 695_000,
+    price: 1_100_000,
   },
   {
     id: 'horizon',
     name: $localize`:@@site.packages.horizon.name:More room`,
-    area: $localize`:@@site.packages.horizon.area:40–60 m² swim area`,
-    description: $localize`:@@site.packages.horizon.description:A larger swimming area, with the design extending into the surrounding garden.`,
+    area: $localize`:@@site.packages.horizon.area:From 100 m² swim area`,
+    description: $localize`:@@site.packages.horizon.description:A spacious pool with waterfalls, boulders and a planted landscape.`,
     includes: [
-      $localize`:@@site.packages.horizon.includes.0:Design for the pool and garden`,
-      $localize`:@@site.packages.horizon.includes.1:Pool and biological filtration designed for the site`,
-      $localize`:@@site.packages.horizon.includes.2:Planning of materials, lighting and level changes`,
+      $localize`:@@site.packages.horizon.includes.0:Waterfalls and feature boulders`,
+      $localize`:@@site.packages.horizon.includes.1:Planted garden and aquatic areas`,
+      $localize`:@@site.packages.horizon.includes.2:Integrated lighting`,
     ],
-    price: 995_000,
+    price: 4_400_000,
   },
 ] as const;
 
@@ -136,7 +136,7 @@ interface FaunapoolenSiteCopy {
   };
   readonly common: {
     readonly from: string;
-    readonly inclVat: string;
+    readonly priceExclusions: string;
     readonly familyPackage: string;
     readonly viewPackage: string;
     readonly talkTitle: string;
@@ -159,18 +159,18 @@ export const FAUNAPOOLEN_COPY = {
   home: {
     eyebrow: $localize`:@@site.copy.home.eyebrow:Nature pools for your garden`,
     title: $localize`:@@site.copy.home.title:Make your garden the best part of being home.`,
-    ingress: $localize`:@@site.copy.home.ingress:We design and build nature pools throughout Sweden and in Denmark for morning swims, long summer evenings and time together.`,
+    ingress: $localize`:@@site.copy.home.ingress:As an Aquascape™ certified contractor, we design and build nature pools for morning swims, long summer evenings and time together.`,
     primary: $localize`:@@site.copy.home.primary:Request a consultation`,
     secondary: $localize`:@@site.copy.home.secondary:See a completed natural pool`,
     caseBody: $localize`:@@site.copy.home.caseBody:We built this nature pool beside Brita’s home on southern Gotland, with natural stone edges that connect it to the surrounding garden. Today, it’s a place for her and her grandchildren to swim and spend time together.`,
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
-    waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. We build water features around the way you want to spend time outdoors.`,
+    waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. We also build water features around the way you want to spend time outdoors.`,
   },
   naturePools: {
     eyebrow: $localize`:@@site.copy.naturePools.eyebrow:Nature pools`,
-    title: $localize`:@@site.copy.naturePools.title:Your own swimming spot, just outside.`,
-    ingress: $localize`:@@site.copy.naturePools.ingress:Start the day with a dip or spend an afternoon by the water. We design and build nature pools throughout Sweden and in Denmark, around the way you swim and the garden you want to enjoy.`,
+    title: $localize`:@@site.copy.naturePools.title:Your own nature pool, just outside.`,
+    ingress: $localize`:@@site.copy.naturePools.ingress:Step outside for morning swims and long summer evenings by the water. We design and build your nature pool, with Aquascape™ certified expertise from first idea to handover.`,
     careTitle: $localize`:@@site.copy.naturePools.careTitle:What care does a nature pool need?`,
     careBody: $localize`:@@site.copy.naturePools.careBody:Biological filtration still needs routine care. At handover, we show you the tasks for your system and provide a maintenance plan.`,
     carePoints: [
@@ -217,7 +217,7 @@ export const FAUNAPOOLEN_COPY = {
   configure: {
     title: $localize`:@@site.copy.configure.title:Find out what suits your garden.`,
     ingress: $localize`:@@site.copy.configure.ingress:In a first phone conversation, we discuss your ideas, your property and how to move forward. The call is free.`,
-    nonBinding: $localize`:@@site.copy.configure.nonBinding:This is a starting point, not a quotation. We assess the site and agree the scope with you before quoting.`,
+    nonBinding: $localize`:@@site.copy.configure.nonBinding:Your choices are a starting point, not a commitment. We assess the site and agree the scope with you before quoting.`,
     packageTitle: $localize`:@@site.copy.configure.packageTitle:Interested in a pool option?`,
     name: $localize`:@@site.copy.configure.name:Name`,
     email: $localize`:@@site.copy.configure.email:Email`,
@@ -228,7 +228,7 @@ export const FAUNAPOOLEN_COPY = {
   },
   common: {
     from: $localize`:@@site.copy.common.from:From`,
-    inclVat: $localize`:@@site.copy.common.inclVat:incl. VAT`,
+    priceExclusions: $localize`:@@site.copy.common.priceExclusions:excl. VAT and shipping`,
     familyPackage: $localize`:@@site.copy.common.familyPackage:For family swimming`,
     viewPackage: $localize`:@@site.copy.common.viewPackage:Enquire about this pool`,
     talkTitle: $localize`:@@site.copy.common.talkTitle:Find out what suits your garden.`,

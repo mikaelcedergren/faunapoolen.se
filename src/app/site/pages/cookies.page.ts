@@ -28,7 +28,7 @@ import { SiteMeasurement } from '../site-measurement';
           }
           <div class="cx-editorial">
             <p>{{ introduction }}</p>
-            <h2>{{ statisticsTitle }}</h2>
+            <h2 class="fp-heading">{{ statisticsTitle }}</h2>
             <p>{{ statistics }}</p>
             <p>{{ google }}</p>
             <p>
@@ -38,14 +38,14 @@ import { SiteMeasurement } from '../site-measurement';
                 >{{ googleLink }}</a
               >
             </p>
-            <h2>{{ storageTitle }}</h2>
+            <h2 class="fp-heading">{{ storageTitle }}</h2>
             <ul>
               <li>{{ analyticsCookies }}</li>
               <li>{{ consentStorage }}</li>
               <li>{{ visitStorage }}</li>
               <li>{{ languageStorage }}</li>
             </ul>
-            <h2>{{ withdrawalTitle }}</h2>
+            <h2 class="fp-heading">{{ withdrawalTitle }}</h2>
             <p>{{ withdrawal }}</p>
             <p>{{ contact }} <a href="mailto:info@faunapoolen.se">info&#64;faunapoolen.se</a></p>
           </div>

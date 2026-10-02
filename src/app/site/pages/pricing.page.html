@@ -1,52 +1,48 @@
-<fp-site-shell>
+<fp-site-shell leadFocused>
   <cx-hero
     [underMasthead]="false"
     headingClass="cx-font-regular"
     [heading]="commercial.pricingTitle"
     variant="stacked"
   >
-    <p body>{{ copy.common.from }} {{ packagePrice(packages[0]) }} · {{ copy.common.inclVat }}</p>
+    <p body>
+      {{ copy.common.from }} {{ packagePrice(packages[0]) }} · {{ copy.common.priceExclusions }}
+    </p>
     <p body>{{ commercial.pricingIntro }}</p>
     <cx-button
       actions
-      [text]="copy.start"
+      [text]="poolEnquiry.cta"
       [href]="configureHref + '?service=pool'"
       mood="primary"
       size="large"
     />
   </cx-hero>
-  <div class="cx-container fp-section">
-    <fp-package-comparison />
-  </div>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial" aria-labelledby="price-scope-title">
-      <h2 id="price-scope-title" class="cx-font-regular">{{ commercial.scopeTitle }}</h2>
-      <p>{{ commercial.scopeBody }}</p>
-      <p>{{ commercial.scopeDetail }}</p>
-    </section>
-  </div>
+  <fp-package-comparison />
+  <fp-gotland-preview leadFocused />
   <div class="cx-container fp-section">
     <section aria-labelledby="price-factors-title">
       <cx-stack gap="xl">
         <div class="cx-editorial">
-          <h2 id="price-factors-title" class="cx-font-regular">{{ commercial.costTitle }}</h2>
+          <h2 id="price-factors-title" class="fp-heading cx-font-regular">
+            {{ commercial.costTitle }}
+          </h2>
         </div>
         <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
           <div class="fp-column">
             <div class="cx-editorial">
-              <h3 class="cx-font-regular">{{ commercial.groundTitle }}</h3>
+              <h3 class="fp-subheading cx-font-regular">{{ commercial.groundTitle }}</h3>
               <p>{{ commercial.groundBody }}</p>
             </div>
           </div>
           <div class="fp-column">
             <div class="cx-editorial">
-              <h3 class="cx-font-regular">{{ commercial.sizeTitle }}</h3>
+              <h3 class="fp-subheading cx-font-regular">{{ commercial.sizeTitle }}</h3>
               <p>{{ commercial.sizeBody }}</p>
             </div>
           </div>
           <div class="fp-column">
             <div class="cx-editorial">
-              <h3 class="cx-font-regular">{{ commercial.surroundingsTitle }}</h3>
+              <h3 class="fp-subheading cx-font-regular">{{ commercial.surroundingsTitle }}</h3>
               <p>{{ commercial.surroundingsBody }}</p>
             </div>
           </div>
@@ -54,101 +50,24 @@
       </cx-stack>
     </section>
   </div>
-  <div class="cx-container fp-section">
-    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-      <section class="cx-editorial" aria-labelledby="price-space-title">
-        <h2 id="price-space-title" class="cx-font-regular">{{ commercial.footprintTitle }}</h2>
-        <p>{{ commercial.footprintBody }}</p>
-        <p>
-          <a [href]="guideHref('hur-mycket-plats-behover-en-naturpool')"
-            >{{ editorial.spaceTitle }} →</a
-          >
-        </p>
-      </section>
-      <section class="cx-editorial" aria-labelledby="price-care-title">
-        <h2 id="price-care-title" class="cx-font-regular">{{ commercial.ownershipTitle }}</h2>
-        <p>{{ commercial.ownershipBody }}</p>
-        <p>
-          <a [href]="guideHref('skotsel-av-naturpool-under-aret')"
-            >{{ commercial.seasonalCareLink }} →</a
-          >
-        </p>
-        <p>
-          <a [href]="guideHref('vad-kostar-det-att-aga-en-naturpool')"
-            >{{ commercial.ownershipGuideLink }} →</a
-          >
-        </p>
-      </section>
-    </cx-grid>
-  </div>
-  <div class="cx-container fp-section">
-    <section aria-labelledby="water-feature-price-title">
-      <cx-stack gap="xl">
-        <div class="cx-editorial">
-          <h2 id="water-feature-price-title" class="cx-font-regular">
-            {{ commercial.waterPriceTitle }}
-          </h2>
-          <p>{{ commercial.waterPriceBody }}</p>
-        </div>
-        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-          <div id="waterfall" class="cx-scroll-target fp-column">
-            <div class="cx-editorial">
-              <h3 class="cx-font-regular">{{ commercial.waterfallPriceTitle }}</h3>
-              <p>{{ commercial.waterfallPriceBody }}</p>
-            </div>
-          </div>
-          <div id="fountains" class="cx-scroll-target fp-column">
-            <div class="cx-editorial">
-              <h3 class="cx-font-regular">{{ commercial.fountainPriceTitle }}</h3>
-              <p>{{ commercial.fountainPriceBody }}</p>
-            </div>
-          </div>
-        </cx-grid>
-        <div class="cx-editorial">
-          <p>
-            <a [href]="routeFor('waterscapes')">{{ commercial.waterFeatureLink }} →</a>
-          </p>
-        </div>
-      </cx-stack>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <fp-process />
-  </div>
-  <div class="cx-container fp-section">
-    <section aria-labelledby="price-proof-title">
-      <div>
-        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
-          <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
-            <cx-image
-              class="cx-w-full"
-              [image]="{
-                src: projectPhoto.src,
-                alt: projectPhoto.alt,
-                loading: 'lazy',
-                intrinsicWidth: 1920,
-                intrinsicHeight: 1440,
-                borderRadius: 'large',
-              }"
-            />
-          </a>
-          <div class="cx-editorial">
-            <h2 id="price-proof-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
-            <p>{{ editorial.caseStory }}</p>
-            <p>
-              <a [href]="routeFor('gotland')">{{ evidence.caseLink }} →</a>
-            </p>
-          </div>
-        </cx-grid>
-      </div>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial" aria-labelledby="price-choice-title">
-      <h2 id="price-choice-title" class="cx-font-regular">
-        {{ commercial.pricingQuestionTitle }}
+  <section class="cx-container fp-section" aria-labelledby="price-questions-title">
+    <cx-stack gap="xl">
+      <h2 id="price-questions-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ questionsTitle }}
       </h2>
-      <p>{{ commercial.pricingQuestionBody }}</p>
-    </section>
-  </div>
+      <cx-list>
+        @for (item of questions; track item.id) {
+          <cx-list-item [itemId]="item.id" [heading]="item.heading" [expandable]="true">
+            <div class="cx-editorial">
+              <p>{{ item.body }}</p>
+              @if (item.detail) {
+                <p>{{ item.detail }}</p>
+              }
+            </div>
+          </cx-list-item>
+        }
+      </cx-list>
+    </cx-stack>
+  </section>
+  <fp-process />
 </fp-site-shell>

@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CxInlineComponent, CxImageComponent } from '@mikaelcedergren/cx-framework';
+import { CxInlineComponent } from '@mikaelcedergren/cx-framework';
+import { CertificationMarkComponent } from './certification-mark.component';
 import { SitePage } from '../site-page';
 
 @Component({
   selector: 'fp-certification',
-  imports: [CxInlineComponent, CxImageComponent],
+  imports: [CxInlineComponent, CertificationMarkComponent],
   templateUrl: './certification.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -173,3 +173,25 @@ for (const locale of ['en', 'sv', 'da'])
     expect((await page.goto(prefix + '/missing-page'))?.status()).toBe(404);
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
   });
+
+test('Gotland keeps landscape films beside their stories and the lightbox limited to photographs', async ({
+  page,
+}) => {
+  await page.goto('/en/projects/gotland/');
+  await expect(page.locator('fp-gotland-film')).toHaveCount(4);
+  await expect(page.locator('iframe[src*="1226470011"]')).toHaveCount(0);
+  await expect(page.locator('cx-masonry iframe')).toHaveCount(0);
+  await expect(page.locator('cx-masonry [data-gotland-photo]')).toHaveCount(10);
+  await expect(page.locator('main blockquote')).toHaveCount(1);
+  await expect(page.locator('.fp-project-quote figcaption')).toHaveText('From Britta');
+  await expect(page.getByRole('link', { name: 'Open on Vimeo' })).toHaveCount(0);
+  const photo = page.locator('[data-gotland-photo="1455"]');
+  await photo.click();
+  const lightbox = page.getByRole('dialog');
+  await expect(lightbox).toBeVisible();
+  await expect(lightbox.locator('img')).toHaveAttribute('src', /1455\.webp$/);
+  await page.getByRole('button', { name: 'Next image', exact: true }).click();
+  await expect(lightbox.locator('img')).toHaveAttribute('src', /1496\.webp$/);
+  await page.keyboard.press('Escape');
+  await expect(lightbox).toBeHidden();
+});

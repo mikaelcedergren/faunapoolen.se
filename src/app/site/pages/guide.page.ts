@@ -40,6 +40,8 @@ export class GuidePage extends SitePage {
       sanitizer.sanitize(SecurityContext.HTML, this.routeSnapshot.data['bodyHtml'] as string) ?? '';
     article.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((heading) => {
       heading.classList.add('cx-font-regular');
+      if (heading.tagName === 'H2') heading.classList.add('fp-heading');
+      if (/^H[3-6]$/.test(heading.tagName)) heading.classList.add('fp-subheading');
     });
     const sections = Array.from(article.querySelectorAll('h2')).map((heading, index) => {
       const id = `guide-section-${index + 1}`;

@@ -7,11 +7,11 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
   },
   'nature-pools': {
     title: $localize`:@@seo.nature-pools.title:Build a nature pool – design and construction | Faunapoolen`,
-    description: $localize`:@@seo.nature-pools.description:A nature pool designed for your garden. Explore space, biological filtration and care, compare packages and see how we help from first idea to finished pool.`,
+    description: $localize`:@@seo.nature-pools.description:Your own nature pool, designed and built by an Aquascape™ certified contractor. See a completed project, compare starting prices and request a free first phone consultation.`,
   },
   pricing: {
     title: $localize`:@@seo.pricing.title:Nature pool prices – compare packages | Faunapoolen`,
-    description: $localize`:@@seo.pricing.description:Compare nature pool packages, swimming areas and starting prices including VAT. Find out what affects the cost and what needs assessing before a quotation.`,
+    description: $localize`:@@seo.pricing.description:Compare nature pool packages, swimming areas and starting prices excluding VAT and shipping. Find out what affects the cost and what needs assessing before a quotation.`,
   },
   gotland: {
     title: $localize`:@@seo.gotland.title:Nature pool on Gotland – Brita’s garden | Faunapoolen`,

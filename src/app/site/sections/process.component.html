@@ -1,20 +1,38 @@
-<section aria-labelledby="process-title">
-  <cx-stack gap="xl">
-    <div class="cx-editorial">
-      <h2 id="process-title" class="cx-font-regular">{{ copy.home.processTitle }}</h2>
-    </div>
-    <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-      @for (item of process; track item.number) {
-        <div class="fp-step">
-          <cx-stack gap="md" align="start">
-            <span class="fp-step-number">{{ item.number }}</span>
-            <h3 class="cx-text-title-1 cx-font-serif cx-font-regular">
-              {{ item.title }}
-            </h3>
-            <p class="cx-text-body-lg">{{ item.body }}</p>
-          </cx-stack>
+<div class="fp-process-scene">
+  <img
+    class="fp-process-scene-media"
+    cxParallax
+    src="/assets/images/faunapoolen/editorial/process-evening.webp"
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    width="1672"
+    height="941"
+  />
+  <div class="cx-container fp-section">
+    <section aria-labelledby="process-title">
+      <cx-stack gap="xl">
+        <div class="cx-editorial">
+          <h2 id="process-title" class="fp-heading cx-font-regular">
+            {{ copy.home.processTitle }}
+          </h2>
         </div>
-      }
-    </cx-grid>
-  </cx-stack>
-</section>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
+          @for (item of steps; track item.number) {
+            <cx-card variant="frosted">
+              <div class="cx-p-lg">
+                <cx-stack gap="md" align="start">
+                  <span class="fp-step-number">{{ item.number }}</span>
+                  <h3 class="fp-subheading cx-font-serif cx-font-regular">
+                    {{ item.title }}
+                  </h3>
+                  <p class="cx-text-body-lg">{{ item.body }}</p>
+                </cx-stack>
+              </div>
+            </cx-card>
+          }
+        </cx-grid>
+      </cx-stack>
+    </section>
+  </div>
+</div>

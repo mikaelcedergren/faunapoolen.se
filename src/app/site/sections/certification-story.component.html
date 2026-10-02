@@ -1,0 +1,41 @@
+<section class="cx-bg-surface-alt" aria-labelledby="home-certification-title">
+  <div class="cx-container fp-section">
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
+      <cx-stack gap="lg" align="start">
+        <cx-stack gap="sm">
+          <p class="cx-text-body-lg cx-text-primary">{{ certificationStory.eyebrow }}</p>
+          <h2 id="home-certification-title" class="fp-heading cx-font-serif cx-font-regular">
+            {{ certificationStory.heading }}
+          </h2>
+        </cx-stack>
+        <div class="cx-editorial">
+          <p>{{ certificationStory.body }}</p>
+        </div>
+        <cx-stack gap="lg">
+          @for (benefit of certificationStory.benefits; track benefit.heading) {
+            <cx-inline gap="sm" align="start">
+              <cx-icon icon="check" size="20" mood="primary" aria-hidden="true" />
+              <cx-stack gap="xs" class="cx-fill">
+                <h3 class="cx-text-body-lg cx-font-semibold">{{ benefit.heading }}</h3>
+                <p class="cx-text-body-lg">{{ benefit.body }}</p>
+              </cx-stack>
+            </cx-inline>
+          }
+        </cx-stack>
+      </cx-stack>
+      <div class="fp-certification-photo">
+        <img
+          class="fp-photo"
+          [src]="craftPhoto.src"
+          [alt]="craftPhoto.alt"
+          width="1920"
+          height="1440"
+          loading="lazy"
+        />
+        <div class="fp-certification-stamp fp-certification-stamp--photo">
+          <fp-certification-mark [large]="true" />
+        </div>
+      </div>
+    </cx-grid>
+  </div>
+</section>

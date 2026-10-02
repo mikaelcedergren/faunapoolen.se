@@ -83,22 +83,35 @@ test('old translated page addresses and price links redirect once to the matchin
   }
 });
 
-test('inherited price fragments reach actual water-feature pricing guidance', async ({ page }) => {
+test('legacy price URLs retain their redirect without promoting unrelated offers', async ({
+  page,
+}) => {
   for (const fragment of ['waterfall', 'fountains']) {
     await page.goto(`/pricing/#${fragment}`);
     await expect(page).toHaveURL(new RegExp(`/nature-pools/pricing/?#${fragment}$`));
-    await expect(page.locator(`#${fragment}`)).toBeInViewport();
-    await expect(page.locator(`#${fragment} h3`)).toBeVisible();
-    await expect(
-      page.locator('section[aria-labelledby="water-feature-price-title"] a[href="/waterscapes/"]'),
-    ).toBeVisible();
+    await expect(page.locator('section[aria-labelledby="water-feature-price-title"]')).toHaveCount(
+      0,
+    );
+    await expect(page.locator('main a[href*="/configure/"]').first()).toBeVisible();
   }
 });
 
 for (const pool of [
-  { id: 'glade', name: 'Dagliga dopp', price: /495\s*000/, index: 0 },
-  { id: 'summer', name: 'Bada tillsammans', price: /695\s*000/, index: 1 },
-  { id: 'horizon', name: 'Mer plats', price: /995\s*000/, index: 2 },
+  { id: 'glade', name: 'Dagliga dopp', price: /430\s*000/, area: 'Från 17,5 m² badyta', index: 0 },
+  {
+    id: 'summer',
+    name: 'Bada tillsammans',
+    price: /1\s*100\s*000/,
+    area: 'Från 24 m² badyta',
+    index: 1,
+  },
+  {
+    id: 'horizon',
+    name: 'Mer plats',
+    price: /4\s*400\s*000/,
+    area: 'Från 100 m² badyta',
+    index: 2,
+  },
 ]) {
   test(`Swedish price comparison carries ${pool.name} and its price into the enquiry`, async ({
     page,
@@ -109,20 +122,23 @@ for (const pool of [
     await expect(cards).toHaveCount(3);
     await expect(cards.nth(pool.index)).toContainText(pool.name);
     await expect(cards.nth(pool.index)).toContainText(pool.price);
-    await expect(cards.nth(pool.index)).toContainText('inkl. moms');
+    await expect(cards.nth(pool.index)).toContainText(pool.area);
+    await expect(cards.nth(pool.index)).toContainText('exkl. moms och frakt');
     await cards
       .nth(pool.index)
       .getByRole('link', { name: 'Fråga om den här poolen', exact: true })
       .click();
     await expect(page).toHaveURL(new RegExp(`/configure/\\?package=${pool.id}$`));
-    await expect(page.locator('form cx-dropdown')).toHaveCount(2);
+    await expect(page.locator('form cx-dropdown')).toHaveCount(1);
     await expect(page.locator('form cx-dropdown').first().getByRole('combobox')).toContainText(
-      'Naturpool',
-    );
-    await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
       pool.name,
     );
-    await expect(page.locator('form')).toContainText(pool.price);
+    const poolChoice = page.locator('form cx-dropdown').first().getByRole('combobox');
+    await poolChoice.click();
+    const poolOption = page.getByRole('option').filter({ hasText: pool.name });
+    await expect(poolOption).toContainText(pool.price);
+    await expect(poolOption).toContainText('exkl. moms och frakt');
+    await poolChoice.press('Escape');
     await expect(page.locator('form textarea')).toBeEnabled();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
@@ -133,20 +149,20 @@ for (const pool of [
 
 test('a changed package survives refresh and both footer language changes', async ({ page }) => {
   await page.goto('/configure/?package=glade');
-  const packageChoice = page.locator('form cx-dropdown').nth(1).getByRole('combobox');
+  const packageChoice = page.locator('form cx-dropdown').first().getByRole('combobox');
   await expect(packageChoice).not.toHaveAttribute('aria-disabled', 'true');
   await packageChoice.click();
   await page.getByRole('option', { name: /Bada tillsammans/ }).click();
   await expect.poll(() => new URL(page.url()).searchParams.get('package')).toBe('summer');
   await page.reload();
-  await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
+  await expect(page.locator('form cx-dropdown').first().getByRole('combobox')).toContainText(
     'Bada tillsammans',
   );
   await page.locator('footer').getByRole('button', { name: 'Språk: Svenska', exact: true }).click();
   await page.getByRole('option', { name: /English/ }).click();
   await expect.poll(() => new URL(page.url()).pathname).toBe('/en/configure/');
   await expect.poll(() => new URL(page.url()).searchParams.get('package')).toBe('summer');
-  await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
+  await expect(page.locator('form cx-dropdown').first().getByRole('combobox')).toContainText(
     'Swim together',
   );
   await page
@@ -156,7 +172,7 @@ test('a changed package survives refresh and both footer language changes', asyn
   await page.getByRole('option', { name: /Dansk/ }).click();
   await expect.poll(() => new URL(page.url()).pathname).toBe('/da/configure/');
   await expect.poll(() => new URL(page.url()).searchParams.get('package')).toBe('summer');
-  await expect(page.locator('form cx-dropdown').nth(1).getByRole('combobox')).toContainText(
+  await expect(page.locator('form cx-dropdown').first().getByRole('combobox')).toContainText(
     'Bad sammen',
   );
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -384,11 +400,11 @@ test('a lead is measured once after the confirmed retry and never includes conta
       await route.continue();
     }
   });
-  await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
+  await page.getByRole('button', { name: 'Request free pool advice', exact: true }).click();
   await expect(page.getByText(/We couldn’t confirm receipt/)).toBeVisible();
   await expect.poll(() => events.filter((event) => event.name === 'enquiry_error').length).toBe(1);
   expect(events.filter((event) => event.name === 'generate_lead')).toEqual([]);
-  await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
+  await page.getByRole('button', { name: 'Request free pool advice', exact: true }).click();
   await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
   await expect.poll(() => events.filter((event) => event.name === 'generate_lead').length).toBe(1);
   expect(references).toHaveLength(2);

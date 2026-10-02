@@ -1,8 +1,6 @@
 import { DomSanitizer } from '@angular/platform-browser';
-import { GOTLAND_COPY, type GotlandFilm } from '../content/faunapoolen-gotland';
+import { type GotlandFilm } from '../content/faunapoolen-gotland';
 import { ChangeDetectionStrategy, Component, input, computed, inject } from '@angular/core';
-
-import { SitePage } from '../site-page';
 
 @Component({
   selector: 'fp-gotland-film',
@@ -10,8 +8,9 @@ import { SitePage } from '../site-page';
   templateUrl: './gotland-film.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GotlandFilmComponent extends SitePage {
+export class GotlandFilmComponent {
   readonly film = input.required<GotlandFilm>();
+  readonly heading = input.required<string>();
   readonly embedUrl = computed(() =>
     this.sanitizer.bypassSecurityTrustResourceUrl(
       'https://player.vimeo.com/video/' +
@@ -20,5 +19,4 @@ export class GotlandFilmComponent extends SitePage {
     ),
   );
   private readonly sanitizer = inject(DomSanitizer);
-  protected readonly gotlandCopy = GOTLAND_COPY;
 }

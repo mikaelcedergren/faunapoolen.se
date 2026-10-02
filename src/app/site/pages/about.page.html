@@ -11,7 +11,9 @@
     <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
         <div class="cx-editorial">
-          <h2 id="about-method-title" class="cx-font-regular">{{ copy.about.methodTitle }}</h2>
+          <h2 id="about-method-title" class="fp-heading cx-font-regular">
+            {{ copy.about.methodTitle }}
+          </h2>
           <p>{{ copy.about.methodBody }}</p>
         </div>
         <div>
@@ -49,7 +51,9 @@
           </a>
           <cx-stack gap="xl" align="start">
             <div class="cx-editorial">
-              <h2 id="about-proof-title" class="cx-font-regular">{{ evidence.caseTitle }}</h2>
+              <h2 id="about-proof-title" class="fp-heading cx-font-regular">
+                {{ evidence.caseTitle }}
+              </h2>
             </div>
             <fp-customer-quote [review]="testimonials[0]" />
             <cx-button

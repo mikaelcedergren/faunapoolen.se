@@ -1,0 +1,60 @@
+<section class="cx-container fp-section" aria-labelledby="gotland-preview-title">
+  <cx-card [borderRadius]="24">
+    <cx-grid class="cx-p-lg" [columns]="2" [columnsMobile]="1" gap="xl" align="center">
+      <ng-template #photo>
+        <img
+          class="fp-photo"
+          [src]="projectPhoto.src"
+          [alt]="projectPhoto.alt"
+          width="1920"
+          height="1440"
+          loading="lazy"
+        />
+      </ng-template>
+      @if (leadFocused) {
+        <ng-container [ngTemplateOutlet]="photo" />
+      } @else {
+        <a class="fp-photo-link" [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
+          <ng-container [ngTemplateOutlet]="photo" />
+        </a>
+      }
+      <cx-stack gap="lg" align="start">
+        <cx-stack gap="sm">
+          <div class="cx-editorial">
+            <p class="fp-case-label">{{ editorial.caseLabel }}</p>
+          </div>
+          <h2 id="gotland-preview-title" class="fp-heading cx-font-serif cx-font-regular">
+            {{ evidence.caseTitle }}
+          </h2>
+        </cx-stack>
+        <div class="cx-editorial">
+          <p>{{ leadFocused ? landing.caseBody : copy.home.caseBody }}</p>
+        </div>
+        @if (leadFocused) {
+          <div class="cx-editorial">
+            <blockquote>
+              <p>“{{ testimonials[1].quote }}”</p>
+              <cite> {{ testimonials[1].author }} · {{ testimonials[0].context }} </cite>
+            </blockquote>
+          </div>
+          <cx-inline gap="md" align="center">
+            <fp-certification-mark />
+            <p class="cx-text-body cx-text-start">{{ landing.certificationBody }}</p>
+          </cx-inline>
+          <cx-button
+            [text]="poolEnquiry.cta"
+            [href]="enquiryHref ?? configureHref + '?service=pool'"
+            mood="primary"
+            size="large"
+          />
+        } @else {
+          <div class="cx-editorial">
+            <p>
+              <a [href]="routeFor('gotland')">{{ evidence.caseLink }} →</a>
+            </p>
+          </div>
+        }
+      </cx-stack>
+    </cx-grid>
+  </cx-card>
+</section>

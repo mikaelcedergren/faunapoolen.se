@@ -1,10 +1,26 @@
 /** Buying questions and supporting copy shared by the bilingual page compositions. */
 export const FAUNAPOOLEN_EDITORIAL = {
   heroAlt: $localize`:@@site.editorial.heroAlt:Concept image: a couple enjoying a nature pool at dusk, with warm garden lights.`,
+  naturePoolHeroAlt: $localize`:@@site.editorial.naturePoolHeroAlt:Concept image: illuminated stone steps lead into a nature pool at dusk, with warm garden lights reflected in the water.`,
   architectureAlt: $localize`:@@site.editorial.architectureAlt:Concept image: a view from a timber house towards water and woodland.`,
+  poolDesignAlt: $localize`:@@site.editorial.poolDesignAlt:Concept illustration: a nature pool design transitioning from a line drawing to a garden with water, planting and a deck.`,
   waterscapeAlt: $localize`:@@site.editorial.waterscapeAlt:Concept image: a koi pond and a small stream in a leafy garden.`,
-  supplierAlt: $localize`:@@site.editorial.supplierAlt:Aquascape’s own example of a recreational pond.`,
+  waterscapePauseAlt: $localize`:@@site.editorial.waterscapePauseAlt:Concept image: a woman rests beside a koi pond and small stream in an evening garden.`,
+  supplierAlt: $localize`:@@site.editorial.supplierAlt:Aquascape™’s own example of a recreational pond.`,
   responsibility: $localize`:@@site.editorial.responsibility:From design to construction and care. Faunapoolen brings your project together.`,
+  trustExpertise: $localize`:@@site.editorial.trustExpertise:Aquascape™ expertise since 1991`,
+  trustStandards: $localize`:@@site.editorial.trustStandards:Built to Aquascape™ standards`,
+  contractorLabel: $localize`:@@site.editorial.contractorLabel:Certified contractor`,
+  caseLabel: $localize`:@@site.editorial.caseLabel:Case study`,
+  dreamTitle: $localize`:@@site.editorial.dreamTitle:Find what feels right for you.`,
+  dreamBody: $localize`:@@site.editorial.dreamBody:Morning dips, space to swim or a quiet spot beside the water? Tell us what you imagine, and we’ll help you shape it around your garden and budget.`,
+  dreamAlt: $localize`:@@site.editorial.dreamAlt:Concept image: a hand touching the surface of a nature pool.`,
+  buildTitle: $localize`:@@site.editorial.buildTitle:Feel confident about the next step.`,
+  buildBody: $localize`:@@site.editorial.buildBody:As an Aquascape™ certified contractor, we guide you through the design, explain the quotation and bring the build together. You know what we’re planning before work begins.`,
+  buildAlt: $localize`:@@site.editorial.buildAlt:Stone steps built into Brita’s nature pool on Gotland.`,
+  enjoyTitle: $localize`:@@site.editorial.enjoyTitle:Make room for everyday escapes.`,
+  enjoyBody: $localize`:@@site.editorial.enjoyBody:When the pool is ready, we show you how to look after it and give you a care plan for the seasons. You can settle into life by the water, knowing what needs your attention.`,
+  enjoyAlt: $localize`:@@site.editorial.enjoyAlt:Concept image: a family relaxing beside the water after an evening swim.`,
   lifeTitle: $localize`:@@site.editorial.lifeTitle:You do not need a finished plan.`,
   lifeBody: $localize`:@@site.editorial.lifeBody:We help you find a solution for the way you want to use your garden, the conditions on your property and your budget.`,
   lifeLink: $localize`:@@site.editorial.lifeLink:Explore our nature pools`,
@@ -13,12 +29,12 @@ export const FAUNAPOOLEN_EDITORIAL = {
   casePreview: $localize`:@@site.editorial.casePreview:Explore the finished nature pool through photographs and films from Gotland.`,
   firstContact: $localize`:@@site.editorial.firstContact:Your first phone consultation is free.`,
   certificationMeaning: $localize`:@@site.editorial.certificationMeaning:What the certification means`,
-  technologyResponsibility: $localize`:@@site.editorial.technologyResponsibility:The technology comes from Aquascape. We select and adapt the system for your site, and show you how to care for it.`,
+  technologyResponsibility: $localize`:@@site.editorial.technologyResponsibility:The technology comes from Aquascape™. We select and adapt the system for your site, and show you how to care for it.`,
   technologyDetails: $localize`:@@site.editorial.technologyDetails:How filtration and care work`,
-  priceScope: $localize`:@@site.editorial.priceScope:Indicative starting prices include VAT. Ground conditions, access and your choices affect the quotation, which sets out the work and materials included.`,
+  priceScope: $localize`:@@site.editorial.priceScope:Indicative starting prices exclude VAT and shipping. Ground conditions, access and your choices affect the quotation, which sets out the work and materials included.`,
   discussService: $localize`:@@site.editorial.discussService:Ask us about this`,
   service: $localize`:@@site.editorial.service:What are you interested in?`,
-  unknown: $localize`:@@site.editorial.unknown:Not sure yet`,
+  unknown: $localize`:@@site.editorial.unknown:Not decided yet`,
   servicePrice: $localize`:@@site.editorial.servicePrice:We’ll assess the cost together`,
   servicePriceBody: $localize`:@@site.editorial.servicePriceBody:Tell us about the site and what you have in mind. You do not need to choose a pool package to begin.`,
   packageHelp: $localize`:@@site.editorial.packageHelp:Packages are a starting point. You can leave the choice open.`,
@@ -44,15 +60,15 @@ export const FAUNAPOOLEN_EDITORIAL = {
 } satisfies Record<string, string>;
 
 export const FAUNAPOOLEN_SERVICES = [
+  {
+    id: 'unsure',
+    name: $localize`:@@site.services.unsure.name:Not decided yet`,
+  },
   { id: 'pool', name: $localize`:@@site.services.pool.name:Nature pool` },
   { id: 'pond', name: $localize`:@@site.services.pond.name:Pond` },
   {
     id: 'stream',
     name: $localize`:@@site.services.stream.name:Stream or waterfall`,
-  },
-  {
-    id: 'unsure',
-    name: $localize`:@@site.services.unsure.name:I would like help choosing`,
   },
 ] as const;
 export type FaunapoolenService = (typeof FAUNAPOOLEN_SERVICES)[number]['id'];

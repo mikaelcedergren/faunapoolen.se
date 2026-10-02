@@ -14,7 +14,7 @@ export const FAQ_ITEMS = [
   {
     id: 'price',
     question: $localize`:@@site.faq.price.question:What does a nature pool cost?`,
-    answer: $localize`:@@site.faq.price.answer:Our pool options show indicative starting prices including VAT. Ground conditions, access, size and materials affect the quotation. Ponds, streams and other water features are quoted individually.`,
+    answer: $localize`:@@site.faq.price.answer:Our pool options show indicative starting prices excluding VAT and shipping. Ground conditions, access, size and materials affect the quotation. Ponds, streams and other water features are quoted individually.`,
   },
   {
     id: 'care',
@@ -44,7 +44,7 @@ export const FAQ_ITEMS = [
   {
     id: 'filtration',
     question: $localize`:@@site.faq.filtration.question:How is the water filtered?`,
-    answer: $localize`:@@site.faq.filtration.answer:Pumps circulate the water through mechanical and biological filtration. Filters catch debris, while microorganisms take up nutrients that can feed algae. We select and size the Aquascape system for the installation.`,
+    answer: $localize`:@@site.faq.filtration.answer:Pumps circulate the water through mechanical and biological filtration. Filters catch debris, while microorganisms take up nutrients that can feed algae. We select and size the Aquascape™ system for the installation.`,
   },
   {
     id: 'custom',

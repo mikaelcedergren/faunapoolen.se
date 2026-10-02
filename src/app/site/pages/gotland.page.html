@@ -1,88 +1,74 @@
 <fp-site-shell>
-  <div hero class="fp-hero-frame">
-    <cx-hero
-      [underMasthead]="false"
-      headingClass="cx-font-regular"
-      [heading]="evidence.caseTitle"
-      variant="stacked"
-    >
-      <p body>{{ editorial.caseStory }}</p>
-    </cx-hero>
-  </div>
-  <figure class="cx-container fp-project-lead">
+  <cx-hero
+    [heading]="evidence.caseTitle"
+    headingClass="cx-font-regular"
+    variant="cover"
+    align="center"
+    [underMasthead]="true"
+    [fadeBottom]="true"
+  >
+    <p body>{{ editorial.caseStory }}</p>
     <img
-      class="fp-photo"
+      media
       [src]="projectPhoto.src"
       [alt]="projectPhoto.alt"
       width="1920"
       height="1440"
       fetchpriority="high"
     />
-  </figure>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial" aria-labelledby="gotland-story-title">
-      <h2 id="gotland-story-title" class="cx-font-regular">{{ commercial.caseStoryTitle }}</h2>
-      <p>{{ commercial.caseStoryBody }}</p>
+  </cx-hero>
+  @for (story of gotlandStories; track story.film.id) {
+    <section
+      class="cx-container fp-section fp-feature"
+      [attr.aria-labelledby]="'gotland-' + story.film.id"
+    >
+      <div class="cx-editorial fp-feature-copy">
+        <h2 [id]="'gotland-' + story.film.id" class="fp-heading cx-font-regular">
+          {{ story.heading }}
+        </h2>
+        <p>{{ story.body }}</p>
+      </div>
+      <fp-gotland-film [film]="story.film" [heading]="story.heading" />
     </section>
-  </div>
+  }
   <div class="cx-container fp-section">
     <section [attr.aria-label]="evidence.caseTitle">
       <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
-        @for (item of gotlandMedia; track item.id) {
-          @if (item.kind === 'photo') {
-            <a
-              class="cx-figure"
-              [attr.data-gotland-photo]="item.id"
-              [href]="item.src"
-              (click)="openGotlandPhoto($event, item.id)"
-              [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
-            >
-              <img
-                class="cx-w-full cx-rounded-lg"
-                [src]="item.preview"
-                [attr.srcset]="
-                  item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
-                "
-                sizes="(max-width: 767px) 50vw, 400px"
-                [alt]="item.alt"
-                [width]="item.width"
-                [height]="item.height"
-                [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
-                decoding="async"
-              />
-            </a>
-          } @else {
-            <fp-gotland-film [film]="item" />
-          }
+        @for (item of gotlandPhotos; track item.id) {
+          <a
+            class="cx-figure"
+            [attr.data-gotland-photo]="item.id"
+            [href]="item.src"
+            (click)="openGotlandPhoto($event, item.id)"
+            [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
+          >
+            <img
+              class="cx-w-full cx-rounded-lg"
+              [src]="item.preview"
+              [attr.srcset]="
+                item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
+              "
+              sizes="(max-width: 767px) 50vw, 400px"
+              [alt]="item.alt"
+              [width]="item.width"
+              [height]="item.height"
+              [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
+              decoding="async"
+            />
+          </a>
         }
       </cx-masonry>
     </section>
   </div>
+  <figure class="fp-section fp-project-quote" [attr.data-review]="testimonials[0].id">
+    <blockquote>“{{ testimonials[0].quote }}”</blockquote>
+    <figcaption>{{ gotlandCopy.attribution }}</figcaption>
+  </figure>
   <div class="cx-container fp-section">
-    <section aria-labelledby="gotland-life-title">
-      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-        <div>
-          <cx-stack gap="lg">
-            <h2 class="cx-text-title-1 cx-font-serif cx-font-regular">
-              {{ editorial.caseExperience }}
-            </h2>
-            <fp-customer-quote [review]="testimonials[0]" />
-          </cx-stack>
-        </div>
-        <div>
-          <cx-stack gap="lg">
-            <h2 id="gotland-life-title" class="cx-text-title-1 cx-font-serif cx-font-regular">
-              {{ editorial.caseLife }}
-            </h2>
-            <fp-customer-quote [review]="testimonials[1]" />
-          </cx-stack>
-        </div>
-      </cx-grid>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial" aria-labelledby="gotland-next-title">
-      <h2 id="gotland-next-title" class="cx-font-regular">{{ commercial.projectBridgeTitle }}</h2>
+    <section class="cx-editorial fp-project-next" aria-labelledby="gotland-next-title">
+      <h2 id="gotland-next-title" class="fp-heading cx-font-regular">
+        {{ commercial.projectBridgeTitle }}
+      </h2>
       <p>{{ commercial.projectBridgeBody }}</p>
       <p>
         <a [href]="routeFor('pricing')">{{ commercial.packageLink }} →</a>

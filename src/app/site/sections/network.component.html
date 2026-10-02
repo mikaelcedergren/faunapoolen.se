@@ -2,7 +2,7 @@
   <cx-stack gap="xl">
     <cx-stack gap="sm">
       <div class="cx-editorial">
-        <h2 id="aquascape-network-title" class="cx-font-regular">
+        <h2 id="aquascape-network-title" class="fp-heading cx-font-regular">
           {{ evidence.networkTitle }}
         </h2>
       </div>
@@ -16,7 +16,7 @@
           <p class="cx-text-body-lg cx-text-muted">
             {{ project.location }}
           </p>
-          <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ project.name }}</h3>
+          <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ project.name }}</h3>
           <p class="cx-text-body">{{ project.body }}</p>
           <p class="cx-text-body-lg cx-text-muted">{{ evidence.builder }}: {{ project.builder }}</p>
           <cx-button [text]="evidence.source" [href]="project.source" appendIcon="open-new" />

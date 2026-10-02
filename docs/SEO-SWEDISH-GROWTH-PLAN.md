@@ -4,7 +4,7 @@
 
 **Reading routes:** [priorities and findings](#1-the-outcome) · [keywords](#4-keyword-strategy-and-page-ownership) · [every current public page](#6-every-existing-public-page) · [price and regional pages](#7-new-commercial-and-regional-pages) · [every editable article](#8-existing-and-proposed-editorial-content) · [new guides](#9-new-guides-that-fill-genuine-buyer-questions) · [execution sequence](#15-implementation-sequence-and-priorities).
 
-> **Owner-approved implementation, 17 September 2026:** all non-blog route slugs remain English in every language. Starting prices are confirmed at 495,000 / 695,000 / 995,000 kr including VAT. Service covers all Sweden, with Denmark welcome; the four southern areas are search priorities, not a service boundary. See [implementation and verification](SEO-IMPLEMENTATION.md) for the final scope and external follow-through.
+> **Owner-approved implementation, 17 September 2026:** all non-blog route slugs remain English in every language. Updated by the owner on 2 October 2026: starting prices are confirmed at 430,000 / 1,100,000 / 4,400,000 kr excluding VAT and shipping. Service covers all Sweden, with Denmark welcome; the four southern areas are search priorities, not a service boundary. See [implementation and verification](SEO-IMPLEMENTATION.md) for the final scope and external follow-through.
 
 ## 1. The outcome
 
@@ -175,11 +175,11 @@ This is a navigation strategy, not a requirement to make every visitor complete 
 
 | Swedish package  | Existing identifier | Swimming area shown | Current repository starting price |
 | ---------------- | ------------------- | ------------------- | --------------------------------- |
-| Dagliga dopp     | glade               | 12–18 m² badyta     | 495 000 kr inkl. moms             |
-| Bada tillsammans | summer              | 24–36 m² badyta     | 695 000 kr inkl. moms             |
-| Mer plats        | horizon             | 40–60 m² badyta     | 995 000 kr inkl. moms             |
+| Dagliga dopp     | glade               | Från 17,5 m² badyta | 430 000 kr exkl. moms och frakt   |
+| Bada tillsammans | summer              | Från 24 m² badyta   | 1 100 000 kr exkl. moms och frakt |
+| Mer plats        | horizon             | Från 100 m² badyta  | 4 400 000 kr exkl. moms och frakt |
 
-These are current repository values, **not independently confirmed commercial offers**. The existing sales brief calls for confirmation. Before publishing a price-focused page, the business must confirm price validity, VAT treatment, what is designed versus installed, included groundwork, filtration, access assumptions, transport and disposal, planting, electrical work, optional features and service. Do not infer an exclusion or an inclusion from silence.
+These prices and starting areas were confirmed by the owner on 2 October 2026 to match the live package overview. VAT and shipping are excluded. The site-specific quotation must establish the remaining scope and assumptions; do not infer an exclusion or inclusion from silence.
 
 Keep prices in the existing shared package authority. Do not repeat manually maintained numbers in article text, metadata and local pages. Use the shared comparison or a deliberate maintained price reference; describe scope and link to current prices elsewhere. Swimming area is not the total land required.
 
@@ -664,7 +664,7 @@ Do not sell guaranteed year-round ice-free operation. Discuss desired use and si
 
 **Evidence required:** actual offered options and footprints, total installation footprint not only water surface; fish habitat guidance before retaining koi; power, refill and seasonal maintenance requirements; source-backed noise expectations, not promised sound masking.
 
-**Links and CTA:** `/vattenmiljoer/` primary; design article; small-naturpool article when available; last subsection can point to Dagliga dopp via packages, explicitly requiring more than the listed swim area. Do not imply a 12–18 m² swim area equals the full plot footprint.
+**Links and CTA:** `/vattenmiljoer/` primary; design article; small-naturpool article when available; last subsection can point to Dagliga dopp via packages, explicitly requiring more than the listed swim area. Do not imply a 17.5 m² swim area equals the full plot footprint.
 
 ### E09 — Rainwater when a well is not possible
 

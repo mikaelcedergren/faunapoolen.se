@@ -97,7 +97,7 @@ test('a blog post loads', async ({ page }) => {
   expect(res?.status()).toBe(200);
 });
 
-test('English header and footer share navigation and the closing invitation leads to prices', async ({
+test('English header and footer share navigation and the closing invitation leads to a consultation', async ({
   page,
 }) => {
   const res = await page.goto('/en/');
@@ -137,9 +137,9 @@ test('English header and footer share navigation and the closing invitation lead
     footer.getByRole('button', { name: 'Language: English', exact: true }),
   ).toBeVisible();
   const invitation = page.locator('section[aria-labelledby="contact-invitation-title"]');
-  await invitation.getByRole('link', { name: 'See prices →', exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/nature-pools\/pricing\/$/);
-  await expect(page.locator('#packages article')).toHaveCount(3);
+  await invitation.getByRole('link', { name: 'Request a consultation', exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/configure\/$/);
+  await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toBeVisible();
 });
 
 test('the admin is excluded from search and every public page stays indexable', async ({

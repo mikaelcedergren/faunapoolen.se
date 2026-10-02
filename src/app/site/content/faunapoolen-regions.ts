@@ -98,7 +98,7 @@ export const REGION_COPY = {
   nextTitle: $localize`:@@site.region.shared.nextTitle:From your idea to a considered proposal`,
   nextBody: $localize`:@@site.region.shared.nextBody:Tell us your town or postcode, how you want to use the garden and what you have in mind. In the first free phone conversation, we discuss the possibilities and next step. A site visit is agreed separately and is paid, with the fee credited against installation if you proceed.`,
   packageTitle: $localize`:@@site.region.shared.packageTitle:Compare the scale of your project`,
-  packageBody: $localize`:@@site.region.shared.packageBody:Our three nature pool options help you compare swimming areas and indicative starting prices, including VAT. The layout and quotation are developed for your property.`,
+  packageBody: $localize`:@@site.region.shared.packageBody:Our three nature pool options help you compare swimming areas and indicative starting prices, excluding VAT and shipping. The layout and quotation are developed for your property.`,
   packageLink: $localize`:@@site.region.shared.packageLink:Compare nature pool packages`,
   caseTitle: $localize`:@@site.region.shared.caseTitle:See a nature pool we have built`,
   caseBody: $localize`:@@site.region.shared.caseBody:On southern Gotland, we built a nature pool beside Brita’s home. See the finished pool and read Brita’s account of the build and swimming with her grandchildren.`,

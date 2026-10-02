@@ -1,6 +1,6 @@
 /** English editorial source; translations are owned by Angular i18n catalogues. */
 export const BODY_HTML = $localize`:@@blog.algae-control-and-maintenance-tips.bodyHtml:<h2>Start with the appearance of the problem</h2>
-<p>Algae attached to stones or plants are different from green water throughout the pond. Aquascape's <a href="https://support.aquascapeinc.com/hc/en-us/articles/48381303844116-How-do-I-get-rid-of-algae">guide to identifying algae</a> distinguishes string algae from suspended algae. Identifying the appearance is a starting point, not a complete diagnosis.</p>
+<p>Algae attached to stones or plants are different from green water throughout the pond. Aquascape™'s <a href="https://support.aquascapeinc.com/hc/en-us/articles/48381303844116-How-do-I-get-rid-of-algae">guide to identifying algae</a> distinguishes string algae from suspended algae. Identifying the appearance is a starting point, not a complete diagnosis.</p>
 <p>Take photographs from the same spot and note when the change began. Is it concentrated near a waterfall, on the bottom or across the water? Has the colour or smell changed suddenly?</p>
 <h2>Look for what has entered the water</h2>
 <p>Check for leaves, cut grass, soil washed from a bed or recent work beside the pool. In a fish pond, record feeding and changes in the fish population too. A recurring problem after rain calls for a look at the surrounding ground as well as the filter.</p>

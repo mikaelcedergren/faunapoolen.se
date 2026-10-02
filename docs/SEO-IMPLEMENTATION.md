@@ -6,7 +6,7 @@ Implementation of [the SEO growth plan](SEO-SWEDISH-GROWTH-PLAN.md), with the ow
 
 - Public page slugs are **English in every language**. Swedish stays at `/`, English at `/en/`, Danish at `/da/`. Existing blog slugs are unchanged; the five new guide slugs use Swedish.
 - The offer covers **all Sweden and Denmark**. Skåne, Halland, Blekinge and Småland receive additional search content because they are close to home. EU-wide service is a future ambition.
-- The three current starting prices—495,000 / 695,000 / 995,000 SEK including VAT—are owner-confirmed. Their existing shared package source owns numbers, swimming areas and inclusions. Site-specific quotations determine final scope and price.
+- The three current starting prices—430,000 / 1,100,000 / 4,400,000 SEK excluding VAT and shipping—were confirmed by the owner on 2 October 2026 to match the [live package overview](https://faunapoolen.se/pond-packages-landing.html). Starting swimming areas use the same listed dimensions: 3.5 × 5 = 17.5 m², 6 × 4 = 24 m², and 10 × 10 = 100 m². Their existing shared package source owns numbers, swimming areas and inclusions. Site-specific quotations determine final scope and price.
 - Emotional homepage and nature-pool headlines, real Gotland evidence, the three package choices, free first phone consultation and paid/credited site visit terms stay intact.
 - No database format, private enquiry data, generation setting or production deployment is changed by this work.
 

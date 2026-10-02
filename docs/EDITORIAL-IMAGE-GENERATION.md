@@ -15,7 +15,7 @@ natural bokeh and a darker garden scene, with centred text. The replacement was 
 with the built-in image tool and exported to the existing `hero-family.webp` URL at
 1536 × 1024, WebP quality 88. It depicts a couple in a natural pool at dusk and remains
 labelled as concept imagery. The original Gotland photographs remain unchanged.
-The homepage uses the framework cover hero with centred alignment, a 25% overlay and bottom fade.
+The homepage uses the framework cover hero with centred alignment, a 25% overlay. The owner removed the bottom fade on 30 September 2026.
 
 Generation prompt:
 
@@ -62,3 +62,89 @@ Use case: photorealistic-natural. Entirely new garden photograph, landscape 3:2,
 ### Evening anatomy correction
 
 Edit this photograph. Correct ONLY the father's anatomy at the right: he currently has three arms. Remove the extra arm that descends on the LEFT side of his torso to a hand resting on the deck near the child, at roughly x=1260,y=600 in the 1536x1024 image. In that area show his swim shorts/lap and unobstructed deck instead. His LEFT arm must bend naturally forward with its hand holding the mug. His RIGHT arm extends backwards towards the far RIGHT edge and supports him on the deck. Exactly TWO arms and TWO hands total. Retain the same torso, head, relaxed seated position and towel over shoulder. Keep the mother, child, pond, scene, framing, natural low light, soft photographic texture and restrained colors unchanged. No HDR, no extra detail enhancement. Landscape 1536x1024.
+
+## Homepage process background — 30 September 2026
+
+The owner supplied `ChatGPT Image Sep 30, 2026, 09_23_07 PM-4.png` for the
+“From the first idea to your first swim” section. The image is used unchanged in
+composition and colour, exported at its original 1672 × 941 resolution as
+`editorial/process-evening.webp` at WebP quality 86. It is decorative concept
+imagery, not evidence of a completed installation. The owner explicitly requested the unfiltered image without a fade or dark
+overlay; readability treatment is deferred to a later design iteration. The
+background is confined to the homepage composition. The three steps now use the
+framework's frosted cards, matching the masthead; the photograph itself remains unfiltered.
+
+## Certification emblem — 30 September 2026
+
+The owner supplied `ChatGPT Image Sep 30, 2026, 09_48_10 PM.png` as the approved
+certification emblem. It is copied unchanged to
+`public/assets/images/faunapoolen/aquascape-certified-emblem.png`. Its original
+1254 × 1254 PNG already contains transparent pixels; no background removal or
+regeneration was needed. It replaces the composed wordmark and certification
+label on the homepage and shared certification section.
+
+## Waterscape pause revision — 30 September 2026
+
+The owner requested an image more directly related to “A place to pause in your own garden.”
+The built-in image generation tool created a new candid concept scene of a woman resting
+on a bench and watching koi beside a modest stream. The original Gotland image
+`gotland/1451.webp` was a reference for garden scale and materials, and remains unchanged.
+The generated scene is not evidence of a completed installation. Reviewed seated anatomy,
+hands, visible fish, bench contact, reflections and the scene's natural garden scale.
+
+Saved to `public/assets/images/faunapoolen/waterscape-koi.webp`, preserving the established
+shared image URL and 1536 × 1024 dimensions. Exported to WebP quality 88 without creative
+retouching. The owner's follow-up requested evening light, more contrast and no HDR;
+the final generated edit uses warm practical lights, cool water reflections and deep shadows. The homepage and waterscapes page share this asset. Localised alternative text
+identifies the new scene as concept imagery.
+
+Generation prompt (built-in tool):
+
+Use case: photorealistic-natural.
+Create a new editorial photograph for the website section "A place to pause in your own garden." Supporting copy: "Watch the fish, listen to a stream or settle beside a quiet pond. We build water features around the way you want to spend time outdoors."
+The attached real Gotland garden photograph is a reference ONLY for believable Swedish garden scale, natural stone and ordinary photographic character. Do not reproduce the property or imply the new scene is that completed installation.
+Scene: an intimate, cared-for but unmanicured Swedish back garden. A woman around fifty in an ordinary soft oatmeal cardigan, loose muted-blue trousers and simple flat shoes sits comfortably sideways on a weathered wooden garden bench immediately beside a small ornamental koi pond. Seen candidly from slightly behind and in profile, she has stopped for a peaceful moment and looks down at two or three naturally proportioned orange-and-white koi visible below the near water surface. Relaxed shoulders, one forearm resting naturally on her lap and the other hand loosely on the bench; exactly two arms and two hands, natural face and proportions. No camera-facing pose. Her seated figure should be clearly visible at medium distance and emotionally central, occupying around a third of the frame height, not a tiny figure in a landscape.
+The pond is clearly an ornamental garden pond, not a swimming pool: irregular low weathered stone banks, a few lily pads, iris leaves and native grasses. A modest narrow stream visibly trickles over two low stones into the pond a few feet from the bench. A small glimpse of a simple timber garden shed or cottage in the distant foliage locates it at home. Compose the human moment, fish and small stream together so all remain visible in a landscape 3:2 crop. Photograph from a nearby grassy bank at a natural seated-eye height. Do not fill most of the frame with empty water.
+Soft available late-afternoon light filtered through a tree, a hint of warmth on her cardigan and surrounding leaves, believable water reflections partly hiding the fish. Ordinary single-exposure camera photo: neutral muted greens, softly resolved skin, unposed gesture, some deep shadows losing detail and mild optical softness. Beautiful and inviting, casually lived in. No HDR, tone mapping, enhanced local contrast, oversharpening, crunchy foliage, glowing water, cinematic grading, artificial grain, luxury advertising staging, text, logos, watermarks or borders.
+Output one standalone photograph, landscape 3:2, ideally 1536x1024.
+
+Final evening edit prompt (built-in tool):
+
+Edit this generated concept photograph. Preserve the woman seated naturally on the wooden bench watching the koi, the small ornamental pond, modest stream, Swedish garden scale and cottage. Keep coherent anatomy and the same intimate everyday moment. Change the lighting and time of day substantially: late blue hour, an evening garden with strong photographic contrast. Several small practical warm lights at different depths: a shaded wall lamp beside the cottage door, a discreet low garden light softly grazing the stream, and a small lantern near the bench. Lights create localized warm amber pools, a soft rim along the woman's hair and cardigan, and believable broken warm reflections on the water. Remaining sky light gives cool slate-blue reflections. Much of the foliage and parts of the bench naturally disappear into deep shadow. Fish are only partly visible near a light reflection, not glowing. Keep the subject recognizable through believable side lighting, without flat fill light. Photograph with a normal camera in one exposure, allowing lamps to clip slightly and shadow detail to be lost. Softer optical detail, realistic low-light colour, natural highlights. The previous bright image feels too evenly detailed: remove that excessive visibility and crunchy texture. Absolutely NO HDR, no tone mapping, no lifted shadows, no clarity enhancement, no oversharpening, no fake grain, no heavy cinematic colour grade, no luminous water, no staged luxury advertising look. The contrast should come from actual warm lamps against the dark evening garden. Keep landscape 3:2 1536x1024, no text, no watermark, no border.
+
+### Final documentary revision
+
+The owner found the first evening version artificial. The final replacement is a new
+photographic composition: a woman in a garden chair, seen candidly from behind, with
+restrained blue-hour exposure, fewer practical lights, softer detail and darker foliage.
+This version supersedes the two earlier generated scenes above. Saved only for the homepage
+as `public/assets/images/faunapoolen/editorial/waterscape-pause.webp`, at 1536 × 1024,
+WebP quality 88 (249,442 bytes), without additional creative edits. The established
+`waterscape-koi.webp` and waterscapes page retain their original image; the new landscape
+composition is specific to the homepage section.
+The built-in tool was used. Original generation output:
+`/Users/wolfie/.codex/generated_images/01a0de4f-fa2a-7fb0-8224-ef054766b8da/exec-45da5d62-66d8-4619-9520-9621bb9056cf.png`.
+
+Final prompt:
+
+Use case: photorealistic-natural.
+Create a NEW photographic capture, not a polished render or a recolouring of the previous composition. This should pass for a professional documentary garden photographer's candid evening photograph in an ordinary established Swedish garden. The supplied real Gotland photo is a material/scale reference only, not a property to reproduce. Landscape 3:2, 1536x1024.
+
+Photograph an unposed moment of a woman in her fifties seated comfortably at the edge of a small koi pond, pausing to look at the water and listen to a short stream. Frame from just behind her left shoulder at a few metres distance: her softly lit back and partial profile on the left, dark water and a low trickle entering from irregular stones on the right. Ordinary light-grey cotton jumper, dark trousers, simple weathered garden chair. No styled cardigan texture, no perfect bench/tableau, no looking at camera. Her hands rest naturally mostly obscured in her lap; plausible seated anatomy. One indistinct orange koi may be seen below a patch of water near her gaze, with most fish obscured by reflection; do not make the fish a staged display. A few water iris leaves and irregular low planting. Small everyday pond, not a resort, fantasy garden or dramatic waterfall.
+
+Time: late blue hour, just enough ambient sky light to expose the sitter. Two practical light sources in the scene: an ordinary warm wall light on an older timber cottage softly visible in the background, and a small low shielded path light near the water further right. Also a subtle warm interior window. Their placement must make practical sense. No theatrical rim light, no uniformly illuminated foliage, no lit garden objects everywhere. The main lighting on the woman is soft remaining skylight, with only a very faint warm spill from the house. Water reflections are dim, broken and physically related to those light positions, never long molten-gold stripes crossing the whole pond. High contrast from natural exposure: deep dark foliage, some black corners with no detail; the few lamps can clip. Natural cool-grey-blue water and muted olive foliage with small warm accents.
+
+Photographic treatment is crucial: 35mm full-frame documentary photograph, f/2.8, single exposure at dusk, focus on the sitter and near bank with a gentle falloff in the distance. A subtle amount of optical softness; avoid individual crisp leaves across every depth. Professional composition is appealing but asymmetrical and incidental, with a near leaf softly intruding at one edge and a little ordinary garden lawn visible. Normal imperfect garden, clean and cared for, no deliberately shabby styling. No glamour polish, no commercial lifestyle staging, no digital-render geometry, no artificial smoothness, no enhanced local contrast, no HDR, no tone mapping, no lifted shadows, no clarity slider, no sharpening halos, no crunchy textures, no glowing water, no cinematic grading, no fake film grain. The image must feel observed in a real moment, with believable exposure and restrained colour. No text, logos or borders.
+
+## Owner-supplied planning illustration — 30 September 2026
+
+The homepage “You do not need a finished plan” section now uses the owner-supplied `ChatGPT Image Sep 30, 2026, 11_10_10 PM.png`: an overhead pool design moving from line drawing to a rendered garden. It is served as `public/assets/images/faunapoolen/editorial/pool-design-concept.webp` at its original 1536 × 1024 size, encoded at WebP quality 90 with no visual edits. The original threshold photograph is preserved. Localized alternative text identifies this as a concept illustration.
+
+## Owner-supplied nature-pool hero — 2 October 2026
+
+The nature-pools page uses the supplied evening image of illuminated stone steps and
+reflections in a nature pool. The supplied PNG is stored as
+`public/assets/images/faunapoolen/editorial/nature-pool-evening.webp` at its original
+1672 × 941 dimensions, encoded at WebP quality 90 without visual edits. It is concept
+imagery, identified as such in localized alternative text, not a completed-project
+photograph. The original hand-touching-water asset remains unchanged.

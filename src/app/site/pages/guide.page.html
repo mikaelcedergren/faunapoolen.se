@@ -35,7 +35,7 @@
       <section [attr.aria-label]="ui.continue_reading">
         <cx-stack gap="lg">
           <div class="cx-editorial">
-            <h2 class="cx-font-regular">{{ ui.continue_reading }}</h2>
+            <h2 class="fp-heading cx-font-regular">{{ ui.continue_reading }}</h2>
           </div>
           <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
             @for (item of relatedGuides; track item.id) {
@@ -50,7 +50,7 @@
                       height="1024"
                       loading="lazy"
                     />
-                    <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ item.title }}</h3>
+                    <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ item.title }}</h3>
                     <p class="cx-text-body-lg cx-text-muted">{{ item.seo.description }}</p>
                   </cx-stack>
                 </cx-card>

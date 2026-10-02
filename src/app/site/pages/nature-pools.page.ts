@@ -1,35 +1,46 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   CxHeroComponent,
-  CxImageComponent,
   CxStackComponent,
-  CxGridComponent,
   CxButtonComponent,
+  CxListComponent,
+  CxListItemComponent,
 } from '@mikaelcedergren/cx-framework';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ServiceAreaComponent } from '../sections/service-area.component';
+import { GotlandPreviewComponent } from '../sections/gotland-preview.component';
+import { NaturePoolBenefitsComponent } from '../sections/nature-pool-benefits.component';
+import { EnquiryFormComponent } from '../sections/enquiry-form.component';
 import { ProcessComponent } from '../sections/process.component';
-import { SitePage } from '../site-page';
-import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
-import { SiteShellComponent } from '../site-shell.component';
-import { TechnologyComponent } from '../sections/technology.component';
 import { PackageComparisonComponent } from '../sections/package-comparison.component';
+import { SitePage } from '../site-page';
+import { SiteShellComponent } from '../site-shell.component';
+import { FAQ_ITEMS } from '../content/faunapoolen-faq';
+import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landing';
+
 @Component({
   selector: 'fp-nature-pools-page',
   imports: [
+    GotlandPreviewComponent,
+    NaturePoolBenefitsComponent,
+    EnquiryFormComponent,
     ProcessComponent,
-    ServiceAreaComponent,
     CxHeroComponent,
     CxStackComponent,
-    CxGridComponent,
     CxButtonComponent,
+    CxListComponent,
+    CxListItemComponent,
     SiteShellComponent,
-    TechnologyComponent,
     PackageComparisonComponent,
-    CxImageComponent,
   ],
   templateUrl: './nature-pools.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NaturePoolsPage extends SitePage {
-  protected readonly commercial = FAUNAPOOLEN_COMMERCIAL;
+  protected readonly landing = NATURE_POOL_LANDING;
+  protected readonly poolEnquiry = POOL_ENQUIRY;
+  protected readonly poolEnquiryHref = this.routeFor('nature-pools') + '#consultation';
+  protected readonly questions = [
+    ...['space', 'care', 'consultation'].map((id) => FAQ_ITEMS.find((item) => item.id === id)!),
+    ...NATURE_POOL_LANDING.questions,
+    FAQ_ITEMS.find((item) => item.id === 'location')!,
+  ];
 }

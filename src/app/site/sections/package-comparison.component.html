@@ -1,63 +1,66 @@
-<section id="packages" class="cx-scroll-target">
-  <cx-stack gap="xl">
-    <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-      @for (item of packages; track item.id) {
-        <article class="fp-package">
-          <cx-stack gap="lg">
-            <cx-stack gap="md" align="start">
-              <h2 class="cx-text-title-1 cx-font-serif cx-font-regular">
-                {{ item.name }}
-              </h2>
-              @if (page !== 'nature-pools' && page !== 'pricing') {
+<section class="cx-container fp-section" [attr.aria-label]="copy.nav.pricing">
+  <div class="fp-section-heading cx-editorial">
+    <h2 class="fp-heading cx-font-regular">
+      {{ showDetails ? commercial.pricingTitle : copy.nav.naturePools }}
+    </h2>
+  </div>
+  <div id="packages" class="cx-scroll-target">
+    <cx-stack gap="xl">
+      @if (showDetails) {
+        <p class="cx-text-body-lg cx-measure-lg-start">{{ landing.priceIntro }}</p>
+      }
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
+        @for (item of packages; track item.id) {
+          <article class="fp-package">
+            <cx-stack gap="lg">
+              <cx-stack gap="md" align="start">
+                <h3 class="fp-subheading cx-font-serif cx-font-regular">
+                  {{ item.name }}
+                </h3>
                 <div class="cx-editorial">
                   <p>{{ item.description }}</p>
                 </div>
-              }
-              <p class="cx-text-body-lg">{{ item.area }}</p>
+                <p class="cx-text-body-lg">{{ item.area }}</p>
+              </cx-stack>
+              <cx-stack gap="sm" align="start">
+                <cx-metric [label]="copy.common.from" [value]="packagePrice(item)" />
+                <p class="cx-text-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
+              </cx-stack>
             </cx-stack>
-            <cx-stack gap="sm" align="start">
-              <cx-metric [label]="copy.common.from" [value]="packagePrice(item)" />
-              <p class="cx-text-body-lg cx-text-muted">{{ copy.common.inclVat }}</p>
-            </cx-stack>
-            @if (page === 'nature-pools' || page === 'pricing') {
-              <div class="cx-editorial">
-                <cx-stack gap="lg">
-                  @for (benefit of item.includes; track benefit; let i = $index) {
-                    <cx-stack gap="sm">
-                      <strong class="cx-text-body">{{
-                        [
-                          editorial.packageDesign,
-                          editorial.packageFiltration,
-                          editorial.packageSurroundings,
-                        ][i]
-                      }}</strong>
-                      <span class="cx-text-body">{{ benefit }}</span>
-                    </cx-stack>
-                  }
-                </cx-stack>
-              </div>
-            }
-          </cx-stack>
 
-          <cx-button
-            [text]="copy.common.viewPackage"
-            appendIcon="arrow-right"
-            [href]="packageHref(item.id)"
-            (click)="measurement.track('package_interest', { packageId: item.id, service: 'pool' })"
-            size="large"
-          />
-        </article>
+            @if (showDetails) {
+              <cx-stack gap="sm">
+                @for (feature of item.includes; track feature) {
+                  <cx-inline gap="sm" align="start">
+                    <cx-icon icon="check" size="20" mood="primary" aria-hidden="true" />
+                    <p class="cx-text-body">{{ feature }}</p>
+                  </cx-inline>
+                }
+              </cx-stack>
+            }
+            <cx-button
+              [text]="copy.common.viewPackage"
+              appendIcon="arrow-right"
+              [href]="interestHref(item.id)"
+              (click)="choosePackage($event, item.id)"
+              size="large"
+            />
+          </article>
+        }
+      </cx-grid>
+      @if (page !== 'home') {
+        <p class="cx-text-body-lg cx-measure-lg-start">
+          {{ editorial.priceScope }}
+        </p>
       }
-    </cx-grid>
-    @if (page !== 'home') {
-      <p class="cx-text-body-lg cx-measure-lg-start">
-        {{ editorial.priceScope }}
-      </p>
-    }
-    @if (page !== 'pricing') {
-      <p class="cx-text-body-lg" [class.fp-package-footer]="page === 'home'">
-        <a [href]="routeFor('pricing')">{{ pricingLink }} →</a>
-      </p>
-    }
-  </cx-stack>
+      @if (showDetails) {
+        <p class="cx-text-body-lg cx-measure-lg-start">{{ landing.scope }}</p>
+      }
+      @if (page !== 'pricing' && showPricingLink) {
+        <p class="cx-text-body-lg fp-package-footer">
+          <a [href]="routeFor('pricing')">{{ pricingLink }} →</a>
+        </p>
+      }
+    </cx-stack>
+  </div>
 </section>

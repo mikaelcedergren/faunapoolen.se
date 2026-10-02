@@ -1,8 +1,11 @@
 import {
   afterNextRender,
+  Input,
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  HostListener,
   signal,
   viewChild,
   inject,
@@ -11,12 +14,14 @@ import { NavigationEnd, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   CxMastheadComponent,
+  CxButtonComponent,
   CxLanguageSelectorComponent,
   CxStackComponent,
   CxAlertComponent,
   CX_THEMES,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from './site-page';
+import { POOL_ENQUIRY } from './content/faunapoolen-landing';
 import { ContactInvitationComponent } from './sections/contact-invitation.component';
 import { LANGUAGE_NAMES, preferredLanguage } from './language';
 import { SiteMeasurement } from './site-measurement';
@@ -26,6 +31,7 @@ import { CookieNoticeComponent } from './cookie-notice.component';
   selector: 'fp-site-shell',
   imports: [
     CxMastheadComponent,
+    CxButtonComponent,
     CxLanguageSelectorComponent,
     CxStackComponent,
     CxAlertComponent,
@@ -36,6 +42,38 @@ import { CookieNoticeComponent } from './cookie-notice.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteShellComponent extends SitePage implements OnInit {
+  @Input({ transform: booleanAttribute }) leadFocused = false;
+  @Input() enquiryTarget?: string;
+  @Input({ transform: booleanAttribute }) showInvitation = true;
+  protected readonly poolEnquiry = POOL_ENQUIRY;
+  protected get enquiryHref(): string {
+    if (this.enquiryTarget) return this.enquiryTarget;
+    return this.configureHref + (this.leadFocused ? '?service=pool' : '');
+  }
+  @HostListener('click', ['$event'])
+  protected openInlineEnquiry(event: MouseEvent): void {
+    if (
+      !this.enquiryTarget ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.altKey
+    )
+      return;
+    const anchor = (event.target as Element | null)?.closest('a');
+    if (!anchor || anchor.getAttribute('href') !== this.enquiryTarget) return;
+    const fragment = this.enquiryTarget.split('#')[1];
+    const target = fragment && this.document.getElementById(fragment);
+    if (!target) return;
+    event.preventDefault();
+    void this.router.navigate([], { fragment, queryParamsHandling: 'preserve' }).then(() => {
+      target.scrollIntoView({ block: 'start' });
+      target.querySelector<HTMLElement>('input')?.focus({ preventScroll: true });
+    });
+  }
+  protected readonly contactUs = $localize`:@@site.masthead.contactUs:Contact us`;
   protected readonly footerContact = $localize`:@@site.footer.contact:Contact`;
   protected readonly footerGroups = [
     {
@@ -67,7 +105,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
     if (!browser) return;
     const query = new URLSearchParams(browser.location.search);
     const kept = new URLSearchParams();
-    if (this.page === 'configure') {
+    if (this.page === 'configure' || this.page === 'nature-pools') {
       const service = query.get('service');
       const selected = query.get('package');
       if (service && ['pool', 'pond', 'stream', 'unsure'].includes(service))

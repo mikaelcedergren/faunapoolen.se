@@ -3,7 +3,7 @@
     [items]="navItems"
     [menuAriaLabel]="copy.menuLabel"
     [frostOnScroll]="true"
-    [overlay]="page === 'guide' || page === 'home'"
+    [overlay]="page === 'guide' || page === 'home' || page === 'gotland' || page === 'nature-pools'"
   >
     <a brand class="fp-wordmark" [href]="homeHref">
       <img
@@ -22,9 +22,11 @@
       [translations]="{ ariaLabel: languageLabel }"
       (valueChange)="changeLanguage($event)"
     />
+    <cx-button actions [text]="contactUs" mood="accent" [href]="enquiryHref" />
   </cx-masthead>
   <main>
     <ng-content select="cx-hero, [hero]" />
+    <ng-content select="[afterHero]" />
     @if (suggestion(); as language) {
       <div class="cx-container cx-pt-2xl">
         <cx-alert
@@ -36,13 +38,13 @@
       </div>
     }
     <ng-content />
-    @if (page !== 'configure' && page !== 'cookies' && page !== 'guide') {
-      <fp-contact-invitation />
+    @if (showInvitation && page !== 'configure' && page !== 'cookies' && page !== 'guide') {
+      <fp-contact-invitation [href]="enquiryHref" />
     }
   </main>
   <footer class="fp-footer" [attr.aria-label]="ui.footer">
     <div class="cx-container">
-      <div class="fp-footer-main">
+      <div class="fp-footer-main" [class.fp-footer-main--focused]="leadFocused">
         <a class="fp-footer-brand" [href]="homeHref">
           <img
             src="/assets/images/faunapoolen/faunapoolen-logo-square.png"
@@ -53,7 +55,7 @@
           />
           <span>Faunapoolen</span>
         </a>
-        @for (group of footerGroups; track group.label) {
+        @for (group of leadFocused ? [] : footerGroups; track group.label) {
           <nav [attr.aria-label]="group.label">
             <cx-stack gap="md" align="start">
               <h2 class="cx-text-body-lg cx-font-semibold">{{ group.label }}</h2>
@@ -70,7 +72,7 @@
         <cx-stack gap="md" align="start" class="fp-footer-contact">
           <h2 class="cx-text-body-lg cx-font-semibold">{{ footerContact }}</h2>
           <cx-stack gap="sm" align="start">
-            <a [href]="configureHref">{{ copy.start }}</a>
+            <a [href]="enquiryHref">{{ leadFocused ? poolEnquiry.cta : copy.start }}</a>
             <a href="mailto:info@faunapoolen.se">info&#64;faunapoolen.se</a>
           </cx-stack>
         </cx-stack>

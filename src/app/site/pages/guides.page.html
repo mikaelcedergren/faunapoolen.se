@@ -12,7 +12,7 @@
       <section [attr.aria-label]="group.title">
         <cx-stack gap="xl">
           <div class="cx-editorial">
-            <h2 class="cx-font-regular">{{ group.title }}</h2>
+            <h2 class="fp-heading cx-font-regular">{{ group.title }}</h2>
           </div>
           <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="xl">
             @for (item of group.articles; track item.id) {
@@ -27,7 +27,7 @@
                     [attr.loading]="$index < 2 ? 'eager' : 'lazy'"
                   />
                   <cx-stack gap="sm">
-                    <h3 class="cx-text-title-1 cx-font-serif cx-font-regular">
+                    <h3 class="fp-subheading cx-font-serif cx-font-regular">
                       {{ item.title }}
                     </h3>
                     <p class="cx-text-body-lg cx-text-muted">{{ item.seo.description }}</p>

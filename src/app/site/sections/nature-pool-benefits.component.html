@@ -1,0 +1,28 @@
+<section class="cx-bg-surface-alt" aria-labelledby="pool-benefits-title">
+  <div class="cx-container fp-section">
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="start">
+      <cx-stack gap="lg" align="start">
+        <cx-stack gap="sm">
+          <p class="cx-text-body-lg cx-text-primary">{{ benefits.eyebrow }}</p>
+          <h2 id="pool-benefits-title" class="fp-heading cx-font-serif cx-font-regular">
+            {{ benefits.heading }}
+          </h2>
+        </cx-stack>
+        <div class="cx-editorial">
+          <p>{{ introduction ?? benefits.body }}</p>
+        </div>
+      </cx-stack>
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="xl">
+        @for (benefit of benefits.items; track benefit.heading) {
+          <cx-inline gap="sm" align="start">
+            <cx-icon icon="check" size="20" mood="primary" aria-hidden="true" />
+            <cx-stack gap="sm" class="cx-fill">
+              <h3 class="cx-text-body-lg cx-font-semibold">{{ benefit.heading }}</h3>
+              <p class="cx-text-body-lg">{{ benefit.body }}</p>
+            </cx-stack>
+          </cx-inline>
+        }
+      </cx-grid>
+    </cx-grid>
+  </div>
+</section>

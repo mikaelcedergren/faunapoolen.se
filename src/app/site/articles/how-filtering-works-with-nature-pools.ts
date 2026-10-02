@@ -7,7 +7,7 @@ export const BODY_HTML = $localize`:@@blog.how-filtering-works-with-nature-pools
 <p>Mechanical collection captures material that needs removing from the system. A skimmer or a designed collection area can make leaves easier to reach before they settle elsewhere. Emptying that collection point is part of the owner's routine; collecting debris does not make it disappear.</p>
 <h2>What the biological filter does</h2>
 <p>Filter material provides surfaces where microorganisms can develop. Biological processes help break down organic waste, while plants take up nutrients as they grow. This is different from simply straining particles out of the water.</p>
-<p>Aquascape describes this distinction in its <a href="https://www.aquascapeinc.com/water-gardening/how-to/pond-filtration">overview of pond filtration</a>. That explanation concerns pond systems; it is not a specification or a bathing-water assessment for an individual swimming pool.</p>
+<p>Aquascape™ describes this distinction in its <a href="https://www.aquascapeinc.com/water-gardening/how-to/pond-filtration">overview of pond filtration</a>. That explanation concerns pond systems; it is not a specification or a bathing-water assessment for an individual swimming pool.</p>
 <h2>Plants have a role, but are not the whole filter</h2>
 <p>The planting plan needs to suit the treatment design, water depth and local conditions. A decorative plant at the edge is not a substitute for correctly planned filtration. There is no universal percentage of planting that can be applied to every type of nature pool.</p>
 <p>Plant care also needs access. Removing cut stems and leaves is easier when it has been allowed for in the design.</p>
