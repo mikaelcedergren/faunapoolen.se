@@ -2,22 +2,34 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CxGridComponent, CxHeroComponent, CxStackComponent } from '@mikaelcedergren/cx-framework';
 import { BLOG_ARTICLES } from '../content/blog-catalog';
 import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
+import { CertificationStripComponent } from '../sections/certification-strip.component';
+import { GuideCardComponent } from '../sections/guide-card.component';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-guides-page',
-  imports: [CxHeroComponent, CxStackComponent, CxGridComponent, SiteShellComponent],
+  imports: [
+    GuideCardComponent,
+    CxHeroComponent,
+    CxStackComponent,
+    CxGridComponent,
+    SiteShellComponent,
+    CertificationStripComponent,
+  ],
   templateUrl: './guides.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuidesPage extends SitePage {
   protected readonly guides = BLOG_ARTICLES;
   protected readonly copy = FAUNAPOOLEN_COPY;
+  protected readonly heroAlt = $localize`:@@site.guides.hero.alt:Dew-covered plants beside a garden pond at dusk, with warm lights reflected in the water.`;
 
   protected readonly groups = [
     {
       title: $localize`:@@site.guides.planning:Planning your nature pool`,
       ids: [
+        'naturpool-10-vanliga-fragor',
+        'naturpool-pris',
         'build',
         'difference',
         'why-you-should-get-a-natural-pool',
@@ -28,6 +40,7 @@ export class GuidesPage extends SitePage {
         'naturpool-sakerhet-och-tillstand',
         'vad-kostar-det-att-aga-en-naturpool',
         'varma-upp-naturpool',
+        'sports-stars-natural-ponds',
         'naturpool-i-sodra-sverige',
       ],
     },
@@ -38,7 +51,6 @@ export class GuidesPage extends SitePage {
         'how-filtering-works-with-nature-pools',
         'algae-control-and-maintenance-tips',
         'skotsel-av-naturpool-under-aret',
-        'sports-stars-natural-ponds',
       ],
     },
     {

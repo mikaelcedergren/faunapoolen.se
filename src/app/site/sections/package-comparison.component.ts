@@ -19,6 +19,7 @@ import {
 } from '@mikaelcedergren/cx-framework';
 import type { FaunapoolenPackage } from '../content/faunapoolen-content';
 import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
+import { POOL_PACKAGE_SCOPE } from '../content/faunapoolen-commercial';
 import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
 import { NATURE_POOL_LANDING } from '../content/faunapoolen-landing';
 import { PublicPackageCatalogue } from '../package-catalogue';
@@ -51,6 +52,7 @@ export class PackageComparisonComponent extends SitePage {
   private readonly router = inject(Router);
   protected readonly comparisonTitle = $localize`:@@site.packages.comparisonTitle:Find the right pool for your garden.`;
   protected readonly landing = NATURE_POOL_LANDING;
+  protected readonly scope = POOL_PACKAGE_SCOPE;
   protected interestHref(id: FaunapoolenPackage['id']): string {
     return this.enquiryAnchor
       ? this.routeFor(this.page) + '?package=' + id + '#' + this.enquiryAnchor

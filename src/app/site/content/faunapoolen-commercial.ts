@@ -20,17 +20,17 @@ export const FAUNAPOOLEN_COMMERCIAL = {
   pricingTitle: $localize`:@@site.commercial.pricingTitle:What does a nature pool cost?`,
   pricingIntro: $localize`:@@site.commercial.pricingIntro:Choose a starting point for your garden. We’ll help you understand what your site needs and agree a clear scope before you decide.`,
   scopeTitle: $localize`:@@site.commercial.scopeTitle:What does your pool package cover?`,
-  scopeBody: $localize`:@@site.commercial.scopeBody:Your quotation sets out the work and materials for your pool, from groundwork and filtration to edges and planting. We agree any additional features and garden work with you before construction.`,
-  scopeDetail: $localize`:@@site.commercial.scopeDetail:We clarify access, excavation, soil removal, electrical work, water filling and transport before you accept. You can see what is included before committing.`,
+  scopeBody: $localize`:@@site.commercial.scopeBody:Every package includes design, project coordination, excavation in accessible ground without rock, the liner and filtration system, installation, stone edges and aquatic planting. Start-up, a personal handover and a first-season site visit are included too.`,
+  scopeDetail: $localize`:@@site.commercial.scopeDetail:Rock excavation, groundwater work, restricted access, soil removal, electrical supply, filling and transport are priced for your site. We coordinate the work and itemise these costs in your quotation before you agree to construction.`,
   costTitle: $localize`:@@site.commercial.costTitle:What shapes your quotation?`,
   groundTitle: $localize`:@@site.commercial.groundTitle:Ground and access`,
   groundBody: $localize`:@@site.commercial.groundBody:We assess the ground, levels and access for machinery so your quotation reflects the work your garden needs.`,
   sizeTitle: $localize`:@@site.commercial.sizeTitle:Swimming area and filtration`,
   sizeBody: $localize`:@@site.commercial.sizeBody:Your swimming area and filtration are planned together. The space you need and the way you want to swim guide the design.`,
   surroundingsTitle: $localize`:@@site.commercial.surroundingsTitle:Materials and the surrounding garden`,
-  surroundingsBody: $localize`:@@site.commercial.surroundingsBody:Choose the edges, planting and places to sit that suit your garden. We agree materials and any features, such as lighting, as part of your quotation.`,
+  surroundingsBody: $localize`:@@site.commercial.surroundingsBody:Stone edges and aquatic planting are included. Additional terraces, garden lighting and landscaping are agreed and priced separately in your quotation.`,
   footprintTitle: $localize`:@@site.commercial.footprintTitle:Swimming area is not the whole footprint`,
-  footprintBody: $localize`:@@site.commercial.footprintBody:The square metres in the packages refer to swimming space. Allow room for filtration, edges, access and the surrounding places where you want to sit or move around. We plan these together before recommending a layout.`,
+  footprintBody: $localize`:@@site.commercial.footprintBody:Swimming area is the water you swim in. The approximate total footprints also include filtration and edges, based on each package’s starting size. Allow extra space for terraces and paths. We agree the full layout for your garden before construction.`,
   ownershipTitle: $localize`:@@site.commercial.ownershipTitle:Budget for life with the pool`,
   ownershipBody: $localize`:@@site.commercial.ownershipBody:A nature pool needs routine care and electricity for circulation. Your system, operating time, water needs and choice of servicing affect running costs. We explain the tasks at handover and provide a maintenance plan; biological filtration does not mean no maintenance.`,
   pricingQuestionTitle: $localize`:@@site.commercial.pricingQuestionTitle:Do I need to choose a package before we talk?`,
@@ -42,6 +42,22 @@ export const FAUNAPOOLEN_COMMERCIAL = {
   fountainPriceTitle: $localize`:@@site.commercial.fountainPriceTitle:Fountains and smaller water features`,
   fountainPriceBody: $localize`:@@site.commercial.fountainPriceBody:A fountain or small pond has its own requirements for water supply, circulation and installation. Ask us about your space; nature-pool starting prices do not apply to these installations.`,
   waterFeatureLink: $localize`:@@site.commercial.waterFeatureLink:Explore ponds, streams and waterfalls`,
+} as const;
+
+// Owner-requested review proposal. Confirm scope and commitments before publication.
+export const POOL_PACKAGE_SCOPE = {
+  betweenSizes: $localize`:@@site.packageScope.betweenSizes:We also design pools between these sizes. Total footprints include filtration and edges.`,
+  groups: [
+    {
+      title: $localize`:@@site.packageScope.included.title:Included in every pool`,
+      body: $localize`:@@site.packageScope.included.body:We design and coordinate your pool, including excavation in accessible ground without rock. The liner, filtration, pumps, pipework, installation, stone edges and aquatic planting are all included. We start the system with you, provide a personal handover and return for a site visit during your first swimming season.`,
+    },
+    {
+      title: $localize`:@@site.packageScope.site.title:Quoted separately`,
+      body: $localize`:@@site.packageScope.site.body:Rock excavation, groundwater work and restricted access are assessed and priced for your site, along with the removal and disposal of surplus soil. Electrical supply, water filling and transport are quoted separately, as are any decks, terraces or landscaping beyond the pool.`,
+    },
+  ],
+  coordination: $localize`:@@site.packageScope.coordination:We coordinate excavation, deliveries and the electrician. Site-specific costs are itemised in your quotation and agreed with you before construction.`,
 } as const;
 
 // Owner-approved indicative estimates; research and scope in docs/BUYING-EXPERIENCE-REVIEW.md.

@@ -100,8 +100,8 @@ The target consumes the published GitHub `main` package through explicit
 import, copied framework source, or compatibility shim.
 
 The owner explicitly replaced the old public skin with the Playground Aqua/editorial design.
-Established article URLs, wording, metadata and image paths remain protected independently of that
-visual change. The public and private admin UI use framework components, tokens, layouts, and portable AI
+Article content and SEO metadata may be revised, including the DIY and comparison guides
+(owner decision, 3 October 2026). Preserve established public URL continuity when editing. The public and private admin UI use framework components, tokens, layouts, and portable AI
 guidance as-is. If the admin reveals a reusable gap, stop, explain it, and ask what the user wants
 to do. Do not patch it here or change Cortex unless the user explicitly authorises that framework
 work.
@@ -120,14 +120,15 @@ owned by `server/src/public-routes.ts`, with local Angular aliases using that sa
 English `$localize` copy and article bodies live in `src/app/site/`. Swedish and Danish JSON
 catalogues in `src/locale/` are consumed by Angular i18n for both production and local development.
 Use `pnpm extract-i18n` then `pnpm i18n:check` when editing source copy. The article catalogue owns
-metadata and the shared SEO strategy emits canonical, hreflang, Open Graph and JSON-LD. The frozen
-baseline in `tests/fixtures/blog-seo-baseline.json` guards all original Swedish/English articles.
-Never replace that baseline to hide a regression. Public image URLs remain stable.
+metadata and the shared SEO strategy emits canonical, hreflang, Open Graph and JSON-LD.
+Keep `tests/fixtures/blog-seo-baseline.json` as a historical record, not a content freeze.
+Verify revised articles against their current reviewed localized content. Public image URLs remain stable.
 
 The owner accepts minor English auxiliary labels in framework controls, including “Optional” and
 “Clear”, on Swedish and Danish pages. No framework update or local replacement is authorised.
 
-Never regress these high-ranking Swedish pages:
+The owner removed the special content and metadata protection for these articles on 3 October 2026.
+Both may now be edited and optimized in all locales without separate protection-rule approval:
 
 - `/blog/posts/difference-between-normal-pool-and-natural-pool.html`
 - `/blog/posts/build-your-own-nature-pool.html`
@@ -142,11 +143,9 @@ EU-wide delivery is a future ambition, not a current blanket promise. The owner 
 starting prices of 430,000 / 1,100,000 / 4,400,000 SEK excluding VAT and shipping on 2 October 2026. Keep scope
 and site qualifications beside prices and use the shared package source.
 
-The ten other original articles were authorized for substantive SEO revisions on that date.
-Retain the historical blog fixture, guard the two protected families separately in all locales,
-and verify revised articles against their reviewed localized content. Historical recommendation
-labels on protected articles have a small explicit presentation owner; never copy whole articles
-or restore a parallel legacy renderer. See [implementation notes](docs/SEO-IMPLEMENTATION.md).
+All original articles are eligible for substantive SEO revisions. Retain historical fixtures as
+reference and verify current localized content, metadata and functional links through the common
+article checks. Do not add article-specific frozen-copy exceptions or a parallel legacy renderer. See [implementation notes](docs/SEO-IMPLEMENTATION.md).
 
 Public customer pages use internal website links, with email and telephone contact links allowed. Keep external research references in editorial documentation rather than public source blocks. Public captions, alt text and article copy describe photographs without AI-generation labels. This does not permit presenting illustrative scenes as completed customer installations.
 

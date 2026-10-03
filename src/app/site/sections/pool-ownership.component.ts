@@ -31,7 +31,7 @@ import { POOL_OWNERSHIP } from '../content/faunapoolen-ownership';
             [description]="item.answer"
             expandable
           >
-            <p class="cx-text-body">{{ item.detail }}</p>
+            <p class="fp-body">{{ item.detail }}</p>
           </cx-list-item>
         }
       </cx-list>

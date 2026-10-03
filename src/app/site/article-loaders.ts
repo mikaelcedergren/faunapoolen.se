@@ -1,4 +1,7 @@
 export const ARTICLE_LOADERS = {
+  'naturpool-10-vanliga-fragor': () =>
+    import('./articles/naturpool-10-vanliga-fragor').then((m) => m.BODY_HTML),
+  'naturpool-pris': () => import('./articles/naturpool-pris').then((m) => m.BODY_HTML),
   'varma-upp-naturpool': () => import('./articles/varma-upp-naturpool').then((m) => m.BODY_HTML),
   'din-naturpool-skotsel-efter-installation': () =>
     import('./articles/din-naturpool-skotsel-efter-installation').then((m) => m.BODY_HTML),

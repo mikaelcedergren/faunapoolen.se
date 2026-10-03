@@ -1,4 +1,4 @@
-<fp-site-shell>
+<fp-site-shell [showInvitation]="!isPriceGuide">
   <cx-hero
     [heading]="guide.title"
     headingClass="cx-font-regular"
@@ -15,7 +15,7 @@
         <time [attr.datetime]="guide.seo.dateModified">{{ updatedDate }}</time>
       </p>
     }
-    <img media [src]="guide.image" [alt]="guide.title" width="1536" fetchpriority="high" />
+    <img media [src]="guide.image" [alt]="guide.imageAlt" width="1536" fetchpriority="high" />
   </cx-hero>
   <article>
     <div class="cx-container cx-py-2xl">
@@ -23,13 +23,18 @@
         @if (showContents()) {
           <nav sidebar class="cx-pt-lg cx-hide-mobile" [attr.aria-label]="editorial.guideContents">
             <cx-stack gap="md" align="start">
-              @for (section of guideReading.sections; track section.id) {
+              @for (section of guideReading().sections; track section.id) {
                 <a [href]="guideHref(guide.id) + '#' + section.id">{{ section.title }}</a>
               }
             </cx-stack>
           </nav>
         }
-        <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading.html"></div>
+        <div>
+          @if (isPriceGuide) {
+            <fp-guide-prices />
+          }
+          <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading().html"></div>
+        </div>
       </cx-sidebar-layout>
     </div>
     <div class="cx-container cx-py-2xl">
@@ -41,20 +46,7 @@
           <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
             @for (item of relatedGuides; track item.id) {
               @if (item.id !== guide.id) {
-                <cx-card [href]="guideHref(item.id)" [ariaLabel]="item.title">
-                  <cx-stack gap="md">
-                    <img
-                      class="fp-article-photo"
-                      [src]="item.image"
-                      alt=""
-                      width="1536"
-                      height="1024"
-                      loading="lazy"
-                    />
-                    <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ item.title }}</h3>
-                    <p class="cx-editorial cx-text-muted">{{ item.seo.description }}</p>
-                  </cx-stack>
-                </cx-card>
+                <fp-guide-card [guide]="item" [href]="guideHref(item.id)" />
               }
             }
           </cx-grid>
@@ -62,4 +54,23 @@
       </section>
     </div>
   </article>
+  @if (isPriceGuide) {
+    <section class="fp-invitation-band" aria-labelledby="guide-explore-title">
+      <div class="cx-container">
+        <div class="fp-invitation">
+          <div class="fp-invitation-copy">
+            <h2 id="guide-explore-title" class="cx-font-regular">{{ exploreTitle }}</h2>
+            <p class="cx-editorial">{{ exploreBody }}</p>
+          </div>
+          <cx-button
+            [text]="exploreLink"
+            [href]="routeFor('nature-pools')"
+            mood="accent"
+            size="large"
+            appendIcon="arrow-right"
+          />
+        </div>
+      </div>
+    </section>
+  }
 </fp-site-shell>

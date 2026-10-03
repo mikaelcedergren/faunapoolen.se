@@ -47,6 +47,7 @@
               <blockquote>
                 <p>“{{ testimonials[1].quote }}”</p>
                 <cite class="cx-text-muted">
+                  <span class="fp-accent-rule fp-accent-rule--spaced" aria-hidden="true"></span>
                   {{ testimonials[1].author }} · {{ testimonials[0].context }}
                 </cite>
               </blockquote>
@@ -57,7 +58,14 @@
             <p class="cx-editorial cx-text-start">{{ landing.certificationBody }}</p>
           </cx-inline>
           <cx-inline gap="md" [wrap]="true">
-            @if (leadFocused) {
+            @if (galleryEnabled) {
+              <cx-button
+                [text]="galleryCopy.view"
+                mood="primary"
+                size="large"
+                (click)="gallery()?.show()"
+              />
+            } @else if (leadFocused) {
               <cx-button
                 [text]="poolEnquiry.cta"
                 [href]="enquiryHref ?? configureHref + '?service=pool'"
@@ -72,9 +80,6 @@
                 mood="primary"
                 size="large"
               />
-            }
-            @if (galleryEnabled) {
-              <cx-button [text]="galleryCopy.view" size="large" (click)="gallery()?.show()" />
             }
           </cx-inline>
         } @else {
@@ -111,7 +116,7 @@
             <figcaption>
               <cx-stack gap="sm">
                 <h3 class="cx-text-title-2">{{ item.title }}</h3>
-                <p class="cx-editorial">{{ item.body }}</p>
+                <p class="cx-editorial cx-text-muted">{{ item.body }}</p>
               </cx-stack>
             </figcaption>
           </figure>
@@ -123,7 +128,10 @@
         [attr.data-review]="testimonials[0].id"
       >
         <blockquote>“{{ testimonials[0].quote }}”</blockquote>
-        <figcaption class="cx-text-muted">{{ galleryCopy.attribution }}</figcaption>
+        <figcaption class="cx-text-muted">
+          <span class="fp-accent-rule fp-accent-rule--spaced" aria-hidden="true"></span>
+          {{ galleryCopy.attribution }}
+        </figcaption>
       </figure>
     }
   </cx-card>

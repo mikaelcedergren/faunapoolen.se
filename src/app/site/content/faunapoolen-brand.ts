@@ -12,7 +12,7 @@ export const FAUNAPOOLEN_IMAGES = {
   poolDesign: `${ASSET_ROOT}/editorial/pool-design-concept.webp`,
   detail: `${ASSET_ROOT}/water-touch.webp`,
   evening: `${ASSET_ROOT}/evening-deck.webp`,
-  waterscape: `${ASSET_ROOT}/waterscape-koi.webp`,
+  waterscape: `${ASSET_ROOT}/editorial/waterscapes-evening.webp`,
   waterscapePause: `${ASSET_ROOT}/editorial/waterscape-pause.webp`,
 } as const;
 

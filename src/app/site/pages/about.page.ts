@@ -7,7 +7,6 @@ import {
 } from '@mikaelcedergren/cx-framework';
 import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
 import { FAUNAPOOLEN_EVIDENCE_COPY } from '../content/faunapoolen-evidence';
-import { GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
 import { FAUNAPOOLEN_TEAM } from '../content/faunapoolen-team';
 import { CertificationStripComponent } from '../sections/certification-strip.component';
 import { CertificationComponent } from '../sections/certification.component';
@@ -32,7 +31,8 @@ export class AboutPage extends SitePage {
   protected readonly copy = FAUNAPOOLEN_COPY;
 
   protected readonly team = FAUNAPOOLEN_TEAM;
-  protected readonly aboutHero = GOTLAND_MEDIA.filter((item) => item.kind === 'photo').find(
-    (item) => item.id === '1423',
-  )!;
+  protected readonly aboutHero = {
+    src: '/assets/images/faunapoolen/editorial/about-evening-1672.webp',
+    alt: $localize`:@@site.about.hero.alt:A water lily on a garden pond at dusk, with warm lights reflected in the water.`,
+  };
 }

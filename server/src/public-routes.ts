@@ -29,6 +29,8 @@ export const PUBLIC_PAGES = {
 } as const;
 export type PublicLanguage = keyof typeof PUBLIC_PAGES;
 export const GUIDE_SLUGS = {
+  'naturpool-10-vanliga-fragor': 'naturpool-10-vanliga-fragor.html',
+  'naturpool-pris': 'naturpool-pris.html',
   'varma-upp-naturpool': 'varma-upp-naturpool.html',
   'din-naturpool-skotsel-efter-installation': 'din-naturpool-skotsel-efter-installation.html',
   'naturpool-i-sodra-sverige': 'naturpool-i-sodra-sverige.html',
@@ -53,7 +55,6 @@ export const GUIDE_SLUGS = {
   'naturpool-sakerhet-och-tillstand': 'naturpool-sakerhet-och-tillstand.html',
   'vad-kostar-det-att-aga-en-naturpool': 'vad-kostar-det-att-aga-en-naturpool.html',
 } as const;
-export const PROTECTED_GUIDE_IDS = ['build', 'difference'] as const;
 export const PUBLIC_CANONICAL_PATHS = (['sv', 'en', 'da'] as const).flatMap((locale) => [
   ...Object.values(PUBLIC_PAGES[locale]),
   ...Object.values(GUIDE_SLUGS).map(

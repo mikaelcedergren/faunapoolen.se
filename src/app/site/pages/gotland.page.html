@@ -67,7 +67,10 @@
   </div>
   <figure class="fp-section fp-project-quote" [attr.data-review]="testimonials[0].id">
     <blockquote>“{{ testimonials[0].quote }}”</blockquote>
-    <figcaption class="cx-text-muted">{{ gotlandCopy.attribution }}</figcaption>
+    <figcaption class="cx-text-muted">
+      <span class="fp-accent-rule fp-accent-rule--spaced" aria-hidden="true"></span>
+      {{ gotlandCopy.attribution }}
+    </figcaption>
   </figure>
   <section class="cx-bg-surface-alt" aria-labelledby="gotland-next-title">
     <div class="cx-container fp-section">

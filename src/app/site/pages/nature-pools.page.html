@@ -17,7 +17,7 @@
         [href]="poolEnquiryHref"
         appendIcon="arrow-right"
       />
-      <p class="cx-text-body-sm cx-text-muted">{{ landing.reassurance }}</p>
+      <p class="fp-body-sm cx-text-muted">{{ landing.reassurance }}</p>
     </cx-stack>
     <img
       media
@@ -124,14 +124,14 @@
           </h2>
         </cx-stack>
         <p class="cx-editorial">{{ detail.everydayBody }}</p>
-        <cx-stack gap="lg">
+        <ul class="fp-benefit-list">
           @for (item of everyday; track item.title) {
-            <cx-stack gap="sm">
+            <li>
               <h3 class="cx-text-title-2">{{ item.title }}</h3>
               <p class="cx-editorial cx-text-muted">{{ item.body }}</p>
-            </cx-stack>
+            </li>
           }
-        </cx-stack>
+        </ul>
       </cx-stack>
       <figure class="fp-pool-figure">
         <img
@@ -146,10 +146,10 @@
     </cx-grid>
   </section>
 
+  <fp-process [steps]="landing.steps" />
   <fp-gotland-preview leadFocused detailed galleryEnabled [enquiryHref]="poolEnquiryHref" />
   <fp-pool-cost-comparison />
   <fp-package-comparison enquiryAnchor="consultation" />
-  <fp-process [steps]="landing.steps" />
 
   <fp-pool-aftercare />
   <div class="cx-bg-surface-alt">
@@ -175,7 +175,7 @@
             [heading]="item.question"
             [expandable]="true"
           >
-            <p class="cx-text-body">{{ item.answer }}</p>
+            <p class="fp-body">{{ item.answer }}</p>
           </cx-list-item>
         }
       </cx-list>

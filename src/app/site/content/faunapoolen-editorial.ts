@@ -4,7 +4,7 @@ export const FAUNAPOOLEN_EDITORIAL = {
   naturePoolHeroAlt: $localize`:@@site.editorial.naturePoolHeroAlt:Concept image: illuminated stone steps lead into a nature pool at dusk, with warm garden lights reflected in the water.`,
   architectureAlt: $localize`:@@site.editorial.architectureAlt:Concept image: a view from a timber house towards water and woodland.`,
   poolDesignAlt: $localize`:@@site.editorial.poolDesignAlt:Concept illustration: a nature pool design transitioning from a line drawing to a garden with water, planting and a deck.`,
-  waterscapeAlt: $localize`:@@site.editorial.waterscapeAlt:Concept image: a koi pond and a small stream in a leafy garden.`,
+  waterscapeAlt: $localize`:@@site.editorial.waterscapeAlt:Concept image: a garden pond at dusk, with planting and warm lights reflected in the water.`,
   waterscapePauseAlt: $localize`:@@site.editorial.waterscapePauseAlt:Concept image: a man laughs during a winter dip in a snowy garden while a warmly dressed woman watches with hot cocoa.`,
   responsibility: $localize`:@@site.editorial.responsibility:From design to construction and care. Faunapoolen brings your project together.`,
   trustExpertise: $localize`:@@site.editorial.trustExpertise:Aquascape™ expertise since 1991`,

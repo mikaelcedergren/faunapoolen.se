@@ -5,6 +5,7 @@
     [frostOnScroll]="true"
     [overlay]="
       page === 'guide' ||
+      page === 'guides' ||
       page === 'home' ||
       page === 'gotland' ||
       page === 'nature-pools' ||
@@ -63,9 +64,7 @@
           />
           <cx-stack gap="2xs">
             <span>Faunapoolen</span>
-            <span class="cx-text-muted cx-text-body-sm cx-font-sans">{{
-              footerCertification
-            }}</span>
+            <span class="cx-text-muted fp-body-sm cx-font-sans">{{ footerCertification }}</span>
           </cx-stack>
         </a>
         @for (group of footerGroups; track group.label) {

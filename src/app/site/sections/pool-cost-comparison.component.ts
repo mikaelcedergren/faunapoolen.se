@@ -17,9 +17,10 @@ import { POOL_COST_COMPARISON } from '../content/faunapoolen-commercial';
             <h2 class="cx-font-regular">
               <span class="fp-subheading cx-font-serif cx-font-regular">{{ item.value }}</span
               ><br />
-              <span class="cx-text-body-lg">{{ item.label }}</span>
+              <span class="fp-body-lg">{{ item.label }}</span>
             </h2>
-            <p class="cx-text-body-lg cx-text-muted">{{ item.body }}</p>
+            <span class="fp-accent-rule" aria-hidden="true"></span>
+            <p class="fp-body-lg cx-text-muted">{{ item.body }}</p>
           </cx-stack>
         </cx-card>
       }

@@ -22,8 +22,8 @@ pnpm verify:change --full
 - Private admin and campaign-interface changes additionally run the isolated E2E journey and render
   the `/admin/` or campaign route. The rendered route may show the real local login boundary; E2E
   owns authenticated synthetic behavior.
-- Article builds additionally prove the frozen original Swedish/English body, links, image and SEO
-  baseline. They also check the complete public sitemap. English source extraction and translated
+- Article builds verify current authored localized content and metadata, functional links, image
+  output and the complete public sitemap. Historical fixtures do not freeze article wording. English source extraction and translated
   catalogue coverage are checked separately by `pnpm i18n:check`.
 - The public compositions map to their English routes under `/en/`; article files map to their
   preserved `/en/blog/posts/<slug>.html` addresses. Inbox work maps to `/en/admin/enquiries/`.

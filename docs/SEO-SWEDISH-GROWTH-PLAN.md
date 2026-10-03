@@ -1,5 +1,10 @@
 # Swedish SEO and package-led growth plan
 
+> Current policy, 3 October 2026: the owner removed the special protection for the DIY and
+> comparison articles in all locales. Both may be revised, including titles and descriptions.
+> This supersedes every frozen-content or separate-approval instruction in this earlier plan.
+> Historical fixtures remain reference only; current editorial and URL-continuity checks apply.
+
 16 September 2026 · Repository audit and proposed implementation brief · No website changes made
 
 **Reading routes:** [priorities and findings](#1-the-outcome) · [keywords](#4-keyword-strategy-and-page-ownership) · [every current public page](#6-every-existing-public-page) · [price and regional pages](#7-new-commercial-and-regional-pages) · [every editable article](#8-existing-and-proposed-editorial-content) · [new guides](#9-new-guides-that-fill-genuine-buyer-questions) · [execution sequence](#15-implementation-sequence-and-priorities).
@@ -67,25 +72,11 @@ These are priorities for the plan, not an assertion that all are current product
 
 ## 3. Non-negotiable boundaries
 
-### The two protected articles
+### Established article continuity
 
-These addresses stay exactly as they are:
-
-- `/blog/posts/difference-between-normal-pool-and-natural-pool.html`
-- `/blog/posts/build-your-own-nature-pool.html`
-
-No keyword rewrites, updated headings, rewritten intros, new CTAs, inserted package modules, altered images, URL changes, new article schema or metadata improvements are proposed for them. Preserve the Swedish and English originals and the existing Danish representation. Keep their literal `.html` URLs, article-owned links, image URLs, indexability, canonicals and established language relationships.
-
-“Do not edit the article file” is not sufficient. The protection must cover what shared templates and metadata generators produce. Before other work:
-
-1. Record the protected live article content and SEO output, and compare it with the preserved historical baseline and current local render.
-2. Restore the **existing original intro text** omitted by the pending renderer. This is recovery of retained content, not a new editorial revision.
-3. Separate already-approved rebuild presentation changes from new SEO work. Do not silently treat pending changes to contents navigation, related reading, schema or language alternates as proven preservation.
-4. Keep the protected article's own content and SEO stable in subsequent releases, including related-card labels/descriptions if a catalogue rewrite would change them. Use an explicit, content-owned protection policy in the existing rendering system; do not copy the entire old site into a parallel implementation.
-5. Preserve original fixtures. Add reviewed expectations for authorized edits to the ten other articles; never regenerate the historical baseline to make regressions pass.
-6. If a shared change cannot maintain protected output, exclude that change from the protected routes or defer it. No presumed permission to optimize these two.
-
-Inbound links **to** these articles may be improved on other pages. An unchanged `/pricing/` link **from** a protected article may reach a more useful price page through the shared redirect catalogue; the article's URL and anchor stay unchanged. Test that destination explicitly.
+The DIY and comparison articles may be revised under the same editorial workflow as all other
+guides. Preserve their established `.html` addresses and working language relationships. Compare
+rendered content and metadata with current authored translations, not frozen historical wording.
 
 ### Preserve the sales story
 

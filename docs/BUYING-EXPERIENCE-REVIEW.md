@@ -6,9 +6,12 @@ The owner requested realistic provisional figures without placeholder labels in 
 visible design, to give the team concrete wording to correct. The following are
 **unverified proposals**, not confirmed company commitments:
 
-- Five-year installation guarantee and two-year equipment guarantee.
+- Five-year installation guarantee, three-year equipment guarantee and a 20-year
+  liner guarantee against manufacturing defects.
 - Coverage from handover, exclusions for wear, frost damage and missed care instructions.
-- Included telephone follow-up during the first swimming season; visits and service quoted separately.
+- One included first-season site visit, booked at handover, covering circulation,
+  equipment, plant establishment and commissioning adjustments. Cleaning, routine
+  service and later visits are quoted separately.
 - About 30 minutes of weekly care during the swimming season.
 - Circulation electricity of about SEK 230–460/month excluding VAT, based on 200–400 W operating
   continuously for 30 days at SEK 1.60/kWh excluding VAT (230.40–460.80 SEK before rounding).
@@ -24,6 +27,43 @@ The site uses one calculation for comparisons, hero prices and enquiry choices.
 
 Package artwork is conceptual, generated from the existing homepage architectural
 illustration. It does not document a completed installation or a construction plan.
+
+## Package scope and aftercare meeting proposal
+
+The owner explicitly authorised plausible invented facts for the internal site review
+on 3 October 2026. These are visible as ordinary customer copy in the local redesign;
+they are not verified commitments or approved for publication.
+
+| Package       | Existing swim area | Proposed swimming depth                    | Proposed total footprint |
+| ------------- | ------------------ | ------------------------------------------ | ------------------------ |
+| Daily dips    | From 17.5 m²       | 1.2 m                                      | Approximately 30–40 m²   |
+| Swim together | From 24 m²         | 1.5 m (already in the package description) | Approximately 45–60 m²   |
+| More room     | From 100 m²        | 1.5–1.8 m                                  | Approximately 160–200 m² |
+
+Footprints include the swimming area, filtration and edges for the starting-size
+examples; surrounding terraces and wider garden work are additional. Confirm these
+ranges with the design/build team. Pools between the displayed sizes are offered.
+Live catalogue prices and titles are unchanged.
+
+Proposed standard starting-price scope: design and project coordination; excavation
+in accessible soil without rock; liner, filtration, pumps and pipework; installation,
+stone edges and aquatic planting; start-up, personal handover and the first-season visit.
+
+Proposed separately itemised costs: rock excavation, groundwater work, restricted
+access, surplus-soil removal/disposal, electrical supply, water filling, transport,
+decks, terraces and landscaping beyond the pool. Faunapoolen coordinates excavation,
+deliveries and the electrician even where costs are site-specific. The quotation
+agrees those costs before construction.
+
+Confirm the warranty periods, covered products, exclusions and remedies with the team
+and suppliers. The 20-year liner proposal covers manufacturing defects, not a promise
+that every cause of leakage is covered for 20 years. Confirm the operational cost and
+scheduling of the included site visit, commissioning adjustments and hands-on handover.
+The previous phone-only follow-up and blanket two-year equipment draft are superseded.
+
+Editing owners: package dimensions in `faunapoolen-content.ts`; scope in
+`faunapoolen-commercial.ts`; aftercare in `faunapoolen-ownership.ts`, all under
+`src/app/site/content/`, with Swedish/Danish catalogues alongside the English source.
 
 ## Pool comparison cards
 

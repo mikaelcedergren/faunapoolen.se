@@ -1,6 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { expectedGuideBody } from '../tests/guide-content-expectations.mjs';
 
 const locales = [
   { language: 'sv', prefix: '' },
@@ -244,48 +243,50 @@ for (const { language, prefix } of locales) {
   });
 }
 
-const protectedCopy = JSON.parse(
-  readFileSync(new URL('../tests/fixtures/protected-guide-locales.json', import.meta.url), 'utf8'),
-) as Record<string, Record<string, Record<string, string>>>;
+const guideCopy = Object.fromEntries(
+  locales.map(({ language }) => [
+    language,
+    JSON.parse(
+      readFileSync(new URL(`../src/locale/messages.${language}.json`, import.meta.url), 'utf8'),
+    ).translations,
+  ]),
+) as Record<string, Record<string, string>>;
 
 for (const { language, prefix } of locales) {
-  test(`${language} successful articles retain the original intro, body, links and title`, async ({
+  test(`${language} established articles render the current authored intro, body, links and title`, async ({
     page,
   }) => {
     for (const [id, slug] of [
       ['build', 'build-your-own-nature-pool'],
       ['difference', 'difference-between-normal-pool-and-natural-pool'],
     ]) {
-      const expected = protectedCopy[language][id];
+      const expected = guideCopy[language];
       await page.goto(`${prefix}/blog/posts/${slug}.html`);
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(
         expected[`blog.${id}.title`],
       );
       await expect(page.locator('#guide-intro')).toHaveText(expected[`blog.${id}.intro`]);
       await expect(page).toHaveTitle(expected[`blog.${id}.seo.title`]);
-      const body = await page.locator('#guide-body').evaluate(
-        (element, original) => {
-          const template = document.createElement('template');
-          template.innerHTML = original;
-          const normalize = (text: string | null) => (text ?? '').replace(/\s+/g, ' ').trim();
-          const readLinks = (root: ParentNode) =>
-            Array.from(root.querySelectorAll('a')).map((anchor) => ({
-              text: normalize(anchor.textContent),
-              href: anchor.getAttribute('href'),
-            }));
-          const readImages = (root: ParentNode) =>
-            Array.from(root.querySelectorAll('img')).map((image) => image.getAttribute('src'));
-          return {
-            actualText: normalize(element.textContent),
-            originalText: normalize(template.content.textContent),
-            actualLinks: readLinks(element),
-            originalLinks: readLinks(template.content),
-            actualImages: readImages(element),
-            originalImages: readImages(template.content),
-          };
-        },
-        expectedGuideBody(expected[`blog.${id}.bodyHtml`], language, id),
-      );
+      const body = await page.locator('#guide-body').evaluate((element, original) => {
+        const template = document.createElement('template');
+        template.innerHTML = original;
+        const normalize = (text: string | null) => (text ?? '').replace(/\s+/g, ' ').trim();
+        const readLinks = (root: ParentNode) =>
+          Array.from(root.querySelectorAll('a')).map((anchor) => ({
+            text: normalize(anchor.textContent),
+            href: anchor.getAttribute('href'),
+          }));
+        const readImages = (root: ParentNode) =>
+          Array.from(root.querySelectorAll('img')).map((image) => image.getAttribute('src'));
+        return {
+          actualText: normalize(element.textContent),
+          originalText: normalize(template.content.textContent),
+          actualLinks: readLinks(element),
+          originalLinks: readLinks(template.content),
+          actualImages: readImages(element),
+          originalImages: readImages(template.content),
+        };
+      }, expected[`blog.${id}.bodyHtml`]);
       expect(body.actualText).toBe(body.originalText);
       expect(body.actualLinks).toEqual(body.originalLinks);
       expect(body.actualImages).toEqual(body.originalImages);
@@ -462,7 +463,7 @@ for (const [path, settings, reject, details] of [
   });
 }
 
-test('cookie choices persist between locales and remain reachable on protected articles', async ({
+test('cookie choices persist between locales and remain reachable on established articles', async ({
   page,
 }) => {
   await page.goto('/en/');

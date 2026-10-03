@@ -1,12 +1,30 @@
 <fp-site-shell>
   <cx-hero
-    [underMasthead]="false"
+    [underMasthead]="true"
+    align="center"
+    [parallax]="true"
+    [overlayOpacity]="45"
     headingClass="cx-font-regular"
     [heading]="copy.guides.title"
-    variant="stacked"
+    variant="cover"
   >
     <p body>{{ copy.guides.ingress }}</p>
+    <img
+      media
+      src="/assets/images/faunapoolen/editorial/guides-evening-1672.webp"
+      srcset="
+        /assets/images/faunapoolen/editorial/guides-evening-800.webp   800w,
+        /assets/images/faunapoolen/editorial/guides-evening-1200.webp 1200w,
+        /assets/images/faunapoolen/editorial/guides-evening-1672.webp 1672w
+      "
+      sizes="100vw"
+      [alt]="heroAlt"
+      width="1672"
+      height="941"
+      fetchpriority="high"
+    />
   </cx-hero>
+  <fp-certification-strip afterHero />
   @for (group of groups; track group.title) {
     <div class="cx-container fp-section">
       <section [attr.aria-label]="group.title">
@@ -14,27 +32,9 @@
           <div class="cx-editorial">
             <h2 class="fp-heading cx-font-regular">{{ group.title }}</h2>
           </div>
-          <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" gapMobile="xl">
+          <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
             @for (item of group.articles; track item.id) {
-              <a class="fp-article-link" [href]="guideHref(item.id)">
-                <cx-stack gap="lg">
-                  <img
-                    class="fp-article-photo"
-                    [src]="item.image"
-                    [alt]="item.title"
-                    width="1536"
-                    height="1024"
-                    [attr.loading]="$index < 2 ? 'eager' : 'lazy'"
-                  />
-                  <cx-stack gap="sm">
-                    <h3 class="fp-subheading cx-font-serif cx-font-regular">
-                      {{ item.title }}
-                    </h3>
-                    <p class="cx-editorial cx-text-muted">{{ item.seo.description }}</p>
-                    <span class="cx-text-link">{{ copy.guides.read }} →</span>
-                  </cx-stack>
-                </cx-stack>
-              </a>
+              <fp-guide-card [guide]="item" [href]="guideHref(item.id)" />
             }
           </cx-grid>
         </cx-stack>

@@ -1,0 +1,10 @@
+{
+  "en": {
+    "original": "<img alt=\"Cost to build a nature pool\" src=\"/assets/images/blog/blog-post-mood-image-1.jpg\">",
+    "replacement": "<img src=\"/assets/images/guides/inline/build-materials.webp\" alt=\"Pond liner, gravel and a circulation pump laid out for a nature pool build.\" width=\"1536\" height=\"1024\" loading=\"lazy\" />"
+  },
+  "sv": {
+    "original": "<img src=\"/assets/images/blog/blog-post-mood-image-1.jpg\" alt=\"Pris för att bygga naturpool\">",
+    "replacement": "<img src=\"/assets/images/guides/inline/build-materials.webp\" alt=\"Dammduk, grus och en cirkulationspump framlagda inför ett naturpoolbygge.\" width=\"1536\" height=\"1024\" loading=\"lazy\" />"
+  }
+}

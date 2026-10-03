@@ -23,6 +23,8 @@ export interface FaunapoolenPackage {
   readonly id: 'glade' | 'summer' | 'horizon';
   readonly name: string;
   readonly area: string;
+  readonly depth: string;
+  readonly footprint: string;
   readonly description: string;
   readonly includes: readonly string[];
   readonly price: number;
@@ -32,6 +34,8 @@ export const FAUNAPOOLEN_PACKAGES: readonly Omit<FaunapoolenPackage, 'name' | 'p
   {
     id: 'glade',
     area: $localize`:@@site.packages.glade.area:From 17.5 m² swim area`,
+    depth: $localize`:@@site.packages.glade.depth:1.2 m swimming depth`,
+    footprint: $localize`:@@site.packages.glade.footprint:Approx. 30–40 m² total footprint`,
     description: $localize`:@@site.packages.glade.description:A compact plunge pool for cooling off, sauna breaks and smaller gardens.`,
     includes: [
       $localize`:@@site.packages.glade.includes.0:Aquascape BioFalls filtration`,
@@ -42,7 +46,9 @@ export const FAUNAPOOLEN_PACKAGES: readonly Omit<FaunapoolenPackage, 'name' | 'p
   {
     id: 'summer',
     area: $localize`:@@site.packages.summer.area:From 24 m² swim area`,
-    description: $localize`:@@site.packages.summer.description:A 1.5 m deep pool for swimming, with natural stone, lighting and water jets.`,
+    depth: $localize`:@@site.packages.summer.depth:1.5 m swimming depth`,
+    footprint: $localize`:@@site.packages.summer.footprint:Approx. 45–60 m² total footprint`,
+    description: $localize`:@@site.packages.summer.description:A pool for swimming together, with natural stone, lighting and water jets.`,
     includes: [
       $localize`:@@site.packages.summer.includes.0:Wetland filtration and a separate water intake`,
       $localize`:@@site.packages.summer.includes.1:Natural stone and integrated lighting`,
@@ -52,6 +58,8 @@ export const FAUNAPOOLEN_PACKAGES: readonly Omit<FaunapoolenPackage, 'name' | 'p
   {
     id: 'horizon',
     area: $localize`:@@site.packages.horizon.area:From 100 m² swim area`,
+    depth: $localize`:@@site.packages.horizon.depth:1.5–1.8 m swimming depth`,
+    footprint: $localize`:@@site.packages.horizon.footprint:Approx. 160–200 m² total footprint`,
     description: $localize`:@@site.packages.horizon.description:A spacious pool with waterfalls, boulders and a planted landscape.`,
     includes: [
       $localize`:@@site.packages.horizon.includes.0:Waterfalls and feature boulders`,
@@ -246,7 +254,7 @@ export const FAUNAPOOLEN_PROCESS = [
   {
     number: '02',
     title: $localize`:@@site.process.1.title:Proposal and quotation`,
-    body: $localize`:@@site.process.1.body:After assessing the site, we develop the design and quotation. Site visits are charged; the fee is credited against installation if you go ahead.`,
+    body: $localize`:@@site.process.1.body:After assessing the site, we develop the design and quotation. The planning visit is charged; its fee is credited against installation if you go ahead.`,
   },
   {
     number: '03',

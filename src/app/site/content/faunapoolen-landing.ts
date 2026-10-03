@@ -43,7 +43,7 @@ export const NATURE_POOL_LANDING = {
 } as const;
 
 export const POOL_ENQUIRY = {
-  cta: $localize`:@@site.poolEnquiry.cta:Request free pool advice`,
+  cta: $localize`:@@site.poolEnquiry.cta:Start your project`,
   heading: $localize`:@@site.poolEnquiry.heading:Let’s find the right pool for your garden.`,
   body: $localize`:@@site.poolEnquiry.body:Tell us where you’d like to build. In your free phone consultation, we’ll discuss what could fit, your budget and the next step.`,
   followUp: $localize`:@@site.poolEnquiry.followUp:We’ll email you to arrange a time. If you’d prefer a call, leave your phone number.`,

@@ -1,6 +1,60 @@
 @use '@mikaelcedergren/cx-framework/tokens/breakpoints-scale' as bp;
 
 .fp-site {
+  .fp-benefit-list {
+    margin: 0;
+    padding-inline-start: var(--space-lg);
+    list-style: disc;
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .fp-benefit-list li::marker {
+    color: var(--primary);
+  }
+
+  .fp-benefit-list h3 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .fp-accent-rule {
+    display: block;
+    width: 40px;
+    max-width: 100%;
+    height: 2px;
+    flex-shrink: 0;
+    background: var(--accent);
+  }
+
+  .fp-accent-rule--spaced {
+    margin-bottom: var(--space-md);
+  }
+
+  .fp-project-quote .fp-accent-rule {
+    margin-inline: auto;
+  }
+
+  // Public reading copy keeps article leading, including compact notes and facts.
+  p,
+  figcaption,
+  .fp-body,
+  .fp-body-lg,
+  .fp-body-sm {
+    line-height: var(--line-height-editorial-body);
+  }
+
+  .fp-body {
+    font-size: var(--font-size-body);
+  }
+
+  .fp-body-lg {
+    font-size: var(--font-size-body-lg);
+  }
+
+  .fp-body-sm {
+    font-size: var(--font-size-body-sm);
+  }
+
   .fp-wordmark {
     display: flex;
     align-items: center;
@@ -318,8 +372,8 @@
   }
 
   .fp-invitation-band {
-    background: var(--accent-alt);
-    color: var(--on-emphasis);
+    background: var(--opacity-low);
+    color: var(--ink);
   }
 
   .fp-invitation {
@@ -336,7 +390,7 @@
   }
 
   .fp-invitation-copy p {
-    color: var(--on-emphasis);
+    color: var(--opacity-high);
   }
 
   .fp-invitation-copy h2 {
@@ -394,18 +448,6 @@
 
   .fp-footer-utilities > cx-language-selector {
     margin-inline-start: auto;
-  }
-
-  .fp-article-link {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-lg);
-    text-decoration: none;
-    color: var(--ink);
-  }
-
-  .fp-article-link:hover h3 {
-    text-decoration: underline;
   }
 
   #guide-body img {

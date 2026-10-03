@@ -41,8 +41,6 @@
   <fp-package-comparison enquiryAnchor="consultation" />
   <fp-pool-aftercare />
   <div class="cx-container"><cx-divider /></div>
-  <fp-pool-ownership />
-  <div class="cx-container"><cx-divider /></div>
   <div class="cx-container fp-section">
     <section aria-labelledby="price-factors-title">
       <cx-stack gap="xl">
@@ -60,6 +58,8 @@
       </cx-stack>
     </section>
   </div>
+  <div class="cx-container"><cx-divider /></div>
+  <fp-pool-ownership />
   <fp-process />
   <section class="cx-container fp-section" aria-labelledby="price-questions-title">
     <cx-stack gap="xl">
@@ -70,9 +70,9 @@
         @for (item of questions; track item.id) {
           <cx-list-item [itemId]="item.id" [heading]="item.heading" [expandable]="true">
             <cx-stack gap="md">
-              <p class="cx-text-body">{{ item.body }}</p>
+              <p class="fp-body">{{ item.body }}</p>
               @if (item.detail) {
-                <p class="cx-text-body">{{ item.detail }}</p>
+                <p class="fp-body">{{ item.detail }}</p>
               }
             </cx-stack>
           </cx-list-item>

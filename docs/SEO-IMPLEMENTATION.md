@@ -35,11 +35,18 @@ All retained main pages have distinct search titles/descriptions and relevant li
 
 Ten eligible guides have been rewritten in English, Swedish and Danish. Five additional guides cover space, care through the year, the commissioned build process, Swedish safety/permission questions and ownership costs. Numerical operating-cost examples are explicitly hypothetical, with declared assumptions; they are not a promise about installed equipment or running costs.
 
-## Protected articles
+## Article editing policy — 3 October 2026
 
-The two successful article bodies, titles, translations, URLs, image URLs and metadata remain preserved, with one owner-approved exception on 30 September 2026: the standalone closing contact paragraph in the build-your-own guide is removed in all three languages because the shared consultation invitation now serves that purpose. Historical fixtures stay unchanged; verification permits only that exact deletion. Their original stored introductions are restored in the shared renderer after the omission identified in the planning audit. Historical related-reading labels stay stable even though the linked articles are revised. On 30 September 2026, the owner approved six image-led recommendations in three columns; the original five recommendations keep their wording and order, followed by the guide to commissioning a natural pool.
+The owner removed the special protection for the DIY and comparison articles. Their bodies,
+headings, introductions, titles, descriptions, imagery and related reading may now be improved
+in all three locales under the ordinary editorial workflow. No separate protection-rule approval
+is required. Their established URLs, language relationships and indexability retain the same
+continuity checks as other articles.
 
-The historical Swedish/English fixture is retained. A separate pre-change fixture extends the exact localized content protection to Danish. Shared public navigation follows the owner's new English-slug decision; article-owned old links remain untouched and continue through the redirect catalogue. Article content remains protected. The shared floating cookie notice and footer preference control are available on every public page, including the protected articles.
+Historical fixtures remain reference material; current authored translations and metadata own
+rendering expectations. The public and browser checks no longer enforce frozen prose or a list
+of narrow exceptions. This policy supersedes earlier preservation instructions and exception
+records in the SEO growth plan and guide reviews. This change does not itself rewrite articles.
 
 ## Enquiry and measurement
 
@@ -66,7 +73,7 @@ Website implementation does not grant access to private Search Console or analyt
 
 After a requested production release:
 
-1. Verify actual canonical pages, one-hop redirects, protected output and the sitemap at the published origin.
+1. Verify actual canonical pages, one-hop redirects, article URL continuity and the sitemap at the published origin.
 2. Disable automatic history/form/outbound-click and user-provided-data collection on the existing GA4 property, verify actual payloads, and then enable the reviewed production transport. Check consented events arrive. Configure `generate_lead` as a key event and appropriate custom dimensions if those reports are wanted.
 3. Capture Search Console's actual query/page baseline, inspect new URLs and the sitemap, then compare meaningful 28-day and seasonal windows. No search-volume, ranking-growth or conversion-rate estimate is invented here.
 4. Review suitable pool enquiries by actual project location. A visit to the Skåne page is not proof the visitor lives there; aggregate organic query data cannot be joined to an individual customer's search.
@@ -76,16 +83,29 @@ The plan's longer-term monitoring, genuine new project collection and authorized
 
 ## Verification contract
 
-Use the repository's [change-aware verification](../DEVELOPMENT-VERIFICATION.md). Public tests read the exact candidate directory, including staged releases, check all canonical/language identities and verify authored guide translations. Sitemap generation proves exact route-set equality, rejects unintended duplicate canonical claims and requires reciprocal actual language counterparts. Synthetic browser journeys cover page discovery, package choice, language continuity, receipt recovery, consent and protected content.
+Use the repository's [change-aware verification](../DEVELOPMENT-VERIFICATION.md). Public tests read the exact candidate directory, including staged releases, check all canonical/language identities and verify authored guide translations. Sitemap generation proves exact route-set equality, rejects unintended duplicate canonical claims and requires reciprocal actual language counterparts. Synthetic browser journeys cover page discovery, package choice, language continuity, receipt recovery, consent and authored article content.
 
 Tests never submit to the real inbox or read operational data. Production publication remains a separate instruction under the [development and release contract](../../SERVER-STANDARD.md#local-development).
 
-## Verified in development — 17 September 2026
+## Historical verification — 17 September 2026
+
+The following records the earlier preservation gate; it does not impose current editing restrictions.
 
 `pnpm verify:change` passed against the integrated source: the full repository gate, 51 isolated browser journeys, Angular hot reload and the rendered development homepage. The public build checks 191 page/content/SEO assertions, including all 93 canonicals and all six protected article variants. The exact staged browser output is also checked during isolated E2E setup. These read-only artifact tests run in the existing guarded process (`--test-isolation=none`) so Node does not drop the hermetic runner's inherited lease when spawning a test worker; the network and temporary-data guard remain active.
 
 Desktop screenshots at 1280 × 720 were reviewed for all fourteen main page families, including all four regional heroes, the package comparison, grouped guide index, a new guide's introduction and reading layout, and the enquiry package menu. Existing emotional hero copy and the shared visual framework remain intact. The guide groups use the existing editorial heading treatment. New article bylines identify Faunapoolen and the substantive revision date; protected articles do not receive that addition.
 
-The original two article source files and historical baseline fixture have no diff. Their original catalogue objects, three-language content fields, and historical related-reading text, order and destinations are protected separately. The original stored introductions are visible again.
+The original two article source files and historical baseline fixture have no diff. Their original catalogue objects, three-language content fields, and historical related-reading order and destinations are protected separately; current card wording follows the 3 October presentation decision. The original stored introductions are visible again.
 
 This is a verified development implementation, not a production release or evidence of improved Google rankings. Production analytics remains disabled pending the account-side correction above. The simultaneously revised five editorial images and their image-generation record belong to separate owner work; this SEO implementation preserves them.
+
+## Historical guide inline-image exception — 3 October 2026
+
+The owner requested relevant, stylistically consistent photographs inside every guide. Nine new guide-only assets replace the original in-article photographs; supplier and case-study originals remain unchanged. In the protected DIY guide, only the English and Swedish image tags change, from the unrelated mood photograph to construction materials. The Danish guide has no image and keeps that structure. Historical fixtures remain untouched; `approved-guide-inline-image-replacement.json` permits only these exact tags. Existing protected-copy exceptions continue to apply independently.
+
+## Swedish language review — 3 October 2026
+
+The [plain-Swedish review](SWEDISH-COPY-REVIEW.md) preserves every SEO metadata field and
+both protected article bodies. Its only additional protected-content exception removes one
+duplicated final full stop from the Swedish DIY introduction. The historical fixtures remain
+unchanged, and the protected-content checks allow only that exact punctuation correction.

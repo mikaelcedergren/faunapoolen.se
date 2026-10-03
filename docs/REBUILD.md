@@ -14,10 +14,10 @@ No framework changes or local replacements were made.
 
 ## SEO preservation
 
-All twelve original Swedish and English articles retain their wording, titles, metadata, literal
-`.html` addresses, images and body links. The two protected guides lead the blog index. Regression
-fixtures were captured from the original source before retiring its templates; hashes preserve
-article prose without keeping a second copy of the article. The baseline is not a content editor.
+All original articles, including the DIY and comparison guides, may be revised under the
+owner's 3 October 2026 decision. Historical fixtures are reference material, not content freezes.
+Verify current authored translations and metadata while preserving established public addresses
+and working links.
 
 The existing blog index addresses remain. Retired product and section addresses redirect directly
 to the closest replacement through the shared product URL catalogue. The sitemap is generated

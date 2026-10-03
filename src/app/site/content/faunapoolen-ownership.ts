@@ -28,19 +28,17 @@ export const POOL_OWNERSHIP = {
 
 export const POOL_AFTERCARE = {
   title: $localize`:@@site.aftercare.title:Confidence beyond the first swim.`,
+  guaranteeTitle: $localize`:@@site.aftercare.guarantee.title:Your guarantees`,
+  guaranteeBody: $localize`:@@site.aftercare.guarantee.body:Your pool comes with a five-year guarantee on our installation work and three years on pumps and equipment. The pool liner is covered against manufacturing defects for 20 years.`,
   items: [
     {
-      title: $localize`:@@site.aftercare.guarantee.title:5 years on installation`,
-      body: $localize`:@@site.aftercare.guarantee.body:Our installation carries a five-year guarantee. Pumps and technical equipment carry a two-year guarantee.`,
-    },
-    {
       title: $localize`:@@site.aftercare.handover.title:A personal handover`,
-      body: $localize`:@@site.aftercare.handover.body:We start the system together, show you the regular tasks and leave you with a care plan for your pool.`,
+      body: $localize`:@@site.aftercare.handover.body:We start the system together and practise the regular care tasks with you. You receive a care plan for your pool, covering the equipment, planting and each season.`,
     },
     {
-      title: $localize`:@@site.aftercare.followup.title:We stay in touch`,
-      body: $localize`:@@site.aftercare.followup.body:A follow-up during your first swimming season is included. You can reach us by phone if questions come up along the way.`,
+      title: $localize`:@@site.aftercare.followup.title:We come back`,
+      body: $localize`:@@site.aftercare.followup.body:At handover, we book your included first-season site visit. We check circulation, equipment and plant establishment, make the commissioning adjustments needed and answer your questions.`,
     },
   ],
-  terms: $localize`:@@site.aftercare.terms:The installation guarantee covers defects in our work from the date of handover. Equipment is covered by its applicable product terms. Normal wear, frost damage and damage caused by care that differs from the instructions are excluded. The first-season follow-up is by phone; visits, cleaning and ongoing servicing are quoted separately. Full terms accompany your quotation.`,
+  terms: $localize`:@@site.aftercare.terms:Cover starts at handover. Workmanship covers installation defects; equipment and liner cover follow their product terms. Normal wear, frost damage and damage caused by missed care instructions are excluded. One first-season visit and commissioning adjustments are included; cleaning, routine servicing and later visits are quoted separately. Full terms accompany your quotation.`,
 } as const;

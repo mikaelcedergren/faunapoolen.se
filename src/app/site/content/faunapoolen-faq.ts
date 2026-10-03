@@ -29,7 +29,7 @@ export const FAQ_ITEMS = [
   {
     id: 'consultation',
     question: $localize`:@@site.faq.consultation.question:What does a consultation cost?`,
-    answer: $localize`:@@site.faq.consultation.answer:The first phone consultation is free. Site visits are paid and include an assessment and project discussion. The visit fee is deducted from the installation cost if you go ahead.`,
+    answer: $localize`:@@site.faq.consultation.answer:The first phone consultation is free. The planning visit is paid and includes a site assessment and project discussion. Its fee is deducted from the installation cost if you go ahead. Your first-season follow-up visit after installation is included in the pool package.`,
   },
   {
     id: 'next',

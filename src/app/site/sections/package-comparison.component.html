@@ -4,7 +4,9 @@
   </div>
   <div id="packages" class="cx-scroll-target">
     <cx-stack gap="xl">
-      <p class="cx-editorial cx-measure-lg-start">{{ landing.priceIntro }}</p>
+      <p class="cx-editorial cx-measure-lg-start">
+        {{ landing.priceIntro }} {{ scope.betweenSizes }}
+      </p>
       @if (packageCatalogue.loading()) {
         <cx-state-message state="pending" [heading]="pricesLoading" />
       } @else if (packageCatalogue.error()) {
@@ -38,10 +40,15 @@
             />
             <cx-stack gap="md" align="start">
               <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ item.name }}</h3>
+              <span class="fp-accent-rule" aria-hidden="true"></span>
               <div class="cx-editorial">
                 <p>{{ item.description }}</p>
               </div>
-              <p class="cx-text-body-lg">{{ item.area }}</p>
+              <cx-stack gap="xs">
+                <p class="fp-body-lg">{{ item.area }}</p>
+                <p class="fp-body-lg">{{ item.depth }}</p>
+                <p class="fp-body-lg">{{ item.footprint }}</p>
+              </cx-stack>
             </cx-stack>
             <cx-stack gap="sm">
               @for (feature of item.includes; track feature) {
@@ -56,10 +63,11 @@
             <cx-stack class="fp-package-actions" gap="lg" align="start">
               <cx-stack gap="sm" align="start">
                 <cx-metric [label]="copy.common.from" [value]="packageCatalogue.price(item)" />
-                <p class="cx-text-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
+                <p class="fp-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
               </cx-stack>
               <cx-button
                 [text]="copy.common.viewPackage"
+                mood="accent"
                 appendIcon="arrow-right"
                 [href]="interestHref(item.id)"
                 (click)="choosePackage($event, item.id)"
@@ -69,8 +77,16 @@
           </article>
         }
       </cx-grid>
-      <p class="cx-text-body-sm cx-text-muted cx-text-center cx-measure-lg">
-        {{ editorial.priceScope }} {{ landing.scope }}
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="start">
+        @for (group of scope.groups; track group.title) {
+          <cx-stack class="fp-column" gap="lg">
+            <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ group.title }}</h3>
+            <p class="fp-body-lg">{{ group.body }}</p>
+          </cx-stack>
+        }
+      </cx-grid>
+      <p class="fp-body-sm cx-text-muted cx-text-center">
+        {{ scope.coordination }} {{ editorial.priceScope }}
       </p>
     </cx-stack>
   </div>
