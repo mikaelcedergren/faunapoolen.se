@@ -5,7 +5,7 @@ export const FAUNAPOOLEN_EDITORIAL = {
   architectureAlt: $localize`:@@site.editorial.architectureAlt:Concept image: a view from a timber house towards water and woodland.`,
   poolDesignAlt: $localize`:@@site.editorial.poolDesignAlt:Concept illustration: a nature pool design transitioning from a line drawing to a garden with water, planting and a deck.`,
   waterscapeAlt: $localize`:@@site.editorial.waterscapeAlt:Concept image: a koi pond and a small stream in a leafy garden.`,
-  waterscapePauseAlt: $localize`:@@site.editorial.waterscapePauseAlt:Concept image: a woman rests beside a koi pond and small stream in an evening garden.`,
+  waterscapePauseAlt: $localize`:@@site.editorial.waterscapePauseAlt:Concept image: a couple shares coffee and a smile beside a small stream in a leafy garden.`,
   supplierAlt: $localize`:@@site.editorial.supplierAlt:Aquascape™’s own example of a recreational pond.`,
   responsibility: $localize`:@@site.editorial.responsibility:From design to construction and care. Faunapoolen brings your project together.`,
   trustExpertise: $localize`:@@site.editorial.trustExpertise:Aquascape™ expertise since 1991`,

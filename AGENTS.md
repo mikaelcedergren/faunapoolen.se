@@ -148,7 +148,20 @@ and verify revised articles against their reviewed localized content. Historical
 labels on protected articles have a small explicit presentation owner; never copy whole articles
 or restore a parallel legacy renderer. See [implementation notes](docs/SEO-IMPLEMENTATION.md).
 
+Public customer pages use internal website links, with email and telephone contact links allowed. Keep external research references in editorial documentation rather than public source blocks. Public captions, alt text and article copy describe photographs without AI-generation labels. This does not permit presenting illustrative scenes as completed customer installations.
+
 ## Photography and AI imagery
+
+The current owner-approved photographic treatment is
+[candid garden photography with natural depth](docs/PHOTOGRAPHY-STYLE.md), including its saved
+visual reference (3 October 2026). Use both when generating or editing public photographs.
+Preserve case-study photography and architectural illustrations. The approved blur is restrained:
+the garden and water texture remain recognisable.
+
+Architectural pool plans use the separate
+[luminous landscape architecture blueprint guide](docs/ARCHITECTURAL-ILLUSTRATION-STYLE.md).
+Use its approved visual references and fixed style prompt. Website exports have transparent
+backgrounds so the actual page colour shows through; do not reintroduce a solid teal rectangle.
 
 The owner-approved direction is beautiful, candid photography that feels natural and lived in
 (17 September 2026). Use the real Gotland case-study photographs as the reference for believable
@@ -169,7 +182,7 @@ light, garden scale, materials and everyday character. Preserve those real photo
 - Inspect generated images for anatomy, reflections and believable interactions before use.
   AI concept imagery must not be presented as evidence of a completed customer installation.
 
-The current five-image set and its generation prompts are recorded in
+The image-generation history and current asset prompts are recorded in
 [the editorial image record](docs/EDITORIAL-IMAGE-GENERATION.md).
 
 ## Campaign studio

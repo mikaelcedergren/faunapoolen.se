@@ -1,4 +1,4 @@
-// Local authority guidance reviewed on 17 September 2026. Links stay beside the claims they support.
+// Local authority guidance reviewed on 17 September 2026. Research URLs are retained in docs/EDITORIAL-SOURCES.md.
 export const FAUNAPOOLEN_REGIONS = {
   skane: {
     name: 'Skåne',
@@ -11,15 +11,11 @@ export const FAUNAPOOLEN_REGIONS = {
         question: $localize`:@@site.region.skane.question1:Does the garden around the pool need permission?`,
         answer: $localize`:@@site.region.skane.answer1:Malmö’s guidance distinguishes the pool itself from other structures, such as a deck or pool house. Discuss the complete proposal with the municipality where your property is located before work begins.`,
         sourceLabel: $localize`:@@site.region.skane.source1:Malmö: guidance on pools`,
-        sourceUrl:
-          'https://malmo.se/Bo-och-leva/Bygga-och-bo/Bygga-riva-eller-forandra/Bygglov-eller-teknisk-anmalan/Pool.html',
       },
       {
         question: $localize`:@@site.region.skane.question2:What if we also change the ground levels?`,
         answer: $localize`:@@site.region.skane.answer2:Malmö has separate guidance for retaining structures, decking and ground changes. Ask your own municipality which permissions apply to the proposed levels and construction, rather than assuming the pool decision covers everything.`,
         sourceLabel: $localize`:@@site.region.skane.source2:Malmö: walls, fences and decking`,
-        sourceUrl:
-          'https://malmo.se/Bo-och-leva/Bygga-och-bo/Bygga-riva-eller-forandra/Bygglov-eller-teknisk-anmalan/Plank-mur-och-altan.html',
       },
     ],
   },
@@ -34,14 +30,11 @@ export const FAUNAPOOLEN_REGIONS = {
         question: $localize`:@@site.region.halland.question1:Can I fill the pool during a water restriction?`,
         answer: $localize`:@@site.region.halland.answer1:Laholmsbuktens VA says that pools must not be filled with municipal drinking water when a watering ban applies. Check the current rules with your water supplier before planning the fill.`,
         sourceLabel: $localize`:@@site.region.halland.source1:Laholmsbuktens VA: filling a pool`,
-        sourceUrl: 'https://www.lbva.se/vattensmart/har-du-pool',
       },
       {
         question: $localize`:@@site.region.halland.question2:What should I check before building in Halmstad?`,
         answer: $localize`:@@site.region.halland.answer2:Halmstad’s building guidance includes pools, changes in ground level and safety around the water. Contact your municipality with the proposed layout so that any permissions and safety measures are considered before construction.`,
         sourceLabel: $localize`:@@site.region.halland.source2:Halmstad: guidance before building`,
-        sourceUrl:
-          'https://www.halmstad.se/byggaboochmiljo/bygganyttandraellerriva/vadskadubyggaellerandra.n1148.html',
       },
     ],
   },
@@ -56,13 +49,11 @@ export const FAUNAPOOLEN_REGIONS = {
         question: $localize`:@@site.region.blekinge.question1:What should I check for a property near the coast?`,
         answer: $localize`:@@site.region.blekinge.answer1:Karlskrona asks applicants to investigate conditions including local plans, shoreline protection, rising sea levels and cultural heritage. Whether any of these affects your project depends on the property; ask the municipality about your proposed work.`,
         sourceLabel: $localize`:@@site.region.blekinge.source1:Karlskrona: prepare your building project`,
-        sourceUrl: 'https://www.karlskrona.se/Bo-och-bygga/bygga/hur-s%C3%B6ker-jag-bygglov/',
       },
       {
         question: $localize`:@@site.region.blekinge.question2:Does a pool decision cover walls and a pool roof?`,
         answer: $localize`:@@site.region.blekinge.answer2:Karlskrona’s pool guidance notes that the design and related structures can affect the need for permission. Include walls, decking and any roof when you discuss the proposal with your municipality.`,
         sourceLabel: $localize`:@@site.region.blekinge.source2:Karlskrona: building guidance, including pools`,
-        sourceUrl: 'https://www.karlskrona.se/Bo-och-bygga/bygga/nar-behovs-bygglov-eller-anmalan',
       },
     ],
   },
@@ -77,14 +68,11 @@ export const FAUNAPOOLEN_REGIONS = {
         question: $localize`:@@site.region.smaland.question1:What should I check before excavating?`,
         answer: $localize`:@@site.region.smaland.answer1:Växjö’s pool guidance highlights checking for buried services where the pool is planned. It also distinguishes the pool from a possible retaining wall or roof. Raise these questions before settling the position and ground levels.`,
         sourceLabel: $localize`:@@site.region.smaland.source1:Växjö: building guidance and pools`,
-        sourceUrl: 'https://www.vaxjo.se/sidor/bygga-och-bo/bygga-nytt-bygga-om-bygga-till.html',
       },
       {
         question: $localize`:@@site.region.smaland.question2:Can I use the same planning advice throughout Småland?`,
         answer: $localize`:@@site.region.smaland.answer2:Start with the municipality where your property is located. Local plans and the proposed work matter to the assessment. Växjö provides a plan map and application guidance; properties elsewhere need the equivalent information from their own municipality.`,
         sourceLabel: $localize`:@@site.region.smaland.source2:Växjö: plans and building applications`,
-        sourceUrl:
-          'https://www.vaxjo.se/sidor/bygga-och-bo/bygga-nytt-bygga-om-bygga-till/jag-vill-ansoka-om-bygglov-marklov-rivningslov-eller-anmala/sok-bygglov.html',
       },
     ],
   },

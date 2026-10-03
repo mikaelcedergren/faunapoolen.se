@@ -105,10 +105,11 @@ export const GOTLAND_MEDIA: readonly (GotlandPhoto | GotlandFilm)[] = [
 ];
 
 export const GOTLAND_COPY = {
+  view: $localize`:@@site.gotland_copy.view:View gallery`,
   enlarge: $localize`:@@site.gotland_copy.enlarge:Enlarge image`,
   previous: $localize`:@@site.gotland_copy.previous:Previous image`,
   next: $localize`:@@site.gotland_copy.next:Next image`,
-  attribution: $localize`:@@site.gotland_copy.attribution:From Britta`,
+  attribution: $localize`:@@site.gotland_copy.attribution:From Brita`,
 } satisfies Record<string, string>;
 
 export const GOTLAND_STORIES = [
@@ -129,7 +130,7 @@ export const GOTLAND_STORIES = [
   },
   {
     film: film('1226558235', 5, '0:10'),
-    heading: $localize`:@@site.gotland.story.life.heading:Room for everyday moments`,
-    body: $localize`:@@site.gotland.story.life.body:For Britta and her grandchildren, the pool has become a place to swim and enjoy being together. This is what we hope to create: a part of your garden that you want to use, day after day.`,
+    heading: $localize`:@@site.gotland.story.life.heading:A path into the water`,
+    body: $localize`:@@site.gotland.story.life.body:A walkway leads to the stone steps at the pool’s edge. The steps continue below the surface, making the entrance part of the pool’s natural stone edge.`,
   },
 ] as const;

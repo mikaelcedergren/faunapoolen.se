@@ -1,9 +1,12 @@
 <fp-site-shell>
   <cx-hero
-    [underMasthead]="false"
+    [underMasthead]="true"
+    align="center"
+    [parallax]="true"
+    [overlayOpacity]="45"
     headingClass="cx-font-regular"
     [heading]="copy.waterscapes.title"
-    variant="split"
+    variant="cover"
   >
     <p body>{{ copy.waterscapes.ingress }}</p>
     <cx-button
@@ -15,7 +18,6 @@
     />
     <img
       media
-      class="fp-photo fp-photo--portrait"
       [src]="images.waterscape"
       [alt]="editorial.waterscapeAlt"
       width="1536"
@@ -23,36 +25,42 @@
       fetchpriority="high"
     />
   </cx-hero>
-  <div class="cx-container fp-section">
-    <section aria-labelledby="water-types-title">
+  <fp-certification-strip afterHero />
+  <section class="cx-bg-surface-alt" aria-labelledby="water-types-title">
+    <div class="cx-container fp-section">
       <cx-stack gap="xl">
-        <div class="cx-editorial">
-          <h2 id="water-types-title" class="fp-heading cx-font-regular">
-            {{ copy.waterscapes.typesTitle }}
-          </h2>
-        </div>
-        <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-          @for (item of copy.waterscapes.types; track item.title; let i = $index) {
-            <cx-card variant="border">
-              <cx-stack gap="md">
-                <h3 class="fp-subheading cx-font-serif cx-font-regular">
-                  {{ item.title }}
-                </h3>
-                <p class="cx-text-body-lg cx-text-muted">{{ item.body }}</p>
-              </cx-stack>
-              <cx-stack slot="footer" align="start">
-                <cx-button
-                  [text]="editorial.discussService"
-                  [href]="configureHref + '?service=' + (i === 1 ? 'stream' : 'pond')"
-                  appendIcon="arrow-right"
+        <h2 id="water-types-title" class="fp-heading cx-font-serif cx-font-regular">
+          {{ copy.waterscapes.typesTitle }}
+        </h2>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+          @for (item of waterTypes; track item.title) {
+            <cx-stack gap="lg" align="start" justify="between">
+              <cx-stack gap="lg">
+                <img
+                  class="fp-guidance-photo"
+                  [src]="item.image"
+                  [alt]="item.alt"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
                 />
+                <cx-stack gap="sm">
+                  <h3 class="cx-text-title-2">{{ item.title }}</h3>
+                  <p class="cx-editorial">{{ item.body }}</p>
+                  <p class="cx-editorial">{{ item.detail }}</p>
+                </cx-stack>
               </cx-stack>
-            </cx-card>
+              <cx-button
+                [text]="editorial.discussService"
+                [href]="configureHref + '?service=' + item.service"
+                appendIcon="arrow-right"
+              />
+            </cx-stack>
           }
         </cx-grid>
       </cx-stack>
-    </section>
-  </div>
+    </div>
+  </section>
   <div class="cx-container fp-section">
     <section aria-labelledby="waterscape-method-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
@@ -74,27 +82,6 @@
           <p>{{ copy.waterscapes.methodBody }}</p>
         </div>
       </cx-grid>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial" aria-labelledby="waterscape-swimming-title">
-      <h2 id="waterscape-swimming-title" class="fp-heading cx-font-regular">
-        {{ commercial.swimmingTitle }}
-      </h2>
-      <p>{{ commercial.swimmingBody }}</p>
-      <p>
-        <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
-      </p>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial">
-      <p>{{ commercial.waterscapeArea }}</p>
-      <p>
-        <a [href]="guideHref('creating-harmony-intergrating-water-features-with-your-landscape')"
-          >{{ commercial.gardenGuideLink }} →</a
-        >
-      </p>
     </section>
   </div>
 </fp-site-shell>

@@ -1,7 +1,12 @@
-import { GotlandPreviewComponent } from '../sections/gotland-preview.component';
+import { PoolOwnershipComponent } from '../sections/pool-ownership.component';
+import { CertificationStripComponent } from '../sections/certification-strip.component';
+import { PoolAftercareComponent } from '../sections/pool-aftercare.component';
+import { DirectContactComponent } from '../sections/direct-contact.component';
+import { EnquiryFormComponent } from '../sections/enquiry-form.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   CxButtonComponent,
+  CxDividerComponent,
   CxGridComponent,
   CxHeroComponent,
   CxSkeletonLoaderComponent,
@@ -19,8 +24,13 @@ import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-pricing-page',
   imports: [
-    GotlandPreviewComponent,
+    CertificationStripComponent,
+    DirectContactComponent,
+    EnquiryFormComponent,
+    PoolOwnershipComponent,
+    PoolAftercareComponent,
     CxButtonComponent,
+    CxDividerComponent,
     CxGridComponent,
     CxHeroComponent,
     CxSkeletonLoaderComponent,
@@ -39,9 +49,15 @@ export class PricingPage extends SitePage {
   // measurement text only, never a displayed or announced offer.
   protected readonly priceReservation = `${this.copy.common.from} ${this.money(888888888)} · ${this.copy.common.priceExclusions}`;
   protected readonly priceUnavailable = $localize`:@@packages.priceUnavailable:Price unavailable`;
-
+  protected readonly poolEnquiryHref = this.routeFor('pricing') + '#consultation';
   protected readonly poolEnquiry = POOL_ENQUIRY;
   protected readonly commercial = FAUNAPOOLEN_COMMERCIAL;
+  protected readonly pricingImageAlt = $localize`:@@site.pricing.imageAlt:Concept image of water droplets on planting beside a natural stone pool edge, with warm evening reflections.`;
+  protected readonly factors = [
+    { title: this.commercial.groundTitle, body: this.commercial.groundBody },
+    { title: this.commercial.sizeTitle, body: this.commercial.sizeBody },
+    { title: this.commercial.surroundingsTitle, body: this.commercial.surroundingsBody },
+  ];
   protected readonly questionsTitle = NATURE_POOL_LANDING.questionsTitle;
   protected readonly questions = [
     {
@@ -54,12 +70,6 @@ export class PricingPage extends SitePage {
       id: 'space',
       heading: this.commercial.footprintTitle,
       body: this.commercial.footprintBody,
-      detail: '',
-    },
-    {
-      id: 'care',
-      heading: this.commercial.ownershipTitle,
-      body: this.commercial.ownershipBody,
       detail: '',
     },
     {

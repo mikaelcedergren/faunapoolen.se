@@ -10,7 +10,7 @@ export const FAUNAPOOLEN_COMMERCIAL = {
   poolLink: $localize`:@@site.commercial.poolLink:Explore our nature pools`,
   packageLink: $localize`:@@site.commercial.packageLink:Find a pool package for your garden`,
   projectBridgeTitle: $localize`:@@site.commercial.projectBridgeTitle:What would your own swimming spot look like?`,
-  projectBridgeBody: $localize`:@@site.commercial.projectBridgeBody:This is one finished project. Your swimming area, edges and planting will be designed for your property and the way you want to use it. Compare our pool options to find a starting point.`,
+  projectBridgeBody: $localize`:@@site.commercial.projectBridgeBody:Explore how a nature pool works, from keeping the water clear to shaping a swimming area that feels part of your garden.`,
   caseStoryTitle: $localize`:@@site.commercial.caseStoryTitle:A swimming spot beside the house`,
   caseStoryBody: $localize`:@@site.commercial.caseStoryBody:We built this nature pool beside Brita’s home on southern Gotland. The photographs show the pool, its stone edges and the surrounding garden. Brita describes both the build and the time she and her grandchildren have spent in the water.`,
   swimmingTitle: $localize`:@@site.commercial.swimmingTitle:Would you like to swim, too?`,
@@ -44,4 +44,26 @@ export const FAUNAPOOLEN_COMMERCIAL = {
   fountainPriceTitle: $localize`:@@site.commercial.fountainPriceTitle:Fountains and smaller water features`,
   fountainPriceBody: $localize`:@@site.commercial.fountainPriceBody:A fountain or small pond has its own requirements for water supply, circulation and installation. Ask us about your space; nature-pool starting prices do not apply to these installations.`,
   waterFeatureLink: $localize`:@@site.commercial.waterFeatureLink:Explore ponds, streams and waterfalls`,
+} as const;
+
+// Owner-approved indicative estimates; research and scope in docs/BUYING-EXPERIENCE-REVIEW.md.
+export const POOL_COST_COMPARISON = {
+  title: $localize`:@@site.comparison.title:Nature pool costs and care`,
+  items: [
+    {
+      label: $localize`:@@site.comparison.investment:more to build`,
+      value: $localize`:@@site.comparison.investmentValue:About 30%`,
+      body: $localize`:@@site.comparison.investmentBody:A nature pool typically costs more upfront than a comparable conventional pool, including its biological filtration and planted areas.`,
+    },
+    {
+      label: $localize`:@@site.comparison.running:less to run`,
+      value: $localize`:@@site.comparison.runningValue:About 50%`,
+      body: $localize`:@@site.comparison.runningBody:Biological filtration removes routine chlorine costs and can reduce operating costs compared with a conventional pool.`,
+    },
+    {
+      label: $localize`:@@site.comparison.care:of weekly care`,
+      value: $localize`:@@site.comparison.careValue:30–60 minutes`,
+      body: $localize`:@@site.comparison.careBody:Care focuses on removing leaves, checking circulation and tending plants. Allow additional time for seasonal maintenance.`,
+    },
+  ],
 } as const;

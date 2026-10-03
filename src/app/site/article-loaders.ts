@@ -1,4 +1,7 @@
 export const ARTICLE_LOADERS = {
+  'varma-upp-naturpool': () => import('./articles/varma-upp-naturpool').then((m) => m.BODY_HTML),
+  'din-naturpool-skotsel-efter-installation': () =>
+    import('./articles/din-naturpool-skotsel-efter-installation').then((m) => m.BODY_HTML),
   'naturpool-i-sodra-sverige': () =>
     import('./articles/naturpool-i-sodra-sverige').then((m) => m.BODY_HTML),
   build: () => import('./articles/build-your-own-nature-pool').then((m) => m.BODY_HTML),

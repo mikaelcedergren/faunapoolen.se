@@ -16,7 +16,7 @@ for (const [path, heading, cta, contact] of [
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading);
     await page.locator('.fp-home-opening').getByRole('link', { name: cta, exact: true }).click();
-    await expect(page).toHaveURL(new RegExp(contact + '$'));
+    await expect(page).toHaveURL(new RegExp(contact.replace(/\/$/, '') + '/?$'));
     await expect(page.locator('form input')).toHaveCount(4);
     await expect(page.locator('form cx-dropdown')).toHaveCount(1);
     await expect(page.locator('form textarea')).toBeEnabled();
@@ -26,14 +26,15 @@ for (const [path, heading, cta, contact] of [
 
 for (const [entry, linkName, index, service, packageId] of [
   ['/en/nature-pools/', 'Enquire about this pool', 1, 'pool', 'summer'],
+  ['/en/nature-pools/pricing/', 'Enquire about this pool', 1, 'pool', 'summer'],
   ['/en/waterscapes/', 'Ask us about this', 1, 'stream', 'unsure'],
 ] as const) {
-  test(`${service} interest reaches the inbox without purchase configuration`, async ({ page }) => {
+  test(`${entry} interest reaches the inbox without purchase configuration`, async ({ page }) => {
     await page.goto(entry);
     await page.getByRole('link', { name: linkName, exact: true }).nth(index).click();
     await expect(page).toHaveURL(
       service === 'pool'
-        ? /\/en\/nature-pools\/?\?package=summer#consultation$/
+        ? new RegExp(entry.replace(/\/$/, '') + '/?\\?package=summer#consultation$')
         : /\/en\/configure\/\?/,
     );
     await page
@@ -48,7 +49,7 @@ for (const [entry, linkName, index, service, packageId] of [
     );
     await page
       .getByRole('button', {
-        name: service === 'pool' ? 'Request free pool advice' : 'Send enquiry',
+        name: 'Send enquiry',
         exact: true,
       })
       .click();
@@ -77,6 +78,52 @@ for (const [entry, linkName, index, service, packageId] of [
 }
 
 for (const prefix of ['', '/en', '/da']) {
+  test(`${prefix || '/'} homepage project preview leads to the Gotland story`, async ({ page }) => {
+    await page.goto(prefix + '/');
+    const preview = page.locator('fp-gotland-preview');
+    const destination = prefix + '/projects/gotland/';
+    await expect(preview.locator('.fp-project-detail')).toHaveCount(3);
+    await expect(preview.locator('fp-gotland-gallery')).toHaveCount(0);
+    await expect(preview.getByRole('button')).toHaveCount(0);
+    for (const link of await preview.getByRole('link').all()) {
+      await expect(link).toHaveAttribute('href', destination);
+    }
+    await preview.locator('.fp-project-detail a').first().click();
+    await expect(page).toHaveURL(new RegExp(destination.replace(/\/$/, '') + '/?$'));
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test(`${prefix || '/'} pool gallery opens in place and returns to its trigger`, async ({
+    page,
+  }) => {
+    await page.goto(prefix + '/nature-pools/');
+    await expect(page.locator('form textarea')).toBeEnabled();
+    const originalUrl = page.url();
+    const preview = page.locator('fp-gotland-preview');
+    await expect(page.locator('fp-certification-strip')).toHaveCount(1);
+    await expect(page.locator('.fp-pool-figure figcaption')).toHaveCount(0);
+    await expect(preview.locator('.fp-case-label')).toHaveCount(0);
+
+    const photo = preview.locator('a[href$="1455.webp"]');
+    await photo.click();
+    const lightbox = page.getByRole('dialog');
+    await expect(lightbox).toBeVisible();
+    await expect(lightbox.locator('img')).toHaveAttribute('src', /1455\.webp$/);
+    await page.keyboard.press('ArrowRight');
+    await expect(lightbox.locator('img')).toHaveAttribute('src', /1496\.webp$/);
+    await page.keyboard.press('Escape');
+    await expect(lightbox).toBeHidden();
+    await expect(photo).toBeFocused();
+    await expect(page).toHaveURL(originalUrl);
+
+    const galleryButton = preview.locator('cx-card').getByRole('button');
+    await galleryButton.click();
+    await expect(lightbox.locator('img')).toHaveAttribute('src', /1528\.webp$/);
+    await page.keyboard.press('Escape');
+    await expect(galleryButton).toBeFocused();
+    await expect(page).toHaveURL(originalUrl);
+  });
+
   test(`${prefix || '/'} pool landing pages keep visitors on the enquiry journey`, async ({
     page,
   }) => {
@@ -106,12 +153,13 @@ for (const prefix of ['', '/en', '/da']) {
         await expect(
           page.locator('#how-it-works figure img, #garden-layout figure img'),
         ).toHaveCount(2);
-        await expect(page.locator('fp-gotland-preview figure')).toHaveCount(3);
-        await expect(page.locator('#pool-care img')).toBeVisible();
+        await expect(page.locator('fp-gotland-preview .fp-project-detail')).toHaveCount(3);
+        await expect(page.locator('#pool-care img')).toHaveCount(0);
         await expect(page.locator('fp-gotland-preview blockquote')).toBeVisible();
       } else {
-        await expect(page).toHaveURL(new RegExp(prefix + '/configure/?\\?service=pool$'));
-        await expect(page.locator('form cx-dropdown')).toHaveCount(1);
+        await expect(page).toHaveURL(new RegExp(prefix + '/nature-pools/pricing/?#consultation$'));
+        await expect(page.locator('form cx-dropdown')).toHaveCount(0);
+        await expect(page.locator('.fp-package-illustration')).toHaveCount(3);
       }
       await expect(page.locator('form textarea')).toBeEnabled();
     }
@@ -156,7 +204,7 @@ test('the inline enquiry keeps contact details when changing pool preference', a
   const received = page.waitForResponse(
     (r) => r.url().endsWith('/api/enquiries') && r.request().method() === 'POST',
   );
-  await page.getByRole('button', { name: 'Request free pool advice', exact: true }).click();
+  await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
   const response = await received;
   expect(response.status()).toBe(201);
   expect(response.request().postDataJSON().fields).toEqual(
@@ -188,7 +236,7 @@ test('an inline enquiry recovers from an interrupted receipt without creating a 
     } else await route.continue();
   });
   const submit = page.getByRole('button', {
-    name: 'Request free pool advice',
+    name: 'Send enquiry',
     exact: true,
   });
   await submit.click();
@@ -209,4 +257,34 @@ test('an inline enquiry recovers from an interrupted receipt without creating a 
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-pool-enquiry-received.png' });
   expect(requests).toHaveLength(2);
   expect(requests[1]).toBe(requests[0]);
+});
+
+test('pricing keeps the selected pool and VAT-exclusive price through reload', async ({ page }) => {
+  await page.goto('/en/nature-pools/pricing/');
+  const comparison = page.locator('fp-package-comparison');
+  await expect(comparison).toContainText('430,000');
+  await expect(comparison).toContainText('1,100,000');
+  await expect(comparison).toContainText('4,400,000');
+  await expect(comparison).toContainText('excl. VAT and shipping');
+  await comparison
+    .getByRole('link', { name: 'Enquire about this pool', exact: true })
+    .nth(1)
+    .click();
+  await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toBeFocused();
+  await expect(page.locator('form cx-dropdown')).toContainText('Swim together');
+  await page.reload();
+  await expect(page.locator('form cx-dropdown')).toContainText('Swim together');
+  await page.locator('form cx-dropdown').getByRole('combobox').click();
+  await expect(page.getByRole('option', { name: /Swim together/ })).toContainText('1,100,000');
+  await page.keyboard.press('Escape');
+  const call = page.locator('fp-direct-contact a[href^="tel:"]');
+  await expect(call).toHaveAttribute('href', 'tel:+46735406757');
+  const electricity = page.getByRole('button', {
+    name: 'What does the electricity cost?',
+    exact: true,
+  });
+  await electricity.focus();
+  await page.keyboard.press('Enter');
+  await expect(electricity).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByText(/Calculated for 200–400 W/)).toBeVisible();
 });

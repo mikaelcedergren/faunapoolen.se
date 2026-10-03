@@ -14,7 +14,9 @@
           </p>
         } @else {
           <p>
-            <a [href]="aquascape.technology">{{ evidence.technologyLink }} ↗</a>
+            <a [href]="guideHref('how-filtering-works-with-nature-pools')"
+              >{{ evidence.technologyLink }} →</a
+            >
           </p>
         }
       </div>
@@ -29,10 +31,9 @@
             borderRadius: 'large',
           }"
         />
-        <p class="cx-text-body-lg cx-text-muted">
+        <p class="cx-editorial cx-text-muted">
           {{ evidence.videoCaption }}
         </p>
-        <cx-button [text]="editorial.videoLink" [href]="aquascape.video" icon="play" size="large" />
       </cx-stack>
     </cx-grid>
   </cx-card>

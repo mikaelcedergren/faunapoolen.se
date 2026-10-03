@@ -1,12 +1,60 @@
-<fp-site-shell>
+<fp-site-shell [showInvitation]="false">
   <cx-hero
-    [underMasthead]="false"
+    [underMasthead]="true"
+    align="center"
+    [parallax]="true"
+    [overlayOpacity]="45"
     headingClass="cx-font-regular"
     [heading]="copy.about.title"
-    variant="stacked"
+    variant="cover"
   >
     <p body>{{ copy.about.ingress }}</p>
+    <img
+      media
+      [src]="aboutHero.src"
+      [alt]="aboutHero.alt"
+      width="1920"
+      height="1440"
+      fetchpriority="high"
+    />
   </cx-hero>
+  <fp-certification-strip afterHero />
+  <section class="cx-container fp-section" aria-labelledby="about-company-title">
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+      <h2 id="about-company-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ copy.about.companyTitle }}
+      </h2>
+      <p class="cx-editorial">{{ copy.about.companyBody }}</p>
+    </cx-grid>
+  </section>
+  <div class="cx-container"><cx-divider /></div>
+  <section class="cx-container fp-section" aria-labelledby="about-team-title">
+    <cx-stack gap="xl">
+      <h2 id="about-team-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ copy.about.teamTitle }}
+      </h2>
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+        @for (member of team; track member.name) {
+          <cx-stack gap="lg">
+            <img
+              class="fp-photo fp-photo--square"
+              [src]="member.image"
+              [alt]="member.name"
+              width="800"
+              height="800"
+              loading="lazy"
+            />
+            <cx-stack gap="sm">
+              <h3 class="cx-text-title-2">{{ member.name }}</h3>
+              <p class="cx-text-body cx-font-semibold">{{ member.role }}</p>
+              <p class="cx-editorial">{{ member.body }}</p>
+            </cx-stack>
+          </cx-stack>
+        }
+      </cx-grid>
+    </cx-stack>
+  </section>
+  <div class="cx-container"><cx-divider /></div>
   <div class="cx-container fp-section">
     <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
       <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
@@ -19,64 +67,12 @@
         <div>
           <cx-stack gap="md">
             <fp-certification />
-            <p class="cx-text-body-lg cx-text-muted">
+            <p class="cx-editorial cx-text-muted">
               {{ evidence.certificationDetail }}
             </p>
-            <cx-button
-              [text]="evidence.certificationLink"
-              [href]="aquascape.certification"
-              appendIcon="open-new"
-            />
           </cx-stack>
         </div>
       </cx-grid>
     </section>
-  </div>
-  <div class="cx-container fp-section">
-    <section aria-labelledby="about-proof-title">
-      <div>
-        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
-          <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
-            <cx-image
-              class="cx-w-full"
-              [image]="{
-                src: projectPhoto.src,
-                alt: projectPhoto.alt,
-                loading: 'lazy',
-                intrinsicWidth: 1920,
-                intrinsicHeight: 1440,
-                borderRadius: 'large',
-              }"
-            />
-          </a>
-          <cx-stack gap="xl" align="start">
-            <div class="cx-editorial">
-              <h2 id="about-proof-title" class="fp-heading cx-font-regular">
-                {{ evidence.caseTitle }}
-              </h2>
-            </div>
-            <fp-customer-quote [review]="testimonials[0]" />
-            <cx-button
-              [text]="evidence.caseLink"
-              [href]="routeFor('gotland')"
-              appendIcon="arrow-right"
-            />
-          </cx-stack>
-        </cx-grid>
-      </div>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <section class="cx-editorial">
-      <p>
-        <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
-      </p>
-      <p>
-        <a [href]="routeFor('pricing')">{{ commercial.packageLink }} →</a>
-      </p>
-    </section>
-  </div>
-  <div class="cx-container fp-section">
-    <fp-service-area />
   </div>
 </fp-site-shell>

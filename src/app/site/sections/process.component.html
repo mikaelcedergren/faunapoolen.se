@@ -12,11 +12,9 @@
   <div class="cx-container fp-section">
     <section aria-labelledby="process-title">
       <cx-stack gap="xl">
-        <div class="cx-editorial">
-          <h2 id="process-title" class="fp-heading cx-font-regular">
-            {{ copy.home.processTitle }}
-          </h2>
-        </div>
+        <h2 id="process-title" class="fp-heading cx-font-serif cx-font-regular">
+          {{ copy.home.processTitle }}
+        </h2>
         <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
           @for (item of steps; track item.number) {
             <cx-card variant="frosted">
@@ -26,7 +24,7 @@
                   <h3 class="fp-subheading cx-font-serif cx-font-regular">
                     {{ item.title }}
                   </h3>
-                  <p class="cx-text-body-lg">{{ item.body }}</p>
+                  <p class="cx-editorial">{{ item.body }}</p>
                 </cx-stack>
               </div>
             </cx-card>

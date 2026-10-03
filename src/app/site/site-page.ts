@@ -1,6 +1,7 @@
+import { FAUNAPOOLEN_CONTACT } from './content/faunapoolen-contact';
+import { DOCUMENT } from '@angular/common';
 import { PublicPackageCatalogue } from './package-catalogue';
 import { PACKAGE_IDS } from '../../../server/src/package-contracts';
-import { DOCUMENT } from '@angular/common';
 import { Directive, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { CxMastheadItem } from '@mikaelcedergren/cx-framework';
@@ -20,7 +21,6 @@ import {
 } from './content/faunapoolen-content';
 import {
   AQUASCAPE_PROJECTS,
-  AQUASCAPE_REFERENCES,
   FAUNAPOOLEN_EVIDENCE_COPY,
   FAUNAPOOLEN_TESTIMONIALS,
 } from './content/faunapoolen-evidence';
@@ -45,6 +45,7 @@ export abstract class SitePage {
   private readonly routeData = this.routeSnapshot.data;
   protected readonly locale = activeLanguage();
   protected readonly ui = SITE_UI;
+  protected readonly contactDetails = FAUNAPOOLEN_CONTACT;
   protected readonly page = (this.routeData['page'] as FaunapoolenPage | undefined) ?? 'home';
   protected readonly guideId = this.routeData['guide'] as FaunapoolenGuideId | undefined;
   protected readonly copy = FAUNAPOOLEN_COPY;
@@ -52,7 +53,6 @@ export abstract class SitePage {
   protected readonly services = FAUNAPOOLEN_SERVICES;
   protected readonly evidence = FAUNAPOOLEN_EVIDENCE_COPY;
   protected readonly testimonials = FAUNAPOOLEN_TESTIMONIALS;
-  protected readonly aquascape = AQUASCAPE_REFERENCES;
   protected readonly networkProjects = AQUASCAPE_PROJECTS;
   protected readonly logo = FAUNAPOOLEN_LOGO;
   protected readonly images = FAUNAPOOLEN_IMAGES;

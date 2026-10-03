@@ -15,13 +15,6 @@ export const FAUNAPOOLEN_TESTIMONIALS = [
   },
 ] as const;
 
-export const AQUASCAPE_REFERENCES = {
-  certification:
-    'https://www.aquascapeinc.com/professionals/become_a_certified_aquascape_contractor',
-  technology: 'https://www.aquascapeinc.com/recreational-ponds',
-  video: 'https://www.youtube.com/watch?v=cSLnpbmvR3k',
-} as const;
-
 // These are Aquascape™ network examples, never Faunapoolen portfolio entries.
 export const AQUASCAPE_PROJECTS = [
   {
@@ -29,14 +22,12 @@ export const AQUASCAPE_PROJECTS = [
     location: $localize`:@@site.aquascape_projects.0.location:St. Charles, Illinois, USA`,
     builder: $localize`:@@site.aquascape_projects.0.builder:Aquascape™ and participating contractors, led by Ed Beaulieu`,
     body: $localize`:@@site.aquascape_projects.0.body:A pond at Aquascape™’s headquarters, built together with contractors from across North America.`,
-    source: 'https://www.aquascapeinc.com/signature-pond',
   },
   {
     name: 'Fontana Ponds & Water Features',
     location: $localize`:@@site.aquascape_projects.1.location:Canada`,
     builder: $localize`:@@site.aquascape_projects.1.builder:Diego Asturias and Dan Peterson, Fontana Ponds & Water Features`,
     body: $localize`:@@site.aquascape_projects.1.body:A recreational pond with a zipline across the water, featured in Aquascape™’s profile of its 2021 Artists of the Year.`,
-    source: 'https://www.aquascapeinc.com/artist-of-the-year',
   },
 ] as const;
 
@@ -53,7 +44,7 @@ export const FAUNAPOOLEN_EVIDENCE_COPY = {
   technologyCare: $localize`:@@site.evidence_copy.technologyCare:Remove leaves and debris, and check the water level and circulation. You receive a plan showing what needs to be done throughout the year.`,
   video: $localize`:@@site.evidence_copy.video:Watch Aquascape™’s film on YouTube`,
   videoCaption: $localize`:@@site.evidence_copy.videoCaption:Aquascape™`,
-  technologyLink: $localize`:@@site.evidence_copy.technologyLink:Explore the system at Aquascape™`,
+  technologyLink: $localize`:@@site.evidence_copy.technologyLink:How biological filtration works`,
   networkTitle: $localize`:@@site.evidence_copy.networkTitle:Water features in the Aquascape™ network`,
   networkBody: $localize`:@@site.evidence_copy.networkBody:See how other builders use Aquascape™ technology in these two projects.`,
   builder: $localize`:@@site.evidence_copy.builder:Built by`,

@@ -1,3 +1,7 @@
+import { PoolCostComparisonComponent } from '../sections/pool-cost-comparison.component';
+import { DirectContactComponent } from '../sections/direct-contact.component';
+import { PoolOwnershipComponent } from '../sections/pool-ownership.component';
+import { PoolAftercareComponent } from '../sections/pool-aftercare.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   CxHeroComponent,
@@ -7,8 +11,8 @@ import {
   CxListItemComponent,
   CxGridComponent,
   CxInlineComponent,
-  CxIconComponent,
 } from '@mikaelcedergren/cx-framework';
+import { CertificationStripComponent } from '../sections/certification-strip.component';
 import { GotlandPreviewComponent } from '../sections/gotland-preview.component';
 import { NATURE_POOL_DETAILS } from '../content/faunapoolen-pool-details';
 import { EnquiryFormComponent } from '../sections/enquiry-form.component';
@@ -22,10 +26,14 @@ import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landin
 @Component({
   selector: 'fp-nature-pools-page',
   imports: [
+    PoolCostComparisonComponent,
+    PoolOwnershipComponent,
+    PoolAftercareComponent,
+    DirectContactComponent,
     GotlandPreviewComponent,
+    CertificationStripComponent,
     CxGridComponent,
     CxInlineComponent,
-    CxIconComponent,
     EnquiryFormComponent,
     ProcessComponent,
     CxHeroComponent,
@@ -53,16 +61,16 @@ export class NaturePoolsPage extends SitePage {
     { title: this.detail.fitFilterTitle, body: this.detail.fitFilterBody },
     { title: this.detail.fitEdgeTitle, body: this.detail.fitEdgeBody },
   ];
-  protected readonly care = [
-    { title: this.detail.careRoutineTitle, body: this.detail.careRoutineBody },
-    { title: this.detail.careSeasonTitle, body: this.detail.careSeasonBody },
-    { title: this.detail.careSupportTitle, body: this.detail.careSupportBody },
+  protected readonly everyday = [
+    { title: this.detail.everydaySwimTitle, body: this.detail.everydaySwimBody },
+    { title: this.detail.everydayTogetherTitle, body: this.detail.everydayTogetherBody },
+    { title: this.detail.everydayGardenTitle, body: this.detail.everydayGardenBody },
   ];
   protected readonly poolEnquiry = POOL_ENQUIRY;
   protected readonly poolEnquiryHref = this.routeFor('nature-pools') + '#consultation';
   protected readonly questions = [
     ...['space', 'consultation'].map((id) => FAQ_ITEMS.find((item) => item.id === id)!),
-    ...NATURE_POOL_LANDING.questions,
+    ...NATURE_POOL_LANDING.questions.filter((item) => item.id !== 'timing'),
     FAQ_ITEMS.find((item) => item.id === 'location')!,
   ];
 }

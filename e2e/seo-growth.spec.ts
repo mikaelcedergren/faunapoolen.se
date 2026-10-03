@@ -92,7 +92,7 @@ test('legacy price URLs retain their redirect without promoting unrelated offers
     await expect(page.locator('section[aria-labelledby="water-feature-price-title"]')).toHaveCount(
       0,
     );
-    await expect(page.locator('main a[href*="/configure/"]').first()).toBeVisible();
+    await expect(page.locator('cx-hero a[href$="#consultation"]').first()).toBeVisible();
   }
 });
 
@@ -128,7 +128,9 @@ for (const pool of [
       .nth(pool.index)
       .getByRole('link', { name: 'Fråga om den här poolen', exact: true })
       .click();
-    await expect(page).toHaveURL(new RegExp(`/configure/\\?package=${pool.id}$`));
+    await expect(page).toHaveURL(
+      new RegExp(`/nature-pools/pricing/?\\?package=${pool.id}#consultation$`),
+    );
     await expect(page.locator('form cx-dropdown')).toHaveCount(1);
     await expect(page.locator('form cx-dropdown').first().getByRole('combobox')).toContainText(
       pool.name,
@@ -142,7 +144,7 @@ for (const pool of [
     await expect(page.locator('form textarea')).toBeEnabled();
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       'href',
-      'https://faunapoolen.se/configure/',
+      'https://faunapoolen.se/nature-pools/pricing/',
     );
   });
 }
@@ -194,17 +196,8 @@ for (const [slug, name] of [
     await expect(page.getByRole('heading', { level: 1 })).toContainText(name);
     const planning = page.locator('section[aria-labelledby="region-planning-title"]');
     await expect(planning.getByRole('heading', { level: 3 })).toHaveCount(2);
-    const sources = await planning
-      .locator('a[href^="https://"]')
-      .evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).hostname));
-    const approvedSources: Record<string, string[]> = {
-      skane: ['malmo.se'],
-      halland: ['www.halmstad.se', 'www.lbva.se'],
-      blekinge: ['www.karlskrona.se'],
-      smaland: ['www.vaxjo.se'],
-    };
-    expect(sources).toHaveLength(2);
-    for (const source of sources) expect(approvedSources[slug]).toContain(source);
+    // Public guidance keeps visitors on the site; research links live in editorial docs.
+    await expect(planning.locator('a[href^="https://"]')).toHaveCount(0);
     await expect(
       page.getByRole('link', { name: 'Se naturpoolen på Gotland', exact: true }),
     ).toHaveAttribute('href', '/projects/gotland/');
@@ -212,7 +205,7 @@ for (const [slug, name] of [
       .locator('cx-hero')
       .getByRole('link', { name: 'Jämför våra naturpoolspaket', exact: true })
       .click();
-    await expect(page).toHaveURL(/\/nature-pools\/pricing\/$/);
+    await expect(page).toHaveURL(/\/nature-pools\/pricing\/?$/);
     await expect(page.locator('#packages article')).toHaveCount(3);
   });
 }
@@ -400,11 +393,11 @@ test('a lead is measured once after the confirmed retry and never includes conta
       await route.continue();
     }
   });
-  await page.getByRole('button', { name: 'Request free pool advice', exact: true }).click();
+  await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
   await expect(page.getByText(/We couldn’t confirm receipt/)).toBeVisible();
   await expect.poll(() => events.filter((event) => event.name === 'enquiry_error').length).toBe(1);
   expect(events.filter((event) => event.name === 'generate_lead')).toEqual([]);
-  await page.getByRole('button', { name: 'Request free pool advice', exact: true }).click();
+  await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
   await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
   await expect.poll(() => events.filter((event) => event.name === 'generate_lead').length).toBe(1);
   expect(references).toHaveLength(2);

@@ -15,7 +15,7 @@ export const BODY_HTML = $localize`:@@blog.naturpool-fran-forsta-samtal-till-bad
 <li>How are protection, equipment access and later care addressed?</li>
 <li>Which assumptions still need confirmation before a construction date is agreed?</li>
 </ul>
-<p>The Swedish Consumer Agency recommends recording scope, price, payment and timing in writing, together with how changes and additional work will be handled. Its <a href="https://www.konsumentverket.se/varor-och-tjanster/anlita-hantverkare/">guidance on hiring a contractor</a> is useful when reviewing an agreement. Ask about anything that remains open before accepting the proposal.</p>
+<p>The Swedish Consumer Agency recommends recording scope, price, payment and timing in writing, together with how changes and additional work will be handled. Its guidance on hiring a contractor is useful when reviewing an agreement. Ask about anything that remains open before accepting the proposal.</p>
 <h2>Agree a schedule around the actual work</h2>
 <p>There is no reliable build-time promise for every natural pool. The size of the work is only one factor: site access, investigations, decisions, material availability and weather can affect the sequence. Separate the time needed for planning from the period when the garden is a construction site.</p>
 <p>Discuss a proposed start, key stages and what must be settled beforehand. Agree how you will be told about a delay or a newly discovered condition, and how its effect on the design, price and timing will be assessed. A shared decision at that point is more useful than an unexplained change later.</p>

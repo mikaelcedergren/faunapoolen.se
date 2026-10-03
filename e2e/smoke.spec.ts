@@ -124,15 +124,15 @@ test('English header and footer share navigation and the closing invitation lead
   expect(footerLinks).toEqual(expect.arrayContaining(headerLinks));
   expect(footerLinks).toHaveLength(headerLinks.length);
   const footer = page.locator('footer');
-  await expect(footer.getByRole('link', { name: 'Faunapoolen', exact: true })).toHaveText(
-    'Faunapoolen',
-  );
+  await expect(
+    footer.getByRole('link', { name: 'Faunapoolen Aquascape™ certified', exact: true }),
+  ).toHaveAttribute('href', '/en/');
   await expect(footer.locator('a[href="mailto:info@faunapoolen.se"]')).toBeVisible();
   await expect(footer.locator('.fp-footer-brand img')).toBeVisible();
   await expect(
     footer.getByRole('link', { name: 'Request a consultation', exact: true }),
   ).toHaveAttribute('href', '/en/configure/');
-  await expect(footer.locator('a[href^="tel:"]')).toHaveCount(0);
+  await expect(footer.locator('a[href^="tel:"]')).toHaveAttribute('href', 'tel:+46735406757');
   await expect(
     footer.getByRole('button', { name: 'Language: English', exact: true }),
   ).toBeVisible();

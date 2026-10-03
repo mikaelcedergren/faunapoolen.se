@@ -1,3 +1,4 @@
+import { DirectContactComponent } from '../sections/direct-contact.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
@@ -6,7 +7,7 @@ import { POOL_ENQUIRY } from '../content/faunapoolen-landing';
 
 @Component({
   selector: 'fp-configure-page',
-  imports: [SiteShellComponent, EnquiryFormComponent],
+  imports: [DirectContactComponent, SiteShellComponent, EnquiryFormComponent],
   templateUrl: './configure.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

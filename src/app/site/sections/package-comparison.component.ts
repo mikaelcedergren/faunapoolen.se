@@ -1,7 +1,6 @@
 import {
   afterNextRender,
   Input,
-  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -20,7 +19,6 @@ import {
 import { Router } from '@angular/router';
 import type { FaunapoolenPackage } from '../content/faunapoolen-content';
 import { NATURE_POOL_LANDING } from '../content/faunapoolen-landing';
-import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
 import { SitePage } from '../site-page';
 import { SiteMeasurement } from '../site-measurement';
 
@@ -42,13 +40,10 @@ export class PackageComparisonComponent extends SitePage {
   protected readonly pricesLoading = $localize`:@@packages.loading:Loading packages`;
   protected readonly pricesUnavailable = $localize`:@@packages.unavailable:Packages could not be loaded. Try again or contact us about your pool.`;
   protected readonly retryPrices = $localize`:@@packages.retry:Try again`;
-
-  @Input({ transform: booleanAttribute }) showPricingLink = true;
   @Input() enquiryAnchor?: string;
-  @Input({ transform: booleanAttribute }) showDetails = false;
   private readonly router = inject(Router);
+  protected readonly comparisonTitle = $localize`:@@site.packages.comparisonTitle:Find the right pool for your garden.`;
   protected readonly landing = NATURE_POOL_LANDING;
-  protected readonly commercial = FAUNAPOOLEN_COMMERCIAL;
   protected interestHref(id: FaunapoolenPackage['id']): string {
     return this.enquiryAnchor
       ? this.routeFor(this.page) + '?package=' + id + '#' + this.enquiryAnchor
@@ -81,7 +76,6 @@ export class PackageComparisonComponent extends SitePage {
   protected readonly measurement = inject(SiteMeasurement);
   private readonly element = inject(ElementRef<HTMLElement>);
   private readonly destroy = inject(DestroyRef);
-  protected readonly pricingLink = $localize`:@@site.packages.pricingLink:See prices and what is included`;
   constructor() {
     super();
     afterNextRender(() => {

@@ -1,5 +1,13 @@
 # Editorial image generation
 
+Current style authorities, each with approved visual references:
+
+- Photographs: [candid garden photography with natural depth](PHOTOGRAPHY-STYLE.md).
+- Architectural pool plans: [luminous landscape architecture blueprint](ARCHITECTURAL-ILLUSTRATION-STYLE.md).
+
+Earlier prompts below record provenance. Use the relevant current style guide for future edits;
+the blueprint guide owns the reusable prompt, scene briefs and transparent website export rules.
+
 The five main editorial images were regenerated on 17 September 2026 with the built-in image generation tool. They are AI concept imagery, not photographs documenting completed installations.
 
 The owner retained two motifs: a family gathering on the deck after a swim, and a hand touching water. The other three images use new scenes. The accepted direction is beautiful, natural photography with unposed moments, restrained colour, softer detail and imperfect available light. No HDR, tone mapping or enhanced local contrast. The real Gotland photographs supplied the reference for light, materials and garden character and were not modified.
@@ -181,3 +189,425 @@ photograph. The original hand-touching-water asset remains unchanged.
 Prompt:
 
 > Use case: photorealistic-natural. Create a single landscape 3:2 editorial photograph for a nature-pool website section about ordinary pool care. Close view of a simple dark fine-mesh pool skimming net on a slim pole being drawn across the surface near weathered pale limestone pool edging, collecting just four or five fallen birch leaves. The mesh and leaves are clearly readable, the net intersects the water plausibly and small irregular ripples radiate from it. Only the pole enters from the lower right edge, no hands, people or extra tools visible. Small Scandinavian garden natural swimming pond, muted green reeds near one edge, dark naturally clear water with real sky reflection, subtle underwater stones partly visible. Beautiful professional garden documentary photograph, quiet overcast daylight, natural restrained color, plausible single exposure with uneven shadows, optical softness toward background. Frame the net as the subject at mid-left with plenty of water around it; no wide landscape, house, seats or swimming figures. No HDR, no tone mapping, no lifted shadows, no crunchy detail, no cyan glowing water, no dramatic cinematic grade, no artificial grain, no text or logos, no perfectly staged landscaping. This is an illustrative care image, not evidence of a specific installation.
+
+## Everyday enjoyment on the nature-pools page, 3 October 2026
+
+- Created with the built-in image-generation tool, then edited with the same tool to bring the
+  couple closer together and make their shared smile the emotional centre.
+- Final asset: `public/assets/images/faunapoolen/editorial/pool-everyday-morning.webp`,
+  1122 × 1402, WebP quality 88. Format conversion only; no retouching or cropping after generation.
+- Used in the new everyday-enjoyment section immediately before the Gotland case study.
+  One generous photograph keeps the shared moment legible beside the three benefits.
+- Localized caption and alternative text identify this as AI concept imagery. Existing real
+  Gotland photographs remain unchanged.
+- Inspected the couple's anatomy, contact with the deck and water, reflections, garden scale,
+  colour and exposure. The final scene shows an affectionate shared smile at close range.
+- Original generation output: `/Users/wolfie/.codex/generated_images/01a10126-e36f-7413-914f-e393aea39f72/exec-e194f89c-1354-4210-bb83-947ac4cf141c.png`.
+- Final edited output: `/Users/wolfie/.codex/generated_images/01a10126-e36f-7413-914f-e393aea39f72/exec-ea75d336-966d-4990-9ced-8af6be3b6254.png`.
+
+### Initial generation prompt
+
+Use case: photorealistic-natural.
+Create one candid editorial photograph for a Swedish natural swimming pool website. Portrait 4:5 composition, ideally 1200x1500. The purpose is to let a visitor imagine an ordinary summer morning at home with a small natural swimming pool.
+Eye-level view from the near bank, as if the viewer has stepped outside barefoot. In the middle distance, an adult woman around forty is taking a relaxed breaststroke swim across clear, naturally dark water; only her head, shoulders and part of her arms break the surface, with believable small ripples and water refraction. At the far side, her adult partner sits sideways on a low weathered timber deck, wearing a loose ordinary linen shirt and shorts, one bare foot resting on a lower step; a simple coffee mug is beside them. They are casually looking toward each other, not at the camera. Real unposed bodies, ordinary faces, relaxed incidental moment, no exaggerated smiles.
+The pool is genuinely small Swedish garden scale with a clear open swimming area, pale irregular limestone edging and a few rounded boulders; restrained reeds and loose perennial planting along ONE bank, with mown lawn and part of an everyday timber house softly visible beyond. Not a wild lake, not a resort or a lavish estate. Composition gives the lower third to close water and softly reflected sky; people are recognizable human moments in the environment, not portrait subjects. Keep both people away from extreme frame edges. Inviting, naturally cared for, incidental imperfection.
+Available early summer morning light, soft oblique sunshine and some naturally deep shadows. Real single exposure, subdued natural greens, soft optical detail, plausible reflections, slight distance blur. Water reflects the sky and surroundings, never luminous turquoise. Photograph feels observed, not staged. No architectural drawing, diagrams, text, logos, borders or collage. No HDR, tone mapping, lifted shadows everywhere, enhanced local contrast, crunchy foliage, oversharpening, glowing water, cinematic grading, artificial grain, flawless landscaping or glossy luxury advertising. Coherent human anatomy and physical interaction with water and deck are essential. This is AI concept imagery, not a record of an actual installation.
+
+### Final edit prompt
+
+Edit this AI concept photograph. Keep the same believable Swedish garden, small natural swimming pool, weathered timber deck, pale stone and loosely planted borders, ordinary house, natural morning light and candid photographic treatment. Keep portrait 4:5 and the same two adult people.
+Make the emotional centre a shared, affectionate laugh at close range. Move the woman in the water right up to the deck beside her seated partner; she rests her forearms naturally on the low deck edge and looks up toward him. He leans slightly toward her, one relaxed hand gently on her upper arm. Their faces are close enough for an intimate conversation, both visibly smiling in a spontaneous genuine laugh, not posed for an advertisement, not looking at camera. Hands and arms must be anatomically correct, with no merged limbs or extra fingers. Her submerged body stays plausibly below the water and deck, with no transparency tricks. He is stably seated on the deck and his feet meet water naturally. Frame a little closer so their connection reads even in a website half-column, while retaining enough open water, stone and planting to imagine the garden and the swim. Keep the mug incidentally on the deck. Avoid staged glamour, kissing pose, overt sexuality, exaggerated laughter, stock-photo teeth or theatrical gestures. Realistic skin and body proportions.
+Candid professional documentary photo, restrained natural colour, soft optical detail, true single exposure, irregular reflections and small ripples physically tied to the people and surroundings. No HDR, no tone mapping, no boosted clarity, no crunchy foliage, no lifted shadows everywhere, no oversharpening, no glowing cyan water, no cinematic colour grading, no artificial grain, no text or watermark.
+
+## Public-photo treatment, 3 October 2026
+
+The owner approved **candid garden photography with natural depth** after comparing contrast and
+blur revisions. The [style guide](PHOTOGRAPHY-STYLE.md) and its committed
+[approved reference](reference-images/candid-garden-approved.png) are the repeatable authority.
+The approved PNG is also the source of `pool-everyday-morning.webp`; the stronger blur trial was rejected.
+
+Applied the treatment to 27 existing visible photographs, alongside the approved couple image,
+across the main public pages and guide articles. Reused assets serve all three locales.
+All edits used the built-in Imagegen tool with the existing asset first and the approved reference
+second. The reference supplies photographic treatment only, never its people or garden.
+Original subjects, scene purpose and source attribution were retained. Supplier illustrations
+remain credited as inspiration; edited imagery must not be presented as project evidence.
+
+Exclusions: all Gotland case-study files wherever reused; the three architectural concept drawings;
+and the architectural house/pool rendering `public/assets/images/blog/blog-post-mood-image-1.jpg`.
+Logos, emblems, non-photographic assets, unused legacy assets and metadata-only social crops were
+outside the visible-photography pass. Public image paths and pixel dimensions stay unchanged.
+
+Generated PNGs were inspected before conversion to the existing dimensions and formats: WebP
+quality 88 or JPEG quality 90. Conversion/resizing only; no additional creative retouching.
+Original generated outputs remain in `/Users/wolfie/.codex/generated_images/01a10126-e36f-7413-914f-e393aea39f72/`.
+The approved reference output is `exec-26a09f19-621d-4b8e-b438-ebc7c5d08a76.png`.
+
+### Shared edit prompt
+
+Use case: photorealistic-natural. IMAGE 1 is the EDIT TARGET. IMAGE 2 is the owner-approved PHOTOGRAPHIC STYLE REFERENCE ONLY. Edit image 1, never reproduce the couple or garden from image 2. Preserve image 1's subject, people and identities if any, composition, viewpoint, setting, actual objects, image aspect ratio and time of day. Do not add people, invented features or decorative props.
+Apply candid garden photography with natural depth: the eye of an experienced photographer with the spontaneity of a casual family photograph. Meaningful subject in focus, surroundings gently softer yet clearly recognizable. Match the RESTRAINED amount of blur in image 2, not a dreamy portrait: no big bokeh discs, no featureless smeared background. Water ripple texture remains readable; depth falls off progressively, only the very nearest foreground noticeably softer. No portrait-mask outlines.
+Strengthen believable separation of actual light and shadow. Deeper natural shaded areas can lose detail; some small highlights may approach clipping. Retain readable subjects. Avoid artificially even lighting and recovered shadows. Match reference's natural tonal depth and softness, adapting to the target's own daylight or evening setting rather than imposing sunlight at night. Keep restrained natural colour, neutral skin and realistic water reflections. Where people exist retain casual warmth and unposed interaction, not model poses.
+No HDR, tone mapping, global shadow lifting, enhanced microcontrast, clarity slider, crunchy foliage or fabric, oversharpening, artificial grain, glowing water, teal-orange/cinematic grading, glamour retouching or glossy advertising polish. No text, border or watermark. This is a faithful photographic treatment, not a redesign of the scene.
+
+For guide/supplier assets, replace “No text, border or watermark.” with “Do not add new text,
+borders or watermarks. Preserve all existing attribution and markings exactly.” Append the
+asset-specific direction below as `TARGET-SPECIFIC:`. Use the target image and saved approved
+reference in that order.
+
+### Asset-specific direction and output
+
+#### faunapoolen/hero-family.webp
+
+Keep the couple in the lower right enjoying the evening pool, open water on the left for homepage text, existing practical garden lights and blue-hour setting. Focus gently on the couple and water at their distance, soften distant house and foliage moderately. Do not turn the image into daylight or over-darken the visible couple.
+
+Output: `exec-fbb30560-4ed4-4ab9-959f-1828f419e6a9.png`.
+
+#### faunapoolen/water-touch.webp
+
+Preserve exactly one natural hand trailing fingertips in the water, existing fingers and striped sleeve, granite and reeds. Give the skin and water beautiful directional available daylight with deeper reflected shadows. Fingertips and immediate small ripples are the focus; stones and distant reflected water gently soften. No anatomy changes.
+
+Output: `exec-1e127871-9689-479f-9dd9-5f9d381a1435.png`.
+
+#### faunapoolen/evening-deck.webp
+
+Keep exactly the same three family members on the deck after swimming, towels, mugs and dusk. Preserve every limb: father exactly two arms and two hands, one hand with mug and other supporting him. Gentle separation of family from the garden; modest available sky light on faces, deeper woodland shadows, same unposed family moment.
+
+Output: `exec-910eb75e-c733-4cc0-818a-2fe281ad66de.png`.
+
+#### faunapoolen/waterscape-koi.webp
+
+No people added. Keep the pond, partly visible koi, lily pads, low stream, bench and modest garden scale. Direct attention to middle pond and stream with gentle softness at far shrubs and nearest edge. More natural depth between sunlit vegetation and shady water, no fluorescent fish or water. Preserve geometry and believable fish underwater.
+
+Output: `exec-abf3ebfa-b478-485f-902b-015baf855fc1.png`.
+
+#### faunapoolen/editorial/waterscape-pause.webp
+
+Keep the seated woman viewed from behind, small koi pond and stream at blue hour. Preserve her relaxed posture and low practical lights. She and near water are focus; garden and house gently softer but recognizable. Preserve remaining sky light so the woman is readable, deepen distant shade without losing the entire scene. No daylight.
+
+Output: `exec-63f089d6-d943-492d-8652-6565865ec485.png`.
+
+#### faunapoolen/editorial/nature-pool-evening.webp
+
+Keep exactly the illuminated stone steps into the evening pool and their placement. Reduce the current overly glossy luminous cyan water and heavy decorative background bokeh into believable dusk reflections, small practical light highlights and restrained gentle optical depth. Steps are the focus, garden still recognizable. No people. Keep wide landscape.
+
+Output: `exec-d3a20b97-f5f8-415f-976b-bf65dba30558.png`.
+
+#### faunapoolen/editorial/process-evening.webp
+
+Keep the lantern, casually draped towel and steps beside the pool at dusk. Lantern and towel are the focus, water reflections and garden readable, mild depth only. Reduce the overly theatrical saturation of warm lights, retain realistic deep shade and soft cool sky light. Preserve wide composition for text overlay.
+
+Output: `exec-49a7c8fc-2386-462e-9f21-f178cf5d97da.png`.
+
+#### faunapoolen/editorial/pool-care-leaves.webp
+
+Keep the exact black skimming net collecting five fallen leaves, its pole entering from the lower right, water and stone edging. The net/leaf/water intersection is the focus with gentle depth into distant reflected water and nearest pole. More directional available daylight with bright small water highlights and naturally deeper shaded water; no new objects or people.
+
+Output: `exec-1cbe39bd-0ccc-49c8-b0c9-7d5119c0e5bd.png`.
+
+#### blog/blog-post-the-difference-between-natural-pool-and-traditional-pool.webp
+
+Keep this exact real natural pool, stone formations, waterfall and tropical planting. Only a restrained photographic colour/contrast/focus edit, preserving all physical details. Remove harsh yellow-green oversaturation and crunchy texture; natural neutral stones and water, soft distant vegetation. No people or scene redesign.
+
+Output: `exec-67c8fdc8-f90e-4d0e-9e3f-9bd9ccddbd49.png`.
+
+#### blog/blog-post-5-problems-with-a-natural-pool.webp
+
+Keep the exact downward viewpoint, two shoes, jeans, hose, pump, cables, stone edge and fish pond. Equipment is useful subject matter: keep its configuration readable and unchanged. Restrain the orange/green cast, create natural tonal depth without losing the pump or fish. Subtle distance-based softness only.
+
+Output: `exec-598eb2d8-ebce-4b2a-8454-e19a915eecb8.png`.
+
+#### blog/Blog-Golf-Header-Image.webp
+
+Keep this exact golf-course landscape, green, flag, stream and house. Remove the overly golden commercial colour cast; a casually observed natural daytime photograph, with varied sun and shade and restrained greens. Landscape depth is broad: only mild foreground flower softness and distant optical falloff, no toy miniature effect.
+
+Output: `exec-63f0e36a-05c4-48d9-9ab0-f6f602e03608.png`.
+
+#### koi-ponds/pool-pond-hero.webp
+
+Preserve this EXACT construction-state photograph: excavator with CASE lettering, unfinished pool basin, gravel, boulders and surrounding paving. Do not complete the pool or move equipment. Remove the existing artificial dark blue gradient across the lower half and restore plausible naturally lit construction detail there. Natural documentary daylight, modest contrast, deep shade where physically present. Minimal depth softening in far background only, maintain legibility of the construction. Preserve any existing markings exactly.
+
+Output: `exec-ad704be1-60e1-47c5-8e89-efaf532860ec.png`.
+
+#### blog/sports-stars-natural-ponds.webp
+
+Preserve the exact existing cascade, rocks, garden paths, bridge and brick house. No people. Focus on the middle cascades, keep the house and planting recognizable with gentle falloff only. Restrain saturation and harsh texture, use true natural light and shade. No scene redesign; this is an existing example, not a new installation.
+
+Output: `exec-8068cd18-72e4-40b0-941c-529d472c0af8.png`.
+
+#### blog/blog-post-water-storage-solutions.webp
+
+Keep the same woman, identity, outfit, apron, hose, hands, water spray and vegetable garden. This is a candid gardening task, not a posed portrait. Preserve her exact gesture and mood. Subtler yellow-green tones, more believable shadow separation, focus on woman and nozzle with background plants gently softened. Preserve realistic spray and hose continuity.
+
+Output: `exec-f9269617-d5ee-4876-8012-6dd214ae40b9.png`.
+
+#### blog/blog-post-creating-harmony.webp
+
+Preserve this exact family scene: little girl touching the pond, two adults on chairs, logs, plants and lily pads, and their positions and identities. Keep every face and hand anatomically unchanged. IMPORTANT: retain the existing Aquascape logo and copyright mark in the bottom left exactly and legibly; do not remove or replace attribution. Apply only restrained natural colour/tonal/depth treatment. Family and pond are meaningful subject, far foliage gently softer; no strong blur, no new people or scene changes.
+
+Output: `exec-786b7a90-47bc-4b54-804a-3b875aedd485.png`.
+
+#### blog/small-features-for-small-spaces.webp
+
+Keep the exact fire-and-water bowl feature, its spout, flame, stone setting and surrounding plants. No people. Preserve the real product design and water flow. Soften the oversaturated green and yellow look into natural tones, warmer highlights from actual flame, deeper shade, focus on bowl and water with garden only gently softened. No redesign of product or garden.
+
+Output: `exec-f66ae770-b2e0-4e29-a14d-4312ce992935.png`.
+
+#### blog/blog-post-how-to-manage-algie.jpg
+
+Preserve this macro-like underwater view of algae-covered rocks and small aquatic growth. Algae is the article's subject: do not clean it away or change the ecosystem. Give natural subdued green, readable but softly resolved plant detail, meaningful focus on middle foreground algae and gentle distance falloff into darker water. No cyan neon tint, no glowing plants or sharpened texture.
+
+Output: `exec-4d6bbb0b-34e5-4733-a3d1-b3a37b3983b4.png`.
+
+#### blog/blog-post-how-water-is-filtered.webp
+
+Preserve the same little waterfall, rocks, reeds, surrounding planting and warm practical underwater light. Remove the source's excessive blue-purple cast and crunchy texture, yielding natural dusk colour with subtle warm localized illumination and deeper shadows. Main waterfall focus, mild softness behind it. Do not make water glow or alter feature geometry.
+
+Output: `exec-6c416025-c032-4fc9-aa6e-0d481c3b2fbd.png`.
+
+#### blog/blog-post-why-you-should-have-a-natural-pool.webp
+
+Keep this exact swimming pool with shallow gravel edge, natural boulders, open deeper water and small waterfall. Natural daylight, restrained colour and real reflections, more depth between sunlit stone and shaded water; retain plausible visible shallows. Mild far-background and near-edge softness only. No added people, features or architectural changes.
+
+Output: `exec-ec94978a-a275-4310-a827-570a19faac8b.png`.
+
+#### blog/18.webp
+
+Keep the same golfer, identity, full follow-through pose, two arms and hands, club, clothing, shoes, golf course and wooded hillside. Preserve the exact moment and equipment. Apply natural restrained light/colour, focus on golfer, gently soften distant hillside without losing its shape. No dramatic sports advertising treatment or invented motion blur.
+
+Output: `exec-149695a4-440c-4c98-8422-b1bcd543c40d.png`.
+
+#### blog/19.webp
+
+Wide golf-course landscape with pond and hills. Preserve terrain, pond shoreline, sky and course features. Broad landscape keeps substantial depth of field, only subtle distance softness; absolutely no miniature/tilt-shift band of blur. Natural muted greens and honest sun/shade.
+
+Output: `exec-af538395-56c8-4eee-8660-138888558e4a.png`.
+
+#### dirty-pool.webp
+
+This educational image shows a DIRTY green conventional pool with debris, ropes, hoses and basketball hoop/court. Preserve all these conditions exactly; do not clean the water or beautify the setting. Only make photographic light, colour and modest optical separation natural. Keep useful documentary detail.
+
+Output: `exec-279aa6c7-45d4-42b1-b2c6-a95cb3667e7a.png`.
+
+#### plunge/aquascape-plunge1.jpg
+
+Portrait photograph of a small rocky waterfall, plants and water lily. Preserve stones, cascade, planting, framing and all source attribution/copyright watermark exactly as is. Focus on waterfall and near pool; gently soften distant plants without erasing the setting.
+
+Output: `exec-134f1174-202a-4eae-bef1-483ffe6bb7e5.png`.
+
+#### swim/aquascape-swim3.jpg
+
+Small garden swimming pond surrounded by stone, fence, chairs and garden. Preserve precise pond outline, stone placement, fence, chairs and all existing features. Treat as honest garden photograph; natural shadows and gentle far-background softness only, maintain useful detail and water texture.
+
+Output: `exec-bd465851-6a08-4413-b14a-82d31891930b.png`.
+
+#### swim/aquascape-swim2.webp
+
+Exactly preserve the original family of five by their pond: two seated adults, toddler and two girls at water edge. Preserve faces, clothes, pose and relative positions, incidental unposed gestures. Preserve Aquascape attribution watermark exactly. Natural warm family moment, relaxed light/shadow; gentle optical depth with all family figures readable, no extra people or limbs.
+
+Output: `exec-871fccfa-a284-4a2c-b809-a1d5b8d98105.png`.
+
+#### waterfront/aquascape-waterfront4.jpg
+
+Wide natural swimming pond with large stone/beach edge, palms, bench and garden. Preserve all geometry, materials, plants and objects; don't invent swimmers. Moderate daylight contrast and softened distant garden, keep landscape's naturally broad depth of field and readable ripples.
+
+Output: `exec-9a72e8b2-fd38-49fe-a1fa-ce10edc4b0fd.png`.
+
+#### blog/aquabasin-pump-fountain.webp
+
+Dusk photograph of two bowl fountains with warm spill lighting among stone and plants. Preserve both bowls' shapes, heights, placements, flowing water and actual installed lights. Reduce exaggerated purple-blue saturation to plausible dusk colour, deeper shade, believable warm light. Gentle background optical softness. Do not add sun, flames, people or equipment.
+
+Output: `exec-df8c8ab0-ae73-4081-8019-38a3f68274d5.png`.
+
+## Public page refinement — 3 October 2026
+
+Created with the built-in Imagegen tool. Images were inspected for plausible water, reflections, garden scale and fish anatomy. The faceless team bust is a temporary placeholder, not a likeness. WebP encoding uses quality 85. Original generated PNGs remain in the Codex generated-images folder. The pool-conversion replacement retains its public URL; other assets are new.
+
+### pricing
+
+Workspace asset: `public/assets/images/faunapoolen/editorial/pricing-garden.webp`.
+
+On 3 October 2026, replaced with the owner-supplied `ChatGPT Image Sep 30, 2026, 09_26_46 PM-3.png`: water droplets, a natural stone edge and warm evening reflections. Converted at its original 1672 × 941 resolution to WebP (quality 90), without cropping or visual edits. The pricing hero has no bottom fade and uses the shared Aquascape certification strip below it. This is concept imagery, not a completed-project photograph.
+
+Original generation prompt (superseded image):
+
+> Use case: photorealistic-natural. Create a wide landscape 1536x1024 editorial photograph for a Swedish nature-pool pricing page. A believable medium-sized natural swimming pool in an ordinary well-kept Scandinavian garden, irregular local stone coping, shallow stone steps at the left, clear naturally dark green water with realistic ripples, timber terrace and soft planting beyond. An inviting attainable garden, not luxury architecture. No people. Composition: pool and materials across the lower two thirds, garden beyond, room for centred headline overlay. Photograph fills the entire image with consistent natural exposure to every edge: NO baked-in fade, gradient, vignette, text, labels, logos, borders or watermark. Directional available afternoon light, restrained colour, deeper natural shadow with some detail lost, occasional bright highlights, gentle optical depth of field but all garden structure recognisable. Candid believable photography, not a 3D rendering. No HDR, lifted shadows, crunchy textures, oversharpening, glowing water, artificial grain or cinematic grading.
+
+### conversion
+
+Workspace asset: `public/assets/images/koi-ponds/pool-pond-hero.webp`.
+
+Prompt:
+
+> Use case: photorealistic-natural. Create a wide landscape 1536x1024 editorial photograph for an article 'Can your existing pool become a nature pool?'. A real-feeling older rectangular swimming pool set into a modest Scandinavian garden: straight existing concrete coping, gently weathered pale paving, clear subdued blue-green water, simple ladder at the far end, established shrubs and a small timber house in the background. Shows a plausible existing pool to assess, not a completed conversion, not a before-after montage. No people. Perspective from a corner at standing eye level, water occupying most of the foreground and centre, garden recognisable beyond. Natural directional daylight, deeper shade, restrained colours, slight optical softness with clear water texture. Absolutely NO gradient or fade anywhere in the pixels, NO vignette, no text, watermark, logos or borders. Full photographic detail extends to all four edges. No HDR, tone mapping, oversharpening, artificial grain, cinematic colour grade or glossy luxury staging.
+
+### koi
+
+Workspace asset: `public/assets/images/faunapoolen/editorial/waterscape-koi-detail.webp`.
+
+Prompt:
+
+> Use case: photorealistic-natural. Landscape 1536x1024 candid editorial garden photograph for a Swedish water-garden website. No people. Available directional daylight, restrained natural colour, deeper natural shade, plausible reflections and water texture, gentle optical depth but recognisable planting, ordinary cared-for garden with incidental weathering. No HDR, tone mapping, lifted shadows everywhere, glossy luxury styling, oversharpening, grain, cinematic grade. No words, logo, watermark, borders, vignette or baked-in fade. Subject: three believable koi fish just below the clear green surface of a modest garden pond, seen obliquely from its stone edge, with irregular stonework and a few marginal plants. Each fish has plausible anatomy with head and paired fins and a single tail. Reflections partially obscure the fish naturally. Pond dominates composition; lush but ordinary garden beyond. Inviting, intimate and calm.
+
+### stream
+
+Workspace asset: `public/assets/images/faunapoolen/editorial/waterscape-stream.webp`.
+
+Prompt:
+
+> Use case: photorealistic-natural. Landscape 1536x1024 candid editorial garden photograph for a Swedish water-garden website. No people. Available directional daylight, restrained natural colour, deeper natural shade, plausible reflections and water texture, gentle optical depth but recognisable planting, ordinary cared-for garden with incidental weathering. No HDR, tone mapping, lifted shadows everywhere, glossy luxury styling, oversharpening, grain, cinematic grade. No words, logo, watermark, borders, vignette or baked-in fade. Subject: a small recirculating stream winding through a leafy Scandinavian garden, clear water spilling over two low natural rock steps into a shallow pool. Small-scale believable flow, pebbles, ferns and irregular perennials. Eye level slightly above water from one side. Emphasise moving water without exaggerated foam or silky long exposure. No swimming pool.
+
+### reflecting
+
+Workspace asset: `public/assets/images/faunapoolen/editorial/waterscape-reflecting.webp`.
+
+Prompt:
+
+> Use case: photorealistic-natural. Landscape 1536x1024 candid editorial garden photograph for a Swedish water-garden website. No people. Available directional daylight, restrained natural colour, deeper natural shade, plausible reflections and water texture, gentle optical depth but recognisable planting, ordinary cared-for garden with incidental weathering. No HDR, tone mapping, lifted shadows everywhere, glossy luxury styling, oversharpening, grain, cinematic grade. No words, logo, watermark, borders, vignette or baked-in fade. Subject: a shallow still rectangular reflecting pond edged with naturally weathered stone beside a modest Scandinavian terrace. Still water reflecting a small birch and sky, a timber chair off to one side and relaxed grasses. A restrained architectural pond you look at rather than swim in. Clean geometry softened by irregular planting, no luxury mansion.
+
+### portrait-placeholder
+
+Workspace asset: `public/assets/images/faunapoolen/editorial/team-placeholder.webp`.
+
+Prompt:
+
+> Create a square 1024x1024 raster image to serve as a temporary team portrait placeholder on a refined Scandinavian garden website. One simple generic anonymous head-and-shoulders silhouette sculpted in matte pale warm-grey clay, with absolutely no facial features, no hair detail and no resemblance to a real person. Soft muted grey-green plain backdrop and gentle available side light. Centred balanced head and shoulders crop with generous room, understated and unmistakably a placeholder. No text, letters, initials, symbols, logos, border or watermark.
+
+## 3 October 2026: architectural package illustrations
+
+Owner requested the homepage's architectural look for the approved buying-experience design.
+Reference: `public/assets/images/faunapoolen/editorial/pool-design-concept.webp`.
+Three independent 1536×1024 generations, inspected for complete pool edges, coherent overhead
+geometry and separation between water, planting and decks. They are conceptual compositions,
+not scaled plans or evidence of installed projects. The comparison includes a shared caption.
+Originals remain in the Codex generated-image directory; workspace copies use WebP quality 88.
+
+Shared prompt (each subject below substituted independently):
+
+> Use case: stylized-concept. Create ONE new landscape 1536x1024 architectural concept illustration for a Faunapoolen pool-package comparison. Input image is a STYLE REFERENCE only. Match its overhead orthographic architectural drawing fading naturally from precise fine white blueprint lines on the left into rendered water, timber, natural stone and planting on the right. Deep dark blue-green background, restrained green plants and natural turquoise water, precise delicate drafting linework. Subject: [subject]. Frame the entire separate installation from directly overhead, generous dark margin on all four sides. Uniform visual style and camera across the set, no perspective or horizon. This is a conceptual garden composition, not an exact construction plan. No people, text, numbers, labels, dimensions, logos, decorative captions or watermark. Do not reproduce the reference pool's exact geometry; draw the described package. No photoreal landscape photograph. Water and garden become realistic only on the right half, maintaining the architectural study character.
+
+- `public/assets/images/faunapoolen/editorial/package-glade.webp`: compact nature plunge pool for short daily dips, about 17.5 m² swimming area, small ordinary garden, compact stone steps, modest timber sitting edge, aquatic plants and a small BioFalls return, no big waterfall.
+- `public/assets/images/faunapoolen/editorial/package-summer.webp`: medium family swimming pool about 24 m² and 1.5 m deep, stone edges, underwater light positions, distinct planted wetland filtration zone, separate intake and simple timber deck, no large waterfall.
+- `public/assets/images/faunapoolen/editorial/package-horizon.webp`: generous 100 m² natural pool, boulders, low waterfall, abundant planting, underwater lighting, open swimming area and restrained timber seating edge.
+
+## 3 October 2026: distinct transparent package compositions
+
+This revision replaces the earlier blue-background package artwork. The owner requested three visibly different sizes and designs, crisp photographic cutouts overlaid with architectural drawing, real transparency and no fades. The owner also removed visible explanatory illustration captions.
+
+Generated with the built-in Imagegen tool, transparent_background enabled. Saved as RGBA WebP at quality 90, preserving generated alpha. Final assets:
+
+- `public/assets/images/faunapoolen/editorial/package-glade.webp`
+- `public/assets/images/faunapoolen/editorial/package-summer.webp`
+- `public/assets/images/faunapoolen/editorial/package-horizon.webp`
+
+Shared exact prompt:
+
+> Use case: stylized-concept. One landscape 1536x1024 transparent-background architectural collage for a nature-pool package comparison on a very dark navy website. Not a photograph of a whole garden: an isolated architect's drawing combining sharply cut-out photographic material details and precise warm-white drafting lines. Oblique overhead architectural view, approximately 65 degrees looking down, consistent technical perspective. Photographic water, stone, timber and selected plants have crisp real cutout contours; fine architectural pencil/drafting strokes continue ON TOP OF the photographic portions and extend OUT beyond their edges into the transparent negative space. Include construction outlines, contour lines, step outlines, and lightly sketched planting around and over the real surfaces. The photographic and sketched parts interlock with HARD EDGES, not a left-to-right transition. No fades, no gradients, no feathering, no vignette, no dark rectangle, no background fill, no ground slab, no cast shadow on a backdrop, no paper, no frame. Actual alpha transparency around the entire irregular silhouette and between independent linework. Fine white lines must be legible when placed on dark blue-green. Natural restrained water and material colours, clear readable architecture. No text, numbers, letters, measurements, logos or people. No lounge chairs. Keep all drafting lines and plants within the image with clean margins. This is a conceptual garden design, not an exact engineering plan.
+
+### glade
+
+> SMALLEST OPTION: a genuinely tiny compact round plunge pool, roughly 4.7 metres across, about 17.5 square metres of water. One simple circular stone rim, three compact entry steps cut into one side, ONE small timber standing platform attached tangentially, a modest cluster of reeds behind one edge, discreet BioFalls return with no visible waterfall. Minimal garden perimeter, a few natural rocks. No extensive landscaping, no furniture, no big deck. Show the compact installation at only 55% of the canvas width and 60% height, centred in generous TRANSPARENT empty space, conveying the small footprint. Distinct unmistakable circular geometry.
+
+### summer
+
+> MEDIUM OPTION: an elongated straight-sided swimming pool with rounded ends, about 24 square metres of swimming water and 1.5m deep. Shape is long and narrow, diagonally oriented from lower left to upper right. Natural stone coping with broad entry steps at the near short end, 3 subtle underwater lights and visible small water-jet outlets. A clearly separate narrow rectangular planted wetland filter runs alongside the long right edge, with a narrow stone bridge between zones. One short timber landing on the opposite side with a simple built-in timber bench, no chairs. Moderate planting with reeds, grasses and small shrubs. No waterfall. Occupy about 76% of canvas width and 75% height, including drafting details, showing visibly more construction and garden detail than a simple round plunge pool.
+
+### horizon
+
+> LARGEST OPTION: a sprawling asymmetrical natural swimming lagoon, about 100 square metres of swimming water, a long open swimming bay and a second broad curved cove. A substantial natural boulder WATERFALL at the rear-right spills visibly down TWO low rock ledges into the pool, with convincing falling white water. Extensive layered planted margins, several large boulders, a separate broad planted filtration zone, a stone terrace following the near-left bank, wide stone entry steps, stepping-stones crossing a shallow margin, integrated underwater light positions. An irregular timber walkway curves around one cove, NO lounge chairs. Varied rich garden detail but preserve a large uncluttered open water area. Occupy 91% of canvas width and 85% of height, leaving transparent margin around all architectural lines. A very different sprawling irregular silhouette from a circular plunge or narrow lap pool.
+
+## 3 October 2026: organic architectural package drawings
+
+Replaced all three package assets with organic stone-edged designs, stronger architectural
+linework and reduced photographic detail. Built-in Imagegen edits with transparent_background
+true, converted to WebP quality 90 while preserving alpha. No visible illustration captions.
+
+Final workspace assets:
+
+- `public/assets/images/faunapoolen/editorial/package-glade.webp`
+- `public/assets/images/faunapoolen/editorial/package-summer.webp`
+- `public/assets/images/faunapoolen/editorial/package-horizon.webp`
+
+First edit prompt:
+
+> Use case: style-transfer. Edit the supplied pool illustration into a predominantly ARCHITECTURAL LANDSCAPE DRAWING with actual alpha transparency. Landscape 1536x1024. Retain the oblique overhead viewpoint and package scale, but radically reduce photographic detail. Approximately 80% of the entire subject must be precise warm-white and pale grey architectural ink linework with open transparent spaces, 20% isolated crisp material fragments of muted turquoise water and natural stone. Draw clearly visible double contour lines, closely spaced contour curves IN the water, crosshatched stones, sectional step outlines, loose hand-drawn reeds, diagrammatic tree/plant symbols, light construction extensions around and ON TOP OF the coloured details. All parts of the design must visibly be DRAWN, not a detailed 3D miniature with faint outlines. Architectural marks should be strong enough to read when image is only 350px wide on a dark navy website. Natural ORGANIC irregular shorelines, scattered weathered boulders of varying sizes, loose wild planting. No perfect circle, capsule shape, rectangular basin, symmetric rim or clipped shrubs. No photoreal foliage, realistic rippling water, glowing lights or detailed surface rendering. Small hard-edged photographic stone/water fragments can interlock with drawings; NO fades or gradual transitions. No background of any colour, paper, ground slab, vignette, glow, cast shadow, text, labels, dimension numbers, people or furniture. Real transparency around the irregular silhouette and between linework. Keep all marks within frame and retain generous transparent margins.
+
+### glade
+
+> SMALLEST design: compact asymmetrical pebble-shaped woodland dipping pond. A few irregular boulders loosely mark its water edge, three rough stone entry slabs on one side, a small reed clump behind it. No circular masonry rim, no deck. Minimal but elegant: lots of bare architectural contour linework in the water, sketchy plant silhouettes and drawn rocks with only two small coloured water/stone patches. Occupy only 58% of canvas width and 60% height; clearly smallest and simplest.
+
+### summer
+
+> MEDIUM design: elongated gently meandering natural swimming pond, irregular curved banks tapering at one end, diagonal lower-left to upper-right. Loose stepping stones lead into water; a connected irregular shallow reed bed to the right separated by a few large rocks, small timber landing on the left. No straight retaining walls, geometric planter or uniform coping. Moderate varied planting, no waterfall. Draw water depth contours and wetland planting with strong white linework and hatching. Only a few crisp patches of pale water and stone material. Occupy 78% width, 78% height. More detail and larger than small dipping pond.
+
+### horizon
+
+> LARGEST design: sprawling asymmetrical swimming lagoon with a wide bay, a shallow organic planted cove, scattered boulders, large wild reed beds, irregular stone path and a substantial boulder waterfall in rear-right spilling over two rock shelves. Show falling water as precise white ink strokes. Many varied drawn details and landscape contour lines, larger rocks and richer planting symbols, extensive architectural linework visible OVER water and stones. Maintain open swimming water. Only sparse crisp turquoise and warm stone fragments. Occupy 90% width and 85% height. Clearly the biggest and most elaborate natural landscape, no manicured planted beds, no symmetrical masonry.
+
+Final clarity edit applied to each generated drawing:
+
+> Edit this architectural pond drawing. Keep the organic pool shape, natural stones, plants, scale, viewpoint and waterfall if present. Make the ARCHITECTURAL CONSTRUCTION LINES much clearer and bolder: primary drafting strokes approximately 5-6 pixels wide at 1536px canvas resolution, warm-white and fully opaque, secondary strokes 3px. Add unmistakable clean technical construction extensions outside the pool: long offset outline curves, straight projection lines with deliberate cross-tick endpoints, shore contour guides and projected step edges. Lines should visibly cross over the materials as well as extend beyond them into transparent space. Fewer, better spaced water contour lines, with clear white strokes. Must read unmistakably as an architect's drawing in a SMALL 350px-wide website card, not a miniature photographic scene. Reduce fine photorealistic texture and foliage detail further, use crosshatching and hand-drawn plant symbols. Very important: background must be ACTUAL ALPHA TRANSPARENCY with NO glow, NO haze, NO vignette, NO gradient, NO faded colour cloud outside object. Remove any existing halo entirely. Only opaque crisp drawing strokes and sharply edged sparse material patches, clear empty transparent spaces between them. Keep all outer construction lines fully inside frame with comfortable margin. No labels, letters, numbers, people, furniture or logos. Landscape 1536x1024.
+
+## 3 October 2026: pure architectural plans
+
+Owner replaced the photographic collage direction with fine monochrome architectural sketches,
+using the left third of `pool-design-concept.webp` as the reference. Generated using the built-in
+Imagegen tool with transparent_background true; alpha preserved in quality 93 WebP copies.
+Shared package presentation on home, Nature Pools and pricing uses the same three assets:
+
+- `public/assets/images/faunapoolen/editorial/package-glade.webp`
+- `public/assets/images/faunapoolen/editorial/package-summer.webp`
+- `public/assets/images/faunapoolen/editorial/package-horizon.webp`
+
+Exact shared prompt:
+
+> Create ONE landscape 1536x1024 PURE ARCHITECTURAL LANDSCAPE PLAN DRAWING on genuine alpha transparency. The supplied image is ONLY a style reference: copy the delicate technical drafting style of its LEFT THIRD, completely ignore its photographic right side. Directly overhead orthographic plan view, NOT isometric or perspective. Entire design consists solely of thin pale warm-grey and white pencil/technical pen strokes; NO photography, NO water colour, NO solid material fills, NO rendered textures, NO 3D shading, NO colour. Crisp restrained line weights: primary outlines about 1.5-2px at full1536 width, fine secondary lines ~1px. Readable but never thick/bold. Match a professional landscape architect's early planting and pond plan: loose natural irregular ROCK edges, independently drawn stones, rough stone entry slabs, delicate circular botanical plan symbols, fine hatching in select rocks, spare water contours, restrained construction guides extending slightly beyond objects. No giant bounding cage, no excessive sketching, no decorative curved bands, no sleek designed coping. Pool margin looks shaped by natural stones in an ordinary garden, not a perfectly manufactured curving swimming pool. Transparent empty space everywhere between drawing strokes, including entire water surface. No background fill or vignette or glow or halo or paper. No numbers, lettering, captions, labels, people, chairs or logos. Full drawing centred with generous transparent margin. Three sizes will share this same style but differ in layout and detail.
+
+### glade
+
+> Smallest compact irregular rock-edged dipping pond, approximately17.5m², with three entry slabs at one end, a few reeds and 5-8 scattered large stones. Asymmetrical polygonal natural shoreline, no perfect circle. Simple modest composition occupying65% width and65%height.
+
+### summer
+
+> Medium family swimming pond about24m², elongated irregular outline with rough natural stones, short straight timber landing at one side, small connected shallow wetland planted area opposite, a loose stepping-stone path. More garden detail but ample transparent open swimming zone. No waterfall. Occupy80%width75%height.
+
+### horizon
+
+> Largest100m² swimming lagoon, broad asymmetrical shape with multiple irregular bays, large boulder waterfall drawn from above at back right, extensive reed-bed filtration shallows, planting clusters and rough stone path with stepping stones. Richer but restrained architectural planting plan, no perfect curved masonry edges. Wide open swimming space. Occupy90%width85%height.
+
+## 3 October 2026: replacement with original vector plans
+
+The owner rejected the dense white raster sketches and requested entirely new designs.
+Fresh Imagegen drafts also failed the desired balance and small-size contrast. Those raster
+files were replaced in the package comparison. That version used original,
+hand-authored SVG architectural diagrams, drawn from scratch with no image tracing:
+
+- `public/assets/images/faunapoolen/editorial/package-glade.svg`
+- `public/assets/images/faunapoolen/editorial/package-summer.svg`
+- `public/assets/images/faunapoolen/editorial/package-horizon.svg`
+
+All three share a 600 × 400 drawing coordinate system, fine muted grey line weights and a
+transparent open water area. The compact basin, longer family pool and broad lagoon use
+balanced geometry, increasing scope, entry steps, stones, sparse planting and construction
+guides. The largest includes a cascade in plan view. Consistent native vector linework replaces
+the raster experiments; no photograph, solid shading, dense white foliage, halo or fade is used.
+
+## 3 October 2026: owner-supplied package plans
+
+The package comparison uses the owner's revised PNG plans at 1448 × 1086 resolution.
+Their dark teal backgrounds were subsequently removed with built-in imagegen so the site's
+own background shows through. The source mapping is:
+
+- `small-new.png` → `public/assets/images/faunapoolen/editorial/package-glade.png` (Daily dips).
+- `medium-new.png` → `public/assets/images/faunapoolen/editorial/package-summer.png` (Swim together).
+- `large-new.png` → `public/assets/images/faunapoolen/editorial/package-horizon.png` (More room).
+
+The shared pricing section displays the complete images with transparent backgrounds.
+These replace the SVG diagrams above and remain concept illustrations rather than completed projects.
+
+### Background removal
+
+Built-in imagegen edited each plan independently with `transparent_background: true`.
+The prompt for each was:
+
+> Use case: background-extraction. Input image is the edit target, an approved architectural pool plan for a website. Remove ONLY the flat dark teal background and make that backdrop genuinely transparent with alpha, including empty spaces around the fine drafting lines. Keep the entire original pool design, its exact geometry, framing, scale, water colours and water opacity, wood deck, stones, planting, furniture and delicate white/grey architectural construction lines unchanged. Preserve the original image composition and full drawing; no cropping or redesign. No new shapes, no recolouring, no glow or dark rectangular backdrop. Fine antialiased edges without a coloured matte or halo. Output one transparent PNG.

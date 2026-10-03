@@ -19,23 +19,24 @@
   </cx-hero>
   <article>
     <div class="cx-container cx-py-2xl">
-      <cx-sidebar-layout>
-        <nav sidebar [attr.aria-label]="editorial.guideContents">
-          <cx-stack gap="md" align="start">
-            @for (section of guideReading.sections; track section.id) {
-              <a [href]="guideHref(guide.id) + '#' + section.id">{{ section.title }}</a>
-            }
-          </cx-stack>
-        </nav>
+      <cx-sidebar-layout #guideLayout>
+        @if (showContents()) {
+          <nav sidebar class="cx-pt-lg cx-hide-mobile" [attr.aria-label]="editorial.guideContents">
+            <cx-stack gap="md" align="start">
+              @for (section of guideReading.sections; track section.id) {
+                <a [href]="guideHref(guide.id) + '#' + section.id">{{ section.title }}</a>
+              }
+            </cx-stack>
+          </nav>
+        }
         <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading.html"></div>
       </cx-sidebar-layout>
     </div>
-    <fp-contact-invitation />
     <div class="cx-container cx-py-2xl">
       <section [attr.aria-label]="ui.continue_reading">
         <cx-stack gap="lg">
           <div class="cx-editorial">
-            <h2 class="fp-heading cx-font-regular">{{ ui.continue_reading }}</h2>
+            <h2 class="cx-text-title-1 cx-font-regular">{{ ui.continue_reading }}</h2>
           </div>
           <cx-grid [columns]="3" [columnsMobile]="1" gap="lg">
             @for (item of relatedGuides; track item.id) {
@@ -50,8 +51,8 @@
                       height="1024"
                       loading="lazy"
                     />
-                    <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ item.title }}</h3>
-                    <p class="cx-text-body-lg cx-text-muted">{{ item.seo.description }}</p>
+                    <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ item.title }}</h3>
+                    <p class="cx-editorial cx-text-muted">{{ item.seo.description }}</p>
                   </cx-stack>
                 </cx-card>
               }

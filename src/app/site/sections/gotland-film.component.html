@@ -1,12 +1,27 @@
 <figure class="cx-figure" [attr.data-gotland-film]="film().id">
-  <div class="cx-embed" [class.cx-embed--square]="film().portrait">
-    <iframe
-      [src]="embedUrl()"
-      loading="lazy"
-      [title]="heading()"
-      allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen
-    ></iframe>
+  <div class="cx-embed cx-rounded-xl" [class.cx-embed--square]="film().portrait">
+    @if (playing()) {
+      <iframe
+        #player
+        [src]="embedUrl()"
+        [title]="heading()"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        (load)="player.focus({ preventScroll: true })"
+      ></iframe>
+    } @else {
+      <button
+        class="fp-film-trigger"
+        type="button"
+        [attr.aria-label]="playLabel()"
+        (click)="playing.set(true)"
+      >
+        <img [src]="poster()" alt="" width="1280" height="720" loading="lazy" />
+        <span class="fp-film-play" aria-hidden="true">
+          <cx-icon icon="play" size="32" />
+        </span>
+      </button>
+    }
   </div>
 </figure>

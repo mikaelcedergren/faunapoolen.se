@@ -6,20 +6,19 @@
           {{ evidence.networkTitle }}
         </h2>
       </div>
-      <p class="cx-text-body-lg cx-text-muted cx-measure-lg-start">
+      <p class="cx-editorial cx-text-muted cx-measure-lg-start">
         {{ evidence.networkBody }}
       </p>
     </cx-stack>
     <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
-      @for (project of networkProjects; track project.source) {
+      @for (project of networkProjects; track project.name) {
         <cx-stack gap="md">
           <p class="cx-text-body-lg cx-text-muted">
             {{ project.location }}
           </p>
           <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ project.name }}</h3>
-          <p class="cx-text-body">{{ project.body }}</p>
+          <p class="cx-editorial">{{ project.body }}</p>
           <p class="cx-text-body-lg cx-text-muted">{{ evidence.builder }}: {{ project.builder }}</p>
-          <cx-button [text]="evidence.source" [href]="project.source" appendIcon="open-new" />
         </cx-stack>
       }
     </cx-grid>

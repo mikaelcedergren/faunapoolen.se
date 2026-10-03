@@ -39,7 +39,7 @@ import { SiteMeasurement } from './site-measurement';
         (backdropPressed)="dismiss()"
       >
         <cx-stack class="cx-p-md" gap="md">
-          <p>{{ body }}</p>
+          <p class="cx-editorial">{{ body }}</p>
           <cx-inline gap="sm" [wrap]="true">
             <cx-button [text]="reject" (click)="choose(false)" />
             <cx-button [text]="accept" (click)="choose(true)" />

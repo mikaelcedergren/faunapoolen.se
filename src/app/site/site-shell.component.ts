@@ -21,7 +21,6 @@ import {
   CX_THEMES,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from './site-page';
-import { POOL_ENQUIRY } from './content/faunapoolen-landing';
 import { ContactInvitationComponent } from './sections/contact-invitation.component';
 import { LANGUAGE_NAMES, preferredLanguage } from './language';
 import { SiteMeasurement } from './site-measurement';
@@ -45,7 +44,6 @@ export class SiteShellComponent extends SitePage implements OnInit {
   @Input({ transform: booleanAttribute }) leadFocused = false;
   @Input() enquiryTarget?: string;
   @Input({ transform: booleanAttribute }) showInvitation = true;
-  protected readonly poolEnquiry = POOL_ENQUIRY;
   protected get enquiryHref(): string {
     if (this.enquiryTarget) return this.enquiryTarget;
     return this.configureHref + (this.leadFocused ? '?service=pool' : '');
@@ -75,6 +73,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
   }
   protected readonly contactUs = $localize`:@@site.masthead.contactUs:Contact us`;
   protected readonly footerContact = $localize`:@@site.footer.contact:Contact`;
+  protected readonly footerCertification = $localize`:@@site.footer.certification:Aquascape™ certified`;
   protected readonly footerGroups = [
     {
       label: $localize`:@@site.footer.explore:Explore`,

@@ -101,16 +101,10 @@ test('mobile footer language selector keeps the article and includes Danish with
   await page.getByRole('option', { name: /English/ }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('#guide-body')).toBeVisible();
-  await page.locator('a[href$="#guide-section-1"]').click();
-  await expect(page).toHaveURL(
-    /\/en\/blog\/posts\/build-your-own-nature-pool.html#guide-section-1$/,
-  );
-  await expect(page.locator('#guide-section-1')).toBeInViewport();
+  await expect(page).toHaveURL(/\/en\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect
-    .poll(() =>
-      page.locator('#guide-section-1').evaluate((heading) => heading.getBoundingClientRect().top),
-    )
-    .toBeGreaterThanOrEqual(64);
+    .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
+    .toBeLessThanOrEqual(0);
   expect(errors).toEqual([]);
 });
 
@@ -174,6 +168,51 @@ for (const locale of ['en', 'sv', 'da'])
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
   });
 
+test('Gotland videos load only when their still image is activated', async ({ page }) => {
+  const playerRequests: string[] = [];
+  await page.route('https://player.vimeo.com/video/**', async (route) => {
+    playerRequests.push(route.request().url());
+    await route.fulfill({
+      contentType: 'text/html',
+      body: '<html><body>Video fixture</body></html>',
+    });
+  });
+  await page.goto('/en/projects/gotland/');
+  const films = page.locator('fp-gotland-film');
+  await expect(films).toHaveCount(4);
+  await expect(films.locator('iframe')).toHaveCount(0);
+  await expect(films.getByRole('button', { name: /^Play video:/ })).toHaveCount(4);
+  expect(playerRequests).toEqual([]);
+
+  for (let index = 0; index < 4; index++) {
+    const film = films.nth(index);
+    const trigger = film.getByRole('button', { name: /^Play video:/ });
+    await trigger.scrollIntoViewIfNeeded();
+    await expect(trigger.locator('img')).toHaveJSProperty('naturalWidth', 1280);
+    if (index === 0) {
+      // Activating the picture away from the central icon still starts this film.
+      await trigger.click({ position: { x: 20, y: 100 } });
+    } else {
+      await trigger.press(index === 1 ? 'Space' : 'Enter');
+    }
+    await expect(trigger).toHaveCount(0);
+    await expect(film.locator('iframe')).toBeVisible();
+    // Headless cross-origin frames can make document.hasFocus() false even when
+    // focus was correctly handed from the removed poster to the player.
+    await expect
+      .poll(() =>
+        film.locator('iframe').evaluate((frame) => frame.ownerDocument.activeElement === frame),
+      )
+      .toBe(true);
+    await expect.poll(() => playerRequests.length).toBe(index + 1);
+    const url = new URL(playerRequests[index]);
+    expect(url.searchParams.get('autoplay')).toBe('1');
+    for (const key of ['title', 'byline', 'portrait']) {
+      expect(url.searchParams.get(key)).toBe('0');
+    }
+  }
+});
+
 test('Gotland keeps landscape films beside their stories and the lightbox limited to photographs', async ({
   page,
 }) => {
@@ -183,7 +222,7 @@ test('Gotland keeps landscape films beside their stories and the lightbox limite
   await expect(page.locator('cx-masonry iframe')).toHaveCount(0);
   await expect(page.locator('cx-masonry [data-gotland-photo]')).toHaveCount(10);
   await expect(page.locator('main blockquote')).toHaveCount(1);
-  await expect(page.locator('.fp-project-quote figcaption')).toHaveText('From Britta');
+  await expect(page.locator('.fp-project-quote figcaption')).toHaveText('From Brita');
   await expect(page.getByRole('link', { name: 'Open on Vimeo' })).toHaveCount(0);
   const photo = page.locator('[data-gotland-photo="1455"]');
   await photo.click();

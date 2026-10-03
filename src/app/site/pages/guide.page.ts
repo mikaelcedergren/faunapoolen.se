@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, SecurityContext } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  SecurityContext,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
   CxStackComponent,
@@ -9,7 +19,6 @@ import {
   CxSidebarLayoutComponent,
 } from '@mikaelcedergren/cx-framework';
 import { SitePage } from '../site-page';
-import { ContactInvitationComponent } from '../sections/contact-invitation.component';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
   selector: 'fp-guide-page',
@@ -21,12 +30,34 @@ import { SiteShellComponent } from '../site-shell.component';
     SiteShellComponent,
     CxHeroComponent,
     CxSidebarLayoutComponent,
-    ContactInvitationComponent,
   ],
   templateUrl: './guide.page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuidePage extends SitePage {
+  protected readonly showContents = signal(true);
+  private readonly guideLayout = viewChild.required('guideLayout', {
+    read: ElementRef<HTMLElement>,
+  });
+  private readonly destroy = inject(DestroyRef);
+
+  constructor() {
+    super();
+    afterNextRender(() => {
+      const layout = this.guideLayout().nativeElement;
+      const desktopWidth = Number.parseFloat(
+        getComputedStyle(layout).getPropertyValue('--breakpoint-mobile'),
+      );
+      // Match the framework's container breakpoint. Removing the projected navigation
+      // lets its empty-sidebar behavior remove the divider and reserved space too.
+      const observer = new ResizeObserver(([entry]) => {
+        this.showContents.set(entry.contentRect.width >= desktopWidth);
+      });
+      observer.observe(layout);
+      this.destroy.onDestroy(() => observer.disconnect());
+    });
+  }
+
   protected readonly updatedLabel = $localize`:@@site.guides.updated:Updated`;
   protected readonly updatedDate = this.guide.seo.dateModified
     ? new Intl.DateTimeFormat(this.locale, { dateStyle: 'long', timeZone: 'UTC' }).format(

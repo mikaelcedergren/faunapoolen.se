@@ -1,16 +1,24 @@
-import { ChangeDetectionStrategy, Component, Input, booleanAttribute } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  booleanAttribute,
+  viewChild,
+} from '@angular/core';
 import {
   CxCardComponent,
   CxGridComponent,
   CxButtonComponent,
   CxStackComponent,
   CxInlineComponent,
+  CxDividerComponent,
 } from '@mikaelcedergren/cx-framework';
 import { NgTemplateOutlet } from '@angular/common';
 import { CertificationMarkComponent } from './certification-mark.component';
 import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landing';
 import { NATURE_POOL_DETAILS } from '../content/faunapoolen-pool-details';
-import { GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
+import { GOTLAND_COPY, GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
+import { GotlandGalleryComponent } from './gotland-gallery.component';
 import { SitePage } from '../site-page';
 
 @Component({
@@ -21,8 +29,10 @@ import { SitePage } from '../site-page';
     CxButtonComponent,
     CxStackComponent,
     CxInlineComponent,
+    CxDividerComponent,
     NgTemplateOutlet,
     CertificationMarkComponent,
+    GotlandGalleryComponent,
   ],
   templateUrl: './gotland-preview.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +41,9 @@ export class GotlandPreviewComponent extends SitePage {
   @Input({ transform: booleanAttribute }) leadFocused = false;
   @Input() enquiryHref?: string;
   @Input({ transform: booleanAttribute }) detailed = false;
+  @Input({ transform: booleanAttribute }) galleryEnabled = false;
+  protected readonly gallery = viewChild(GotlandGalleryComponent);
+  protected readonly galleryCopy = GOTLAND_COPY;
   protected readonly details = [
     {
       id: '1437',

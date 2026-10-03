@@ -95,7 +95,7 @@
           (valueChange)="contactNotes.set($event)"
         />
         <cx-stack gap="lg" align="start">
-          <p class="cx-text-body cx-text-muted">
+          <p class="cx-text-body-sm cx-text-muted">
             {{ copy.configure.nonBinding }} {{ privacyNotice }}
           </p>
           @if (deliveryError()) {
@@ -103,7 +103,7 @@
           }
           <cx-button
             type="submit"
-            [text]="poolJourney ? poolEnquiry.cta : submitLabel"
+            [text]="submitLabel"
             [disabled]="packageId() !== 'unsure' && !packageCatalogue.value() && !pendingRequest()"
             [loading]="!ready() || sending()"
             size="large"

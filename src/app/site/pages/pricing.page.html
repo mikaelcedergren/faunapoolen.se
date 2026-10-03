@@ -1,9 +1,12 @@
-<fp-site-shell leadFocused>
+<fp-site-shell leadFocused [showInvitation]="false" [enquiryTarget]="poolEnquiryHref">
   <cx-hero
-    [underMasthead]="false"
+    [underMasthead]="true"
+    align="center"
+    [parallax]="true"
+    [overlayOpacity]="35"
     headingClass="cx-font-regular"
     [heading]="commercial.pricingTitle"
-    variant="stacked"
+    variant="cover"
   >
     <cx-skeleton-loader
       body
@@ -21,44 +24,43 @@
     <cx-button
       actions
       [text]="poolEnquiry.cta"
-      [href]="configureHref + '?service=pool'"
+      [href]="poolEnquiryHref"
       mood="primary"
       size="large"
     />
+    <img
+      media
+      [src]="images.pricing"
+      [alt]="pricingImageAlt"
+      width="1672"
+      height="941"
+      fetchpriority="high"
+    />
   </cx-hero>
-  <fp-package-comparison />
-  <fp-gotland-preview leadFocused />
+  <fp-certification-strip />
+  <fp-package-comparison enquiryAnchor="consultation" />
+  <fp-pool-aftercare />
+  <div class="cx-container"><cx-divider /></div>
+  <fp-pool-ownership />
+  <div class="cx-container"><cx-divider /></div>
   <div class="cx-container fp-section">
     <section aria-labelledby="price-factors-title">
       <cx-stack gap="xl">
-        <div class="cx-editorial">
-          <h2 id="price-factors-title" class="fp-heading cx-font-regular">
-            {{ commercial.costTitle }}
-          </h2>
-        </div>
-        <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-          <div class="fp-column">
-            <div class="cx-editorial">
-              <h3 class="fp-subheading cx-font-regular">{{ commercial.groundTitle }}</h3>
-              <p>{{ commercial.groundBody }}</p>
-            </div>
-          </div>
-          <div class="fp-column">
-            <div class="cx-editorial">
-              <h3 class="fp-subheading cx-font-regular">{{ commercial.sizeTitle }}</h3>
-              <p>{{ commercial.sizeBody }}</p>
-            </div>
-          </div>
-          <div class="fp-column">
-            <div class="cx-editorial">
-              <h3 class="fp-subheading cx-font-regular">{{ commercial.surroundingsTitle }}</h3>
-              <p>{{ commercial.surroundingsBody }}</p>
-            </div>
-          </div>
+        <h2 id="price-factors-title" class="fp-heading cx-font-serif cx-font-regular">
+          {{ commercial.costTitle }}
+        </h2>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+          @for (item of factors; track item.title) {
+            <cx-stack class="fp-column" gap="md">
+              <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ item.title }}</h3>
+              <p class="cx-editorial">{{ item.body }}</p>
+            </cx-stack>
+          }
         </cx-grid>
       </cx-stack>
     </section>
   </div>
+  <fp-process />
   <section class="cx-container fp-section" aria-labelledby="price-questions-title">
     <cx-stack gap="xl">
       <h2 id="price-questions-title" class="fp-heading cx-font-serif cx-font-regular">
@@ -67,16 +69,30 @@
       <cx-list>
         @for (item of questions; track item.id) {
           <cx-list-item [itemId]="item.id" [heading]="item.heading" [expandable]="true">
-            <div class="cx-editorial">
-              <p>{{ item.body }}</p>
+            <cx-stack gap="md">
+              <p class="cx-text-body">{{ item.body }}</p>
               @if (item.detail) {
-                <p>{{ item.detail }}</p>
+                <p class="cx-text-body">{{ item.detail }}</p>
               }
-            </div>
+            </cx-stack>
           </cx-list-item>
         }
       </cx-list>
     </cx-stack>
   </section>
-  <fp-process />
+  <section
+    id="consultation"
+    class="cx-container fp-section fp-enquiry cx-scroll-target"
+    aria-labelledby="pricing-enquiry-title"
+  >
+    <div class="cx-editorial fp-enquiry-intro">
+      <h2 id="pricing-enquiry-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ poolEnquiry.heading }}
+      </h2>
+      <p>{{ poolEnquiry.body }}</p>
+      <p>{{ poolEnquiry.followUp }}</p>
+      <fp-direct-contact />
+    </div>
+    <fp-enquiry-form compact />
+  </section>
 </fp-site-shell>

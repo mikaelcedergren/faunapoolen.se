@@ -7,6 +7,7 @@ export const FAUNAPOOLEN_LOGO = `${ASSET_ROOT}/logo.png`;
 export const FAUNAPOOLEN_IMAGES = {
   hero: `${ASSET_ROOT}/hero-family.webp`,
   naturePoolHero: `${ASSET_ROOT}/editorial/nature-pool-evening.webp`,
+  pricing: `${ASSET_ROOT}/editorial/pricing-garden.webp`,
   architecture: `${ASSET_ROOT}/architecture-threshold.webp`,
   poolDesign: `${ASSET_ROOT}/editorial/pool-design-concept.webp`,
   detail: `${ASSET_ROOT}/water-touch.webp`,

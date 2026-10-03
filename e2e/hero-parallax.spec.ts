@@ -11,13 +11,22 @@ test('hero navigation starts at the final crop and scrolling never changes its s
       for (const image of document.querySelectorAll<HTMLElement>('cx-hero .cx-hero__media')) {
         if (recorded.has(image)) continue;
         recorded.add(image);
-        const samples: { scale: string; shift: number }[] = [];
+        const samples: {
+          scale: string;
+          shift: number;
+          height: number;
+          imageTop: number;
+          imageHeight: number;
+        }[] = [];
         const sample = () => {
           if (!image.isConnected) return;
           const frame = image.parentElement!.getBoundingClientRect();
           const media = image.getBoundingClientRect();
           samples.push({
             scale: getComputedStyle(image).transform,
+            height: frame.height,
+            imageTop: media.top - frame.top,
+            imageHeight: media.height,
             // Remove the fixed centred enlargement; only startup movement remains.
             shift: media.top - frame.top + (media.height - frame.height) / 2,
           });
@@ -38,10 +47,17 @@ test('hero navigation starts at the final crop and scrolling never changes its s
     const frames = JSON.parse((await media.getAttribute('data-startup-frames'))!) as {
       scale: string;
       shift: number;
+      height: number;
+      imageTop: number;
+      imageHeight: number;
     }[];
     expect(frames).toHaveLength(30);
     expect(frames.every((frame) => frame.scale === crop)).toBe(true);
     expect(Math.max(...frames.map((frame) => Math.abs(frame.shift)))).toBeLessThan(0.01);
+    for (const key of ['height', 'imageTop', 'imageHeight'] as const) {
+      const values = frames.map((frame) => frame[key]);
+      expect(Math.max(...values) - Math.min(...values), key).toBeLessThan(0.01);
+    }
     await expect(media).toHaveCSS('translate', '0px 0%');
   };
   await expectStableStartup();
@@ -117,7 +133,7 @@ for (const width of [1440, 390]) {
       const geometry = () =>
         hero.evaluate((element) => {
           const bounds = (selector: string) => {
-            const rect = (element.querySelector(selector) ?? element).getBoundingClientRect();
+            const rect = element.querySelector(selector)!.getBoundingClientRect();
             return { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
           };
           return {

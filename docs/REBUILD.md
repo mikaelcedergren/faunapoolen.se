@@ -41,8 +41,10 @@ requires revisions for updates. Operational limits and the editing workflow are 
 
 ## Before publication
 
-- Confirm Vimeo playback in a normal browser. The original film IDs and links are retained,
-  but the in-app visual review showed blank external players, so playback remains unverified.
+- Gotland films use local stills with a full-image play button; Vimeo loads only after activation.
+  The four `gotland/film-<id>.webp` posters come from the corresponding films' official Vimeo
+  oEmbed thumbnails. All four posters and the first film's actual inline playback were reviewed
+  in the desktop browser. Broader browser playback coverage remains a publication check.
 - Review the Playground's indicative package prices and commercial copy with the owner.
 - Review new Danish editorial translations with a native speaker.
 - Inherited blog claims, including health claims, attributed project quotations and the old

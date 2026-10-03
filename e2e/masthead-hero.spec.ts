@@ -57,30 +57,46 @@ for (const viewport of [
     await page.getByRole('button', { name: 'Reject', exact: true }).click();
     await page.evaluate(() => document.fonts.ready);
     const contents = page.getByRole('navigation', { name: 'In this guide' });
-    await expect(contents).toBeVisible();
-    await expect(contents.getByText('In this guide', { exact: true })).toHaveCount(0);
-    const navigation = await contents.boundingBox();
-    const body = await page.locator('#guide-body').boundingBox();
+    await expect(page.locator('#guide-body')).toBeVisible();
     if (viewport.width > 719) {
+      await expect(contents).toBeVisible();
+      await expect(contents.getByText('In this guide', { exact: true })).toHaveCount(0);
+      const navigation = await contents.boundingBox();
+      const body = await page.locator('#guide-body').boundingBox();
       expect(navigation!.x).toBeGreaterThanOrEqual(body!.x + body!.width);
-    } else {
-      expect(navigation!.y + navigation!.height).toBeLessThanOrEqual(body!.y);
-    }
-    for (const index of [4, 0]) {
-      await contents.getByRole('link').nth(index).click();
-      const section = page.locator(`#guide-section-${index + 1}`);
-      await expect
-        .poll(() => section.evaluate((element) => element.getBoundingClientRect().top))
-        .toBeCloseTo(80, 0);
-      if (viewport.width > 719) {
+      for (const index of [4, 0]) {
+        await contents.getByRole('link').nth(index).click();
+        const section = page.locator(`#guide-section-${index + 1}`);
+        await expect
+          .poll(() => section.evaluate((element) => element.getBoundingClientRect().top))
+          .toBeCloseTo(80, 0);
         await expect
           .poll(() => contents.evaluate((element) => element.getBoundingClientRect().top))
           .toBeCloseTo(80, 0);
       }
+    } else {
+      await expect(contents).toBeHidden();
     }
     await expect
       .poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth))
       .toBeLessThanOrEqual(0);
+  });
+
+  test(`direct article section links clear the header at ${viewport.width}px`, async ({ page }) => {
+    await page.setViewportSize(viewport);
+    await page.goto('/en/blog/posts/build-your-own-nature-pool.html#guide-section-1');
+    await page.getByRole('button', { name: 'Reject', exact: true }).click();
+    await page.evaluate(() => document.fonts.ready);
+    const section = page.locator('#guide-section-1');
+    await expect(page).toHaveURL(/build-your-own-nature-pool\.html#guide-section-1$/);
+    await expect(section).toBeInViewport();
+    await expect
+      .poll(async () => {
+        const heading = await section.boundingBox();
+        const header = await page.locator('cx-masthead > header').boundingBox();
+        return heading!.y - (header!.y + header!.height);
+      })
+      .toBeGreaterThanOrEqual(0);
   });
 }
 

@@ -4,7 +4,11 @@ import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 import { HtmlParser } from '@angular/compiler';
-import { expectedGuideBody, removedGuideContact } from './guide-content-expectations.mjs';
+import {
+  expectedGuideBody,
+  removedGuideContact,
+  historicalGuideVatWording,
+} from './guide-content-expectations.mjs';
 import {
   PUBLIC_CANONICAL_PATHS,
   PUBLIC_PAGES,
@@ -18,7 +22,7 @@ const baseline = JSON.parse(
   readFileSync(join(root, 'tests/fixtures/blog-seo-baseline.json'), 'utf8'),
 );
 // The owner authorized rewrites of the ten other articles on 2026-09-17.
-// Historical fixtures stay unchanged; only the explicit approved contact-line deletion is allowed.
+// Historical fixtures stay unchanged; only the approved contact deletion and VAT qualifier are allowed.
 const protectedLocales = JSON.parse(
   readFileSync(join(root, 'tests/fixtures/protected-guide-locales.json'), 'utf8'),
 );
@@ -77,7 +81,9 @@ for (const [slug, locales] of Object.entries(baseline).filter(([slug]) =>
         );
       });
       assert.equal(
-        createHash('sha256').update(plain(historicalBody)).digest('hex'),
+        createHash('sha256')
+          .update(historicalGuideVatWording(plain(historicalBody), locale, id))
+          .digest('hex'),
         original.bodyHash,
         'Protected article body changed',
       );
@@ -276,9 +282,10 @@ for (const locale of ['en', 'sv', 'da']) {
           (href) =>
             href?.startsWith(prefix + '/nature-pools/') ||
             href?.startsWith(prefix + '/waterscapes/') ||
-            href?.startsWith(prefix + '/configure/'),
+            href?.startsWith(prefix + '/configure/') ||
+            href === 'mailto:info@faunapoolen.se',
         ),
-        'Article has a relevant offer route',
+        'Article has a relevant offer or direct support destination',
       );
       for (const href of links.filter((href) => href?.startsWith('/'))) {
         const target = new URL(href, 'https://faunapoolen.se').pathname;

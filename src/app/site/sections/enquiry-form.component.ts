@@ -50,6 +50,7 @@ export class EnquiryFormComponent extends SitePage {
   protected readonly poolEnquiry = POOL_ENQUIRY;
   protected readonly poolJourney =
     this.page === 'nature-pools' ||
+    this.page === 'pricing' ||
     this.routeSnapshot.queryParamMap.get('service') === 'pool' ||
     this.packageIds.some((id) => id === this.routeSnapshot.queryParamMap.get('package'));
   protected readonly measurement = inject(SiteMeasurement);

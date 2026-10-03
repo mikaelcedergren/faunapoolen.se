@@ -9,7 +9,6 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuidesPage extends SitePage {
-  protected readonly pricingLink = $localize`:@@site.guides.pricingLink:Compare nature pool packages and prices`;
   protected readonly groups = [
     {
       title: $localize`:@@site.guides.planning:Planning your nature pool`,
@@ -23,12 +22,14 @@ export class GuidesPage extends SitePage {
         'naturpool-fran-forsta-samtal-till-bad',
         'naturpool-sakerhet-och-tillstand',
         'vad-kostar-det-att-aga-en-naturpool',
+        'varma-upp-naturpool',
         'naturpool-i-sodra-sverige',
       ],
     },
     {
       title: $localize`:@@site.guides.care:How it works and how to care for it`,
       ids: [
+        'din-naturpool-skotsel-efter-installation',
         'how-filtering-works-with-nature-pools',
         'algae-control-and-maintenance-tips',
         'skotsel-av-naturpool-under-aret',

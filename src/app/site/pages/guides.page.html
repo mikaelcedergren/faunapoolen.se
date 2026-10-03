@@ -30,7 +30,7 @@
                     <h3 class="fp-subheading cx-font-serif cx-font-regular">
                       {{ item.title }}
                     </h3>
-                    <p class="cx-text-body-lg cx-text-muted">{{ item.seo.description }}</p>
+                    <p class="cx-editorial cx-text-muted">{{ item.seo.description }}</p>
                     <span class="cx-text-link">{{ copy.guides.read }} →</span>
                   </cx-stack>
                 </cx-stack>
@@ -41,9 +41,4 @@
       </section>
     </div>
   }
-  <div class="cx-container fp-section">
-    <p class="cx-text-body-lg">
-      <a [href]="routeFor('pricing')">{{ pricingLink }} →</a>
-    </p>
-  </div>
 </fp-site-shell>

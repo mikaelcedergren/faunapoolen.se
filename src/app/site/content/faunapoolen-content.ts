@@ -80,6 +80,7 @@ interface FaunapoolenSiteCopy {
     readonly secondary: string;
     readonly caseBody: string;
     readonly processTitle: string;
+    readonly waterscapeEyebrow: string;
     readonly waterscapeTitle: string;
     readonly waterscapeBody: string;
   };
@@ -115,6 +116,8 @@ interface FaunapoolenSiteCopy {
     readonly methodTitle: string;
     readonly methodBody: string;
     readonly teamTitle: string;
+    readonly companyTitle: string;
+    readonly companyBody: string;
   };
   readonly configure: {
     readonly title: string;
@@ -158,13 +161,14 @@ export const FAUNAPOOLEN_COPY = {
     secondary: $localize`:@@site.copy.home.secondary:See a completed natural pool`,
     caseBody: $localize`:@@site.copy.home.caseBody:We built this nature pool beside Brita’s home on southern Gotland, with natural stone edges that connect it to the surrounding garden. Today, it’s a place for her and her grandchildren to swim and spend time together.`,
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
+    waterscapeEyebrow: $localize`:@@site.copy.home.waterscapeEyebrow:Other waterscapes`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
     waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. We also build water features around the way you want to spend time outdoors.`,
   },
   naturePools: {
     eyebrow: $localize`:@@site.copy.naturePools.eyebrow:Nature pools`,
-    title: $localize`:@@site.copy.naturePools.title:Your own nature pool, just outside.`,
-    ingress: $localize`:@@site.copy.naturePools.ingress:Swim in a pool shaped around your garden, with biological filtration instead of routine chlorine treatment. Discover how it works, what space you need and how we help you bring it home.`,
+    title: $localize`:@@site.copy.naturePools.title:A natural place to swim. A lovely place to be.`,
+    ingress: $localize`:@@site.copy.naturePools.ingress:Clear water, natural stone and planting that belongs in your garden. We bring them together in a nature pool designed for you, from the first ideas to your first swim.`,
     careTitle: $localize`:@@site.copy.naturePools.careTitle:What care does a nature pool need?`,
     careBody: $localize`:@@site.copy.naturePools.careBody:Biological filtration still needs routine care. At handover, we show you the tasks for your system and provide a maintenance plan.`,
     carePoints: [
@@ -197,16 +201,18 @@ export const FAUNAPOOLEN_COPY = {
   },
   guides: {
     title: $localize`:@@site.copy.guides.title:Ideas and guides`,
-    ingress: $localize`:@@site.copy.guides.ingress:Planning, filtration and care. Find answers before you build.`,
+    ingress: $localize`:@@site.copy.guides.ingress:Explore nature pools, ponds and water gardens, with practical advice on design, natural filtration and everyday care.`,
     read: $localize`:@@site.copy.guides.read:Read the guide`,
   },
   about: {
     eyebrow: $localize`:@@site.copy.about.eyebrow:About Faunapoolen`,
     title: $localize`:@@site.copy.about.title:About Faunapoolen`,
-    ingress: $localize`:@@site.copy.about.ingress:We design and build nature pools throughout Sweden and in Denmark. We help you understand the choices, bring the build together and show you how to care for the finished installation.`,
+    ingress: $localize`:@@site.copy.about.ingress:We bring construction, business and design together to create nature pools and water gardens. Meet the people behind Faunapoolen.`,
     methodTitle: $localize`:@@site.copy.about.methodTitle:You should not have to become a pool expert.`,
     methodBody: $localize`:@@site.copy.about.methodBody:We explain the choices and what affects the cost, then plan and build the solution for your property. At handover, we show you how to care for it.`,
     teamTitle: $localize`:@@site.copy.about.teamTitle:The team behind the water`,
+    companyTitle: $localize`:@@site.copy.about.companyTitle:A Swedish specialist in nature pools`,
+    companyBody: $localize`:@@site.copy.about.companyBody:Faunapoolen is a Swedish company designing and building nature pools, ponds and water gardens. We bring water, natural stone and planting together so each project feels part of its surroundings. Our work extends beyond the pool itself, from the surrounding garden to ongoing care as it grows and changes.`,
   },
   configure: {
     title: $localize`:@@site.copy.configure.title:Find out what suits your garden.`,

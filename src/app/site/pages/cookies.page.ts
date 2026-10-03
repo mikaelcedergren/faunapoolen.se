@@ -23,7 +23,7 @@ import { SiteMeasurement } from '../site-measurement';
       <section class="cx-container cx-py-2xl">
         <cx-stack gap="lg" align="start">
           @if (measurement.available()) {
-            <p>{{ choice }}</p>
+            <p class="cx-editorial">{{ choice }}</p>
             <cx-button [text]="settings" (click)="shell.openCookieSettings($event)" />
           }
           <div class="cx-editorial">
@@ -31,13 +31,6 @@ import { SiteMeasurement } from '../site-measurement';
             <h2 class="fp-heading">{{ statisticsTitle }}</h2>
             <p>{{ statistics }}</p>
             <p>{{ google }}</p>
-            <p>
-              <a
-                href="https://policies.google.com/technologies/partner-sites"
-                rel="noopener noreferrer"
-                >{{ googleLink }}</a
-              >
-            </p>
             <h2 class="fp-heading">{{ storageTitle }}</h2>
             <ul>
               <li>{{ analyticsCookies }}</li>
@@ -62,8 +55,7 @@ export class CookiesPage extends SitePage {
   protected readonly introduction = $localize`:@@cookies.introduction:Faunapoolen uses browser storage to remember your choices. Optional Google Analytics statistics require your permission.`;
   protected readonly statisticsTitle = $localize`:@@cookies.statisticsTitle:What the statistics measure`;
   protected readonly statistics = $localize`:@@cookies.statistics:With your permission, we measure page visits, interest in pool packages and progress through the enquiry form, including successful enquiries. Events include the page address without query parameters, page title, language, landing page and a broad source category such as search or referral. They do not include your name, email, phone number, address or message.`;
-  protected readonly google = $localize`:@@cookies.google:Google provides the analytics service and receives cookie identifiers and technical information such as your IP address and browser information when analytics is active. We do not enable advertising cookies or personalised advertising. Google's information explains how it processes data and where it may be processed.`;
-  protected readonly googleLink = $localize`:@@site.measurement.privacy:How Google uses this data`;
+  protected readonly google = $localize`:@@cookies.google:Google provides the analytics service and receives cookie identifiers and technical information such as your IP address and browser information when analytics is active. We do not enable advertising cookies or personalised advertising.`;
   protected readonly storageTitle = $localize`:@@cookies.storageTitle:What is stored and for how long`;
   protected readonly analyticsCookies = $localize`:@@cookies.analyticsCookies:_ga and _ga_E1BFSP43WZ: optional first-party cookies used by Google Analytics to distinguish browsers and sessions. They are configured to expire after 180 days, renewed during use. Statistics are shared with Google.`;
   protected readonly consentStorage = $localize`:@@cookies.consentStorage:fp-analytics-consent-v1: local storage containing only your allow or reject choice. It remains until you change it or clear this website's browser data. It is not sent to Google.`;

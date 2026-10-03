@@ -4,7 +4,7 @@ export const NATURE_POOL_LANDING = {
   benefitsIntro: $localize`:@@site.poolLanding.benefitsIntro:You want a place to swim that feels at home in your garden, without the regular chemical treatment of a conventional pool. But it can be hard to know what will fit, what it will cost or where to begin. We help you find a design that suits your space, your budget and the way you want to enjoy the water.`,
   caseBody: $localize`:@@site.poolLanding.caseBody:A finished Faunapoolen project on southern Gotland, designed around the house and garden with natural stone edges and planting.`,
   certificationBody: $localize`:@@site.poolLanding.certificationBody:Aquascape™ certified expertise, from planning and construction to showing you how to care for your pool.`,
-  priceIntro: $localize`:@@site.poolLanding.priceIntro:Compare the scale and features, not just the swimming area. You can leave the choice open until we’ve talked about your garden.`,
+  priceIntro: $localize`:@@site.poolLanding.priceIntro:Explore three starting points, from a compact plunge pool to a larger pool for swimming. We’ll help you choose the size and features that suit you.`,
   scope: $localize`:@@site.poolLanding.scope:Your quotation confirms the full scope, including what is covered for excavation, soil removal, electrical work, filling and transport. We agree this with you before you commit.`,
   steps: [
     {

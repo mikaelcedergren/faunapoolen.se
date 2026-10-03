@@ -28,10 +28,6 @@
   line-height: var(--line-height-heading);
 }
 
-.fp-care-photo {
-  object-position: 25% center;
-}
-
 @media (min-width: bp.$mobile) {
   .fp-layout-figure {
     order: -1;

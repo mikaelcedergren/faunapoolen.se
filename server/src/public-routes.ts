@@ -29,6 +29,8 @@ export const PUBLIC_PAGES = {
 } as const;
 export type PublicLanguage = keyof typeof PUBLIC_PAGES;
 export const GUIDE_SLUGS = {
+  'varma-upp-naturpool': 'varma-upp-naturpool.html',
+  'din-naturpool-skotsel-efter-installation': 'din-naturpool-skotsel-efter-installation.html',
   'naturpool-i-sodra-sverige': 'naturpool-i-sodra-sverige.html',
   build: 'build-your-own-nature-pool.html',
   difference: 'difference-between-normal-pool-and-natural-pool.html',
