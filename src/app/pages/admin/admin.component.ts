@@ -2,6 +2,7 @@ import { SocialPostsComponent } from './social-posts.component';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { EnquiryInboxComponent } from './enquiry-inbox.component';
+import { PackagesComponent } from './packages.component';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -68,7 +69,7 @@ type EditableTextField =
 type CampaignStage = 'strategy' | 'copy' | 'complete';
 type GenerationStep = 'strategy' | 'copy' | 'prompts';
 type StepStatus = 'waiting' | 'active' | 'done' | 'failed';
-type View = 'list' | 'campaign' | 'inbox' | 'social';
+type View = 'list' | 'campaign' | 'inbox' | 'social' | 'packages';
 type CampaignSection = 'copy' | 'prompts' | 'strategy';
 type CopyEdit = {
   campaignId: string;
@@ -262,6 +263,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-US', {
   selector: 'fp-admin',
   imports: [
     EnquiryInboxComponent,
+    PackagesComponent,
     SocialPostsComponent,
     CxAccountControlComponent,
     CxAlertComponent,
@@ -304,8 +306,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     ? 'inbox'
     : inject(ActivatedRoute).snapshot.url.some((segment) => segment.path === 'social-posts')
       ? 'social'
-      : 'list';
+      : inject(ActivatedRoute).snapshot.url.some((segment) => segment.path === 'packages')
+        ? 'packages'
+        : 'list';
   @ViewChild(SocialPostsComponent) private socialPosts?: SocialPostsComponent;
+  @ViewChild(PackagesComponent) private packagesEditor?: PackagesComponent;
   private copyResetTimer?: ReturnType<typeof setTimeout>;
   private generationPollSequence = 0;
   private copySaveQueue: Promise<void> = Promise.resolve();
@@ -366,6 +371,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly selectedFieldId = signal('headline');
   protected readonly inspectedPrompt = signal<PromptSection | undefined>(undefined);
   protected readonly sideNavItems: CxSideNavItem[] = [
+    {
+      id: 'packages',
+      label: 'Packages',
+      icon: 'form',
+      routerLink: '/admin/packages',
+      routerLinkActiveOptions: { exact: true },
+    },
     {
       id: 'campaign-studio',
       label: 'Campaign studio',
@@ -585,11 +597,13 @@ export class AdminComponent implements OnInit, OnDestroy {
 
   protected readonly topBarTitle = computed<CxTopBarTitle>(() => {
     const root =
-      this.view() === 'social'
-        ? { id: 'social-posts', label: 'Social posts' }
-        : this.view() === 'inbox'
-          ? { id: 'enquiries', label: 'Customers' }
-          : { id: 'campaign-studio', label: 'Campaign studio' };
+      this.view() === 'packages'
+        ? { id: 'packages', label: 'Packages' }
+        : this.view() === 'social'
+          ? { id: 'social-posts', label: 'Social posts' }
+          : this.view() === 'inbox'
+            ? { id: 'enquiries', label: 'Customers' }
+            : { id: 'campaign-studio', label: 'Campaign studio' };
     if (this.view() === 'campaign') {
       return {
         kind: 'breadcrumbs',
@@ -734,6 +748,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   protected async requestSignOut(): Promise<void> {
+    if (this.packagesEditor && !(await this.packagesEditor.canLeave())) return;
     if (this.socialPosts && !(await this.socialPosts.canLeave())) return;
     if (this.generating()) return;
     void this.leaveCampaign(() => {
@@ -820,6 +835,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   public async canLeave(): Promise<boolean> {
+    if (this.packagesEditor) return this.packagesEditor.canLeave();
     if (this.socialPosts) return this.socialPosts.canLeave();
     if (this.generating()) return false;
     await this.saveChanges();
@@ -1426,7 +1442,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private async loadWorkspace(): Promise<void> {
-    if (this.initialView === 'inbox' || this.initialView === 'social') return;
+    if (['inbox', 'social', 'packages'].includes(this.initialView)) return;
     await Promise.all([this.loadConfig(), this.refreshCampaigns()]);
     if (!this.hasUnsavedCopy()) await this.recoverGenerationWork();
   }

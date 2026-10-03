@@ -13,15 +13,20 @@ const notFound = {
 };
 
 export const routes: Routes = [
-  ...['admin', 'admin/enquiries', 'admin/customers', 'admin/campaigns', 'admin/social-posts'].map(
-    (path) => ({
-      path,
-      canDeactivate: [(component: { canLeave(): Promise<boolean> }) => component.canLeave()],
-      loadComponent: () => import('./pages/admin/admin.component').then((m) => m.AdminComponent),
-      title: 'Admin | Faunapoolen',
-      data: { seo: { path: '/admin/', description: '', private: true } satisfies PageSeo },
-    }),
-  ),
+  ...[
+    'admin',
+    'admin/enquiries',
+    'admin/customers',
+    'admin/packages',
+    'admin/campaigns',
+    'admin/social-posts',
+  ].map((path) => ({
+    path,
+    canDeactivate: [(component: { canLeave(): Promise<boolean> }) => component.canLeave()],
+    loadComponent: () => import('./pages/admin/admin.component').then((m) => m.AdminComponent),
+    title: 'Admin | Faunapoolen',
+    data: { seo: { path: '/admin/', description: '', private: true } satisfies PageSeo },
+  })),
   ...siteRoutes,
   ...Object.entries(LEGACY_REDIRECTS)
     .filter(([from]) => (base === '/' ? !/^\/(en|da)\//.test(from) : from.startsWith(base)))

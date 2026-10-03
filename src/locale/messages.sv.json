@@ -457,20 +457,17 @@
     "site.packages.glade.includes.0": "Aquascape BioFalls-filtrering",
     "site.packages.glade.includes.1": "Vattenväxter för biologisk balans",
     "site.packages.glade.includes.2": "Kompakt utformning för mindre trädgårdar",
-    "site.packages.glade.name": "Dagliga dopp",
     "site.packages.horizon.area": "Från 100 m² badyta",
     "site.packages.horizon.description": "En rymlig pool med vattenfall, stenblock och en grönskande trädgård.",
     "site.packages.horizon.includes.0": "Vattenfall och karaktärsfulla stenblock",
     "site.packages.horizon.includes.1": "Trädgårdsplanteringar och vattenväxter",
     "site.packages.horizon.includes.2": "Integrerad belysning",
-    "site.packages.horizon.name": "Mer plats",
     "site.packages.pricingLink": "Se priser och vad som ingår",
     "site.packages.summer.area": "Från 24 m² badyta",
     "site.packages.summer.description": "En 1,5 m djup pool för simning, med natursten, belysning och vattenjetstrålar.",
     "site.packages.summer.includes.0": "Våtmarksfilter och separat vattenintag",
     "site.packages.summer.includes.1": "Natursten och integrerad belysning",
     "site.packages.summer.includes.2": "Vattenjetstrålar för cirkulation",
-    "site.packages.summer.name": "Bada tillsammans",
     "site.process.0.body": "Vi pratar om hur du vill använda trädgården, din budget och nästa steg. Första telefonsamtalet är kostnadsfritt.",
     "site.process.0.title": "Ett första samtal",
     "site.process.1.body": "Efter en bedömning av tomten tar vi fram förslag och offert. Platsbesök kostar, men avgiften dras av från anläggningskostnaden om du går vidare.",
@@ -632,6 +629,10 @@
     "site.poolDetails.projectStoneTitle": "Natursten över och under ytan",
     "site.poolDetails.projectStoneBody": "Närbilden visar stenen under vattnet och strukturen som fortsätter längs poolkanten.",
     "site.poolDetails.projectEveningTitle": "En annan vy efter mörkrets inbrott",
-    "site.poolDetails.projectEveningBody": "Undervattensbelysningen framhäver stenarna och vattnet efter solnedgången, så att poolen syns från trädgården på kvällen."
+    "site.poolDetails.projectEveningBody": "Undervattensbelysningen framhäver stenarna och vattnet efter solnedgången, så att poolen syns från trädgården på kvällen.",
+    "packages.loading": "Laddar poolpaket",
+    "packages.unavailable": "Poolpaketen kunde inte laddas. Försök igen eller kontakta oss om din pool.",
+    "packages.retry": "Försök igen",
+    "packages.priceUnavailable": "Priset kunde inte hämtas"
   }
 }

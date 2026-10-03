@@ -15,6 +15,7 @@ import {
   CxButtonComponent,
   CxInlineComponent,
   CxIconComponent,
+  CxStateMessageComponent,
 } from '@mikaelcedergren/cx-framework';
 import { Router } from '@angular/router';
 import type { FaunapoolenPackage } from '../content/faunapoolen-content';
@@ -32,11 +33,16 @@ import { SiteMeasurement } from '../site-measurement';
     CxButtonComponent,
     CxInlineComponent,
     CxIconComponent,
+    CxStateMessageComponent,
   ],
   templateUrl: './package-comparison.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PackageComparisonComponent extends SitePage {
+  protected readonly pricesLoading = $localize`:@@packages.loading:Loading packages`;
+  protected readonly pricesUnavailable = $localize`:@@packages.unavailable:Packages could not be loaded. Try again or contact us about your pool.`;
+  protected readonly retryPrices = $localize`:@@packages.retry:Try again`;
+
   @Input({ transform: booleanAttribute }) showPricingLink = true;
   @Input() enquiryAnchor?: string;
   @Input({ transform: booleanAttribute }) showDetails = false;

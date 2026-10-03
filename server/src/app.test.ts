@@ -24,6 +24,8 @@ import {
 } from './auth-service.js';
 import { createFaunapoolenApplication } from './app.js';
 import { createEnquiryService } from './enquiry-service.js';
+import { createPackageService } from './package-service.js';
+import type { PackageCatalogue } from './package-contracts.js';
 import { createFaunapoolenPersistence } from './campaign-repository.js';
 import { createFaunapoolenBrowserServing } from './browser-serving.js';
 import type { FaunapoolenEnvironment } from './environment.js';
@@ -295,6 +297,7 @@ async function createFixture(
   });
   const enquiryDatabase = socialPersistence.database;
   const app = createFaunapoolenApplication({
+    packageService: createPackageService(enquiryDatabase.sqlite, 'test'),
     socialService: createSocialService(socialPersistence.database.sqlite),
     socialAi: createSocialAi(socialPersistence.database.sqlite, socialPersistence.jobs, false),
     enquiryService: createEnquiryService({
@@ -408,6 +411,41 @@ const IDENTITY: ServerReleaseIdentity = {
   artifactFiles: 10,
   artifactBytes: 1_024,
 };
+
+test('public packages reflect authenticated saves, with origin and revision protection', async (t) => {
+  const fixture = await createFixture(t);
+  const publicUrl = fixture.baseUrl + '/api/packages';
+  const adminUrl = fixture.baseUrl + '/api/admin/packages';
+  const initial = await fetch(publicUrl);
+  assert.match(initial.headers.get('cache-control') ?? '', /no-store/);
+  const catalogue = (await initial.json()) as PackageCatalogue;
+  assert.equal((await fetch(adminUrl)).status, 401);
+  assert.equal(
+    (
+      await fetch(adminUrl, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(catalogue),
+      })
+    ).status,
+    401,
+  );
+  const cookie = await login(fixture);
+  catalogue.packages[0]!.price = 460000;
+  catalogue.packages[0]!.titles.en = 'Synthetic renamed package';
+  const update = (origin: string) =>
+    fetch(adminUrl, {
+      method: 'PATCH',
+      headers: { cookie, origin, 'content-type': 'application/json' },
+      body: JSON.stringify(catalogue),
+    });
+  assert.equal((await update('https://untrusted.example.test')).status, 403);
+  assert.equal((await update(ORIGIN)).status, 200);
+  const current = (await (await fetch(publicUrl)).json()) as PackageCatalogue;
+  assert.equal(current.packages[0]!.price, 460000);
+  assert.equal(current.packages[0]!.titles.en, 'Synthetic renamed package');
+  assert.equal((await update(ORIGIN)).status, 409);
+});
 
 test('public enquiries persist once and private status changes require session, origin and revision', async (t) => {
   const fixture = await createFixture(t);

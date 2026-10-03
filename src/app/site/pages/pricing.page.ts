@@ -4,6 +4,7 @@ import {
   CxButtonComponent,
   CxGridComponent,
   CxHeroComponent,
+  CxSkeletonLoaderComponent,
   CxStackComponent,
   CxListComponent,
   CxListItemComponent,
@@ -22,6 +23,7 @@ import { SiteShellComponent } from '../site-shell.component';
     CxButtonComponent,
     CxGridComponent,
     CxHeroComponent,
+    CxSkeletonLoaderComponent,
     CxStackComponent,
     CxListComponent,
     CxListItemComponent,
@@ -33,6 +35,11 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PricingPage extends SitePage {
+  // A nine-digit sample covers the catalogue's supported price range. It is
+  // measurement text only, never a displayed or announced offer.
+  protected readonly priceReservation = `${this.copy.common.from} ${this.money(888888888)} · ${this.copy.common.priceExclusions}`;
+  protected readonly priceUnavailable = $localize`:@@packages.priceUnavailable:Price unavailable`;
+
   protected readonly poolEnquiry = POOL_ENQUIRY;
   protected readonly commercial = FAUNAPOOLEN_COMMERCIAL;
   protected readonly questionsTitle = NATURE_POOL_LANDING.questionsTitle;

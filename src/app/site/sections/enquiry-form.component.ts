@@ -16,6 +16,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   signal,
+  computed,
   Input,
   booleanAttribute,
   inject,
@@ -50,7 +51,7 @@ export class EnquiryFormComponent extends SitePage {
   protected readonly poolJourney =
     this.page === 'nature-pools' ||
     this.routeSnapshot.queryParamMap.get('service') === 'pool' ||
-    this.packages.some((item) => item.id === this.routeSnapshot.queryParamMap.get('package'));
+    this.packageIds.some((id) => id === this.routeSnapshot.queryParamMap.get('package'));
   protected readonly measurement = inject(SiteMeasurement);
   protected readonly ready = signal(false);
   private readonly injector = inject(Injector);
@@ -68,6 +69,9 @@ export class EnquiryFormComponent extends SitePage {
   protected readonly nameRequired = $localize`:@@enquiry.nameRequired:Enter your name.`;
   protected readonly locationRequired = $localize`:@@enquiry.locationRequired:Enter your town or postcode.`;
   protected readonly emailRequired = $localize`:@@enquiry.emailRequired:Enter your email address.`;
+  protected readonly pricesLoading = $localize`:@@packages.loading:Loading packages`;
+  protected readonly pricesUnavailable = $localize`:@@packages.unavailable:Packages could not be loaded. Try again or contact us about your pool.`;
+  protected readonly retryPrices = $localize`:@@packages.retry:Try again`;
   private readonly submitAttempted = signal(false);
 
   protected readonly contactName = signal('');
@@ -80,22 +84,22 @@ export class EnquiryFormComponent extends SitePage {
     id: item.id,
     label: item.name,
   }));
-  protected readonly packageChoices: CxDropdownOption[] = [
+  protected readonly packageChoices = computed<CxDropdownOption[]>(() => [
     { id: 'unsure', label: this.editorial.unknown },
     ...this.packages.map((item) => ({
       id: item.id,
       label: item.name,
-      description: `${item.area} · ${this.copy.common.from} ${this.money(item.price)} · ${this.copy.common.priceExclusions}`,
+      description: `${item.area} · ${this.copy.common.from} ${this.packagePrice(item)} · ${this.copy.common.priceExclusions}`,
     })),
-  ];
+  ]);
   constructor() {
     super();
     afterNextRender(() => this.ready.set(true));
     this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       if (this.pendingRequest() || this.submitted()) return;
-      const entryPackage = this.packages.find((item) => item.id === params.get('package'));
+      const entryPackage = this.packageIds.find((id) => id === params.get('package'));
       const entryService = this.services.find((item) => item.id === params.get('service'));
-      this.packageId.set(entryPackage?.id ?? 'unsure');
+      this.packageId.set(entryPackage ?? 'unsure');
       this.serviceId.set(
         this.poolJourney || entryPackage ? 'pool' : (entryService?.id ?? 'unsure'),
       );
@@ -142,6 +146,8 @@ export class EnquiryFormComponent extends SitePage {
 
   protected async submitProject(): Promise<void> {
     if (this.sending() || this.submitted()) return;
+    if (this.packageId() !== 'unsure' && !this.packageCatalogue.value() && !this.pendingRequest())
+      return;
     this.submitAttempted.set(true);
     if (!this.contactName().trim() || this.emailError() || !this.contactLocation().trim()) {
       this.measurement.track('enquiry_error', { error: 'validation' });
@@ -179,7 +185,7 @@ export class EnquiryFormComponent extends SitePage {
                 id: 'package',
                 label: this.copy.configure.packageTitle,
                 value:
-                  this.packageChoices.find((item) => item.id === this.packageId())?.label ??
+                  this.packageChoices().find((item) => item.id === this.packageId())?.label ??
                   this.editorial.unknown,
               },
             ]

@@ -29,6 +29,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 
 import { parseCopyRefinement } from './copy-refinement.js';
 import type { EnquiryService } from './enquiry-contracts.js';
+import type { PackageService } from './package-contracts.js';
 import { type AuthenticatedOwnerSession, type OwnerAuthService } from './auth-service.js';
 import { mountFaunapoolenBrowser } from './browser-serving.js';
 import {
@@ -57,6 +58,7 @@ export interface FaunapoolenApplicationOptions {
   readonly environment: FaunapoolenEnvironment;
   readonly generationService: GenerationService;
   readonly enquiryService: EnquiryService;
+  readonly packageService: PackageService;
   readonly socialService: SocialService;
   readonly socialAi: SocialAi;
   readonly identity?: ServerReleaseIdentity;
@@ -73,6 +75,7 @@ export function createFaunapoolenApplication({
   environment,
   generationService,
   enquiryService,
+  packageService,
   socialService,
   socialAi,
   identity,
@@ -97,6 +100,9 @@ export function createFaunapoolenApplication({
   const originGuard = createOriginGuard({ allowedOrigins: environment.mutationOrigins });
   const jsonBody = express.json({ limit: ADMIN_REQUEST_BODY_LIMIT, strict: true });
   app.use(ADMIN_API_PATH, noStoreHeader());
+  app.get('/api/packages', noStoreHeader(), (_request, response) => {
+    response.json(packageService.read());
+  });
   app.post('/api/enquiries', noStoreHeader(), originGuard, jsonBody, (request, response) => {
     const receipt = enquiryService.submit(request.body);
     response.status(201).json(receipt);
@@ -140,6 +146,12 @@ export function createFaunapoolenApplication({
   app.use(ADMIN_API_PATH, originGuard);
   mountSocialRoutes(app, socialService, socialAi, environment.generationEnabled);
   app.use(ADMIN_API_PATH, jsonBody);
+  app.get(`${ADMIN_API_PATH}/packages`, (_request, response) => {
+    response.json(packageService.read());
+  });
+  app.patch(`${ADMIN_API_PATH}/packages`, (request, response) => {
+    response.json(packageService.update(request.body));
+  });
   app.get(`${ADMIN_API_PATH}/customers`, (_request, response) => {
     response.json({ customers: enquiryService.customers() });
   });

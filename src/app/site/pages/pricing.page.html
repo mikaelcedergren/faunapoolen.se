@@ -5,9 +5,18 @@
     [heading]="commercial.pricingTitle"
     variant="stacked"
   >
-    <p body>
-      {{ copy.common.from }} {{ packagePrice(packages[0]) }} · {{ copy.common.priceExclusions }}
-    </p>
+    <cx-skeleton-loader
+      body
+      [reserveText]="priceReservation"
+      [loading]="packageCatalogue.loading()"
+    >
+      @if (packages[0]; as startingPackage) {
+        {{ copy.common.from }} {{ packagePrice(startingPackage) }} ·
+        {{ copy.common.priceExclusions }}
+      } @else {
+        {{ priceUnavailable }}
+      }
+    </cx-skeleton-loader>
     <p body>{{ commercial.pricingIntro }}</p>
     <cx-button
       actions

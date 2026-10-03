@@ -1,0 +1,80 @@
+<cx-stack gap="xl">
+  @if (loading()) {
+    <cx-state-message state="pending" heading="Loading packages" />
+  } @else {
+    <p>
+      Saving updates package titles and starting prices on this website. Prices are in SEK,
+      excluding VAT and shipping.
+    </p>
+    @if (error()) {
+      <cx-alert mood="danger" [heading]="error()" />
+      @if (!saved() || conflict()) {
+        <cx-button text="Reload packages" icon="reload" (pressed)="reload()" />
+      }
+    }
+    @if (saved()) {
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+        @for (item of draft(); track item.id; let index = $index) {
+          <section [attr.aria-label]="saved()!.packages[index].titles.en">
+            <cx-stack gap="lg">
+              <h2 class="cx-text-title-2">{{ saved()!.packages[index].titles.en }}</h2>
+              @for (language of languages; track language.id) {
+                <cx-text-field
+                  [label]="language.label"
+                  [value]="item.titles[language.id]"
+                  [disabled]="saving()"
+                  [validation]="
+                    attempted() && titleError(item.titles[language.id])
+                      ? { type: 'error', message: titleError(item.titles[language.id])! }
+                      : undefined
+                  "
+                  (valueChange)="updateTitle(index, language.id, $event)"
+                />
+              }
+              <cx-number-field
+                label="From price"
+                appendText="SEK"
+                [value]="item.price"
+                [min]="1"
+                [max]="100000000"
+                [step]="1"
+                [steppers]="false"
+                [disabled]="saving()"
+                [validation]="
+                  attempted() && priceError(item.price)
+                    ? { type: 'error', message: priceError(item.price)! }
+                    : undefined
+                "
+                (valueChange)="updatePrice(index, $event)"
+              />
+            </cx-stack>
+          </section>
+        }
+      </cx-grid>
+      <cx-inline gap="md">
+        <cx-button
+          text="Save changes"
+          mood="primary"
+          [loading]="saving()"
+          [disabled]="!dirty() || conflict()"
+          (pressed)="save()"
+        />
+        @if (savedNotice()) {
+          <p role="status">Changes saved</p>
+        }
+      </cx-inline>
+    }
+  }
+</cx-stack>
+<cx-dialog
+  variant="confirm"
+  heading="Discard package changes?"
+  description="Your unsaved titles and prices will be discarded."
+  primaryText="Discard changes"
+  secondaryText="Keep editing"
+  mood="danger"
+  [open]="leaveOpen()"
+  (primary)="decideLeave(true)"
+  (secondary)="decideLeave(false)"
+  (dismiss)="decideLeave(false)"
+/>

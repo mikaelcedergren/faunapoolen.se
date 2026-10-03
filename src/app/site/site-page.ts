@@ -1,3 +1,5 @@
+import { PublicPackageCatalogue } from './package-catalogue';
+import { PACKAGE_IDS } from '../../../server/src/package-contracts';
 import { DOCUMENT } from '@angular/common';
 import { Directive, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -56,7 +58,16 @@ export abstract class SitePage {
   protected readonly images = FAUNAPOOLEN_IMAGES;
   protected readonly projectPhoto = GOTLAND_MEDIA.find((item) => item.kind === 'photo')!;
   protected readonly aquascapeImages = AQUASCAPE_IMAGES;
-  protected readonly packages = FAUNAPOOLEN_PACKAGES;
+  protected readonly packageIds = PACKAGE_IDS;
+  protected readonly packageCatalogue = inject(PublicPackageCatalogue);
+  protected get packages(): readonly FaunapoolenPackage[] {
+    return (this.packageCatalogue.value()?.packages ?? []).map((values) => ({
+      ...FAUNAPOOLEN_PACKAGES.find((item) => item.id === values.id)!,
+      id: values.id,
+      name: values.titles[this.locale],
+      price: values.price,
+    }));
+  }
   protected readonly process = FAUNAPOOLEN_PROCESS;
   protected readonly guides = BLOG_ARTICLES;
   protected readonly guide =

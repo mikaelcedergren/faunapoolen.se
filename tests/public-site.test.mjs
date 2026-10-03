@@ -350,3 +350,34 @@ for (const path of PUBLIC_CANONICAL_PATHS) {
     );
   });
 }
+
+for (const locale of ['en', 'sv', 'da']) {
+  test(`${locale}: package shells retain VAT exclusions without freezing editable prices`, () => {
+    const prefix = locale === 'sv' ? '' : locale + '/';
+    const nodes = read(prefix + 'nature-pools/pricing/index.html');
+    const text = plain(nodes);
+    // Current prices belong to the runtime catalogue, never a stale build snapshot.
+    for (const value of [430_000, 1_100_000, 4_400_000]) {
+      const amount = new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: 'SEK',
+        maximumFractionDigits: 0,
+      })
+        .format(value)
+        .replace(/\s+/g, ' ');
+      assert.ok(!text.includes(amount), `Package amount ${amount} is not frozen into HTML`);
+    }
+    assert.ok(text.includes(translations[locale]['site.editorial.priceScope']));
+  });
+}
+
+test('public pages never describe a price or cost as including VAT', () => {
+  for (const path of PUBLIC_CANONICAL_PATHS) {
+    const text = plain(read(pathFile(path)));
+    assert.doesNotMatch(
+      text,
+      /\b(?:incl\.?|include[sd]?|including|inclusive of)\s+VAT\b|\b(?:inkl\.?|inklusive|inkluderar|inkluderer)\s+moms\b/i,
+      path,
+    );
+  }
+});

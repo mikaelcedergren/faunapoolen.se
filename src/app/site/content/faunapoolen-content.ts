@@ -28,10 +28,9 @@ export interface FaunapoolenPackage {
   readonly price: number;
 }
 
-export const FAUNAPOOLEN_PACKAGES: readonly FaunapoolenPackage[] = [
+export const FAUNAPOOLEN_PACKAGES: readonly Omit<FaunapoolenPackage, 'name' | 'price'>[] = [
   {
     id: 'glade',
-    name: $localize`:@@site.packages.glade.name:Daily dips`,
     area: $localize`:@@site.packages.glade.area:From 17.5 m² swim area`,
     description: $localize`:@@site.packages.glade.description:A compact plunge pool for cooling off, sauna breaks and smaller gardens.`,
     includes: [
@@ -39,11 +38,9 @@ export const FAUNAPOOLEN_PACKAGES: readonly FaunapoolenPackage[] = [
       $localize`:@@site.packages.glade.includes.1:Aquatic plants for biological balance`,
       $localize`:@@site.packages.glade.includes.2:Compact layout for smaller gardens`,
     ],
-    price: 430_000,
   },
   {
     id: 'summer',
-    name: $localize`:@@site.packages.summer.name:Swim together`,
     area: $localize`:@@site.packages.summer.area:From 24 m² swim area`,
     description: $localize`:@@site.packages.summer.description:A 1.5 m deep pool for swimming, with natural stone, lighting and water jets.`,
     includes: [
@@ -51,11 +48,9 @@ export const FAUNAPOOLEN_PACKAGES: readonly FaunapoolenPackage[] = [
       $localize`:@@site.packages.summer.includes.1:Natural stone and integrated lighting`,
       $localize`:@@site.packages.summer.includes.2:Water jets for circulation`,
     ],
-    price: 1_100_000,
   },
   {
     id: 'horizon',
-    name: $localize`:@@site.packages.horizon.name:More room`,
     area: $localize`:@@site.packages.horizon.area:From 100 m² swim area`,
     description: $localize`:@@site.packages.horizon.description:A spacious pool with waterfalls, boulders and a planted landscape.`,
     includes: [
@@ -63,7 +58,6 @@ export const FAUNAPOOLEN_PACKAGES: readonly FaunapoolenPackage[] = [
       $localize`:@@site.packages.horizon.includes.1:Planted garden and aquatic areas`,
       $localize`:@@site.packages.horizon.includes.2:Integrated lighting`,
     ],
-    price: 4_400_000,
   },
 ] as const;
 

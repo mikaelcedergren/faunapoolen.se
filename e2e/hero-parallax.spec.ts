@@ -93,3 +93,54 @@ test.describe('prerendered hero', () => {
     await expect(media).not.toHaveCSS('translate', 'none');
   });
 });
+
+for (const width of [1440, 390]) {
+  for (const outcome of ['success', 'failure'] as const) {
+    test(`pricing reserves the full hero crop during delayed ${outcome} at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      let release!: () => void;
+      const gate = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      await page.route('**/api/packages', async (route) => {
+        await gate;
+        if (outcome === 'failure') await route.fulfill({ status: 503, body: '{}' });
+        else await route.continue();
+      });
+      await page.goto('/en/nature-pools/pricing/');
+      await page.evaluate(() => document.fonts.ready);
+      const hero = page.locator('cx-hero');
+      const loader = hero.locator('cx-skeleton-loader');
+      await expect(loader).toHaveAttribute('aria-busy', 'true');
+      const geometry = () =>
+        hero.evaluate((element) => {
+          const bounds = (selector: string) => {
+            const rect = (element.querySelector(selector) ?? element).getBoundingClientRect();
+            return { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
+          };
+          return {
+            frame: bounds('.cx-hero'),
+            image: bounds('.cx-hero__media img'),
+            heading: bounds('h1'),
+            body: bounds('p[body]'),
+            actions: bounds('.cx-hero__actions'),
+          };
+        });
+      const before = await geometry();
+      release();
+      await expect(loader).toHaveAttribute('aria-busy', 'false');
+      if (outcome === 'failure') await expect(loader).toContainText('Price unavailable');
+      else await expect(loader).toContainText('SEK');
+      const after = await geometry();
+      for (const key of Object.keys(before) as (keyof typeof before)[]) {
+        for (const axis of ['top', 'left', 'width', 'height'] as const) {
+          expect(Math.abs(after[key][axis] - before[key][axis]), `${key}.${axis}`).toBeLessThan(
+            0.01,
+          );
+        }
+      }
+    });
+  }
+}

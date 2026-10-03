@@ -457,20 +457,17 @@
     "site.packages.glade.includes.0": "Aquascape BioFalls-filtrering",
     "site.packages.glade.includes.1": "Vandplanter for biologisk balance",
     "site.packages.glade.includes.2": "Kompakt udformning til mindre haver",
-    "site.packages.glade.name": "Daglige dukkerter",
     "site.packages.horizon.area": "Fra 100 m² svømmeareal",
     "site.packages.horizon.description": "En rummelig pool med vandfald, stenblokke og et beplantet havelandskab.",
     "site.packages.horizon.includes.0": "Vandfald og markante stenblokke",
     "site.packages.horizon.includes.1": "Havebeplantning og vandplanter",
     "site.packages.horizon.includes.2": "Integreret belysning",
-    "site.packages.horizon.name": "Mere plads",
     "site.packages.pricingLink": "Se priser og hvad der er inkluderet",
     "site.packages.summer.area": "Fra 24 m² svømmeareal",
     "site.packages.summer.description": "En 1,5 m dyb pool til svømning med natursten, belysning og vanddyser.",
     "site.packages.summer.includes.0": "Vådområdefilter og separat vandindtag",
     "site.packages.summer.includes.1": "Natursten og integreret belysning",
     "site.packages.summer.includes.2": "Vanddyser til cirkulation",
-    "site.packages.summer.name": "Bad sammen",
     "site.process.0.body": "Vi taler om, hvordan du vil bruge haven, dit budget og næste skridt. Den første telefonsamtale er gratis.",
     "site.process.0.title": "En første samtale",
     "site.process.1.body": "Efter en vurdering af grunden udarbejder vi forslag og tilbud. Besøg på stedet koster, men beløbet trækkes fra anlægsprisen, hvis du går videre.",
@@ -632,6 +629,10 @@
     "site.poolDetails.projectStoneTitle": "Natursten over og under vandet",
     "site.poolDetails.projectStoneBody": "Nærbilledet viser stenen under vandet og strukturen, der fortsætter langs poolkanten.",
     "site.poolDetails.projectEveningTitle": "Et andet udsyn efter mørkets frembrud",
-    "site.poolDetails.projectEveningBody": "Undervandsbelysningen fremhæver stenene og vandet efter solnedgang, så poolen kan ses fra haven om aftenen."
+    "site.poolDetails.projectEveningBody": "Undervandsbelysningen fremhæver stenene og vandet efter solnedgang, så poolen kan ses fra haven om aftenen.",
+    "packages.loading": "Indlæser poolpakker",
+    "packages.unavailable": "Poolpakkerne kunne ikke indlæses. Prøv igen, eller kontakt os om din pool.",
+    "packages.retry": "Prøv igen",
+    "packages.priceUnavailable": "Prisen kunne ikke hentes"
   }
 }

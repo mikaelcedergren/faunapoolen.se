@@ -67,12 +67,18 @@
           />
         }
         @if (serviceId() === 'pool' && (!compact || packageId() !== 'unsure')) {
+          @if (packageCatalogue.loading()) {
+            <p role="status">{{ pricesLoading }}</p>
+          } @else if (packageCatalogue.error()) {
+            <cx-alert mood="danger" [heading]="pricesUnavailable" />
+            <cx-button [text]="retryPrices" (pressed)="packageCatalogue.reload()" />
+          }
           <cx-dropdown
-            [disabled]="!ready() || !!pendingRequest()"
+            [disabled]="!ready() || !!pendingRequest() || !packageCatalogue.value()"
             [label]="copy.configure.packageTitle"
             [optional]="true"
             size="large"
-            [availableValues]="packageChoices"
+            [availableValues]="packageChoices()"
             [value]="packageId()"
             (valueChange)="selectPackage($event)"
           />
@@ -98,6 +104,7 @@
           <cx-button
             type="submit"
             [text]="poolJourney ? poolEnquiry.cta : submitLabel"
+            [disabled]="packageId() !== 'unsure' && !packageCatalogue.value() && !pendingRequest()"
             [loading]="!ready() || sending()"
             size="large"
             mood="primary"

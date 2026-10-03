@@ -33,6 +33,7 @@ import {
 } from './environment.js';
 import { createGenerationService } from './generation-service.js';
 import { createEnquiryService } from './enquiry-service.js';
+import { createPackageService } from './package-service.js';
 import { verifyFaunapoolenDatabase } from './database.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
@@ -109,6 +110,10 @@ export async function startFaunapoolenServer({
       providerConfigured: environment.generationEnabled,
     });
     const app = createFaunapoolenApplication({
+      packageService: createPackageService(
+        persistence.database.sqlite,
+        environment.releaseValidation ? 'test' : environment.execution.executionScope,
+      ),
       socialService: createSocialService(persistence.database.sqlite),
       socialAi: createSocialAi(
         persistence.database.sqlite,

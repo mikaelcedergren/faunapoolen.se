@@ -75,6 +75,9 @@
           @case ('inbox') {
             <fp-enquiry-inbox (sessionExpired)="expireSession()" />
           }
+          @case ('packages') {
+            <fp-packages (sessionExpired)="expireSession()" />
+          }
           @case ('list') {
             @if (generationError() && !composeOpen()) {
               <cx-alert mood="danger" [heading]="generationError()" />

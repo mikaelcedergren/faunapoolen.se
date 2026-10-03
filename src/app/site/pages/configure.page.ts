@@ -14,5 +14,5 @@ export class ConfigurePage extends SitePage {
   protected readonly poolEnquiry = POOL_ENQUIRY;
   protected readonly poolJourney =
     this.routeSnapshot.queryParamMap.get('service') === 'pool' ||
-    this.packages.some((item) => item.id === this.routeSnapshot.queryParamMap.get('package'));
+    this.packageIds.some((id) => id === this.routeSnapshot.queryParamMap.get('package'));
 }

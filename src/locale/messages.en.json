@@ -174,19 +174,16 @@
     "site.commercial.fountainPriceTitle": "Fountains and smaller water features",
     "site.commercial.fountainPriceBody": "A fountain or small pond has its own requirements for water supply, circulation and installation. Ask us about your space; nature-pool starting prices do not apply to these installations.",
     "site.commercial.waterFeatureLink": "Explore ponds, streams and waterfalls",
-    "site.packages.glade.name": "Daily dips",
     "site.packages.glade.area": "From 17.5 m² swim area",
     "site.packages.glade.description": "A compact plunge pool for cooling off, sauna breaks and smaller gardens.",
     "site.packages.glade.includes.0": "Aquascape BioFalls filtration",
     "site.packages.glade.includes.1": "Aquatic plants for biological balance",
     "site.packages.glade.includes.2": "Compact layout for smaller gardens",
-    "site.packages.summer.name": "Swim together",
     "site.packages.summer.area": "From 24 m² swim area",
     "site.packages.summer.description": "A 1.5 m deep pool for swimming, with natural stone, lighting and water jets.",
     "site.packages.summer.includes.0": "Wetland filtration and a separate water intake",
     "site.packages.summer.includes.1": "Natural stone and integrated lighting",
     "site.packages.summer.includes.2": "Water jets for circulation",
-    "site.packages.horizon.name": "More room",
     "site.packages.horizon.area": "From 100 m² swim area",
     "site.packages.horizon.description": "A spacious pool with waterfalls, boulders and a planted landscape.",
     "site.packages.horizon.includes.0": "Waterfalls and feature boulders",
@@ -632,6 +629,10 @@
     "site.footer.contact": "Contact",
     "site.footer.explore": "Explore",
     "site.language.label": "Language",
-    "site.language.suggestion": "Read this page in your preferred language"
+    "site.language.suggestion": "Read this page in your preferred language",
+    "packages.loading": "Loading packages",
+    "packages.unavailable": "Packages could not be loaded. Try again or contact us about your pool.",
+    "packages.retry": "Try again",
+    "packages.priceUnavailable": "Price unavailable"
   }
 }

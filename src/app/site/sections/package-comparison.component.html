@@ -9,6 +9,16 @@
       @if (showDetails) {
         <p class="cx-text-body-lg cx-measure-lg-start">{{ landing.priceIntro }}</p>
       }
+      @if (packageCatalogue.loading()) {
+        <cx-state-message state="pending" [heading]="pricesLoading" />
+      } @else if (packageCatalogue.error()) {
+        <cx-state-message
+          state="danger"
+          [heading]="pricesUnavailable"
+          [action]="{ text: retryPrices }"
+          (action)="packageCatalogue.reload()"
+        />
+      }
       <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
         @for (item of packages; track item.id) {
           <article class="fp-package">
