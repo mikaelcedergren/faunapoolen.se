@@ -111,7 +111,7 @@ export function routeForSourcePath(file) {
   const post = /^src\/app\/site\/articles\/([^/]+)\.ts$/u.exec(file)?.[1];
   if (post) return `/en/blog/posts/${post}.html`;
   if (file.startsWith('src/app/pages/admin/social-posts')) return '/en/admin/social-posts/';
-  if (file.startsWith('src/app/pages/admin/enquiry-inbox')) return '/en/admin/enquiries/';
+  if (file.startsWith('src/app/pages/admin/enquiry-inbox')) return '/en/admin/customers/';
   if (file.startsWith('src/app/pages/admin/')) return '/admin/';
   const page = /^src\/app\/site\/pages\/([^.]+)\.page\./u.exec(file)?.[1];
   return PUBLIC_PAGES.en[page] ?? '/';

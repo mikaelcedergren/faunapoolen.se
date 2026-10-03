@@ -140,6 +140,27 @@ export function createFaunapoolenApplication({
   app.use(ADMIN_API_PATH, originGuard);
   mountSocialRoutes(app, socialService, socialAi, environment.generationEnabled);
   app.use(ADMIN_API_PATH, jsonBody);
+  app.get(`${ADMIN_API_PATH}/customers`, (_request, response) => {
+    response.json({ customers: enquiryService.customers() });
+  });
+  app.patch(`${ADMIN_API_PATH}/customers/:id`, (request, response) => {
+    if (typeof request.params['id'] !== 'string')
+      throw invalidRequest('Invalid customer reference.');
+    const customer = enquiryService.updateCustomer(request.params['id'], request.body);
+    response.json({ customer });
+  });
+  app.post(`${ADMIN_API_PATH}/enquiries/:id/resolve-email`, (request, response) => {
+    if (typeof request.params['id'] !== 'string')
+      throw invalidRequest('Invalid enquiry reference.');
+    enquiryService.resolveNotification(request.params['id'], request.body);
+    response.sendStatus(204);
+  });
+  app.post(`${ADMIN_API_PATH}/enquiries/:id/retry-email`, (request, response) => {
+    if (typeof request.params['id'] !== 'string')
+      throw invalidRequest('Invalid enquiry reference.');
+    enquiryService.retryNotification(request.params['id'], request.body);
+    response.sendStatus(204);
+  });
   app.get(`${ADMIN_API_PATH}/enquiries`, (_request, response) => {
     response.json({ enquiries: enquiryService.list() });
   });

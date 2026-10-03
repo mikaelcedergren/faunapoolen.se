@@ -1,3 +1,4 @@
+import { enquiryMailConfiguration, type EnquiryMailConfiguration } from './enquiry-mail.js';
 import { realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -54,6 +55,7 @@ export interface FaunapoolenEnvironment extends FaunapoolenBaseEnvironment {
 }
 
 export interface FaunapoolenWorkerEnvironment extends FaunapoolenBaseEnvironment {
+  readonly enquiryMail: EnquiryMailConfiguration | undefined;
   readonly providerApiKey: string | undefined;
   readonly providerBaseUrl: string | undefined;
   readonly providerModel: typeof DEFAULT_OPENAI_MODEL;
@@ -157,6 +159,7 @@ export function loadFaunapoolenEnvironment(
     }
     return Object.freeze({
       ...base,
+      enquiryMail: releaseValidation ? undefined : enquiryMailConfiguration(environment),
       providerApiKey,
       providerBaseUrl,
       providerModel,

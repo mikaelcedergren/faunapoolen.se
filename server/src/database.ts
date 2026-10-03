@@ -21,6 +21,7 @@ import {
 import { CAMPAIGN_MAX_RECORDS, sha256Hex } from './campaign-schema.js';
 import { MAX_IDEA_CHARACTERS, MIN_IDEA_CHARACTERS } from './generation-content.js';
 import { SOCIAL_MIGRATION } from './social-schema.js';
+import { CUSTOMER_MIGRATION } from './customer-schema.js';
 import { ENQUIRY_MIGRATION } from './enquiry-schema.js';
 
 export const MAX_GENERATION_RUNS = 2_000;
@@ -537,12 +538,15 @@ export const FAUNAPOOLEN_MIGRATIONS = Object.freeze([
   },
   ENQUIRY_MIGRATION,
   SOCIAL_MIGRATION,
+  CUSTOMER_MIGRATION,
 ] as const satisfies readonly SqliteMigration[]);
 
 const REQUIRED_TABLES = Object.freeze([
   'social_posts',
   'social_adaptations',
   'social_effects',
+  'customers',
+  'enquiry_notifications',
   'enquiries',
   'enquiry_windows',
   SQLITE_MIGRATION_LEDGER_TABLE,

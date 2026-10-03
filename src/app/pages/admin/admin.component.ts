@@ -298,8 +298,8 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly authReady = signal(false);
   private readonly document = inject(DOCUMENT);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
-  private readonly initialView: View = inject(ActivatedRoute).snapshot.url.some(
-    (segment) => segment.path === 'enquiries',
+  private readonly initialView: View = inject(ActivatedRoute).snapshot.url.some((segment) =>
+    ['customers', 'enquiries'].includes(segment.path),
   )
     ? 'inbox'
     : inject(ActivatedRoute).snapshot.url.some((segment) => segment.path === 'social-posts')
@@ -382,10 +382,10 @@ export class AdminComponent implements OnInit, OnDestroy {
     },
     {
       id: 'enquiries',
-      label: 'Enquiry inbox',
+      label: 'Customers',
       icon: 'form',
-      routerLink: '/admin/enquiries',
-      routerLinkActiveOptions: { exact: true },
+      routerLink: '/admin/customers',
+      routerLinkActiveOptions: { exact: false },
     },
   ];
   protected readonly sectionTabs: CxTabItem[] = [
@@ -588,7 +588,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.view() === 'social'
         ? { id: 'social-posts', label: 'Social posts' }
         : this.view() === 'inbox'
-          ? { id: 'enquiries', label: 'Enquiry inbox' }
+          ? { id: 'enquiries', label: 'Customers' }
           : { id: 'campaign-studio', label: 'Campaign studio' };
     if (this.view() === 'campaign') {
       return {

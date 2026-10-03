@@ -154,7 +154,7 @@ test('route mapping is bounded and product-owned', () => {
   );
   assert.equal(
     routeForSourcePath('src/app/pages/admin/enquiry-inbox.component.ts'),
-    '/en/admin/enquiries/',
+    '/en/admin/customers/',
   );
   assert.equal(routeForSourcePath('src/styles.scss'), '/');
   assert.equal(safeEvidenceName('/admin/'), 'admin');

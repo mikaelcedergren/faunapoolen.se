@@ -440,11 +440,40 @@ test('public enquiries persist once and private status changes require session, 
   assert.deepEqual(await receipt.json(), { id: input.requestId });
   assert.equal((await post()).status, 201);
   assert.equal((await fetch(fixture.baseUrl + '/api/admin/enquiries')).status, 401);
+  assert.equal((await fetch(fixture.baseUrl + '/api/admin/customers')).status, 401);
   const cookie = await login(fixture);
   const list = await fetch(fixture.baseUrl + '/api/admin/enquiries', { headers: { cookie } });
   const data = (await list.json()) as { enquiries: { revision: number; language: string }[] };
   assert.equal(data.enquiries.length, 1);
   assert.equal(data.enquiries[0]?.language, 'da');
+  const customers = (await (
+    await fetch(fixture.baseUrl + '/api/admin/customers', { headers: { cookie } })
+  ).json()) as { customers: { id: string; enquiries: unknown[] }[] };
+  assert.equal(customers.customers.length, 1);
+  assert.equal(customers.customers[0]?.enquiries.length, 1);
+  const customerUrl = fixture.baseUrl + '/api/admin/customers/' + customers.customers[0]!.id;
+  const body = JSON.stringify({ status: 'customer', expectedRevision: 1 });
+  assert.equal(
+    (
+      await fetch(customerUrl, {
+        method: 'PATCH',
+        headers: { cookie, 'content-type': 'application/json' },
+        body,
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await fetch(customerUrl, {
+        method: 'PATCH',
+        headers: { cookie, origin: ORIGIN, 'content-type': 'application/json' },
+        body,
+      })
+    ).status,
+    200,
+  );
+
   const update = (headers: Record<string, string>, revision = 1) =>
     fetch(fixture.baseUrl + '/api/admin/enquiries/' + input.requestId, {
       method: 'PATCH',
@@ -455,7 +484,14 @@ test('public enquiries persist once and private status changes require session, 
   const saved = await update({ cookie, origin: ORIGIN });
   assert.equal(saved.status, 200);
   assert.equal((await update({ cookie, origin: ORIGIN })).status, 409);
-  for (const url of ['/admin/enquiries', '/en/admin/enquiries', '/da/admin/enquiries'])
+  for (const url of [
+    '/admin/enquiries',
+    '/en/admin/enquiries',
+    '/da/admin/enquiries',
+    '/admin/customers',
+    '/en/admin/customers',
+    '/da/admin/customers',
+  ])
     assert.equal(
       (await fetch(fixture.baseUrl + url)).headers.get('x-robots-tag'),
       'noindex, nofollow',

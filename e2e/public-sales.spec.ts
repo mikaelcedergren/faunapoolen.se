@@ -54,14 +54,23 @@ for (const [entry, linkName, index, service, packageId] of [
       .click();
     const response = await received;
     expect(response.status()).toBe(201);
-    expect(response.request().postDataJSON()).toMatchObject({
-      service,
-      packageId,
-      siteId: 'unsure',
-      sizeId: 'included',
-      featureIds: [],
-      annualCare: false,
-    });
+    const payload = response.request().postDataJSON();
+    expect(payload.formVersion).toMatch(/^consultation/);
+    expect(payload.fields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: 'location', value: 'Synthetic garden' }),
+        expect.objectContaining({
+          id: 'service',
+          value: service === 'pool' ? 'Nature pool' : 'Stream or waterfall',
+        }),
+      ]),
+    );
+    if (packageId === 'summer')
+      expect(payload.fields).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'package', value: 'Swim together' }),
+        ]),
+      );
     await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
     await expect(page.getByRole('textbox')).toHaveCount(0);
   });
@@ -150,7 +159,9 @@ test('the inline enquiry keeps contact details when changing pool preference', a
   await page.getByRole('button', { name: 'Request free pool advice', exact: true }).click();
   const response = await received;
   expect(response.status()).toBe(201);
-  expect(response.request().postDataJSON()).toMatchObject({ service: 'pool', packageId: 'unsure' });
+  expect(response.request().postDataJSON().fields).toEqual(
+    expect.arrayContaining([expect.objectContaining({ id: 'package', value: 'Not decided yet' })]),
+  );
   await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
 });
 

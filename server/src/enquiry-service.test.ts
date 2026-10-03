@@ -81,7 +81,7 @@ test('enquiries survive reopen, retry once, and use compare-and-swap', () => {
     db = openFaunapoolenDatabase(options);
     service = createEnquiryService({ database: db.sqlite, secret });
     assert.equal(service.list()[0]?.status, 'contacted');
-    assert.equal(service.list()[0]?.notes, enquiry.notes);
+    assert.equal(service.list()[0]?.fields.find((f) => f.id === 'notes')?.value, enquiry.notes);
     service.update(enquiry.requestId, { status: 'closed', expectedRevision: 2 });
     assert.equal(service.list()[0]?.status, 'closed');
   } finally {
@@ -125,4 +125,156 @@ test('boundary validation refuses unknown fields, oversized text, invalid choice
     parseEnquiry({ ...input(), email: ' VISITOR@example.test ' }).email,
     'visitor@example.test',
   );
+});
+
+test('flexible forms group by email and retain original names, labels and values', () => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'fauna-customers-')));
+  const options = { operationalRoot: root, databasePath: path.join(root, 'synthetic.db') };
+  let db = openFaunapoolenDatabase(options);
+  try {
+    let service = createEnquiryService({ database: db.sqlite, secret });
+    const first = {
+      requestId: randomUUID(),
+      email: ' Visitor@example.test ',
+      formVersion: 'experiment-1',
+      fields: [{ id: 'budget', label: 'Budget at the time', value: 'Not decided' }],
+    };
+    service.submit(first);
+    service.submit(first);
+    const second = {
+      requestId: randomUUID(),
+      email: 'visitor@example.test',
+      name: 'A visitor',
+      formVersion: 'experiment-2',
+      fields: [],
+    };
+    service.submit(second);
+    assert.equal(service.customers().length, 1);
+    const customer = service.customers()[0]!;
+    assert.equal(customer.name, 'A visitor');
+    assert.equal(customer.enquiries.length, 2);
+    assert.equal(customer.enquiries.find((e) => e.requestId === first.requestId)?.name, '');
+    assert.deepEqual(
+      customer.enquiries.find((e) => e.requestId === first.requestId)?.fields,
+      first.fields,
+    );
+    assert.equal(db.sqlite.get('SELECT count(*) AS n FROM enquiry_notifications')?.['n'], 2);
+    service.updateCustomer(customer.id, {
+      status: 'customer',
+      expectedRevision: customer.revision,
+    });
+    assert.throws(
+      () =>
+        service.updateCustomer(customer.id, {
+          status: 'lead',
+          expectedRevision: customer.revision,
+        }),
+      /changed/,
+    );
+    db.close();
+    db = openFaunapoolenDatabase(options);
+    service = createEnquiryService({ database: db.sqlite, secret });
+    assert.equal(service.customers()[0]?.id, customer.id);
+    assert.equal(service.customers()[0]?.status, 'customer');
+    assert.equal(service.customers()[0]?.enquiries.length, 2);
+    assert.throws(
+      () =>
+        service.submit({
+          ...second,
+          requestId: randomUUID(),
+          fields: [{ id: 'x', label: 'x', value: 'x'.repeat(4001) }],
+        }),
+      /too long/,
+    );
+    assert.throws(
+      () =>
+        service.submit({
+          ...second,
+          requestId: randomUUID(),
+          fields: Array.from({ length: 4 }, (_, i) => ({
+            id: `f${i}`,
+            label: 'x',
+            value: 'x'.repeat(3900),
+          })),
+        }),
+      /too long/,
+    );
+  } finally {
+    db.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('customer and enquiry admission roll back when the notification cannot be saved', () => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'fauna-atomic-')));
+  const db = openFaunapoolenDatabase({
+    operationalRoot: root,
+    databasePath: path.join(root, 'synthetic.db'),
+  });
+  try {
+    db.sqlite.run(
+      "CREATE TRIGGER synthetic_refusal BEFORE INSERT ON enquiry_notifications BEGIN SELECT RAISE(ABORT,'synthetic refusal'); END",
+    );
+    const service = createEnquiryService({ database: db.sqlite, secret });
+    assert.throws(() => service.submit(input()), /synthetic refusal/);
+    assert.equal(service.list().length, 0);
+    assert.equal(service.customers().length, 0);
+  } finally {
+    db.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('migration groups historical email identities without queuing old notifications', async () => {
+  const { DatabaseSync } = await import('node:sqlite');
+  const { applySqliteMigrations, createPreparedSyncSqliteAdapter } =
+    await import('@mikaelcedergren/cx-framework/server/sqlite');
+  const { FAUNAPOOLEN_MIGRATIONS } = await import('./database.js');
+  const { createHash } = await import('node:crypto');
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'fauna-customer-migration-')));
+  const databasePath = path.join(root, 'synthetic.db');
+  const native = new DatabaseSync(databasePath);
+  const sql = createPreparedSyncSqliteAdapter(native);
+  const options = {
+    fingerprint: (s: string) => createHash('sha256').update(s).digest('hex'),
+    now: () => new Date().toISOString(),
+  };
+  applySqliteMigrations(
+    sql,
+    FAUNAPOOLEN_MIGRATIONS.filter((m) => m.version <= 14),
+    options,
+  );
+  const first = input(),
+    second = { ...input(), email: 'VISITOR@example.test' };
+  for (const entry of [first, second]) {
+    const json = JSON.stringify(entry);
+    sql.run(
+      "INSERT INTO enquiries(id,request_hash,record_json,status,revision,created_at,updated_at) VALUES(?,?,?,'new',1,?,?)",
+      [
+        entry.requestId,
+        createHash('sha256')
+          .update(JSON.stringify(parseEnquiry(entry)))
+          .digest('hex'),
+        json,
+        '2026-01-01T00:00:00.000Z',
+        '2026-01-01T00:00:00.000Z',
+      ],
+    );
+  }
+  applySqliteMigrations(sql, FAUNAPOOLEN_MIGRATIONS, options);
+  native.close();
+  fs.chmodSync(databasePath, 0o600);
+  const db = openFaunapoolenDatabase({ operationalRoot: root, databasePath });
+  try {
+    const service = createEnquiryService({ database: db.sqlite, secret });
+    assert.equal(service.customers().length, 1);
+    assert.equal(service.list().length, 2);
+    assert.ok(service.list().every((e) => e.notification.state === 'historical'));
+    service.submit(first);
+    assert.equal(service.list().length, 2);
+    assert.equal(db.sqlite.get('SELECT count(*) AS n FROM enquiry_notifications')?.['n'], 0);
+  } finally {
+    db.close();
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });

@@ -1,3 +1,4 @@
+import { createEnquiryMailWorker } from './enquiry-mail.js';
 import { createSocialAi } from './social-ai.js';
 import { loadProductManifestFile } from '@mikaelcedergren/cx-framework/server/product-manifest';
 import { configureFaunapoolenLogging, log } from './logging.js';
@@ -312,6 +313,21 @@ export async function startFaunapoolenWorker({
       store: persistence.jobs,
     });
 
+    const mailWorker = environment.enquiryMail
+      ? createEnquiryMailWorker({
+          database: persistence.database.sqlite,
+          configuration: environment.enquiryMail,
+          executionScope: environment.execution.executionScope,
+          appOrigin: environment.appOrigin,
+          onError: () =>
+            log.emit({
+              event: 'enquiry.email_worker_failed',
+              level: 'error',
+              category: 'diagnostic',
+              outcome: 'failure',
+            }),
+        })
+      : undefined;
     let closing: Promise<void> | undefined;
     let disposeSignals = (): void => undefined;
     let readinessLease: ServerWorkerReadinessLease | undefined;
@@ -323,20 +339,29 @@ export async function startFaunapoolenWorker({
       },
       close(reason = 'shutdown') {
         if (closing) return closing;
-        closing = closeWorkerRuntime({
-          closeReadinessLease: () => {
-            readinessLease?.close();
-            lifetimeReference?.close();
-          },
-          closePersistence: () => {
-            if (!persistenceOpen) return;
-            persistenceOpen = false;
-            persistence.close();
-          },
-          disposeSignals: () => disposeSignals(),
-          reason,
-          worker: workerStarted ? worker : undefined,
-        }).then(() => {
+        closing = (async () => {
+          let mailFailure: unknown;
+          try {
+            await mailWorker?.close();
+          } catch (error) {
+            mailFailure = error;
+          }
+          await closeWorkerRuntime({
+            closeReadinessLease: () => {
+              readinessLease?.close();
+              lifetimeReference?.close();
+            },
+            closePersistence: () => {
+              if (!persistenceOpen) return;
+              persistenceOpen = false;
+              persistence.close();
+            },
+            disposeSignals: () => disposeSignals(),
+            reason,
+            worker: workerStarted ? worker : undefined,
+          });
+          if (mailFailure) throw mailFailure;
+        })().then(() => {
           log.emit({
             event: 'process.stopped',
             level: 'info',
@@ -374,6 +399,7 @@ export async function startFaunapoolenWorker({
       }
       workerStarted = true;
       worker.start();
+      mailWorker?.start();
     } catch (startupError) {
       try {
         await shutdown.close('startup_failure');

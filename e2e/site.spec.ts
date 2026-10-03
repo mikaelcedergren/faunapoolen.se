@@ -139,7 +139,7 @@ test('an enquiry reaches the real private inbox and its saved status survives re
   expect(new URL(page.url()).search).toBe('');
   expect(errors).toEqual([]);
   await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
-  await page.goto('/en/admin/enquiries');
+  await page.goto('/en/admin/customers');
   await page.getByRole('textbox', { name: 'Username', exact: true }).fill('faunapoolen-e2e-owner');
   await page.locator('input[name="password"]').fill('faunapoolen-e2e-owner-password');
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
@@ -149,7 +149,7 @@ test('an enquiry reaches the real private inbox and its saved status survives re
   await page.getByRole('button', { name: 'Mark contacted', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Mark contacted', exact: true })).toHaveCount(0);
   await page.reload();
-  await page.getByText(name, { exact: true }).click();
+  await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Mark contacted', exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Close enquiry', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Reopen enquiry', exact: true })).toBeVisible();

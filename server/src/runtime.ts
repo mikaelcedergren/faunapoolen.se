@@ -118,6 +118,7 @@ export async function startFaunapoolenServer({
       enquiryService: createEnquiryService({
         database: persistence.database.sqlite,
         secret: environment.sessionSecret,
+        executionScope: environment.execution.executionScope,
       }),
       authService,
       browserServing: configuredBrowserServing,

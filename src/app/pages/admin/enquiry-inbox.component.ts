@@ -8,102 +8,119 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   CxAlertComponent,
   CxButtonComponent,
-  CxFilterBarComponent,
+  CxToggleChipGroupComponent,
   CxInlineComponent,
   CxStackComponent,
   CxStateMessageComponent,
   CxTableComponent,
+  CxTextFieldComponent,
   type CxTableColumn,
   type CxTableRow,
   type CxTableRowActivateEvent,
 } from '@mikaelcedergren/cx-framework';
-import type { EnquiryRecord, EnquiryStatus } from '../../../../server/src/enquiry-contracts';
+import type {
+  CustomerRecord,
+  EnquiryRecord,
+  EnquiryStatus,
+} from '../../../../server/src/enquiry-contracts';
 
 @Component({
   selector: 'fp-enquiry-inbox',
   imports: [
     CxAlertComponent,
     CxButtonComponent,
-    CxFilterBarComponent,
+    CxToggleChipGroupComponent,
     CxInlineComponent,
     CxStackComponent,
     CxStateMessageComponent,
     CxTableComponent,
+    CxTextFieldComponent,
   ],
   templateUrl: './enquiry-inbox.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnquiryInboxComponent {
-  protected choiceLabel(value: string): string {
-    const labels: Record<string, string> = {
-      pool: 'Nature pool',
-      pond: 'Pond',
-      stream: 'Stream or waterfall',
-      unsure: 'Not sure yet',
-      glade: 'The glade',
-      summer: 'Summer days',
-      horizon: 'The horizon',
-      open: 'Open access',
-      limited: 'Constrained access',
-      complex: 'Rock or major level changes',
-      included: 'Within the package range',
-      larger: 'Larger',
-      expansive: 'Extra large',
-      deck: 'Deck',
-      stone: 'Natural stone',
-      lighting: 'Lighting',
-      heating: 'Heating',
-      morning: 'Weekdays 08:00–12:00',
-      afternoon: 'Weekdays 12:00–17:00',
-      evening: 'Weekdays 17:00–20:00',
-    };
-    return labels[value] ?? value;
-  }
-  protected additions(values: readonly string[]): string {
-    return values.map((value) => this.choiceLabel(value)).join(', ') || 'None selected';
-  }
   readonly sessionExpired = output<void>();
   private readonly lifetime = new AbortController();
-  protected readonly enquiries = signal<EnquiryRecord[]>([]);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  protected readonly customers = signal<CustomerRecord[]>([]);
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
   protected readonly error = signal('');
-  protected readonly selectedId = signal('');
+  protected readonly selectedId = signal(this.route.snapshot.queryParamMap.get('customer') ?? '');
   protected readonly filter = signal('all');
+  protected readonly search = signal('');
+  protected readonly reviewingEmail = signal('');
   protected readonly selected = computed(() =>
-    this.enquiries().find((e) => e.requestId === this.selectedId()),
+    this.customers().find((c) => c.id === this.selectedId()),
   );
   protected readonly filters = [
     { id: 'all', label: 'All' },
-    { id: 'new', label: 'New' },
-    { id: 'contacted', label: 'Contacted' },
-    { id: 'closed', label: 'Closed' },
+    { id: 'new', label: 'New enquiries' },
+    { id: 'lead', label: 'Leads' },
+    { id: 'customer', label: 'Customers' },
   ];
   protected readonly columns: CxTableColumn[] = [
-    { id: 'name', label: 'Enquiry', key: true, size: 'flex', hideable: false, pinnable: false },
-    { id: 'location', label: 'Location', size: 'content', hideable: false, pinnable: false },
+    { id: 'name', label: 'Customer', key: true, size: 'flex', hideable: false, pinnable: false },
+    { id: 'email', label: 'Email', size: 'flex', hideable: false, pinnable: false },
     { id: 'status', label: 'Status', size: 'content', hideable: false, pinnable: false },
-    { id: 'received', label: 'Received', size: 'content', hideable: false, pinnable: false },
+    { id: 'enquiries', label: 'Enquiries', size: 'content', hideable: false, pinnable: false },
+    { id: 'received', label: 'Latest enquiry', size: 'content', hideable: false, pinnable: false },
   ];
   protected readonly rows = computed<CxTableRow[]>(() =>
-    this.enquiries()
-      .filter((e) => this.filter() === 'all' || e.status === this.filter())
-      .map((e) => ({
-        id: e.requestId,
+    this.customers()
+      .filter(
+        (c) =>
+          this.filter() === 'all' ||
+          (this.filter() === 'new'
+            ? c.enquiries.some((e) => e.status === 'new')
+            : c.status === this.filter()),
+      )
+      .filter((c) =>
+        `${c.name} ${c.email}`.toLowerCase().includes(this.search().trim().toLowerCase()),
+      )
+      .sort((a, b) =>
+        (b.enquiries[0]?.createdAt ?? b.createdAt).localeCompare(
+          a.enquiries[0]?.createdAt ?? a.createdAt,
+        ),
+      )
+      .map((c) => ({
+        id: c.id,
         cells: {
-          name: { kind: 'text', value: e.name, strong: true },
-          location: { kind: 'text', value: e.location },
-          status: { kind: 'text', value: this.statusLabel(e.status) },
-          received: { kind: 'text', value: this.date(e.createdAt), muted: true },
+          name: { kind: 'text', value: c.name || c.email, strong: true },
+          email: { kind: 'text', value: c.email },
+          status: {
+            kind: 'text',
+            value: c.enquiries.some((e) => e.status === 'new')
+              ? 'New enquiry'
+              : c.status === 'lead'
+                ? 'Lead'
+                : 'Customer',
+          },
+          enquiries: { kind: 'text', value: String(c.enquiries.length) },
+          received: {
+            kind: 'text',
+            value: this.date(c.enquiries[0]?.createdAt ?? c.createdAt),
+            muted: true,
+          },
         },
       })),
   );
   constructor() {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((params) => this.selectedId.set(params.get('customer') ?? ''));
     inject(DestroyRef).onDestroy(() => this.lifetime.abort());
     afterNextRender(() => void this.reload());
+  }
+  protected answeredFields(enquiry: EnquiryRecord) {
+    return enquiry.fields.filter((field) => field.value);
   }
   protected date(value: string): string {
     return new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' }).format(
@@ -113,9 +130,49 @@ export class EnquiryInboxComponent {
   protected statusLabel(status: EnquiryStatus): string {
     return { new: 'New', contacted: 'Contacted', closed: 'Closed' }[status];
   }
+  protected mailLabel(enquiry: EnquiryRecord): string {
+    return {
+      queued: 'Email queued',
+      sending: 'Sending email',
+      sent: enquiry.notification.messageId ? 'Accepted by Brevo' : 'Marked as sent',
+      failed: 'Email not sent',
+      uncertain: 'Email status unconfirmed',
+      historical: 'Recorded before email notifications',
+    }[enquiry.notification.state];
+  }
   protected open(event: CxTableRowActivateEvent): void {
-    this.selectedId.set(String(event.rowId));
+    this.select(String(event.rowId));
+  }
+  protected select(id: string): void {
+    this.selectedId.set(id);
     this.error.set('');
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { customer: id || null },
+      queryParamsHandling: 'merge',
+    });
+  }
+  private async request(url: string, init: RequestInit = {}): Promise<Response> {
+    const response = await fetch(url, {
+      ...init,
+      signal: AbortSignal.any([this.lifetime.signal, AbortSignal.timeout(15000)]),
+    });
+    if (response.status === 401) {
+      this.sessionExpired.emit();
+      throw new Error('Your session expired. Sign in again.');
+    }
+    if (!response.ok)
+      throw new Error(
+        response.status === 409
+          ? 'This record changed. Reload before trying again.'
+          : 'The change could not be confirmed. Reload to check the saved record.',
+      );
+    return response;
+  }
+  private async load(): Promise<void> {
+    const response = await this.request('/api/admin/customers');
+    const data = (await response.json()) as { customers: CustomerRecord[] };
+    this.customers.set(data.customers);
   }
   protected async reload(): Promise<void> {
     if (this.saving() || this.refreshing) return;
@@ -123,64 +180,63 @@ export class EnquiryInboxComponent {
     this.loading.set(true);
     this.error.set('');
     try {
-      const response = await fetch('/api/admin/enquiries', {
-        signal: AbortSignal.any([this.lifetime.signal, AbortSignal.timeout(15000)]),
-      });
-      if (response.status === 401) {
-        this.sessionExpired.emit();
-        return;
-      }
-      if (!response.ok) throw new Error('Enquiries could not be loaded. Try again.');
-      const data = (await response.json()) as { enquiries: EnquiryRecord[] };
-      this.enquiries.set(data.enquiries);
-    } catch (error) {
+      await this.load();
+    } catch {
       if (!this.lifetime.signal.aborted)
-        this.error.set(
-          error instanceof Error && error.message.startsWith('Enquiries')
-            ? error.message
-            : 'The inbox could not be reached. Try again.',
-        );
+        this.error.set('Customers could not be loaded. Try again.');
     } finally {
       this.loading.set(false);
       this.refreshing = false;
     }
   }
   private refreshing = false;
-  protected async update(status: EnquiryStatus): Promise<void> {
-    const selected = this.selected();
-    if (!selected || this.saving()) return;
+  private async mutate(url: string, method: string, body: unknown): Promise<void> {
+    if (this.saving()) return;
     this.saving.set(true);
     this.error.set('');
     try {
-      const response = await fetch('/api/admin/enquiries/' + selected.requestId, {
-        method: 'PATCH',
+      await this.request(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, expectedRevision: selected.revision }),
-        signal: AbortSignal.any([this.lifetime.signal, AbortSignal.timeout(15000)]),
+        body: JSON.stringify(body),
       });
-      if (response.status === 401) {
-        this.sessionExpired.emit();
-        return;
-      }
-      if (!response.ok)
-        throw new Error(
-          response.status === 409
-            ? 'This enquiry changed elsewhere. Reload before updating it.'
-            : 'The status could not be confirmed. Reload to check the saved status.',
-        );
-      const data = (await response.json()) as { enquiry: EnquiryRecord };
-      this.enquiries.update((items) =>
-        items.map((e) => (e.requestId === data.enquiry.requestId ? data.enquiry : e)),
-      );
+      await this.load();
     } catch (error) {
       if (!this.lifetime.signal.aborted)
         this.error.set(
           error instanceof Error
             ? error.message
-            : 'The status could not be saved. Reload to check it.',
+            : 'The change could not be confirmed. Reload to check it.',
         );
     } finally {
       this.saving.set(false);
     }
+  }
+  protected update(enquiry: EnquiryRecord, status: EnquiryStatus): Promise<void> {
+    return this.mutate('/api/admin/enquiries/' + enquiry.requestId, 'PATCH', {
+      status,
+      expectedRevision: enquiry.revision,
+    });
+  }
+  protected changeCustomerStatus(customer: CustomerRecord): Promise<void> {
+    return this.mutate('/api/admin/customers/' + customer.id, 'PATCH', {
+      status: customer.status === 'lead' ? 'customer' : 'lead',
+      expectedRevision: customer.revision,
+    });
+  }
+  protected async resolveEmail(
+    enquiry: EnquiryRecord,
+    outcome: 'sent' | 'not-sent',
+  ): Promise<void> {
+    await this.mutate('/api/admin/enquiries/' + enquiry.requestId + '/resolve-email', 'POST', {
+      expectedRevision: enquiry.notification.revision,
+      outcome,
+    });
+    if (!this.error()) this.reviewingEmail.set('');
+  }
+  protected retryEmail(enquiry: EnquiryRecord): Promise<void> {
+    return this.mutate('/api/admin/enquiries/' + enquiry.requestId + '/retry-email', 'POST', {
+      expectedRevision: enquiry.notification.revision,
+    });
   }
 }

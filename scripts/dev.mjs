@@ -20,12 +20,27 @@ export function createDevelopmentEnvironments(ambient = process.env, { owner = f
     PORT: '4241',
   };
   if (owner) {
-    for (const key of ['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'OPENAI_API_KEY', 'SESSION_SECRET']) {
+    for (const key of [
+      'ADMIN_PASSWORD',
+      'ADMIN_USERNAME',
+      'OPENAI_API_KEY',
+      'BREVO_API_KEY',
+      'COMPANY_EMAIL',
+      'ENQUIRY_EMAIL_ENABLED',
+      'SESSION_SECRET',
+    ]) {
       delete server[key];
     }
   }
   const browser = { ...server };
   delete browser.PORT;
+  for (const key of [
+    'BREVO_API_KEY',
+    'COMPANY_EMAIL',
+    'ENQUIRY_EMAIL_ENABLED',
+    'FAUNAPOOLEN_OWNER_EMAIL',
+  ])
+    delete browser[key];
   return Object.freeze({
     browser: Object.freeze(browser),
     server: Object.freeze(server),

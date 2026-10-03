@@ -9,7 +9,7 @@ import {
   CxButtonComponent,
 } from '@mikaelcedergren/cx-framework';
 import type { CxDropdownOption } from '@mikaelcedergren/cx-framework';
-import type { EnquiryInput } from '../../../../server/src/enquiry-contracts';
+import type { EnquirySubmission } from '../../../../server/src/enquiry-contracts';
 import type { FaunapoolenPackage } from '../content/faunapoolen-content';
 import type { FaunapoolenService } from '../content/faunapoolen-editorial';
 import {
@@ -59,7 +59,7 @@ export class EnquiryFormComponent extends SitePage {
   protected readonly submitted = signal(false);
   protected readonly sending = signal(false);
   protected readonly deliveryError = signal('');
-  protected readonly pendingRequest = signal<EnquiryInput | undefined>(undefined);
+  protected readonly pendingRequest = signal<EnquirySubmission | undefined>(undefined);
   protected readonly submitLabel = $localize`:@@enquiry.send:Send enquiry`;
   protected readonly receivedTitle = $localize`:@@enquiry.received:Your enquiry has been received`;
   protected readonly receivedBody = $localize`:@@enquiry.receivedBody:Thank you. We’ll contact you to discuss your garden and the next step.`;
@@ -153,21 +153,39 @@ export class EnquiryFormComponent extends SitePage {
       );
       return;
     }
-    const input: EnquiryInput = this.pendingRequest() ?? {
+    const input: EnquirySubmission = this.pendingRequest() ?? {
       requestId: crypto.randomUUID(),
       language: this.locale,
       name: this.contactName().trim(),
       email: this.contactEmail().trim(),
-      phone: this.contactPhone().trim(),
-      location: this.contactLocation().trim(),
-      contactPeriod: '',
-      notes: this.contactNotes().trim(),
-      service: this.serviceId(),
-      packageId: this.serviceId() === 'pool' ? this.packageId() : 'unsure',
-      siteId: 'unsure',
-      sizeId: 'included',
-      featureIds: [],
-      annualCare: false,
+      formVersion: this.compact ? 'consultation-compact-v2' : 'consultation-v2',
+      fields: [
+        {
+          id: 'location',
+          label: this.copy.configure.location,
+          value: this.contactLocation().trim(),
+        },
+        { id: 'phone', label: this.copy.configure.phone, value: this.contactPhone().trim() },
+        {
+          id: 'service',
+          label: this.editorial.service,
+          value:
+            this.serviceChoices.find((item) => item.id === this.serviceId())?.label ??
+            this.editorial.unknown,
+        },
+        ...(this.serviceId() === 'pool'
+          ? [
+              {
+                id: 'package',
+                label: this.copy.configure.packageTitle,
+                value:
+                  this.packageChoices.find((item) => item.id === this.packageId())?.label ??
+                  this.editorial.unknown,
+              },
+            ]
+          : []),
+        { id: 'notes', label: this.editorial.notes, value: this.contactNotes().trim() },
+      ],
     };
     this.pendingRequest.set(input);
     this.sending.set(true);
@@ -198,8 +216,8 @@ export class EnquiryFormComponent extends SitePage {
       if (receipt.id !== input.requestId) throw new Error('Invalid enquiry receipt');
       this.submitted.set(true);
       this.measurement.track('generate_lead', {
-        packageId: input.packageId,
-        service: input.service,
+        packageId: this.packageId(),
+        service: this.serviceId(),
       });
       this.scrollToConfigurator();
     } catch {
