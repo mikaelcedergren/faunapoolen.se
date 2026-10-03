@@ -4,9 +4,9 @@ import {
   CxHeroComponent,
   CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
+import { SiteMeasurement } from '../site-measurement';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
-import { SiteMeasurement } from '../site-measurement';
 
 @Component({
   selector: 'fp-cookies-page',

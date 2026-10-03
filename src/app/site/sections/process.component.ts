@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {
   CxCardComponent,
-  CxStackComponent,
   CxGridComponent,
   CxParallaxDirective,
+  CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
-import { SitePage } from '../site-page';
+import { FAUNAPOOLEN_COPY, FAUNAPOOLEN_PROCESS } from '../content/faunapoolen-content';
 
 @Component({
   selector: 'fp-process',
@@ -13,6 +13,9 @@ import { SitePage } from '../site-page';
   templateUrl: './process.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProcessComponent extends SitePage {
+export class ProcessComponent {
+  protected readonly process = FAUNAPOOLEN_PROCESS;
+  protected readonly copy = FAUNAPOOLEN_COPY;
+
   @Input() steps = this.process;
 }

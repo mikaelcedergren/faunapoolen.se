@@ -16,11 +16,21 @@
         />
       }
       <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-        @for (item of packages; track item.id) {
+        @for (item of packageCatalogue.packages(); track item.id) {
           <article class="fp-package">
             <img
               class="fp-package-illustration"
-              [src]="'/assets/images/faunapoolen/editorial/package-' + item.id + '.png'"
+              [src]="'/assets/images/faunapoolen/editorial/package-' + item.id + '-960.webp'"
+              [srcset]="
+                '/assets/images/faunapoolen/editorial/package-' +
+                item.id +
+                '-480.webp 480w, /assets/images/faunapoolen/editorial/package-' +
+                item.id +
+                '-960.webp 960w, /assets/images/faunapoolen/editorial/package-' +
+                item.id +
+                '-1448.webp 1448w'
+              "
+              sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 30vw, 400px"
               alt=""
               width="1448"
               height="1086"
@@ -45,7 +55,7 @@
             </cx-stack>
             <cx-stack class="fp-package-actions" gap="lg" align="start">
               <cx-stack gap="sm" align="start">
-                <cx-metric [label]="copy.common.from" [value]="packagePrice(item)" />
+                <cx-metric [label]="copy.common.from" [value]="packageCatalogue.price(item)" />
                 <p class="cx-text-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
               </cx-stack>
               <cx-button

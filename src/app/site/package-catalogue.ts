@@ -1,5 +1,7 @@
-import { afterNextRender, Injectable, signal } from '@angular/core';
+import { afterNextRender, computed, Injectable, signal } from '@angular/core';
 import type { PackageCatalogue } from '../../../server/src/package-contracts';
+import { FAUNAPOOLEN_PACKAGES, type FaunapoolenPackage } from './content/faunapoolen-content';
+import { activeLanguage } from './language';
 
 /** The browser reads current prices. Prerendering never freezes an obsolete offer into HTML. */
 @Injectable({ providedIn: 'root' })
@@ -7,6 +9,26 @@ export class PublicPackageCatalogue {
   readonly value = signal<PackageCatalogue | undefined>(undefined);
   readonly loading = signal(true);
   readonly error = signal(false);
+  private readonly locale = activeLanguage();
+  private readonly currency = new Intl.NumberFormat(this.locale, {
+    style: 'currency',
+    currency: 'SEK',
+    maximumFractionDigits: 0,
+  });
+  readonly packages = computed<readonly FaunapoolenPackage[]>(() =>
+    (this.value()?.packages ?? []).map((values) => ({
+      ...FAUNAPOOLEN_PACKAGES.find((item) => item.id === values.id)!,
+      id: values.id,
+      name: values.titles[this.locale],
+      price: values.price,
+    })),
+  );
+  money(value: number): string {
+    return this.currency.format(value);
+  }
+  price(item: FaunapoolenPackage): string {
+    return this.money(item.price);
+  }
   private pending?: Promise<void>;
   private loadVersion = 0;
   constructor() {

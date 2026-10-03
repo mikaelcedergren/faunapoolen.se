@@ -11,13 +11,17 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import {
-  CxStackComponent,
-  CxGridComponent,
   CxButtonComponent,
   CxCardComponent,
+  CxGridComponent,
   CxHeroComponent,
   CxSidebarLayoutComponent,
+  CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
+import { BLOG_ARTICLES } from '../content/blog-catalog';
+import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
+import { PROTECTED_RECOMMENDATIONS } from '../content/protected-guide-presentation';
+import { SITE_UI } from '../content/site-ui';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
@@ -35,6 +39,26 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuidePage extends SitePage {
+  protected readonly editorial = FAUNAPOOLEN_EDITORIAL;
+  protected readonly ui = SITE_UI;
+  protected readonly guide =
+    BLOG_ARTICLES.find((article) => article.id === this.guideId) ?? BLOG_ARTICLES[0];
+  protected readonly relatedGuides = this.guide.related
+    .map((id) => BLOG_ARTICLES.find((article) => article.id === id)!)
+    .filter(Boolean)
+    .map((article) => {
+      if (this.guideId !== 'build' && this.guideId !== 'difference') return article;
+      const retained =
+        PROTECTED_RECOMMENDATIONS[article.id as keyof typeof PROTECTED_RECOMMENDATIONS];
+      return retained
+        ? {
+            ...article,
+            title: retained.title,
+            seo: { ...article.seo, description: retained.description },
+          }
+        : article;
+    });
+
   protected readonly showContents = signal(true);
   private readonly guideLayout = viewChild.required('guideLayout', {
     read: ElementRef<HTMLElement>,

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CxLightboxComponent, type CxLightboxImage } from '@mikaelcedergren/cx-framework';
+import { FAUNAPOOLEN_EVIDENCE_COPY } from '../content/faunapoolen-evidence';
 import { GOTLAND_COPY, GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
-import { SitePage } from '../site-page';
 
 @Component({
   selector: 'fp-gotland-gallery',
@@ -20,7 +20,9 @@ import { SitePage } from '../site-page';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GotlandGalleryComponent extends SitePage {
+export class GotlandGalleryComponent {
+  protected readonly evidence = FAUNAPOOLEN_EVIDENCE_COPY;
+
   private readonly photos = GOTLAND_MEDIA.filter((item) => item.kind === 'photo');
   protected readonly galleryImages: CxLightboxImage[] = this.photos.map(({ src, alt }) => ({
     src,

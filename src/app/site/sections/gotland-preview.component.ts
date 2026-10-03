@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,20 +7,25 @@ import {
   viewChild,
 } from '@angular/core';
 import {
-  CxCardComponent,
-  CxGridComponent,
   CxButtonComponent,
-  CxStackComponent,
-  CxInlineComponent,
+  CxCardComponent,
   CxDividerComponent,
+  CxGridComponent,
+  CxInlineComponent,
+  CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
-import { NgTemplateOutlet } from '@angular/common';
-import { CertificationMarkComponent } from './certification-mark.component';
+import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
+import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
+import {
+  FAUNAPOOLEN_EVIDENCE_COPY,
+  FAUNAPOOLEN_TESTIMONIALS,
+} from '../content/faunapoolen-evidence';
+import { GOTLAND_COPY, GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
 import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landing';
 import { NATURE_POOL_DETAILS } from '../content/faunapoolen-pool-details';
-import { GOTLAND_COPY, GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
-import { GotlandGalleryComponent } from './gotland-gallery.component';
 import { SitePage } from '../site-page';
+import { CertificationMarkComponent } from './certification-mark.component';
+import { GotlandGalleryComponent } from './gotland-gallery.component';
 
 @Component({
   selector: 'fp-gotland-preview',
@@ -38,6 +44,12 @@ import { SitePage } from '../site-page';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GotlandPreviewComponent extends SitePage {
+  protected readonly projectPhoto = GOTLAND_MEDIA.find((item) => item.kind === 'photo')!;
+  protected readonly testimonials = FAUNAPOOLEN_TESTIMONIALS;
+  protected readonly evidence = FAUNAPOOLEN_EVIDENCE_COPY;
+  protected readonly editorial = FAUNAPOOLEN_EDITORIAL;
+  protected readonly copy = FAUNAPOOLEN_COPY;
+
   @Input({ transform: booleanAttribute }) leadFocused = false;
   @Input() enquiryHref?: string;
   @Input({ transform: booleanAttribute }) detailed = false;

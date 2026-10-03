@@ -1,30 +1,34 @@
 import {
   afterNextRender,
-  Input,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
-  OnInit,
   HostListener,
+  inject,
+  Input,
+  OnInit,
   signal,
   viewChild,
-  inject,
 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
 import {
-  CxMastheadComponent,
+  CX_THEMES,
+  CxAlertComponent,
   CxButtonComponent,
   CxLanguageSelectorComponent,
+  CxMastheadComponent,
+  CxMastheadItem,
   CxStackComponent,
-  CxAlertComponent,
-  CX_THEMES,
 } from '@mikaelcedergren/cx-framework';
-import { SitePage } from './site-page';
-import { ContactInvitationComponent } from './sections/contact-invitation.component';
-import { LANGUAGE_NAMES, preferredLanguage } from './language';
-import { SiteMeasurement } from './site-measurement';
+import { FAUNAPOOLEN_CONTACT } from './content/faunapoolen-contact';
+import { FAUNAPOOLEN_COPY, FaunapoolenPage } from './content/faunapoolen-content';
+import { SITE_UI } from './content/site-ui';
 import { CookieNoticeComponent } from './cookie-notice.component';
+import { LANGUAGE_NAMES, preferredLanguage, SUPPORTED_LANGUAGES } from './language';
+import { ContactInvitationComponent } from './sections/contact-invitation.component';
+import { SiteMeasurement } from './site-measurement';
+import { SitePage } from './site-page';
 
 @Component({
   selector: 'fp-site-shell',
@@ -41,6 +45,40 @@ import { CookieNoticeComponent } from './cookie-notice.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SiteShellComponent extends SitePage implements OnInit {
+  protected readonly contactDetails = FAUNAPOOLEN_CONTACT;
+  protected readonly ui = SITE_UI;
+  protected readonly copy = FAUNAPOOLEN_COPY;
+  protected readonly languages = SUPPORTED_LANGUAGES.map((locale) => ({
+    locale,
+    label: LANGUAGE_NAMES[locale],
+    href: this.routeFor(this.page, locale, this.guideId),
+  }));
+
+  protected readonly navItems: CxMastheadItem[] = [
+    this.navItem('home', this.copy.nav.home),
+    this.navItem('nature-pools', this.copy.nav.naturePools),
+    this.navItem('pricing', this.copy.nav.pricing),
+    this.navItem('waterscapes', this.copy.nav.waterscapes),
+    this.navItem('guides', this.copy.nav.guides),
+    this.navItem('about', this.copy.nav.about),
+  ];
+
+  private navItem(
+    page: Exclude<FaunapoolenPage, 'guide' | 'gotland'>,
+    label: string,
+  ): CxMastheadItem {
+    if (page === 'guides' && this.page === 'guide') {
+      return { id: page, label, href: this.routeFor(page), active: true };
+    }
+    if (
+      page === 'nature-pools' &&
+      ['skane', 'halland', 'blekinge', 'smaland'].includes(this.page)
+    ) {
+      return { id: page, label, href: this.routeFor(page), active: true };
+    }
+    return { id: page, label, href: this.routeFor(page), active: page === this.page };
+  }
+
   @Input({ transform: booleanAttribute }) leadFocused = false;
   @Input() enquiryTarget?: string;
   @Input({ transform: booleanAttribute }) showInvitation = true;

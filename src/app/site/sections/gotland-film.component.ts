@@ -1,6 +1,16 @@
 import { DomSanitizer } from '@angular/platform-browser';
 import { type GotlandFilm } from '../content/faunapoolen-gotland';
-import { ChangeDetectionStrategy, Component, input, computed, inject, signal } from '@angular/core';
+import {
+  afterRenderEffect,
+  ElementRef,
+  viewChild,
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { CxIconComponent } from '@mikaelcedergren/cx-framework';
 
 @Component({
@@ -10,6 +20,12 @@ import { CxIconComponent } from '@mikaelcedergren/cx-framework';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GotlandFilmComponent {
+  private readonly player = viewChild<ElementRef<HTMLIFrameElement>>('player');
+  constructor() {
+    // Transfer focus once when activation replaces the poster. Network completion
+    // must not steal it back after the visitor has moved to another control.
+    afterRenderEffect(() => this.player()?.nativeElement.focus({ preventScroll: true }));
+  }
   readonly film = input.required<GotlandFilm>();
   readonly heading = input.required<string>();
   protected readonly playing = signal(false);

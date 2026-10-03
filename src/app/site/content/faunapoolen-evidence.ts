@@ -15,22 +15,6 @@ export const FAUNAPOOLEN_TESTIMONIALS = [
   },
 ] as const;
 
-// These are Aquascape™ network examples, never Faunapoolen portfolio entries.
-export const AQUASCAPE_PROJECTS = [
-  {
-    name: 'Aquascape™ Signature Pond',
-    location: $localize`:@@site.aquascape_projects.0.location:St. Charles, Illinois, USA`,
-    builder: $localize`:@@site.aquascape_projects.0.builder:Aquascape™ and participating contractors, led by Ed Beaulieu`,
-    body: $localize`:@@site.aquascape_projects.0.body:A pond at Aquascape™’s headquarters, built together with contractors from across North America.`,
-  },
-  {
-    name: 'Fontana Ponds & Water Features',
-    location: $localize`:@@site.aquascape_projects.1.location:Canada`,
-    builder: $localize`:@@site.aquascape_projects.1.builder:Diego Asturias and Dan Peterson, Fontana Ponds & Water Features`,
-    body: $localize`:@@site.aquascape_projects.1.body:A recreational pond with a zipline across the water, featured in Aquascape™’s profile of its 2021 Artists of the Year.`,
-  },
-] as const;
-
 export const FAUNAPOOLEN_EVIDENCE_COPY = {
   certification: $localize`:@@site.evidence_copy.certification:Faunapoolen is Aquascape™ certified`,
   certificationBody: $localize`:@@site.evidence_copy.certificationBody:We plan and build your pool using Aquascape™ technology, and help you maintain it.`,
@@ -39,15 +23,8 @@ export const FAUNAPOOLEN_EVIDENCE_COPY = {
   technologyLine: $localize`:@@site.evidence_copy.technologyLine:With biological filtration from Aquascape™`,
   packageBrand: $localize`:@@site.evidence_copy.packageBrand:A package by Faunapoolen`,
   technologyEyebrow: $localize`:@@site.evidence_copy.technologyEyebrow:The technology behind the water`,
-  technologyTitle: $localize`:@@site.evidence_copy.technologyTitle:How the water stays clear.`,
-  technologyBody: $localize`:@@site.evidence_copy.technologyBody:Pumps circulate the water, filters catch debris and microorganisms remove nutrients that can feed algae. We size the Aquascape™ system for your pool, using biological filtration without chlorine.`,
   technologyCare: $localize`:@@site.evidence_copy.technologyCare:Remove leaves and debris, and check the water level and circulation. You receive a plan showing what needs to be done throughout the year.`,
   video: $localize`:@@site.evidence_copy.video:Watch Aquascape™’s film on YouTube`,
-  videoCaption: $localize`:@@site.evidence_copy.videoCaption:Aquascape™`,
-  technologyLink: $localize`:@@site.evidence_copy.technologyLink:How biological filtration works`,
-  networkTitle: $localize`:@@site.evidence_copy.networkTitle:Water features in the Aquascape™ network`,
-  networkBody: $localize`:@@site.evidence_copy.networkBody:See how other builders use Aquascape™ technology in these two projects.`,
-  builder: $localize`:@@site.evidence_copy.builder:Built by`,
   source: $localize`:@@site.evidence_copy.source:View the project at Aquascape™`,
   caseEyebrow: $localize`:@@site.evidence_copy.caseEyebrow:Completed by Faunapoolen`,
   caseTitle: $localize`:@@site.evidence_copy.caseTitle:Nature pool on Gotland`,

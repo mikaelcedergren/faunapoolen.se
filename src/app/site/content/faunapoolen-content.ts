@@ -163,7 +163,7 @@ export const FAUNAPOOLEN_COPY = {
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
     waterscapeEyebrow: $localize`:@@site.copy.home.waterscapeEyebrow:Other waterscapes`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
-    waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. We also build water features around the way you want to spend time outdoors.`,
+    waterscapeBody: $localize`:@@site.copy.home.waterscapeBody:Watch the fish, listen to a stream or settle beside a quiet pond. From long summer evenings to crisp winter mornings, we create water features to enjoy throughout the year, outdoors or from the warmth of home.`,
   },
   naturePools: {
     eyebrow: $localize`:@@site.copy.naturePools.eyebrow:Nature pools`,
@@ -192,8 +192,8 @@ export const FAUNAPOOLEN_COPY = {
         body: $localize`:@@site.copy.waterscapes.types.1.body:For the sound of moving water near a favourite seat. We plan the flow, levels and access for maintenance.`,
       },
       {
-        title: $localize`:@@site.copy.waterscapes.types.2.title:Reflecting ponds`,
-        body: $localize`:@@site.copy.waterscapes.types.2.body:For a quiet place beside the water. We design the pond and its edges around your garden and where you like to sit.`,
+        title: $localize`:@@site.copy.waterscapes.types.2.title:Fountains`,
+        body: $localize`:@@site.copy.waterscapes.types.2.body:For the gentle sound of water beside a terrace or favourite seat. We help you choose a fountain that suits your garden and the space you have.`,
       },
     ],
     methodTitle: $localize`:@@site.copy.waterscapes.methodTitle:Designed for your garden. Planned for care.`,

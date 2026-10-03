@@ -13,8 +13,8 @@
       [reserveText]="priceReservation"
       [loading]="packageCatalogue.loading()"
     >
-      @if (packages[0]; as startingPackage) {
-        {{ copy.common.from }} {{ packagePrice(startingPackage) }} ·
+      @if (packageCatalogue.packages()[0]; as startingPackage) {
+        {{ copy.common.from }} {{ packageCatalogue.price(startingPackage) }} ·
         {{ copy.common.priceExclusions }}
       } @else {
         {{ priceUnavailable }}

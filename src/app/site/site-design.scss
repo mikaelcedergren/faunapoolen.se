@@ -118,12 +118,6 @@
     border-radius: var(--radius-media-lg);
   }
 
-  .fp-kicker {
-    margin-bottom: var(--space-lg);
-    color: var(--opacity-high);
-    font-size: var(--font-size-body);
-  }
-
   .fp-feature {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

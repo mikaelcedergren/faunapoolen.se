@@ -38,7 +38,14 @@
           <cx-stack gap="lg">
             <img
               class="fp-photo fp-photo--square"
-              [src]="member.image"
+              [src]="member.image.replace('.png', '-800.webp')"
+              [srcset]="
+                member.image.replace('.png', '-400.webp') +
+                ' 400w, ' +
+                member.image.replace('.png', '-800.webp') +
+                ' 800w'
+              "
+              sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 30vw, 400px"
               [alt]="member.name"
               width="800"
               height="800"

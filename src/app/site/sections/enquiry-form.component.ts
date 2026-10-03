@@ -1,33 +1,37 @@
 import {
-  CxStackComponent,
-  CxAlertComponent,
-  CxGridComponent,
-  CxDropdownComponent,
-  CxTextFieldComponent,
-  CxTextAreaComponent,
-  CxEmailFieldComponent,
-  CxButtonComponent,
-} from '@mikaelcedergren/cx-framework';
-import type { CxDropdownOption } from '@mikaelcedergren/cx-framework';
-import type { EnquirySubmission } from '../../../../server/src/enquiry-contracts';
-import type { FaunapoolenPackage } from '../content/faunapoolen-content';
-import type { FaunapoolenService } from '../content/faunapoolen-editorial';
-import {
+  afterNextRender,
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
-  signal,
   computed,
-  Input,
-  booleanAttribute,
   inject,
   Injector,
-  afterNextRender,
+  Input,
+  signal,
 } from '@angular/core';
-import { SitePage } from '../site-page';
-import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+import type { CxDropdownOption } from '@mikaelcedergren/cx-framework';
+import {
+  CxAlertComponent,
+  CxButtonComponent,
+  CxDropdownComponent,
+  CxEmailFieldComponent,
+  CxGridComponent,
+  CxStackComponent,
+  CxTextAreaComponent,
+  CxTextFieldComponent,
+} from '@mikaelcedergren/cx-framework';
+import type { EnquirySubmission } from '../../../../server/src/enquiry-contracts';
+import { PACKAGE_IDS } from '../../../../server/src/package-contracts';
+import type { FaunapoolenPackage } from '../content/faunapoolen-content';
+import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
+import type { FaunapoolenService } from '../content/faunapoolen-editorial';
+import { FAUNAPOOLEN_EDITORIAL, FAUNAPOOLEN_SERVICES } from '../content/faunapoolen-editorial';
 import { POOL_ENQUIRY } from '../content/faunapoolen-landing';
+import { PublicPackageCatalogue } from '../package-catalogue';
 import { SiteMeasurement } from '../site-measurement';
+import { SitePage } from '../site-page';
 @Component({
   selector: 'fp-enquiry-form',
   imports: [
@@ -44,6 +48,12 @@ import { SiteMeasurement } from '../site-measurement';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnquiryFormComponent extends SitePage {
+  protected readonly packageCatalogue = inject(PublicPackageCatalogue);
+  protected readonly packageIds = PACKAGE_IDS;
+  protected readonly services = FAUNAPOOLEN_SERVICES;
+  protected readonly editorial = FAUNAPOOLEN_EDITORIAL;
+  protected readonly copy = FAUNAPOOLEN_COPY;
+
   @Input({ transform: booleanAttribute }) compact = false;
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -87,10 +97,10 @@ export class EnquiryFormComponent extends SitePage {
   }));
   protected readonly packageChoices = computed<CxDropdownOption[]>(() => [
     { id: 'unsure', label: this.editorial.unknown },
-    ...this.packages.map((item) => ({
+    ...this.packageCatalogue.packages().map((item) => ({
       id: item.id,
       label: item.name,
-      description: `${item.area} · ${this.copy.common.from} ${this.packagePrice(item)} · ${this.copy.common.priceExclusions}`,
+      description: `${item.area} · ${this.copy.common.from} ${this.packageCatalogue.price(item)} · ${this.copy.common.priceExclusions}`,
     })),
   ]);
   constructor() {
@@ -108,7 +118,9 @@ export class EnquiryFormComponent extends SitePage {
   }
 
   protected selectPackage(id: string | undefined): void {
-    this.packageId.set(this.packages.find((item) => item.id === id)?.id ?? 'unsure');
+    this.packageId.set(
+      this.packageCatalogue.packages().find((item) => item.id === id)?.id ?? 'unsure',
+    );
     if (this.packageId() !== 'unsure') this.serviceId.set('pool');
     this.updateChoiceUrl();
   }

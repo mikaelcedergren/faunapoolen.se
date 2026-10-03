@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { SitePage } from '../site-page';
+import { AQUASCAPE_IMAGES } from '../content/faunapoolen-brand';
+import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
 
 @Component({
   selector: 'fp-certification-mark',
@@ -15,6 +16,9 @@ import { SitePage } from '../site-page';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CertificationMarkComponent extends SitePage {
+export class CertificationMarkComponent {
+  protected readonly aquascapeImages = AQUASCAPE_IMAGES;
+  protected readonly editorial = FAUNAPOOLEN_EDITORIAL;
+
   readonly large = input(false);
 }

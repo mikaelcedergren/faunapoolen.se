@@ -1,22 +1,25 @@
-import { PoolOwnershipComponent } from '../sections/pool-ownership.component';
-import { CertificationStripComponent } from '../sections/certification-strip.component';
-import { PoolAftercareComponent } from '../sections/pool-aftercare.component';
-import { DirectContactComponent } from '../sections/direct-contact.component';
-import { EnquiryFormComponent } from '../sections/enquiry-form.component';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   CxButtonComponent,
   CxDividerComponent,
   CxGridComponent,
   CxHeroComponent,
-  CxSkeletonLoaderComponent,
-  CxStackComponent,
   CxListComponent,
   CxListItemComponent,
+  CxSkeletonLoaderComponent,
+  CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
-import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landing';
+import { FAUNAPOOLEN_IMAGES } from '../content/faunapoolen-brand';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
+import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
+import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landing';
+import { PublicPackageCatalogue } from '../package-catalogue';
+import { CertificationStripComponent } from '../sections/certification-strip.component';
+import { DirectContactComponent } from '../sections/direct-contact.component';
+import { EnquiryFormComponent } from '../sections/enquiry-form.component';
 import { PackageComparisonComponent } from '../sections/package-comparison.component';
+import { PoolAftercareComponent } from '../sections/pool-aftercare.component';
+import { PoolOwnershipComponent } from '../sections/pool-ownership.component';
 import { ProcessComponent } from '../sections/process.component';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
@@ -45,9 +48,13 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PricingPage extends SitePage {
+  protected readonly packageCatalogue = inject(PublicPackageCatalogue);
+  protected readonly images = FAUNAPOOLEN_IMAGES;
+  protected readonly copy = FAUNAPOOLEN_COPY;
+
   // A nine-digit sample covers the catalogue's supported price range. It is
   // measurement text only, never a displayed or announced offer.
-  protected readonly priceReservation = `${this.copy.common.from} ${this.money(888888888)} · ${this.copy.common.priceExclusions}`;
+  protected readonly priceReservation = `${this.copy.common.from} ${this.packageCatalogue.money(888888888)} · ${this.copy.common.priceExclusions}`;
   protected readonly priceUnavailable = $localize`:@@packages.priceUnavailable:Price unavailable`;
   protected readonly poolEnquiryHref = this.routeFor('pricing') + '#consultation';
   protected readonly poolEnquiry = POOL_ENQUIRY;

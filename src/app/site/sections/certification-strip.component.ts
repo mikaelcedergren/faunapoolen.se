@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SitePage } from '../site-page';
+import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
 import { CertificationMarkComponent } from './certification-mark.component';
 
 @Component({
@@ -20,4 +20,6 @@ import { CertificationMarkComponent } from './certification-mark.component';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CertificationStripComponent extends SitePage {}
+export class CertificationStripComponent {
+  protected readonly editorial = FAUNAPOOLEN_EDITORIAL;
+}

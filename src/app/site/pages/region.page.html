@@ -36,12 +36,12 @@
           <p>{{ regional.packageBody }}</p>
         </div>
         <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-          @for (item of packages; track item.id) {
+          @for (item of packageCatalogue.packages(); track item.id) {
             <div class="fp-column">
               <div class="cx-editorial">
                 <h3 class="fp-subheading cx-font-regular">{{ item.name }}</h3>
                 <p>
-                  {{ item.area }}<br />{{ copy.common.from }} {{ packagePrice(item) }} ·
+                  {{ item.area }}<br />{{ copy.common.from }} {{ packageCatalogue.price(item) }} ·
                   {{ copy.common.priceExclusions }}
                 </p>
               </div>

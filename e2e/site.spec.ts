@@ -224,6 +224,14 @@ test('Gotland keeps landscape films beside their stories and the lightbox limite
   await expect(page.locator('main blockquote')).toHaveCount(1);
   await expect(page.locator('.fp-project-quote figcaption')).toHaveText('From Brita');
   await expect(page.getByRole('link', { name: 'Open on Vimeo' })).toHaveCount(0);
+  // Before hydration this is deliberately a normal link to the full photograph.
+  // Prove the app is interactive before asserting its enhanced lightbox behavior.
+  await page
+    .locator('cx-masthead')
+    .getByRole('button', { name: 'Language: English', exact: true })
+    .click();
+  await expect(page.getByRole('option', { name: /Svenska/ })).toBeVisible();
+  await page.keyboard.press('Escape');
   const photo = page.locator('[data-gotland-photo="1455"]');
   await photo.click();
   const lightbox = page.getByRole('dialog');
@@ -233,4 +241,24 @@ test('Gotland keeps landscape films beside their stories and the lightbox limite
   await expect(lightbox.locator('img')).toHaveAttribute('src', /1496\.webp$/);
   await page.keyboard.press('Escape');
   await expect(lightbox).toBeHidden();
+});
+
+test('informational pages do not fetch the pool catalogue', async ({ page }) => {
+  const packageRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/api/packages') packageRequests.push(request.url());
+  });
+  for (const route of ['/en/about/', '/en/blog/', '/en/cookies/', '/en/projects/gotland/']) {
+    await page.goto(route);
+    // Opening a real control proves client initialization has completed.
+    await page
+      .locator('cx-masthead')
+      .getByRole('button', { name: 'Language: English', exact: true })
+      .click();
+    await expect(page.getByRole('option', { name: /Svenska/ })).toBeVisible();
+    expect(packageRequests, route).toEqual([]);
+  }
+  await page.goto('/en/nature-pools/pricing/');
+  await expect(page.locator('fp-package-comparison .fp-package')).toHaveCount(3);
+  expect(packageRequests).toHaveLength(1);
 });

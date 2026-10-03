@@ -1,5 +1,7 @@
-import { CxHeroComponent, CxStackComponent, CxGridComponent } from '@mikaelcedergren/cx-framework';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CxGridComponent, CxHeroComponent, CxStackComponent } from '@mikaelcedergren/cx-framework';
+import { BLOG_ARTICLES } from '../content/blog-catalog';
+import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
 import { SitePage } from '../site-page';
 import { SiteShellComponent } from '../site-shell.component';
 @Component({
@@ -9,6 +11,9 @@ import { SiteShellComponent } from '../site-shell.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuidesPage extends SitePage {
+  protected readonly guides = BLOG_ARTICLES;
+  protected readonly copy = FAUNAPOOLEN_COPY;
+
   protected readonly groups = [
     {
       title: $localize`:@@site.guides.planning:Planning your nature pool`,

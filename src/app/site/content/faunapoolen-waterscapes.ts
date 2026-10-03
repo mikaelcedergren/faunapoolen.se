@@ -14,9 +14,9 @@ export const WATERSCAPE_DETAILS = [
     service: 'stream',
   },
   {
-    image: `${ROOT}/waterscape-reflecting.webp`,
-    alt: $localize`:@@site.waterscapes.reflecting.alt:Concept image of a still reflecting pond beside a timber terrace.`,
-    detail: $localize`:@@site.waterscapes.reflecting.detail:Still water brings the sky and surrounding plants into view. Shape, depth and the finish around the edge can make it a garden focal point or a quiet part of the terrace.`,
-    service: 'pond',
+    image: `${ROOT}/waterscape-fountain.webp`,
+    alt: $localize`:@@site.waterscapes.fountain.alt:Concept image of three slate-style urn fountains at different heights beside a garden terrace.`,
+    detail: $localize`:@@site.waterscapes.fountain.detail:Water spilling over an urn or bowl brings movement to a planted corner. We plan the water supply, circulation and access to the pump, and explain cleaning and winter care.`,
+    service: 'unsure',
   },
 ] as const;

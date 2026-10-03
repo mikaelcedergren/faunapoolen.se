@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   CxGridComponent,
-  CxStackComponent,
-  CxInlineComponent,
   CxIconComponent,
+  CxInlineComponent,
+  CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
 import { GOTLAND_MEDIA } from '../content/faunapoolen-gotland';
-import { SitePage } from '../site-page';
 import { CertificationMarkComponent } from './certification-mark.component';
 
 @Component({
@@ -21,7 +20,7 @@ import { CertificationMarkComponent } from './certification-mark.component';
   templateUrl: './certification-story.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CertificationStoryComponent extends SitePage {
+export class CertificationStoryComponent {
   protected readonly craftPhoto = GOTLAND_MEDIA.filter((item) => item.kind === 'photo').find(
     (item) => item.id === '1451',
   )!;

@@ -1,4 +1,16 @@
-# A shared pause beside the stream
+# Waterscapes through the seasons
+
+## Current winter photograph
+
+The owner selected the snowy winter-bathing version on 3 October 2026, showing a laughing man with his shoulders and upper chest above the water, looking towards a warmly dressed woman seated with cocoa. Her back faces the camera. The subsequent version with his gaze turned away was rejected in favour of this specific photograph.
+
+Current asset: [waterscape-pause.webp](../public/assets/images/faunapoolen/editorial/waterscape-pause.webp), 1536 × 1024. Created and edited with the built-in image tool. This is concept imagery, not evidence of a completed installation. The accompanying copy describes enjoyment through the seasons without promising that every water feature operates through winter.
+
+### Selected image editing prompt
+
+Revise this winter bathing photograph. Keep the candid family-phone photographic character, natural garden pool and 3:2 landscape format, but make the scene appreciably FUNNIER and MUCH SNOWIER. The BATHER MUST BE A MAN around 45-55, with short wet brown-grey hair, a little ordinary stubble, an average real middle-aged body. Raise him out of the water so his bare shoulders, collarbones and upper chest are visible above the waterline (water at mid-chest), with one forearm lifting slightly and one hand making a small comical bracing gesture. His expression should be an involuntary big laughing gasp at the cold: scrunched eyes, raised eyebrows, wide joyful open smile, cold-pink cheeks, visibly hunched shoulders, 'oh wow that is cold!' and absolutely loving it. NOT pain, fear or distress. He looks at his companion. The person on the bench in the LEFT foreground MUST BE A WOMAN, seen mostly FROM BEHIND with her face hidden, a little hair visible under a wool hat, wearing an oversized puffy winter coat, thick scarf, mittens, wool blanket over knees, holding a mug of hot cocoa. Her relaxed tilted head and slightly lifted shoulders convey she is laughing at his reaction while staying wonderfully warm. Keep her fully dressed, seated, back toward camera. The humor comes from their contrast and shared teasing, no cartoon gimmicks. Cover the garden and stones in generous freshly settled snow, several inches on the banks, fence, branches and bench surroundings, unmistakably snowy Swedish winter, while the natural pool water stays open and dark with realistic ripples. Show a thicker snow cap on the natural stone edge; small plausible cleared access by the entry steps. No ice hole, no solid ice around his body, no hot-spring steam. Natural low winter sunlight, white snow, restrained color, soft believable cold skin tones. Photograph taken casually at human eye level with good composition, slight optical background softness and softly resolved near foreground. Avoid HDR, oversharpening, harsh local contrast, grain, cinematic grading or glossy stock-photo polish. Preserve convincing hands, shoulder anatomy and correct scale of the man relative to the woman. Only these two people. No text or logos.
+
+## Superseded summer photograph
 
 Created on 3 October 2026 with the built-in image generator. The owner requested a completely new photograph for the home-page waterscapes section, without reference to its previous photograph. No input images were supplied to generation. The written [photography style](PHOTOGRAPHY-STYLE.md) guided the result.
 
