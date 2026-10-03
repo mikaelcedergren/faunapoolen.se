@@ -44,7 +44,15 @@ test('sitemap contains only the complete public canonical catalogue', () => {
   assert.ok(!urls.some((url) => /admin|404/.test(url)));
   for (const url of urls) {
     const path = new URL(url).pathname;
-    read(path.endsWith('/') ? path.slice(1) + 'index.html' : path.slice(1));
+    const nodes = read(path.endsWith('/') ? path.slice(1) + 'index.html' : path.slice(1));
+    const graph = walk(nodes, (n) => n.name === 'script' && attr(n, 'id') === 'fp-jsonld')[0];
+    const page = JSON.parse(graph.children.map((node) => node.value ?? '').join(''))['@graph'].find(
+      (node) => node['@id'] === `${url}#webpage`,
+    );
+    const entry = [...xml.matchAll(/<url>([\s\S]*?)<\/url>/g)].find((match) =>
+      match[1].includes(`<loc>${url}</loc>`),
+    )[1];
+    assert.equal(entry.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1], page.dateModified, url);
   }
 });
 

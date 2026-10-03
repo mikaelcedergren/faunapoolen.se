@@ -26,7 +26,7 @@ export interface PageSeo {
   ogType?: string;
   /** Blog posts only: publish date (ISO 8601; date-only is fine). */
   datePublished?: string;
-  /** Blog posts only: last content change; falls back to datePublished. */
+  /** Last significant content change (YYYY-MM-DD); omit when unknown. Also feeds the sitemap. */
   dateModified?: string;
   noindex?: boolean;
   /**
@@ -222,6 +222,7 @@ export class SeoTitleStrategy extends TitleStrategy {
       isPartOf: { '@id': `${siteBase}#website` },
       ...(isArticle ? { author: { '@id': `${SITE_ORIGIN}/#organization` } } : {}),
       publisher: { '@id': `${SITE_ORIGIN}/#organization` },
+      ...(seo.dateModified ? { dateModified: seo.dateModified } : {}),
       ...(isArticle
         ? {
             mainEntityOfPage: canonical,

@@ -314,6 +314,43 @@ async function captureMeasurement(page: Page): Promise<MeasurementEvent[]> {
   return events;
 }
 
+for (const [query, source] of [
+  ['', 'search'],
+  ['?gclid=synthetic-private-click', 'paid'],
+  ['?utm_medium=cpc&utm_campaign=synthetic-private-campaign', 'paid'],
+] as const) {
+  test(`consented ${source} context survives the journey without retaining campaign values: ${query || 'organic'}`, async ({
+    page,
+  }) => {
+    const events = await captureMeasurement(page);
+    await page.goto(`/en/nature-pools/pricing/${query}`, {
+      referer: 'https://www.google.com/search?q=synthetic-private-search',
+    });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    expect(events).toEqual([]);
+    expect(await page.evaluate(() => sessionStorage.getItem('fp-analytics-visit'))).toBeNull();
+    await page
+      .getByRole('region', { name: 'Cookie settings' })
+      .getByRole('button', { name: 'Accept', exact: true })
+      .click();
+    await expect.poll(() => events.some((event) => event.source_group === source)).toBe(true);
+    await page.goto('/da/configure/?package=summer');
+    await expect(page.locator('form textarea')).toBeEnabled();
+    await page.locator('form textarea').fill('Synthetic private enquiry text');
+    await expect.poll(() => events.some((event) => event.name === 'enquiry_start')).toBe(true);
+    expect(events.find((event) => event.name === 'enquiry_start')).toMatchObject({
+      landing_path: '/en/nature-pools/pricing/',
+      page_location: 'https://faunapoolen.se/da/configure/',
+      source_group: source,
+      language: 'da',
+    });
+    const stored = await page.evaluate(() => sessionStorage.getItem('fp-analytics-visit'));
+    expect(JSON.parse(stored!)).toEqual({ path: '/en/nature-pools/pricing/', source });
+    expect(JSON.stringify(events)).not.toContain('synthetic-private');
+    expect(JSON.stringify(events)).not.toContain('Synthetic private enquiry text');
+  });
+}
+
 test('statistics require opt-in and stop after the visitor withdraws it', async ({ page }) => {
   const events = await captureMeasurement(page);
   const googleRequests: string[] = [];

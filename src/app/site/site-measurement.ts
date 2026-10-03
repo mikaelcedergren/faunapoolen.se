@@ -23,10 +23,34 @@ type MeasurementWindow = Window & {
 const KEY = 'fp-analytics-consent-v1';
 // Existing public GA4 property. Advertising tags are intentionally not activated by analytics consent.
 const PROPERTY = 'G-E1BFSP43WZ';
-// The existing property's automatic form/history/user-data collection must be disabled
-// and actual payloads verified before enabling its production transport.
+// Account-side automatic collection was disabled on 3 October 2026.
+// Keep transport closed until launch verification checks the actual Google payloads.
 const GOOGLE_COLLECTION_REVIEWED: boolean = false;
 const paths = new Set(PUBLIC_CANONICAL_PATHS);
+const sourceGroups = ['direct', 'internal', 'search', 'referral', 'paid'] as const;
+type SourceGroup = (typeof sourceGroups)[number];
+
+/** Read only after consent; retain a category, never campaign strings or click identifiers. */
+function visitSource(location: Location, referrer: string): SourceGroup {
+  const query = new URLSearchParams(location.search);
+  const medium = query.get('utm_medium')?.toLowerCase();
+  if (
+    ['gclid', 'dclid', 'gbraid', 'wbraid', 'msclkid'].some((key) => query.get(key)) ||
+    ['cpc', 'ppc', 'paidsearch', 'paid_search', 'paid_social', 'display', 'cpm', 'paid'].includes(
+      medium ?? '',
+    )
+  )
+    return 'paid';
+  try {
+    const previous = new URL(referrer);
+    if (previous.host === location.host) return 'internal';
+    return /(^|\.)google\.[a-z.]+$|(^|\.)bing\.com$|(^|\.)duckduckgo\.com$/.test(previous.hostname)
+      ? 'search'
+      : 'referral';
+  } catch {
+    return 'direct';
+  }
+}
 
 /** Optional public-site measurement. No requests, cookies or visit storage before opt-in. */
 @Injectable({ providedIn: 'root' })
@@ -38,7 +62,7 @@ export class SiteMeasurement {
   private configured = false;
   private readonly once = new Set<string>();
   private landingPath = '';
-  private source = 'direct';
+  private source: SourceGroup = 'direct';
 
   initialize(): void {
     if (this.initialized || !this.document.defaultView) return;
@@ -111,26 +135,10 @@ export class SiteMeasurement {
     browser['ga-disable-G-E1BFSP43WZ'] = false;
     if (!this.landingPath) {
       this.landingPath = path;
-      try {
-        const referrer = new URL(this.document.referrer);
-        this.source =
-          referrer.host === browser.location.host
-            ? 'internal'
-            : /(^|\.)google\.[a-z.]+$|(^|\.)bing\.com$|(^|\.)duckduckgo\.com$/.test(
-                  referrer.hostname,
-                )
-              ? 'search'
-              : 'referral';
-      } catch {
-        this.source = 'direct';
-      }
+      this.source = visitSource(browser.location, this.document.referrer);
       try {
         const previous = JSON.parse(browser.sessionStorage.getItem('fp-analytics-visit') ?? 'null');
-        if (
-          previous &&
-          paths.has(previous.path) &&
-          ['direct', 'internal', 'search', 'referral'].includes(previous.source)
-        ) {
+        if (previous && paths.has(previous.path) && sourceGroups.includes(previous.source)) {
           this.landingPath = previous.path;
           this.source = previous.source;
         }

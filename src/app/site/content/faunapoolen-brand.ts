@@ -18,6 +18,6 @@ export const FAUNAPOOLEN_IMAGES = {
 
 /** Supplier imagery and the owner-supplied certification emblem. */
 export const AQUASCAPE_IMAGES = {
-  certificationEmblem: `${ASSET_ROOT}/aquascape-certified-emblem.png`,
+  certificationEmblem: `${ASSET_ROOT}/aquascape-certified-seal.webp`,
   recreationalPond: `${ASSET_ROOT}/aquascape-recreational-pond.jpg`,
 } as const;

@@ -10,8 +10,8 @@ import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
       [class.fp-certification-mark--large]="large()"
       [src]="aquascapeImages.certificationEmblem"
       [alt]="'Aquascape™ — ' + editorial.contractorLabel"
-      width="56"
-      height="56"
+      width="448"
+      height="351"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

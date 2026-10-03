@@ -104,13 +104,12 @@ never submit a real enquiry during local browser review. Review the served Engli
 Danish pages and the standalone form, including mobile layout. Protected article URLs, contents,
 canonicals and redirects remain unchanged.
 
-## Deferred follow-up: ad-to-lead measurement
+## Enquiry measurement follow-through
 
-The owner explicitly deferred audit point 7 on 2 October 2026. Keep measurement disabled as it is;
-no tags, consent changes or ad integrations are activated by this work.
+The owner authorized pre-launch consented enquiry measurement on 3 October 2026, superseding
+the earlier deferral. Current account settings, event definitions, privacy boundaries and the
+remaining live activation check are owned by [the SEO implementation record](SEO-IMPLEMENTATION.md#enquiry-and-measurement).
 
-Before judging campaign performance, review and enable appropriate production measurement,
-connect campaign source to landing visits, form starts and confirmed receipts, and agree how
-qualified enquiries are distinguished from raw submissions. Validate actual payloads and consent
-behaviour before activation. Compare cost per qualified lead, not only button clicks or form volume.
-This is follow-up work, not evidence of the page's current conversion performance.
+Advertising integrations and changes to bidding or campaign conversions are outside that work.
+Qualified enquiries and sales remain distinct from raw confirmed submissions; review their
+quality through the existing enquiry workflow.

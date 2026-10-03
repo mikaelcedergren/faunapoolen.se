@@ -52,7 +52,29 @@ records in the SEO growth plan and guide reviews. This change does not itself re
 
 Package actions carry their stable choice into the enquiry. Changes to package/service update the non-personal URL state, so refresh and header/footer/suggested-language navigation preserve it. Canonicals stay clean. The form still accepts a conversation without a package and still confirms a lead only after a durable accepted receipt.
 
-The existing public GA4 property has a **disabled production transport**: its public configuration currently enables automatic history, form and user-provided-data collection, which would bypass the sanitized event boundary. The adapter and opt-in interface can be verified locally; production hides the statistics controls and loads no Google tag. Enable `GOOGLE_COLLECTION_REVIEWED` only after the property settings are corrected and actual payloads verified. See [Google’s page-view guidance](https://developers.google.com/analytics/devguides/collection/ga4/views). There are no analytics requests, analytics cookies or visit-context storage before the visitor allows statistics. Advertising tags are not enabled. A compact, non-modal framework popover offers equally styled Reject and Accept actions. The choice persists across public pages and locales; visitors can reopen it through Cookie settings in every public footer, including protected articles. Localized /cookies/ pages explain the purpose, storage, lifetimes and withdrawal, with settings available at the top. Development and isolated tests never load Google; the same sanitized event contract can be inspected locally.
+The existing public GA4 property (`G-E1BFSP43WZ`, property `465257705`, stream `9884717759`)
+has a **disabled production transport pending the launch payload check**. On 3 October 2026,
+the owner authorized the pre-launch measurement work. Google tag user-provided data capabilities
+and automatic history, scroll, outbound-click, form, video and download detection were disabled;
+GA4 enhanced measurement was also switched off. These account settings take effect on the existing
+live tag too. Ordinary page views remain available on the old site.
+
+The same account review registered `generate_lead` as a key event (once per event, no default
+monetary value) and added four event-scoped custom dimensions: Enquiry landing page
+(`landing_path`), Enquiry source group (`source_group`), Enquiry package (`package_id`) and
+Enquiry service (`service`). The saved key-event list shows no received `generate_lead` data yet,
+as expected before launch. Existing advertising conversion definitions were left unchanged.
+
+The adapter and opt-in interface are tested locally without loading Google. Enable
+`GOOGLE_COLLECTION_REVIEWED` only after actual payloads from the candidate have been checked at
+the published origin during the separately authorized release. Account settings alone do not
+prove the live transport. See [Google’s page-view guidance](https://developers.google.com/analytics/devguides/collection/ga4/views).
+
+There are no analytics requests, analytics cookies or visit-context storage before the visitor
+allows statistics. Advertising tags are not enabled. A compact, non-modal framework popover offers
+equally styled Reject and Accept actions. The choice persists across public pages and locales;
+visitors can reopen it through Cookie settings in every public footer. Localized `/cookies/` pages
+explain purpose, storage, lifetimes and withdrawal. Enquiries work when statistics are declined.
 
 | Event                     | Meaning                                                            |
 | ------------------------- | ------------------------------------------------------------------ |
@@ -63,7 +85,7 @@ The existing public GA4 property has a **disabled production transport**: its pu
 | `generate_lead`           | A matching accepted enquiry receipt was confirmed                  |
 | `enquiry_error`           | Validation, rate limiting or unconfirmed delivery; no input values |
 
-Context is limited to clean public page/landing paths, language, a broad source category and valid package/service values. Raw query strings, referrer URLs, contact data, free-text notes, exact locations and request IDs are not sent. Visit context is held only in browser session storage after opt-in. Declining clears that context and removes applicable GA cookies.
+Context is limited to clean public page/landing paths, language, a broad source category (`search`, `paid`, `referral`, `direct` or `internal`) and valid package/service values. Paid click markers and recognized paid campaign media are classified only after consent; their values are never retained or sent. The category describes the consented visit context, not proof of an individual search query or complete attribution. Raw query strings, referrer URLs, contact data, free-text notes, exact locations and request IDs are not sent. Visit context is held only in browser session storage after opt-in. Declining clears that context and removes applicable GA cookies.
 
 The private inbox remains the sole enquiry authority. Qualification and wins are assessed in the existing business workflow; this implementation does not relabel contacted/closed as qualified/won. Persistent new outcome fields would require separately coordinated shared-storage work. Monthly lead-quality review can use the existing records without adding a parallel operational store.
 
@@ -74,7 +96,7 @@ Website implementation does not grant access to private Search Console or analyt
 After a requested production release:
 
 1. Verify actual canonical pages, one-hop redirects, article URL continuity and the sitemap at the published origin.
-2. Disable automatic history/form/outbound-click and user-provided-data collection on the existing GA4 property, verify actual payloads, and then enable the reviewed production transport. Check consented events arrive. Configure `generate_lead` as a key event and appropriate custom dimensions if those reports are wanted.
+2. Recheck the saved account restrictions, verify actual Google request payloads at the published origin, and then enable the reviewed production transport. Confirm a successful enquiry arrives once as `generate_lead`, that rejection sends nothing, and that withdrawal stops collection. `generate_lead` is the confirmed-receipt event, never a contact-page visit. No arbitrary monetary lead value is assigned. Event-scoped reporting uses `landing_path`, `source_group`, `package_id` and `service`; launch verification must confirm these arrive in Analytics.
 3. Capture Search Console's actual query/page baseline, inspect new URLs and the sitemap, then compare meaningful 28-day and seasonal windows. No search-volume, ranking-growth or conversion-rate estimate is invented here.
 4. Review suitable pool enquiries by actual project location. A visit to the Skåne page is not proof the visitor lives there; aggregate organic query data cannot be joined to an individual customer's search.
 5. Review current authority guidance and genuine project evidence before changing related claims. Reconcile the new guides' first-publication dates if the first release is later than their prepared date.
@@ -82,6 +104,19 @@ After a requested production release:
 The plan's longer-term monitoring, genuine new project collection and authorized account/outreach work remain operational activities after implementation, not fabricated completed results.
 
 ## Verification contract
+
+### Content modification dates
+
+The sitemap generator reads `dateModified` from each canonical page's own structured-data node.
+The source is `PageSeo.dateModified`; update it only for a significant content change, using a
+known `YYYY-MM-DD` date. Articles with a recorded publication date may use that date until their
+first revision. Unknown dates are omitted. Builds, file timestamps and repository-wide commits
+never refresh sitemap dates. Invalid, future or conflicting dates fail generation.
+
+The DIY and comparison guides record 3 October 2026 for their approved metadata, content and
+contextual-link revisions in all three locales. No original publication date is invented.
+
+### Checks
 
 Use the repository's [change-aware verification](../DEVELOPMENT-VERIFICATION.md). Public tests read the exact candidate directory, including staged releases, check all canonical/language identities and verify authored guide translations. Sitemap generation proves exact route-set equality, rejects unintended duplicate canonical claims and requires reciprocal actual language counterparts. Synthetic browser journeys cover page discovery, package choice, language continuity, receipt recovery, consent and authored article content.
 
@@ -97,7 +132,7 @@ Desktop screenshots at 1280 × 720 were reviewed for all fourteen main page fami
 
 The original two article source files and historical baseline fixture have no diff. Their original catalogue objects, three-language content fields, and historical related-reading order and destinations are protected separately; current card wording follows the 3 October presentation decision. The original stored introductions are visible again.
 
-This is a verified development implementation, not a production release or evidence of improved Google rankings. Production analytics remains disabled pending the account-side correction above. The simultaneously revised five editorial images and their image-generation record belong to separate owner work; this SEO implementation preserves them.
+This is a verified development implementation, not a production release or evidence of improved Google rankings. Production analytics remains disabled pending the live payload and consent check above; the account-side collection restrictions have been corrected. The simultaneously revised five editorial images and their image-generation record belong to separate owner work; this SEO implementation preserves them.
 
 ## Historical guide inline-image exception — 3 October 2026
 
@@ -109,3 +144,23 @@ The [plain-Swedish review](SWEDISH-COPY-REVIEW.md) preserves every SEO metadata 
 both protected article bodies. Its only additional protected-content exception removes one
 duplicated final full stop from the Swedish DIY introduction. The historical fixtures remain
 unchanged, and the protected-content checks allow only that exact punctuation correction.
+
+## Comparison guide revision — 3 October 2026
+
+The owner approved distinct search titles and descriptions for the DIY and comparison guides,
+and a balanced comparison covering natural-pool space, care, nutrient management and seasonal
+character. The comparison no longer promises universally lower running costs or self-maintenance.
+All three locales use the revised claims. This pass adds no links from main pages into the blog
+and updates contextual links inside both guides to the current localized package prices,
+price guide, installation process and aftercare checklist. Main-page content and navigation
+remain unchanged.
+
+Editorial references, checked 3 October 2026:
+
+- [Aquascape recreational ponds](https://www.aquascapeinc.com/recreational-ponds): filtration space, nutrient processing and maintenance access.
+- [Aquascape filtration](https://www.aquascapeinc.com/professionals/blog/contractor-articles/the-most-effective-way-to-filter-pond-water): mechanical debris collection and biological treatment.
+- [Aquascape ecosystem balance](https://www.aquascapeinc.com/water-gardening/how-to/your-pond-a-balanced-ecosystem): circulation, leaf collection and nutrient sources.
+
+These references support the biological-system and maintenance explanation, not a quantified
+comparison of costs, health outcomes or environmental impact. No external source blocks were
+added to the public articles.

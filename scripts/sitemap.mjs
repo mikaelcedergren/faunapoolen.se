@@ -5,19 +5,59 @@ import { PUBLIC_CANONICAL_PATHS } from '../server/src/public-routes.ts';
 
 const ORIGIN = 'https://faunapoolen.se';
 const parser = new HtmlParser();
-function elements(nodes, name) {
+function namedNodes(nodes, name) {
   return nodes.flatMap((node) => [
-    ...(node.name === name ? [Object.fromEntries(node.attrs.map((a) => [a.name, a.value]))] : []),
-    ...elements(node.children ?? [], name),
+    ...(node.name === name ? [node] : []),
+    ...namedNodes(node.children ?? [], name),
   ]);
+}
+function elements(nodes, name) {
+  return namedNodes(nodes, name).map((node) =>
+    Object.fromEntries(node.attrs.map((a) => [a.name, a.value])),
+  );
 }
 const escapeXml = (value) =>
   value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;');
+
+// Use the page's authored content date, never build time, file mtime or a repository-wide commit.
+function lastModified(nodes, canonical) {
+  const dates = [];
+  for (const script of namedNodes(nodes, 'script')) {
+    if (!script.attrs.some((attr) => attr.name === 'type' && attr.value === 'application/ld+json'))
+      continue;
+    const data = JSON.parse(script.children.map((node) => node.value ?? '').join(''));
+    const graph = data['@graph'] ?? [data];
+    for (const page of graph) {
+      if (
+        page['@id'] !== `${canonical}#webpage` ||
+        page.url !== canonical ||
+        !['WebPage', 'BlogPosting'].includes(page['@type']) ||
+        page.dateModified === undefined
+      )
+        continue;
+      const date = page.dateModified;
+      const parsed = typeof date === 'string' ? new Date(`${date}T00:00:00Z`) : new Date(NaN);
+      if (
+        typeof date !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+        !Number.isFinite(parsed.getTime()) ||
+        parsed.toISOString().slice(0, 10) !== date ||
+        parsed.getTime() > Date.now()
+      )
+        throw new Error(`Invalid content modification date for ${canonical}: ${date}`);
+      dates.push(date);
+    }
+  }
+  if (new Set(dates).size > 1)
+    throw new Error(`Conflicting content modification dates: ${canonical}`);
+  return dates[0];
+}
 
 /** Prove the exact public catalogue before writing; duplicate outputs may not hide in a Map. */
 export function writeSitemap(browserDirectory) {
   const expected = new Set(PUBLIC_CANONICAL_PATHS.map((path) => ORIGIN + path));
   const pages = new Map();
+  const modified = new Map();
   function visit(directory) {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
       const file = join(directory, entry.name);
@@ -54,6 +94,7 @@ export function writeSitemap(browserDirectory) {
           throw new Error(`Invalid language counterpart: ${canonical}`);
       }
       pages.set(canonical, alternates);
+      modified.set(canonical, lastModified(nodes, canonical));
     }
   }
   visit(browserDirectory);
@@ -77,7 +118,7 @@ export function writeSitemap(browserDirectory) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(
       ([url, alternates]) =>
-        `  <url>\n    <loc>${escapeXml(url)}</loc>\n${alternates.map(({ hreflang, href }) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}" />`).join('\n')}\n  </url>`,
+        `  <url>\n    <loc>${escapeXml(url)}</loc>\n${modified.get(url) ? `    <lastmod>${modified.get(url)}</lastmod>\n` : ''}${alternates.map(({ hreflang, href }) => `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${escapeXml(href)}" />`).join('\n')}\n  </url>`,
     )
     .join('\n');
   writeFileSync(

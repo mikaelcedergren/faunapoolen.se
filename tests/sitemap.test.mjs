@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
@@ -52,4 +52,61 @@ test('sitemap rejects false language counterparts', (t) => {
     ),
   );
   assert.throws(() => writeSitemap(directory), /Non-reciprocal language counterparts/);
+});
+
+function addGraph(directory, graph) {
+  const file = join(directory, 'index.html');
+  writeFileSync(
+    file,
+    readFileSync(file, 'utf8').replace(
+      '</head>',
+      `<script type="application/ld+json">${JSON.stringify({ '@graph': graph })}</script></head>`,
+    ),
+  );
+  return file;
+}
+const datedPage = (dateModified) => ({
+  '@type': 'WebPage',
+  '@id': origin + '/#webpage',
+  url: origin + '/',
+  dateModified,
+});
+
+test('sitemap retains authored dates across rebuilds and file timestamp changes', (t) => {
+  const directory = fixture(t);
+  const file = addGraph(directory, [datedPage('2024-02-29')]);
+  writeSitemap(directory);
+  const before = readFileSync(join(directory, 'sitemap.xml'), 'utf8');
+  assert.match(
+    before,
+    /<loc>https:\/\/faunapoolen.se\/<\/loc>\n    <lastmod>2024-02-29<\/lastmod>/,
+  );
+  assert.equal([...before.matchAll(/<lastmod>/g)].length, 1, 'Undated pages stay undated');
+  utimesSync(file, new Date('2030-01-01'), new Date('2030-01-01'));
+  writeSitemap(directory);
+  assert.equal(readFileSync(join(directory, 'sitemap.xml'), 'utf8'), before);
+});
+
+test('sitemap ignores organization dates and dates belonging to another page', (t) => {
+  const directory = fixture(t);
+  addGraph(directory, [
+    { '@type': 'Organization', dateModified: '2024-01-01' },
+    { ...datedPage('2024-01-01'), '@id': origin + '/en/#webpage', url: origin + '/en/' },
+  ]);
+  writeSitemap(directory);
+  assert.doesNotMatch(readFileSync(join(directory, 'sitemap.xml'), 'utf8'), /<lastmod>/);
+});
+
+for (const date of ['2023-02-29', '2024-13-01', 'yesterday', '9999-01-01']) {
+  test(`sitemap rejects invalid or future editorial date ${date}`, (t) => {
+    const directory = fixture(t);
+    addGraph(directory, [datedPage(date)]);
+    assert.throws(() => writeSitemap(directory), /Invalid content modification date/);
+  });
+}
+
+test('sitemap rejects contradictory modification dates for the same page', (t) => {
+  const directory = fixture(t);
+  addGraph(directory, [datedPage('2024-01-01'), datedPage('2024-02-01')]);
+  assert.throws(() => writeSitemap(directory), /Conflicting content modification dates/);
 });
