@@ -730,17 +730,21 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
 
     this.submitting.set(true);
+    this.generationError.set('');
     try {
-      await this.request('/api/admin/logout', { method: 'POST' });
-    } finally {
+      const response = await this.request('/api/admin/logout', { method: 'POST' });
+      if (!response.ok) throw new Error('Logout was not acknowledged.');
       this.generationPollSequence += 1;
       this.authenticated.set(false);
       this.username.set('');
       this.password.set('');
       this.requestError.set('');
       this.resetStudio();
-      this.submitting.set(false);
       queueMicrotask(() => this.usernameField?.focus());
+    } catch {
+      this.generationError.set('Could not confirm log out. Try again.');
+    } finally {
+      this.submitting.set(false);
     }
   }
 

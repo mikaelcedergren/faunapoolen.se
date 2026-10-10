@@ -944,6 +944,53 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   expect(browserErrors).toEqual([]);
 });
 
+for (const failure of ['http', 'network'] as const) {
+  test(`admin preserves its session after a ${failure} logout failure and can retry`, async ({
+    page,
+  }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    const login = await page.context().request.post('/api/admin/login', {
+      headers: { Origin: TEST_ORIGIN },
+      data: {
+        username: 'faunapoolen-e2e-owner',
+        password: 'faunapoolen-e2e-owner-password',
+      },
+    });
+    expect(login.ok()).toBe(true);
+    await page.goto('/admin');
+    await expect(page.getByRole('button', { name: 'Create campaign' })).toBeVisible();
+
+    await page.route('**/api/admin/logout', async (route) => {
+      if (failure === 'network') {
+        await route.abort('failed');
+      } else {
+        await route.fulfill({
+          status: 503,
+          json: { error: { message: 'Logout temporarily unavailable.' } },
+        });
+      }
+    });
+    await page.getByRole('button', { name: 'Account actions for Admin' }).click();
+    await page.getByText('Log out', { exact: true }).click();
+    await expect(
+      page.getByText('Could not confirm log out. Try again.', { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Create campaign' })).toBeVisible();
+    const stillAuthenticated = await page.context().request.get('/api/admin/session');
+    expect(await stillAuthenticated.json()).toMatchObject({ authenticated: true });
+    expect(pageErrors).toEqual([]);
+
+    await page.unroute('**/api/admin/logout');
+    await page.getByRole('button', { name: 'Account actions for Admin' }).click();
+    await page.getByText('Log out', { exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+    const signedOut = await page.context().request.get('/api/admin/session');
+    expect(await signedOut.json()).toMatchObject({ authenticated: false });
+    expect(pageErrors).toEqual([]);
+  });
+}
+
 test('a fresh browser session recovers failed work before its campaign row exists', async ({
   page,
 }) => {
