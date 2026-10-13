@@ -1,6 +1,7 @@
 # faunapoolen.se
 
-Current-site maintenance belongs on `main`; the upcoming website lives on `codex/redesign`.
+`codex/redesign` is the current development target for the upcoming release (owner direction,
+13 October 2026). `main` preserves the older published website; do not switch to it for ordinary work.
 Read [the branch workflow](BRANCH-WORKFLOW.md) before switching or merging these lines of work.
 
 ## Everyday development
@@ -94,6 +95,11 @@ runs, provider effects, and bounded recovery state. Existing databases move forw
 append-only migrations; never rewrite an applied migration or bypass the pre-write proof.
 
 ## Framework boundary
+
+Start framework-guided product work with the installed
+[`ai/design/00-start-here.md`](node_modules/@mikaelcedergren/cx-framework/ai/design/00-start-here.md).
+Use the packaged skills discovered through `.agents/skills/`; their implementation stays in the
+installed package.
 
 The target consumes the published GitHub `main` package through explicit
 `@mikaelcedergren/cx-framework` entrypoints. Never use a local path, tarball, sibling Cortex

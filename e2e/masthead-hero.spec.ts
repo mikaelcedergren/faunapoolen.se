@@ -132,7 +132,7 @@ test.describe('language suggestion', () => {
     const suggestion = await alert.boundingBox();
     expect(suggestion!.y).toBeGreaterThanOrEqual(hero!.y + hero!.height);
     await page.goto('/blog/posts/build-your-own-nature-pool.html');
-    await expect(page.locator('cx-hero[data-variant="cover"]')).toBeVisible();
+    await expect(page.locator('cx-hero[data-layout="cover"]')).toBeVisible();
     await expect(page.locator('h1')).toBeVisible();
     const header = await page.locator('cx-masthead > header').boundingBox();
     const guideHero = await page.locator('cx-hero').boundingBox();

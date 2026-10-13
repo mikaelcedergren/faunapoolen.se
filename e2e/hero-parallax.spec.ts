@@ -41,7 +41,7 @@ test('hero navigation starts at the final crop and scrolling never changes its s
   });
   await page.goto('/en/');
   const media = page.locator('cx-hero .cx-hero__media');
-  const crop = 'matrix(1.14, 0, 0, 1.14, 0, 0)';
+  const crop = 'matrix(1.18, 0, 0, 1.18, 0, 0)';
   const expectStableStartup = async () => {
     await expect(media).toHaveAttribute('data-startup-frames', /.+/);
     const frames = JSON.parse((await media.getAttribute('data-startup-frames'))!) as {
@@ -102,7 +102,7 @@ test.describe('prerendered hero', () => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.goto('/en/');
     const media = page.locator('cx-hero .cx-hero__media');
-    await expect(media).toHaveCSS('transform', 'matrix(1.14, 0, 0, 1.14, 0, 0)');
+    await expect(media).toHaveCSS('transform', 'matrix(1.18, 0, 0, 1.18, 0, 0)');
     await expect(media).toHaveCSS('translate', '0px 0%');
     await page.evaluate(() => window.scrollBy(0, 180));
     await expect(media).not.toHaveCSS('translate', '0px 0%');

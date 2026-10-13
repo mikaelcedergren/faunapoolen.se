@@ -18,7 +18,7 @@ import { SiteShellComponent } from '../site-shell.component';
         [underMasthead]="true"
         headingClass="cx-font-regular"
         [heading]="title"
-        variant="stacked"
+        layout="stacked"
       />
       <section class="cx-container cx-py-2xl">
         <cx-stack gap="lg" align="start">

@@ -9,7 +9,7 @@
     "framework": "angular",
     "rendering": "ssg",
     "designSystem": "cx-framework",
-    "visualSystem": "product-skin"
+    "visualSystem": "framework"
   },
   "capabilities": {
     "authentication": "owner",

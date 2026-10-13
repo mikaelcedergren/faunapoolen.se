@@ -1,9 +1,10 @@
 # Website maintenance and redesign
 
-`main` maintains the current production website. `codex/redesign` contains the upcoming website.
-The registered development service uses the branch checked out in this repository; normally keep
-this checkout on `main`. Production uses its selected immutable release, independently of the
-checkout. A commit or push does not publish the website.
+`codex/redesign` is the current development target for the upcoming website release (owner direction,
+13 October 2026). `main` preserves the older published website. The registered development service
+uses the branch checked out in this repository; keep this checkout on `codex/redesign` for ordinary
+work. Production uses its selected immutable release, independently of the checkout. A commit or
+push does not publish the website.
 
 ## Preserved baseline
 
@@ -19,10 +20,10 @@ into this checkout. No Git history was rewritten.
 
 ## Continuing work
 
-- Make current-site fixes on `main`, verify in development, and publish only when requested.
-- Make new-website changes on `codex/redesign`.
-- Merge subsequent `main` fixes into `codex/redesign` regularly, reviewing conflicts against the
-  redesigned implementation.
+- Make ordinary product and framework-adoption changes on `codex/redesign`.
+- Work on the older `main` website only when the owner explicitly requests that maintenance.
+  Bring any such fixes forward into `codex/redesign`, reviewing conflicts against the redesigned
+  implementation.
 - Before switching this registered checkout, stop its development service, preserve local work,
   and install the destination branch's frozen lockfile. Restart only after storage compatibility
   is established. Follow the shared [development contract](../SERVER-STANDARD.md#local-development).
