@@ -28,8 +28,8 @@ pnpm verify:change --full
 - The public compositions map to their English routes under `/en/`; article files map to their
   preserved `/en/blog/posts/<slug>.html` addresses. Inbox work maps to `/en/admin/enquiries/`.
 - The isolated browser suite owns form readiness, validation, interrupted-receipt retries, real
-  synthetic enquiry persistence and private status updates, language switching, unsupported-browser
-  suggestions, private indexing exclusions and narrow-screen layout checks.
+  synthetic enquiry persistence and private status updates, explicit language switching without
+  browser-language suggestions, private indexing exclusions and narrow-screen layout checks.
 - E2E changes run the isolated repository-owned E2E command.
 - Dependency, pnpm patch, and hot-reload harness changes also run `pnpm e2e:hmr`.
 - Dependencies, repository authority, authentication, SQLite, durable jobs, the worker and provider

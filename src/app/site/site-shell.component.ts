@@ -14,7 +14,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import {
   CX_THEMES,
-  CxAlertComponent,
   CxButtonComponent,
   CxLanguageSelectorComponent,
   CxMastheadComponent,
@@ -25,7 +24,7 @@ import { FAUNAPOOLEN_CONTACT } from './content/faunapoolen-contact';
 import { FAUNAPOOLEN_COPY, FaunapoolenPage } from './content/faunapoolen-content';
 import { SITE_UI } from './content/site-ui';
 import { CookieNoticeComponent } from './cookie-notice.component';
-import { LANGUAGE_NAMES, preferredLanguage, SUPPORTED_LANGUAGES } from './language';
+import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from './language';
 import { ContactInvitationComponent } from './sections/contact-invitation.component';
 import { SiteMeasurement } from './site-measurement';
 import { SitePage } from './site-page';
@@ -37,7 +36,6 @@ import { SitePage } from './site-page';
     CxButtonComponent,
     CxLanguageSelectorComponent,
     CxStackComponent,
-    CxAlertComponent,
     CookieNoticeComponent,
     ContactInvitationComponent,
   ],
@@ -151,12 +149,6 @@ export class SiteShellComponent extends SitePage implements OnInit {
         kept.set('package', selected);
     }
     this.navigationContext.set((kept.size ? '?' + kept.toString() : '') + browser.location.hash);
-    const suggestion = this.suggestion();
-    if (suggestion)
-      this.suggestion.set({
-        ...suggestion,
-        href: suggestion.href.split(/[?#]/)[0] + this.navigationContext(),
-      });
   }
   protected readonly languageOptions = this.languages.map((language) => ({
     id: language.locale,
@@ -168,24 +160,12 @@ export class SiteShellComponent extends SitePage implements OnInit {
     const language = this.languages.find((item) => item.locale === id);
     const browser = this.document.defaultView;
     if (language && browser && id !== this.locale) {
-      this.rememberLanguage(id);
       this.refreshNavigationContext();
       browser.location.assign(this.languageHref(language.href));
     }
   }
 
-  protected rememberLanguage(id: string): void {
-    try {
-      this.document.defaultView?.sessionStorage.setItem('fp-language-choice', id);
-    } catch {
-      /* Language navigation also works without storage. */
-    }
-  }
-
   protected readonly languageLabel = $localize`:@@site.language.label:Language`;
-  protected readonly suggestionHeading = $localize`:@@site.language.suggestion:Read this page in your preferred language`;
-  protected readonly suggestion = signal<{ text: string; href: string } | undefined>(undefined);
-  private suggestionKey = '';
 
   constructor() {
     super();
@@ -196,35 +176,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
       this.refreshNavigationContext();
       this.measurement.initialize();
       this.measurement.track('page_view');
-      const browser = this.document.defaultView;
-      if (!browser) return;
-      try {
-        if (browser.sessionStorage.getItem('fp-language-choice')) return;
-      } catch {
-        /* Storage is optional. */
-      }
-      const preferred = preferredLanguage(browser.navigator.languages);
-      if (preferred === this.locale) return;
-      this.suggestionKey = `fp-language-dismissed:${this.locale}:${preferred}`;
-      try {
-        if (browser.sessionStorage.getItem(this.suggestionKey)) return;
-      } catch {
-        /* Storage is optional. */
-      }
-      this.suggestion.set({
-        text: LANGUAGE_NAMES[preferred],
-        href: this.languageHref(this.routeFor(this.page, preferred, this.guideId)),
-      });
     });
-  }
-
-  protected dismissSuggestion(): void {
-    this.suggestion.set(undefined);
-    try {
-      this.document.defaultView?.sessionStorage.setItem(this.suggestionKey, '1');
-    } catch {
-      /* Private browsing can disable storage. */
-    }
   }
 
   ngOnInit(): void {

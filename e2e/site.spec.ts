@@ -70,11 +70,14 @@ test('an interrupted receipt retries the same enquiry without losing its details
 
 test.describe('unsupported browser language', () => {
   test.use({ locale: 'fr-FR' });
-  test('suggests English without redirecting the Swedish article', async ({ page }) => {
+  test('keeps the Swedish article without a language suggestion', async ({ page }) => {
     await page.goto('/blog/posts/build-your-own-nature-pool.html');
-    await expect(
-      page.locator('cx-alert').getByRole('link', { name: 'English', exact: true }),
-    ).toHaveAttribute('href', '/en/blog/posts/build-your-own-nature-pool.html');
+    await page
+      .locator('cx-masthead')
+      .getByRole('button', { name: 'Språk: Svenska', exact: true })
+      .click();
+    await expect(page.getByRole('option', { name: /English/ })).toBeVisible();
+    await expect(page.locator('cx-alert')).toHaveCount(0);
     await expect(page).toHaveURL(/\/blog\/posts\/build-your-own-nature-pool.html$/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'sv');
   });

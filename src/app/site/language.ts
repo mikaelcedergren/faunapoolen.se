@@ -14,14 +14,6 @@ export function languageFromPath(path: string): SiteLanguage {
   return 'sv';
 }
 
-export function preferredLanguage(languages: readonly string[]): SiteLanguage {
-  for (const value of languages) {
-    const language = value.toLowerCase().split(/[-_]/)[0];
-    if (language === 'en' || language === 'sv' || language === 'da') return language;
-  }
-  return 'en';
-}
-
 export function languageBase(language: SiteLanguage): string {
   return language === 'sv' ? '/' : `/${language}/`;
 }

@@ -122,24 +122,22 @@ test('all public introductions reserve navigation clearance', async ({ page }) =
   }
 });
 
-test.describe('language suggestion', () => {
+test.describe('explicit language choice', () => {
   test.use({ locale: 'fr-FR' });
-  test('stays below the hero while guide images extend behind navigation', async ({ page }) => {
+  test('shows no suggestion while guide images extend behind navigation', async ({ page }) => {
     await page.goto('/');
     const alert = page.locator('cx-alert');
-    await expect(alert).toBeVisible();
-    const hero = await page.locator('.fp-home-opening').boundingBox();
-    const suggestion = await alert.boundingBox();
-    expect(suggestion!.y).toBeGreaterThanOrEqual(hero!.y + hero!.height);
+    await page.locator('cx-masthead cx-language-selector button').click();
+    await expect(page.getByRole('option', { name: /English/ })).toBeVisible();
+    await expect(alert).toHaveCount(0);
     await page.goto('/blog/posts/build-your-own-nature-pool.html');
     await expect(page.locator('cx-hero[data-layout="cover"]')).toBeVisible();
     await expect(page.locator('h1')).toBeVisible();
     const header = await page.locator('cx-masthead > header').boundingBox();
     const guideHero = await page.locator('cx-hero').boundingBox();
-    const guideSuggestion = await alert.boundingBox();
     const title = await page.locator('h1').boundingBox();
     expect(guideHero!.y).toBe(header!.y);
-    expect(guideSuggestion!.y).toBeGreaterThanOrEqual(guideHero!.y + guideHero!.height);
+    await expect(alert).toHaveCount(0);
     expect(title!.y).toBeGreaterThanOrEqual(header!.height);
   });
 });

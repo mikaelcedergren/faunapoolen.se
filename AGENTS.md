@@ -118,8 +118,9 @@ English is the source editing locale at `/en/`; Swedish remains at the root and 
 Public page route segments are English in all three languages (owner decision, 17 September
 2026). Previous translated paths redirect in one hop through the shared route catalogue. Existing
 article slugs remain unchanged; new article slugs may be Swedish.
-Every public canonical route is prerendered. Browser preferences suggest a language without
-redirecting visitors away from explicit URLs. Literal article `.html` URLs stay unchanged;
+Every public canonical route is prerendered. Visitors choose their language through the language
+switchers; never show browser-language suggestions or redirect visitors away from explicit URLs.
+Literal article `.html` URLs stay unchanged;
 `scripts/flatten.mjs` preserves them. Retired product and section paths receive one-hop redirects
 owned by `server/src/public-routes.ts`, with local Angular aliases using that same catalogue.
 

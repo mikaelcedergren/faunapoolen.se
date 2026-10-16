@@ -36,16 +36,6 @@
   <main>
     <ng-content select="cx-hero, [hero]" />
     <ng-content select="[afterHero]" />
-    @if (suggestion(); as language) {
-      <div class="cx-container cx-pt-2xl">
-        <cx-alert
-          [heading]="suggestionHeading"
-          [action]="language"
-          [dismissible]="true"
-          (dismiss)="dismissSuggestion()"
-        />
-      </div>
-    }
     <ng-content />
     @if (showInvitation && page !== 'configure' && page !== 'cookies') {
       <fp-contact-invitation [href]="enquiryHref" />

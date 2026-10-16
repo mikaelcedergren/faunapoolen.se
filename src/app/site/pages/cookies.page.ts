@@ -36,7 +36,6 @@ import { SiteShellComponent } from '../site-shell.component';
               <li>{{ analyticsCookies }}</li>
               <li>{{ consentStorage }}</li>
               <li>{{ visitStorage }}</li>
-              <li>{{ languageStorage }}</li>
             </ul>
             <h2 class="fp-heading">{{ withdrawalTitle }}</h2>
             <p>{{ withdrawal }}</p>
@@ -60,7 +59,6 @@ export class CookiesPage extends SitePage {
   protected readonly analyticsCookies = $localize`:@@cookies.analyticsCookies:_ga and _ga_E1BFSP43WZ: optional first-party cookies used by Google Analytics to distinguish browsers and sessions. They are configured to expire after 180 days, renewed during use. Statistics are shared with Google.`;
   protected readonly consentStorage = $localize`:@@cookies.consentStorage:fp-analytics-consent-v1: local storage containing only your allow or reject choice. It remains until you change it or clear this website's browser data. It is not sent to Google.`;
   protected readonly visitStorage = $localize`:@@cookies.visitStorage:fp-analytics-visit: optional session storage for your landing page and broad source category. Used only after acceptance, removed when you reject statistics or end the browser session.`;
-  protected readonly languageStorage = $localize`:@@cookies.languageStorage:fp-language-choice and fp-language-dismissed entries: session storage remembering your language selection or dismissal of a language suggestion. Removed when the browser session ends and not shared with Google.`;
   protected readonly withdrawalTitle = $localize`:@@cookies.withdrawalTitle:Changing your choice`;
   protected readonly withdrawal = $localize`:@@cookies.withdrawal:Open cookie settings in the footer of any public page and select reject to withdraw consent. This stops future analytics events and removes this website's Google Analytics cookies and visit context. It does not undo statistics already sent. You can also clear saved choices through your browser.`;
   protected readonly contact = $localize`:@@cookies.contact:For questions about our use of cookies, contact`;
