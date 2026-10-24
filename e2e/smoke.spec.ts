@@ -1,5 +1,5 @@
 import { PUBLIC_LANGUAGES } from '../server/src/public-routes';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 const TEST_ORIGIN = process.env['CX_E2E_BASE_URL'];
 if (!TEST_ORIGIN) throw new Error('Faunapoolen E2E requires its wrapper-owned origin.');

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test';
 import {
   PUBLIC_LANGUAGES,
   LANGUAGE_NAMES,

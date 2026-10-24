@@ -100,6 +100,7 @@
               "sourceMap": true
             },
             "prod": {
+              "assets": [],
               "localize": true,
               "optimization": {
                 "scripts": true,

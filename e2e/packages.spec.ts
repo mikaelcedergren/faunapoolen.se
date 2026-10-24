@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/en/admin/packages/');

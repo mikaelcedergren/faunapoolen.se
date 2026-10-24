@@ -5,7 +5,7 @@
 // dist/browser and flattens each such leaf directory into a flat file `koi-pond-series.html`,
 // leaving section/container dirs (about/, blog/, blog/posts/, en/, ...) untouched. Result:
 // dist/browser mirrors the live URL tree exactly, so plain static serving preserves every URL.
-import { existsSync, readdirSync, renameSync, rmdirSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, readdirSync, renameSync, rmdirSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeSitemap } from './sitemap.mjs';
@@ -47,7 +47,16 @@ function flatten(dir) {
 
 flatten(BROWSER);
 // A local CSR build has no prerendered catalogue; production always does.
-if (existsSync(join(BROWSER, 'en', 'blog', 'index.html'))) writeSitemap(BROWSER);
+if (existsSync(join(BROWSER, 'en', 'blog', 'index.html'))) {
+  // Production disables Angular's per-locale asset copying. Every locale uses the same
+  // absolute /assets URLs, so publish the original files once at the browser root.
+  cpSync(join(ROOT, 'public'), BROWSER, { recursive: true });
+  const fonts = join(ROOT, 'node_modules', '@mikaelcedergren', 'cx-framework', 'fonts');
+  for (const name of readdirSync(fonts)) {
+    if (name.endsWith('.woff2')) cpSync(join(fonts, name), join(BROWSER, 'assets', 'fonts', name));
+  }
+  writeSitemap(BROWSER);
+}
 
 // Staged releases are sealed to exactly `browser/` + `release.json`, but `ng build` also writes
 // license/route byproducts at the output root — staged mode must drop them before sealing.

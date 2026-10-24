@@ -57,7 +57,7 @@ The worker owns these values in its existing private, mode-0600 `.env.worker` fi
 
 ```dotenv
 BREVO_API_KEY=<private key>
-COMPANY_EMAIL=wolfie@mikaelcedergren.com
+COMPANY_EMAIL=info@faunapoolen.se
 ENQUIRY_EMAIL_ENABLED=1
 ```
 
@@ -69,8 +69,9 @@ Automated tests (`NODE_ENV=test`) never read this private configuration.
 The root `.env` is not a runtime input. The web process strips these values and does not load the
 worker file. `ENQUIRY_EMAIL_ENABLED` defaults to `0`; with sending disabled, enquiries remain
 saved and notifications remain queued. Enabling email does not enable OpenAI generation.
-Keep `CAMPAIGN_GENERATION_ENABLED=0` unless separately authorized. Later change COMPANY_EMAIL to
-`info@faunapoolen.se` and restart the worker through the registered service flow.
+Keep `CAMPAIGN_GENERATION_ENABLED=0` unless separately authorized. The owner selected
+`info@faunapoolen.se` as the launch recipient on 24 October 2026. Adopt the private worker
+configuration through the registered release/service flow and verify actual delivery separately.
 
 Source preparation does not authorize installing schema 15 into operational storage. Activation
 requires the coordinated maintenance procedure in `AGENTS.md` and `../SERVER-STANDARD.md`:

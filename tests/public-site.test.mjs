@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 import { HtmlParser } from '@angular/compiler';
@@ -34,6 +34,35 @@ function plain(nodes) {
 function read(path) {
   return parser.parse(readFileSync(join(browserRoot, path), 'utf8'), path).rootNodes;
 }
+test('localized builds publish unchanged shared assets once at their canonical root URLs', () => {
+  const publicRoot = join(root, 'public');
+  for (const entry of readdirSync(publicRoot, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    const source = join(entry.parentPath, entry.name);
+    const relative = source.slice(publicRoot.length + 1);
+    if (relative === 'sitemap.xml') continue; // Generated from the route catalogue below.
+    assert.deepEqual(readFileSync(join(browserRoot, relative)), readFileSync(source), relative);
+  }
+  const fonts = join(root, 'node_modules', '@mikaelcedergren', 'cx-framework', 'fonts');
+  for (const name of readdirSync(fonts).filter((name) => name.endsWith('.woff2'))) {
+    assert.deepEqual(
+      readFileSync(join(browserRoot, 'assets', 'fonts', name)),
+      readFileSync(join(fonts, name)),
+      name,
+    );
+  }
+  for (const locale of PUBLIC_LANGUAGES.filter((locale) => locale !== 'sv')) {
+    assert.equal(existsSync(join(browserRoot, locale, 'assets')), false, locale);
+  }
+});
+test('public raster images stay below the mobile delivery size ceiling', () => {
+  const images = join(browserRoot, 'assets', 'images');
+  for (const entry of readdirSync(images, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile() || !/\.(png|jpe?g|webp)$/i.test(entry.name)) continue;
+    const file = join(entry.parentPath, entry.name);
+    assert.ok(statSync(file).size <= 750_000, `Oversized public image: ${file}`);
+  }
+});
 test('sitemap contains only the complete public canonical catalogue', () => {
   const xml = readFileSync(join(browserRoot, 'sitemap.xml'), 'utf8');
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);

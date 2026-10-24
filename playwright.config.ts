@@ -16,5 +16,5 @@ export default defineConfig({
   forbidOnly: process.env.CI === '1',
   reporter: 'list',
   use: createHermeticPlaywrightUse(RUNTIME),
-  projects: [{ name: 'chromium' }],
+  projects: [{ name: 'public-site' }],
 });

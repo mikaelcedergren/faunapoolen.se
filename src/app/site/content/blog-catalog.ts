@@ -559,8 +559,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       ogImage:
         'https://faunapoolen.se/assets/images/guides/hur-mycket-plats-behover-en-naturpool.webp',
       ogType: 'article',
-      datePublished: '2026-09-17',
-      dateModified: '2026-09-17',
+      datePublished: '2026-10-24',
+      dateModified: '2026-10-24',
     },
   },
   {
@@ -587,8 +587,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       defaultLanguage: 'sv',
       ogImage: 'https://faunapoolen.se/assets/images/guides/skotsel-av-naturpool-under-aret.webp',
       ogType: 'article',
-      datePublished: '2026-09-17',
-      dateModified: '2026-09-17',
+      datePublished: '2026-10-24',
+      dateModified: '2026-10-24',
     },
   },
   {
@@ -616,8 +616,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       ogImage:
         'https://faunapoolen.se/assets/images/guides/naturpool-fran-forsta-samtal-till-bad.webp',
       ogType: 'article',
-      datePublished: '2026-09-17',
-      dateModified: '2026-09-17',
+      datePublished: '2026-10-24',
+      dateModified: '2026-10-24',
     },
   },
   {
@@ -644,8 +644,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       defaultLanguage: 'sv',
       ogImage: 'https://faunapoolen.se/assets/images/guides/naturpool-sakerhet-och-tillstand.webp',
       ogType: 'article',
-      datePublished: '2026-09-17',
-      dateModified: '2026-09-17',
+      datePublished: '2026-10-24',
+      dateModified: '2026-10-24',
     },
   },
   {
@@ -673,8 +673,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       ogImage:
         'https://faunapoolen.se/assets/images/guides/vad-kostar-det-att-aga-en-naturpool.webp',
       ogType: 'article',
-      datePublished: '2026-09-17',
-      dateModified: '2026-09-17',
+      datePublished: '2026-10-24',
+      dateModified: '2026-10-24',
     },
   },
 ];

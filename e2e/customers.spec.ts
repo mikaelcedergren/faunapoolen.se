@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test';
 import { randomUUID } from 'node:crypto';
 
 test('returning visitors have one customer with independent enquiry history', async ({ page }) => {

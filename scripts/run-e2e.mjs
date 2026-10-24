@@ -28,7 +28,7 @@ try {
       };
     },
     productId: 'faunapoolen',
-    ...(hmr ? { playwrightArgs: process.argv.slice(3) } : {}),
+    playwrightArgs: process.argv.slice(hmr ? 3 : 2),
     repoRoot,
   });
 } catch (error) {

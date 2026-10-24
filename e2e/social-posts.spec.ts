@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test';
 
 test('social posts prepare media, retain edits and move between Pending and Published', async ({
   page,

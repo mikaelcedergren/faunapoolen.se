@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 for (const [path, heading, cta, contact] of [
   [
@@ -51,7 +51,7 @@ for (const [entry, linkName, index, service, packageId] of [
     await expect(page).toHaveURL(
       service === 'pool'
         ? new RegExp(entry.replace(/\/$/, '') + '/?\\?package=summer#consultation$')
-        : /\/en\/configure\/\?/,
+        : /\/en\/configure\/?\?/,
     );
     if (service !== 'pool') {
       await expect(page).toHaveURL(new RegExp('service=' + service));

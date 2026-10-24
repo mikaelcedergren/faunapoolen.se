@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { test, expect } from '@playwright/test';
+import { test, expect } from './test';
 import { PUBLIC_LANGUAGES, PUBLIC_PAGES } from '../server/src/public-routes';
 
 // The release gate needs current rendered evidence as well as behavioural assertions.

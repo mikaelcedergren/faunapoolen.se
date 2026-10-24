@@ -1,5 +1,5 @@
 import { PUBLIC_LANGUAGES } from '../server/src/public-routes';
-import { expect, test } from '@playwright/test';
+import { expect, test } from './test';
 
 test('FAQ answers open by keyboard and language changes keep the FAQ page', async ({ page }) => {
   await page.goto('/en/faq/');

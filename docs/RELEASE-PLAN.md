@@ -46,6 +46,48 @@ offline quiesce/migrate/verify sequence. After migration, only the prepared sche
 start. The old pair is usable only before migration; data restoration is a separately controlled
 recovery operation, never an automatic code rollback.
 
+The first inactive browser build exposed per-locale copying of the entire image directory,
+exceeding the operator's 512 MiB artifact ceiling before post-processing. Production now leaves
+asset copying out of Angular localization and publishes the canonical public assets and framework
+fonts once in post-processing. Every original public asset URL remains available. A regression
+compares published bytes with the source and rejects duplicate locale asset directories. The
+failed, unsealed build was removed only after proving its exact private manifest and inactivity;
+the manifest remains with the release evidence.
+
+The owner also requested an image-size audit and phone-focused release QA. Public raster images
+have a 750,000-byte ceiling, with smaller WebP delivery images and existing responsive variants.
+Compression preserves image URLs and aspect ratios. The release suite exercises 360 px and
+430 px touch phones at 2× density in Chromium and WebKit, including navigation, image transfers,
+overflow and a synthetic enquiry. Final image counts, transfer measurements and rendered review
+are recorded privately with the release evidence.
+
+The final image pass reduces 52 files from 76,640,529 to 27,547,626 bytes. The largest retained
+public image is 737,083 bytes. PNG photographs retain full colour; existing responsive WebP
+variants remain the normal delivery path. The WebKit phone journeys pass at both widths, with
+the largest downloaded image at 398,202 bytes. Their success receipts were visually reviewed.
+Use `pnpm e2e --engine=webkit mobile-release.spec.ts` through the registered hermetic runner;
+the canonical framework test adapter owns WebKit network containment. Browser selection must
+not be overridden in Playwright configuration.
+
+Sitemap verification proves all 288 canonical URLs, complete reciprocal eight-language alternates,
+authored modification dates and exclusion of private/redirect routes. The five guides absent
+from the old site use 24 October 2026 for their first publication and initial modification dates;
+historical article dates remain unchanged. The generated live sitemap will be
+`https://faunapoolen.se/sitemap.xml`. Public-origin URL verification remains a post-cutover gate.
+
+Final source verification passes 122 Chromium tests, two focused WebKit phone journeys,
+612 rendered-content checks and 25 verification/sitemap checks. Formatting, platform, app/server
+types and the full style audit also pass. The existing 185 server tests and HMR proof from
+preparation remain applicable to the unchanged server and development implementation. The
+distinct Custodian review of current desktop/mobile captures, phone success receipts and
+optimized photographs is **Pass for the prepared release source**. Production activation,
+external email delivery and real Vimeo playback still require their operational evidence.
+
+Notification preparation uses the existing private Brevo key and the verified active sender
+`Faunapoolen <michael@wargr.com>`. The owner selected `info@faunapoolen.se` as the recipient and
+required email before launch. The prepared configuration stays private and inactive until the
+coordinated cutover; a real test enquiry/email requires its separate explicit authorization.
+
 ## Preparation evidence — 24 October 2026
 
 The public design, content, package choices, pricing and language structure are unchanged by this
@@ -157,10 +199,9 @@ Owner: Codex/operator; Wolfie authorizes branch integration, publication and any
 - [ ] Record a recovery plan before switching: retained compatible browser/server pair, backup
       reference, operator and failure criteria. A code rollback must never put an incompatible
       old runtime against an upgraded database. Data recovery is a separate controlled operation.
-- [ ] Confirm the production notification recipient, sender setup and worker configuration.
-      The customer-notification document still calls for changing the recipient to
-      `info@faunapoolen.se`; the installed private settings have not been checked in this review.
-      Decide whether notification email is enabled at launch or the inbox is monitored manually.
+- [x] Confirm the production notification recipient and sender setup. The owner selected
+      `info@faunapoolen.se`; the existing Brevo key successfully verified the configured sender.
+      Private activation settings are prepared. Activation and actual inbox arrival remain open.
 
 Use the registered [paired-release and storage procedures](../../SERVER-STANDARD.md),
 [operator maintenance guide](../../server-ops/README.md#shared-data-development-and-maintenance)
