@@ -54,6 +54,11 @@ compares published bytes with the source and rejects duplicate locale asset dire
 failed, unsealed build was removed only after proving its exact private manifest and inactivity;
 the manifest remains with the release evidence.
 
+Angular's generated redirect documents also receive the canonical `cx-build-id` source marker
+during post-processing because they do not use the main index template. A rendered-output
+regression requires exactly one marker directly in the head of every HTML document, including
+redirects, before the operator seals the build identity.
+
 The owner also requested an image-size audit and phone-focused release QA. Public raster images
 have a 750,000-byte ceiling, with smaller WebP delivery images and existing responsive variants.
 Compression preserves image URLs and aspect ratios. The release suite exercises 360 px and
@@ -76,7 +81,7 @@ historical article dates remain unchanged. The generated live sitemap will be
 `https://faunapoolen.se/sitemap.xml`. Public-origin URL verification remains a post-cutover gate.
 
 Final source verification passes 122 Chromium tests, two focused WebKit phone journeys,
-612 rendered-content checks and 25 verification/sitemap checks. Formatting, platform, app/server
+613 rendered-content checks and 25 verification/sitemap checks. Formatting, platform, app/server
 types and the full style audit also pass. The existing 185 server tests and HMR proof from
 preparation remain applicable to the unchanged server and development implementation. The
 distinct Custodian review of current desktop/mobile captures, phone success receipts and

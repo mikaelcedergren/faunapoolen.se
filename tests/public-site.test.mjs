@@ -34,6 +34,22 @@ function plain(nodes) {
 function read(path) {
   return parser.parse(readFileSync(join(browserRoot, path), 'utf8'), path).rootNodes;
 }
+test('every HTML document, including generated redirects, carries its release identity marker', () => {
+  for (const entry of readdirSync(browserRoot, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
+    const file = join(entry.parentPath, entry.name);
+    const nodes = parser.parse(readFileSync(file, 'utf8'), file).rootNodes;
+    const heads = walk(nodes, (node) => node.name === 'head');
+    assert.equal(heads.length, 1, file);
+    const markers = walk(
+      nodes,
+      (node) => node.name === 'meta' && attr(node, 'name') === 'cx-build-id',
+    );
+    assert.equal(markers.length, 1, file);
+    assert.ok(heads[0].children.includes(markers[0]), file);
+    assert.equal(attr(markers[0], 'content'), '__CX_BUILD_ID__', file);
+  }
+});
 test('localized builds publish unchanged shared assets once at their canonical root URLs', () => {
   const publicRoot = join(root, 'public');
   for (const entry of readdirSync(publicRoot, { recursive: true, withFileTypes: true })) {

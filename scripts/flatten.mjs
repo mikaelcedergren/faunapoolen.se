@@ -5,7 +5,16 @@
 // dist/browser and flattens each such leaf directory into a flat file `koi-pond-series.html`,
 // leaving section/container dirs (about/, blog/, blog/posts/, en/, ...) untouched. Result:
 // dist/browser mirrors the live URL tree exactly, so plain static serving preserves every URL.
-import { cpSync, existsSync, readdirSync, renameSync, rmdirSync, rmSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeSitemap } from './sitemap.mjs';
@@ -46,6 +55,26 @@ function flatten(dir) {
 }
 
 flatten(BROWSER);
+// Angular's redirect documents do not use src/index.html. They still belong to the
+// sealed browser artifact and need the same source marker as every rendered page.
+for (const entry of readdirSync(BROWSER, { recursive: true, withFileTypes: true })) {
+  if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
+  const file = join(entry.parentPath, entry.name);
+  const html = readFileSync(file, 'utf8');
+  if (
+    /<title>Redirecting<\/title>/i.test(html) &&
+    /<meta\s+http-equiv="refresh"/i.test(html) &&
+    !html.includes('name="cx-build-id"')
+  ) {
+    if ((html.match(/<head>/gi) ?? []).length !== 1) {
+      throw new Error(`Redirect document has no unique head: ${file}`);
+    }
+    writeFileSync(
+      file,
+      html.replace(/<head>/i, '<head>\n    <meta name="cx-build-id" content="__CX_BUILD_ID__">'),
+    );
+  }
+}
 // A local CSR build has no prerendered catalogue; production always does.
 if (existsSync(join(BROWSER, 'en', 'blog', 'index.html'))) {
   // Production disables Angular's per-locale asset copying. Every locale uses the same
