@@ -1,0 +1,153 @@
+<section class="cx-container fp-section" aria-labelledby="gotland-preview-title">
+  <cx-card [borderRadius]="detailed ? 64 : 24">
+    <cx-grid class="cx-p-lg" [columns]="2" [columnsMobile]="1" gap="xl" align="center">
+      <ng-template #photo>
+        <img
+          class="fp-photo"
+          [src]="projectPhoto.preview"
+          [attr.srcset]="
+            projectPhoto.preview +
+            ' ' +
+            projectPhoto.width / 2 +
+            'w, ' +
+            projectPhoto.src +
+            ' ' +
+            projectPhoto.width +
+            'w'
+          "
+          sizes="(max-width: 767px) calc(100vw - 72px), 560px"
+          [alt]="projectPhoto.alt"
+          [width]="projectPhoto.width"
+          [height]="projectPhoto.height"
+          loading="lazy"
+        />
+      </ng-template>
+      @if (galleryEnabled) {
+        <a
+          class="fp-photo-link"
+          [href]="projectPhoto.src"
+          (click)="gallery()?.openPhoto($event, projectPhoto.id)"
+          [attr.aria-label]="galleryCopy.enlarge + ': ' + projectPhoto.alt"
+        >
+          <ng-container [ngTemplateOutlet]="photo" />
+        </a>
+      } @else if (leadFocused) {
+        <ng-container [ngTemplateOutlet]="photo" />
+      } @else {
+        <a class="fp-photo-link" [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
+          <ng-container [ngTemplateOutlet]="photo" />
+        </a>
+      }
+      <cx-stack gap="lg" align="start">
+        <cx-stack gap="sm">
+          @if (!detailed) {
+            <div class="cx-editorial">
+              <p class="fp-case-label">{{ editorial.caseLabel }}</p>
+            </div>
+          }
+          <h2 id="gotland-preview-title" class="fp-heading cx-font-serif cx-font-regular">
+            {{ evidence.caseTitle }}
+          </h2>
+        </cx-stack>
+        <div class="cx-editorial">
+          <p>{{ leadFocused || detailed ? landing.caseBody : copy.home.caseBody }}</p>
+        </div>
+        @if (leadFocused || detailed) {
+          @if (!detailed) {
+            <div class="cx-editorial">
+              <blockquote>
+                <p>“{{ testimonials[1].quote }}”</p>
+                <cite class="cx-text-muted">
+                  <span class="fp-accent-rule fp-accent-rule--spaced" aria-hidden="true"></span>
+                  {{ testimonials[1].author }} · {{ testimonials[0].context }}
+                </cite>
+              </blockquote>
+            </div>
+          }
+          <cx-inline gap="md" align="center">
+            <fp-certification-mark />
+            <p class="cx-editorial cx-text-start">{{ landing.certificationBody }}</p>
+          </cx-inline>
+          <cx-inline gap="md" [wrap]="true">
+            @if (galleryEnabled) {
+              <cx-button
+                [text]="galleryCopy.view"
+                mood="primary"
+                size="large"
+                (click)="gallery()?.show()"
+              />
+            } @else if (leadFocused) {
+              <cx-button
+                [text]="poolEnquiry.cta"
+                [href]="enquiryHref ?? configureHref + '?service=pool'"
+                mood="primary"
+                size="large"
+              />
+            } @else {
+              <cx-button
+                [text]="evidence.caseLink"
+                [href]="routeFor('gotland')"
+                appendIcon="arrow-right"
+                mood="primary"
+                size="large"
+              />
+            }
+          </cx-inline>
+        } @else {
+          <div class="cx-editorial">
+            <p>
+              <a [href]="routeFor('gotland')">{{ evidence.caseLink }} →</a>
+            </p>
+          </div>
+        }
+      </cx-stack>
+    </cx-grid>
+    @if (detailed) {
+      <div class="cx-px-lg"><cx-divider /></div>
+      <cx-grid class="cx-p-lg" [columns]="3" [columnsMobile]="1" gap="xl">
+        @for (item of details; track item.id) {
+          <figure class="fp-project-detail">
+            <a
+              class="fp-photo-link"
+              [href]="galleryEnabled ? item.photo.src : routeFor('gotland')"
+              (click)="gallery()?.openPhoto($event, item.id)"
+              [attr.aria-label]="
+                (galleryEnabled ? galleryCopy.enlarge : evidence.caseLink) + ': ' + item.photo.alt
+              "
+            >
+              <img
+                class="fp-guidance-photo"
+                [src]="item.photo.preview"
+                [alt]="item.photo.alt"
+                [width]="item.photo.width"
+                [height]="item.photo.height"
+                loading="lazy"
+              />
+            </a>
+            <figcaption>
+              <cx-stack gap="sm">
+                <h3 class="cx-text-title-2">{{ item.title }}</h3>
+                <p class="cx-editorial cx-text-muted">{{ item.body }}</p>
+              </cx-stack>
+            </figcaption>
+          </figure>
+        }
+      </cx-grid>
+      <div class="cx-px-lg"><cx-divider /></div>
+      <figure
+        class="fp-project-quote fp-project-quote--compact cx-p-lg"
+        [attr.data-review]="testimonials[0].id"
+      >
+        <blockquote>“{{ testimonials[0].quote }}”</blockquote>
+        <figcaption class="cx-text-muted">
+          <span class="fp-accent-rule fp-accent-rule--spaced" aria-hidden="true"></span>
+          {{ galleryCopy.attribution }}
+        </figcaption>
+      </figure>
+    }
+  </cx-card>
+</section>
+
+@if (galleryEnabled) {
+  <fp-gotland-gallery />
+}

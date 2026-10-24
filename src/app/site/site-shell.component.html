@@ -1,0 +1,96 @@
+<div class="cx-page fp-site">
+  <cx-masthead
+    [items]="navItems"
+    [menuAriaLabel]="copy.menuLabel"
+    [frostOnScroll]="true"
+    [overlay]="
+      page === 'guide' ||
+      page === 'guides' ||
+      page === 'home' ||
+      page === 'gotland' ||
+      page === 'nature-pools' ||
+      page === 'pricing' ||
+      page === 'waterscapes' ||
+      page === 'about'
+    "
+  >
+    <a brand class="fp-wordmark" [href]="homeHref">
+      <img
+        src="/assets/images/faunapoolen/faunapoolen-logo-square.png"
+        alt=""
+        width="512"
+        height="512"
+      />
+      <span>Faunapoolen</span>
+    </a>
+    <cx-language-selector
+      actions
+      class="cx-hide-mobile"
+      [languages]="languageOptions"
+      [value]="locale"
+      [translations]="{ ariaLabel: languageLabel }"
+      (valueChange)="changeLanguage($event)"
+    />
+    <cx-button actions [text]="contactUs" mood="accent" [href]="enquiryHref" />
+  </cx-masthead>
+  <main>
+    <ng-content select="cx-hero, [hero]" />
+    <ng-content select="[afterHero]" />
+    <ng-content />
+    @if (showInvitation && page !== 'configure' && page !== 'cookies') {
+      <fp-contact-invitation [href]="enquiryHref" />
+    }
+  </main>
+  <footer class="fp-footer" [attr.aria-label]="ui.footer">
+    <div class="cx-container">
+      <div class="fp-footer-main">
+        <a class="fp-footer-brand" [href]="homeHref">
+          <img
+            src="/assets/images/faunapoolen/faunapoolen-logo-square.png"
+            alt=""
+            width="512"
+            height="512"
+            loading="lazy"
+          />
+          <cx-stack gap="2xs">
+            <span>Faunapoolen</span>
+            <span class="cx-text-muted fp-body-sm cx-font-sans">{{ footerCertification }}</span>
+          </cx-stack>
+        </a>
+        @for (group of footerGroups; track group.label) {
+          <nav [attr.aria-label]="group.label">
+            <cx-stack gap="md" align="start">
+              <h2 class="cx-text-body-lg cx-font-semibold">{{ group.label }}</h2>
+              <cx-stack gap="sm" align="start">
+                @for (item of group.items; track item.id) {
+                  <a [href]="item.href" [attr.aria-current]="item.active ? 'page' : null">{{
+                    item.label
+                  }}</a>
+                }
+              </cx-stack>
+            </cx-stack>
+          </nav>
+        }
+        <cx-stack gap="md" align="start" class="fp-footer-contact">
+          <h2 class="cx-text-body-lg cx-font-semibold">{{ footerContact }}</h2>
+          <cx-stack gap="sm" align="start">
+            <a [href]="enquiryHref">{{ copy.start }}</a>
+            <a [href]="contactDetails.phoneHref">{{ contactDetails.phone }}</a>
+            <a [href]="contactDetails.emailHref">{{ contactDetails.email }}</a>
+          </cx-stack>
+        </cx-stack>
+      </div>
+      <div class="fp-footer-utilities">
+        @if (measurement.available()) {
+          <fp-cookie-notice [detailsHref]="routeFor('cookies')" />
+        }
+        <cx-language-selector
+          [languages]="languageOptions"
+          [value]="locale"
+          [translations]="{ ariaLabel: languageLabel }"
+          (valueChange)="changeLanguage($event)"
+        />
+      </div>
+    </div>
+  </footer>
+</div>

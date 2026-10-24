@@ -16,7 +16,7 @@ const MANIFEST: ProductManifest = {
     framework: 'angular',
     rendering: 'ssg',
     designSystem: 'cx-framework',
-    visualSystem: 'product-skin',
+    visualSystem: 'framework',
   },
   capabilities: {
     authentication: 'owner',
@@ -34,7 +34,7 @@ test('runtime contract rejects every capability drift', () => {
   const invalid: ProductManifest[] = [
     { ...MANIFEST, id: 'another-product' },
     { ...MANIFEST, profile: 'web-app' },
-    { ...MANIFEST, frontend: { ...MANIFEST.frontend, visualSystem: 'framework' } },
+    { ...MANIFEST, frontend: { ...MANIFEST.frontend, visualSystem: 'product-skin' } },
     {
       ...MANIFEST,
       capabilities: { ...MANIFEST.capabilities, authentication: 'gate' },

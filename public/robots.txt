@@ -1,10 +1,16 @@
 User-agent: *
 Allow: /
 
-# The campaigns studio is login-gated and must never be indexed. Both locale paths are listed
-# because a Disallow is a literal prefix match, so /admin does not cover /en/admin. Every public
+# The admin is login-gated and must never be indexed. Each locale path is listed
+# because a Disallow is a literal prefix match. Every public
 # page stays crawlable through the Allow above.
 Disallow: /admin
 Disallow: /en/admin
+Disallow: /da/admin
+Disallow: /it/admin
+Disallow: /es/admin
+Disallow: /pt/admin
+Disallow: /de/admin
+Disallow: /pl/admin
 
 Sitemap: https://faunapoolen.se/sitemap.xml

@@ -20,6 +20,12 @@ import {
 
 import { CAMPAIGN_MAX_RECORDS, sha256Hex } from './campaign-schema.js';
 import { MAX_IDEA_CHARACTERS, MIN_IDEA_CHARACTERS } from './generation-content.js';
+import { SOCIAL_MIGRATION } from './social-schema.js';
+import { CUSTOMER_MIGRATION } from './customer-schema.js';
+import { PACKAGE_MIGRATION } from './package-schema.js';
+import { PACKAGE_TRANSLATIONS_MIGRATION } from './package-translations-schema.js';
+import { PACKAGE_ITALIAN_TITLE_MIGRATION } from './package-italian-title-schema.js';
+import { ENQUIRY_MIGRATION } from './enquiry-schema.js';
 
 export const MAX_GENERATION_RUNS = 2_000;
 export const MAX_RETAINED_GENERATION_JOBS = 2_000;
@@ -533,9 +539,23 @@ export const FAUNAPOOLEN_MIGRATIONS = Object.freeze([
        BEGIN SELECT RAISE(ABORT, 'generation run execution scope is immutable'); END`,
     ],
   },
+  ENQUIRY_MIGRATION,
+  SOCIAL_MIGRATION,
+  CUSTOMER_MIGRATION,
+  PACKAGE_MIGRATION,
+  PACKAGE_TRANSLATIONS_MIGRATION,
+  PACKAGE_ITALIAN_TITLE_MIGRATION,
 ] as const satisfies readonly SqliteMigration[]);
 
 const REQUIRED_TABLES = Object.freeze([
+  'package_catalogues',
+  'social_posts',
+  'social_adaptations',
+  'social_effects',
+  'customers',
+  'enquiry_notifications',
+  'enquiries',
+  'enquiry_windows',
   SQLITE_MIGRATION_LEDGER_TABLE,
   'campaigns',
   'owner_sessions',

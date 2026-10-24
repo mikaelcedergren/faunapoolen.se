@@ -255,3 +255,28 @@ function temporaryRoot(t: TestContext): string {
   });
   return root;
 }
+
+test('owner email opt-in loads only mail configuration and never enables paid generation', (t) => {
+  const root = temporaryRoot(t);
+  fs.writeFileSync(
+    path.join(root, '.env.worker'),
+    'BREVO_API_KEY=synthetic-mail-key\nCOMPANY_EMAIL=owner@example.test\nENQUIRY_EMAIL_ENABLED=1\nOPENAI_API_KEY=must-not-cross\nCAMPAIGN_GENERATION_ENABLED=1\n',
+    { mode: 0o600 },
+  );
+  const environment: NodeJS.ProcessEnv = {
+    NODE_ENV: 'development',
+    CX_DATA_MODE: 'isolated',
+    CX_EXECUTION_SCOPE: 'development',
+    FAUNAPOOLEN_LOAD_ENV_FILE: 'false',
+    CAMPAIGN_GENERATION_ENABLED: '0',
+  };
+  loadFaunapoolenEnvironmentFiles({ role: 'worker', environment });
+  assert.equal(environment['BREVO_API_KEY'], 'synthetic-mail-key');
+  assert.equal(environment['COMPANY_EMAIL'], 'owner@example.test');
+  assert.equal(environment['ENQUIRY_EMAIL_ENABLED'], '1');
+  assert.equal(environment['OPENAI_API_KEY'], undefined);
+  assert.equal(environment['CAMPAIGN_GENERATION_ENABLED'], '0');
+  const withoutOptIn: NodeJS.ProcessEnv = { NODE_ENV: 'test', FAUNAPOOLEN_LOAD_ENV_FILE: 'false' };
+  loadFaunapoolenEnvironmentFiles({ role: 'worker', environment: withoutOptIn });
+  assert.equal(withoutOptIn['BREVO_API_KEY'], undefined);
+});

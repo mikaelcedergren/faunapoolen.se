@@ -1,0 +1,158 @@
+<fp-site-shell>
+  <cx-hero
+    class="fp-home-opening"
+    [heading]="copy.home.title"
+    headingClass="cx-font-regular"
+    layout="cover"
+    align="center"
+    [underMasthead]="true"
+    [parallax]="true"
+    [overlayOpacity]="25"
+  >
+    <p body>{{ copy.home.ingress }}</p>
+    <cx-inline actions gap="lg" justify="center" [wrap]="true">
+      <cx-button
+        [text]="copy.home.primary"
+        mood="primary"
+        size="large"
+        [href]="configureHref"
+        appendIcon="arrow-right"
+      />
+      <cx-button
+        [text]="copy.home.secondary"
+        mood="default"
+        size="large"
+        [href]="routeFor('gotland')"
+        appendIcon="arrow-right"
+      />
+    </cx-inline>
+    <img
+      media
+      [src]="images.hero"
+      [alt]="editorial.heroAlt"
+      width="1536"
+      height="1024"
+      fetchpriority="high"
+    />
+  </cx-hero>
+
+  <fp-certification-strip afterHero />
+
+  <fp-nature-pool-benefits />
+
+  <section class="fp-band" aria-labelledby="home-life-title">
+    <div class="cx-container fp-section fp-feature fp-feature--portrait">
+      <div class="cx-editorial fp-feature-copy">
+        <h2 id="home-life-title" class="fp-heading cx-font-regular">
+          {{ editorial.lifeTitle }}
+        </h2>
+        <span class="fp-accent-rule fp-accent-rule--spaced" aria-hidden="true"></span>
+        <p>{{ editorial.lifeBody }}</p>
+        <p>
+          <a [href]="routeFor('nature-pools')">{{ editorial.lifeLink }} →</a>
+        </p>
+      </div>
+      <img
+        class="fp-photo"
+        [src]="images.poolDesign"
+        [alt]="editorial.poolDesignAlt"
+        width="1536"
+        height="1024"
+        loading="lazy"
+      />
+    </div>
+    <div class="cx-container fp-guidance">
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+        <section aria-labelledby="home-dream-title">
+          <cx-stack gap="lg">
+            <img
+              class="fp-guidance-photo"
+              [src]="images.detail"
+              [alt]="editorial.dreamAlt"
+              width="1536"
+              height="1024"
+              loading="lazy"
+            />
+            <div class="cx-editorial">
+              <h3 id="home-dream-title" class="fp-subheading cx-font-serif cx-font-regular">
+                {{ editorial.dreamTitle }}
+              </h3>
+              <p>{{ editorial.dreamBody }}</p>
+            </div>
+          </cx-stack>
+        </section>
+        <section aria-labelledby="home-build-title">
+          <cx-stack gap="lg">
+            <img
+              class="fp-guidance-photo"
+              src="/assets/images/faunapoolen/gotland/1451-small.webp"
+              [alt]="editorial.buildAlt"
+              width="960"
+              height="720"
+              loading="lazy"
+            />
+            <div class="cx-editorial">
+              <h3 id="home-build-title" class="fp-subheading cx-font-serif cx-font-regular">
+                {{ editorial.buildTitle }}
+              </h3>
+              <p>{{ editorial.buildBody }}</p>
+            </div>
+          </cx-stack>
+        </section>
+        <section aria-labelledby="home-enjoy-title">
+          <cx-stack gap="lg">
+            <img
+              class="fp-guidance-photo"
+              [src]="images.evening"
+              [alt]="editorial.enjoyAlt"
+              width="1536"
+              height="1024"
+              loading="lazy"
+            />
+            <div class="cx-editorial">
+              <h3 id="home-enjoy-title" class="fp-subheading cx-font-serif cx-font-regular">
+                {{ editorial.enjoyTitle }}
+              </h3>
+              <p>{{ editorial.enjoyBody }}</p>
+            </div>
+          </cx-stack>
+        </section>
+      </cx-grid>
+    </div>
+  </section>
+
+  <fp-gotland-preview detailed />
+  <fp-process />
+  <fp-package-comparison />
+  <fp-pool-cost-comparison />
+
+  <section class="cx-container fp-section" aria-labelledby="home-waterscape-title">
+    <div class="fp-feature fp-feature--wide-image">
+      <img
+        class="fp-photo"
+        [src]="images.waterscapePause"
+        [srcset]="images.waterscapePauseSmall + ' 768w, ' + images.waterscapePause + ' 1536w'"
+        sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 60vw, 736px"
+        [alt]="editorial.waterscapePauseAlt"
+        width="1536"
+        height="1024"
+        loading="lazy"
+      />
+      <cx-stack gap="lg">
+        <cx-stack gap="sm">
+          <p class="fp-body-lg cx-text-primary">{{ copy.home.waterscapeEyebrow }}</p>
+          <h2 id="home-waterscape-title" class="fp-heading cx-font-serif cx-font-regular">
+            {{ copy.home.waterscapeTitle }}
+          </h2>
+        </cx-stack>
+        <div class="cx-editorial">
+          <p>{{ copy.home.waterscapeBody }}</p>
+          <p>
+            <a [href]="routeFor('waterscapes')">{{ copy.nav.waterscapes }} →</a>
+          </p>
+        </div>
+      </cx-stack>
+    </div>
+  </section>
+  <fp-certification-story />
+</fp-site-shell>

@@ -85,7 +85,9 @@ test('the product E2E layer is thin and delegates containment to cx-framework', 
   assert.doesNotMatch(controller, /npm_execpath|\.\.\.process\.env|detached:\s*true/);
   assert.match(fetchGuard, /createExactOriginFetch/);
   assert.doesNotMatch(fetchGuard, /hostname/);
-  assert.match(smoke, /LOCALLY_FULFILLED_URLS/);
+  assert.doesNotMatch(smoke, /LOCALLY_FULFILLED_URLS/);
+  assert.match(smoke, /unexpected\.push/);
+  assert.match(smoke, /route\.abort\('blockedbyclient'\)/);
   assert.match(smoke, /cx-e2e-launch-proxy-proof/);
   assert.doesNotMatch(smoke, /searchParams\.get\('family'\)/);
 });

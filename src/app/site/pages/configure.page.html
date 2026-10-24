@@ -1,0 +1,15 @@
+<fp-site-shell [leadFocused]="poolJourney">
+  <div class="cx-container fp-section fp-enquiry">
+    <header class="cx-editorial fp-enquiry-intro">
+      <h1 class="cx-font-regular">
+        {{ poolJourney ? poolEnquiry.heading : copy.configure.title }}
+      </h1>
+      <p>{{ poolJourney ? poolEnquiry.body : copy.configure.ingress }}</p>
+      @if (poolJourney) {
+        <p>{{ poolEnquiry.followUp }}</p>
+      }
+      <fp-direct-contact />
+    </header>
+    <fp-enquiry-form />
+  </div>
+</fp-site-shell>

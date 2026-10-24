@@ -1,0 +1,92 @@
+<fp-site-shell [showInvitation]="false">
+  <cx-hero
+    [underMasthead]="true"
+    align="center"
+    [parallax]="true"
+    [overlayOpacity]="45"
+    headingClass="cx-font-regular"
+    [heading]="copy.about.title"
+    layout="cover"
+  >
+    <p body>{{ copy.about.ingress }}</p>
+    <img
+      media
+      [src]="aboutHero.src"
+      srcset="
+        /assets/images/faunapoolen/editorial/about-evening-800.webp   800w,
+        /assets/images/faunapoolen/editorial/about-evening-1200.webp 1200w,
+        /assets/images/faunapoolen/editorial/about-evening-1672.webp 1672w
+      "
+      sizes="100vw"
+      [alt]="aboutHero.alt"
+      width="1672"
+      height="941"
+      fetchpriority="high"
+    />
+  </cx-hero>
+  <fp-certification-strip afterHero />
+  <section class="cx-container fp-section" aria-labelledby="about-company-title">
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+      <h2 id="about-company-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ copy.about.companyTitle }}
+      </h2>
+      <p class="cx-editorial">{{ copy.about.companyBody }}</p>
+    </cx-grid>
+  </section>
+  <div class="cx-container"><cx-divider /></div>
+  <section class="cx-container fp-section" aria-labelledby="about-team-title">
+    <cx-stack gap="xl">
+      <h2 id="about-team-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ copy.about.teamTitle }}
+      </h2>
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+        @for (member of team; track member.name) {
+          <cx-stack gap="lg">
+            <img
+              class="fp-photo fp-photo--square"
+              [src]="member.image.replace('.png', '-800.webp')"
+              [srcset]="
+                member.image.replace('.png', '-400.webp') +
+                ' 400w, ' +
+                member.image.replace('.png', '-800.webp') +
+                ' 800w'
+              "
+              sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 30vw, 400px"
+              [alt]="member.name"
+              width="800"
+              height="800"
+              loading="lazy"
+            />
+            <cx-stack gap="sm">
+              <h3 class="cx-text-title-2">{{ member.name }}</h3>
+              <p class="fp-body cx-font-semibold">{{ member.role }}</p>
+              <span class="fp-accent-rule" aria-hidden="true"></span>
+              <p class="cx-editorial">{{ member.body }}</p>
+            </cx-stack>
+          </cx-stack>
+        }
+      </cx-grid>
+    </cx-stack>
+  </section>
+  <div class="cx-container"><cx-divider /></div>
+  <div class="cx-container fp-section">
+    <section id="certification" class="cx-scroll-target" aria-labelledby="about-method-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+        <div class="cx-editorial">
+          <h2 id="about-method-title" class="fp-heading cx-font-regular">
+            {{ copy.about.methodTitle }}
+          </h2>
+          <p>{{ copy.about.methodBody }}</p>
+        </div>
+        <div>
+          <cx-stack gap="md">
+            <fp-certification />
+            <p class="cx-editorial cx-text-muted">
+              {{ evidence.certificationDetail }}
+            </p>
+          </cx-stack>
+        </div>
+      </cx-grid>
+    </section>
+  </div>
+</fp-site-shell>

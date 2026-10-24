@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES } from './public-routes.js';
 export const FAUNAPOOLEN_PRODUCT_ID = 'faunapoolen';
 
 export const FAUNAPOOLEN_PUBLIC_ORIGIN = 'https://faunapoolen.se';
@@ -15,4 +16,7 @@ export const ADMIN_REQUEST_BODY_LIMIT = '16kb';
 export const CAMPAIGN_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
-export const PRIVATE_NOINDEX_PATHS = Object.freeze(['/admin', '/en/admin', ADMIN_API_PATH]);
+export const PRIVATE_NOINDEX_PATHS = Object.freeze([
+  ...PUBLIC_LANGUAGES.map((language) => `${language === 'sv' ? '' : '/' + language}/admin`),
+  ADMIN_API_PATH,
+]);

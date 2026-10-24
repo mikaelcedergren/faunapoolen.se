@@ -1,0 +1,131 @@
+<fp-site-shell>
+  <cx-hero
+    [underMasthead]="false"
+    headingClass="cx-font-regular"
+    [heading]="region.title"
+    layout="stacked"
+  >
+    <p body>{{ region.ingress }}</p>
+    <cx-button
+      actions
+      [text]="regional.packageLink"
+      [href]="routeFor('pricing')"
+      mood="primary"
+      size="large"
+    />
+    <cx-button actions [text]="copy.start" [href]="configureHref + '?service=pool'" size="large" />
+  </cx-hero>
+  <div class="cx-container fp-section">
+    <section class="cx-editorial" aria-labelledby="region-site-title">
+      <h2 id="region-site-title" class="fp-heading cx-font-regular">
+        {{ region.focusTitle }}
+      </h2>
+      <p>{{ region.focusBody }}</p>
+      <p>
+        <a [href]="routeFor('nature-pools')">{{ commercial.poolLink }} →</a>
+      </p>
+    </section>
+  </div>
+  <div class="cx-container fp-section">
+    <section aria-labelledby="region-package-title">
+      <cx-stack gap="xl">
+        <div class="cx-editorial">
+          <h2 id="region-package-title" class="fp-heading cx-font-regular">
+            {{ regional.packageTitle }}
+          </h2>
+          <p>{{ regional.packageBody }}</p>
+        </div>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
+          @for (item of packageCatalogue.packages(); track item.id) {
+            <div class="fp-column">
+              <div class="cx-editorial">
+                <h3 class="fp-subheading cx-font-regular">{{ item.name }}</h3>
+                <p>
+                  {{ item.area }}<br />{{ copy.common.from }} {{ packageCatalogue.price(item) }} ·
+                  {{ copy.common.priceExclusions }}
+                </p>
+              </div>
+            </div>
+          }
+        </cx-grid>
+        <div class="cx-editorial">
+          <p>
+            <a [href]="routeFor('pricing')">{{ regional.packageLink }} →</a>
+          </p>
+        </div>
+      </cx-stack>
+    </section>
+  </div>
+  <div class="cx-container fp-section">
+    <section aria-labelledby="region-proof-title">
+      <div>
+        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
+          <a [href]="routeFor('gotland')" [attr.aria-label]="evidence.caseLink">
+            <cx-image
+              class="cx-w-full"
+              [image]="{
+                src: projectPhoto.preview,
+                srcset:
+                  projectPhoto.preview +
+                  ' ' +
+                  projectPhoto.width / 2 +
+                  'w, ' +
+                  projectPhoto.src +
+                  ' ' +
+                  projectPhoto.width +
+                  'w',
+                sizes: '(max-width: 767px) calc(100vw - 48px), 560px',
+                alt: projectPhoto.alt,
+                loading: 'lazy',
+                intrinsicWidth: projectPhoto.width,
+                intrinsicHeight: projectPhoto.height,
+                borderRadius: 'large',
+              }"
+            />
+          </a>
+          <div class="cx-editorial">
+            <h2 id="region-proof-title" class="fp-heading cx-font-regular">
+              {{ regional.caseTitle }}
+            </h2>
+            <p>{{ regional.caseBody }}</p>
+            <p>
+              <a [href]="routeFor('gotland')">{{ evidence.caseLink }} →</a>
+            </p>
+          </div>
+        </cx-grid>
+      </div>
+    </section>
+  </div>
+  <div class="cx-container fp-section">
+    <section aria-labelledby="region-planning-title">
+      <cx-stack gap="xl">
+        <div class="cx-editorial">
+          <h2 id="region-planning-title" class="fp-heading cx-font-regular">
+            {{ regional.planningTitle }}
+          </h2>
+          <p>{{ regional.planningBody }}</p>
+        </div>
+        <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl">
+          @for (question of region.questions; track question.question) {
+            <div class="cx-editorial">
+              <h3 class="fp-subheading cx-font-regular">{{ question.question }}</h3>
+              <p>{{ question.answer }}</p>
+              <p>
+                {{ question.sourceLabel }}
+              </p>
+            </div>
+          }
+        </cx-grid>
+      </cx-stack>
+    </section>
+  </div>
+  <div class="cx-container fp-section">
+    <section class="cx-editorial" aria-labelledby="region-next-title">
+      <h2 id="region-next-title" class="fp-heading cx-font-regular">
+        {{ regional.nextTitle }}
+      </h2>
+      <p>{{ regional.nextBody }}</p>
+      <p>{{ regional.coverage }}</p>
+    </section>
+  </div>
+</fp-site-shell>

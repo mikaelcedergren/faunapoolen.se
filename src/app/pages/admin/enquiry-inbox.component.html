@@ -1,0 +1,187 @@
+<cx-stack gap="lg">
+  <cx-inline gap="md" [wrap]="true">
+    @if (selectedId()) {
+      <cx-button
+        text="All customers"
+        icon="arrow-left"
+        [transparent]="true"
+        [disabled]="saving()"
+        (pressed)="select('')"
+      />
+    }
+    <cx-button
+      text="Reload"
+      icon="reload"
+      [transparent]="true"
+      [loading]="loading()"
+      [disabled]="saving()"
+      (pressed)="reload()"
+    />
+  </cx-inline>
+  @if (error()) {
+    <cx-alert mood="danger" [heading]="error()" />
+  }
+  @if (loading()) {
+    <cx-state-message state="pending" heading="Loading customers" />
+  } @else if (selected(); as customer) {
+    <cx-stack gap="xl">
+      <cx-stack gap="sm">
+        <h1 class="cx-text-title-1">{{ customer.name || customer.email }}</h1>
+        <p>
+          <a [href]="'mailto:' + customer.email">{{ customer.email }}</a>
+        </p>
+        <cx-inline gap="md" [wrap]="true">
+          <p class="cx-text-muted">
+            {{ customer.status === 'lead' ? 'Lead' : 'Customer' }} · {{ customer.enquiries.length }}
+            {{ customer.enquiries.length === 1 ? 'enquiry' : 'enquiries' }}
+          </p>
+          <cx-button
+            [text]="customer.status === 'lead' ? 'Mark as customer' : 'Mark as lead'"
+            [transparent]="true"
+            [disabled]="saving()"
+            (pressed)="changeCustomerStatus(customer)"
+          />
+        </cx-inline>
+      </cx-stack>
+      <h2 class="cx-text-title-2">Enquiry history</h2>
+      @for (enquiry of customer.enquiries; track enquiry.requestId) {
+        <section>
+          <cx-stack gap="md">
+            <cx-stack gap="xs">
+              <h3 class="cx-text-title-3">{{ date(enquiry.createdAt) }}</h3>
+              <p class="cx-text-muted">
+                {{ statusLabel(enquiry.status) }} · {{ mailLabel(enquiry) }}
+              </p>
+            </cx-stack>
+            <p>
+              Submitted by {{ enquiry.name || enquiry.email }} ·
+              {{ languageNames[enquiry.language ?? 'en'] }}
+            </p>
+            @let answers = answeredFields(enquiry);
+            @if (answers.length) {
+              <cx-stack gap="md">
+                @for (field of answers; track field.id) {
+                  <cx-stack gap="xs">
+                    <strong>{{ field.label }}</strong>
+                    <p>{{ field.value }}</p>
+                  </cx-stack>
+                }
+              </cx-stack>
+            }
+            <cx-inline gap="sm" [wrap]="true">
+              @if (enquiry.status === 'new') {
+                <cx-button
+                  text="Mark contacted"
+                  [disabled]="saving()"
+                  (pressed)="update(enquiry, 'contacted')"
+                />
+              }
+              @if (enquiry.status !== 'closed') {
+                <cx-button
+                  text="Close enquiry"
+                  [transparent]="true"
+                  [disabled]="saving()"
+                  (pressed)="update(enquiry, 'closed')"
+                />
+              } @else {
+                <cx-button
+                  text="Reopen enquiry"
+                  [transparent]="true"
+                  [disabled]="saving()"
+                  (pressed)="update(enquiry, 'new')"
+                />
+              }
+            </cx-inline>
+            @if (enquiry.notification.state === 'failed') {
+              <cx-alert
+                mood="warning"
+                heading="Your enquiry is saved. The notification was not sent."
+              />
+              <cx-inline
+                ><cx-button
+                  text="Retry email"
+                  [disabled]="saving()"
+                  (pressed)="retryEmail(enquiry)"
+              /></cx-inline>
+            }
+            @if (enquiry.notification.state === 'uncertain') {
+              <cx-alert
+                mood="warning"
+                heading="Check Brevo’s transactional log before sending again."
+              />
+              @if (reviewingEmail() === enquiry.requestId) {
+                <p>After checking the log for this enquiry, confirm what happened.</p>
+                <p class="cx-text-muted">Reference: {{ enquiry.requestId }}</p>
+                <cx-inline gap="sm" [wrap]="true">
+                  <cx-button
+                    text="Already sent"
+                    [disabled]="saving()"
+                    (pressed)="resolveEmail(enquiry, 'sent')"
+                  />
+                  <cx-button
+                    text="Not sent — queue again"
+                    [disabled]="saving()"
+                    (pressed)="resolveEmail(enquiry, 'not-sent')"
+                  />
+                  <cx-button
+                    text="Cancel"
+                    [transparent]="true"
+                    [disabled]="saving()"
+                    (pressed)="reviewingEmail.set('')"
+                  />
+                </cx-inline>
+              } @else {
+                <cx-inline
+                  ><cx-button
+                    text="Review email status"
+                    [disabled]="saving()"
+                    (pressed)="reviewingEmail.set(enquiry.requestId)"
+                /></cx-inline>
+              }
+            }
+            @if (enquiry.notification.recipient) {
+              <p class="cx-text-muted">
+                Notification recipient: {{ enquiry.notification.recipient }}
+              </p>
+            }
+          </cx-stack>
+        </section>
+      }
+    </cx-stack>
+  } @else if (selectedId() && !error()) {
+    <cx-state-message
+      heading="Customer not found"
+      description="Return to all customers to find the enquiry."
+    />
+  } @else if (!error()) {
+    <h1 class="cx-text-title-1">Customers</h1>
+    <cx-text-field label="Find a customer" [value]="search()" (valueChange)="search.set($event)" />
+    <cx-toggle-chip-group
+      aria-label="Customer filter"
+      selection="single"
+      [allowEmpty]="false"
+      [availableValues]="filters"
+      [selectedValues]="[filter()]"
+      (selectedValuesChange)="filter.set($event[0] || 'all')"
+    />
+    @if (rows().length) {
+      <cx-table
+        [columns]="columns"
+        [rows]="rows()"
+        rowActivation="press"
+        [columnsResizable]="false"
+        [columnsReorderable]="false"
+        (rowActivate)="open($event)"
+      />
+    } @else {
+      <cx-state-message
+        [heading]="customers().length ? 'No matching customers' : 'No customers yet'"
+        [description]="
+          customers().length
+            ? 'Try another search or filter.'
+            : 'Your first website enquiry will appear here.'
+        "
+      />
+    }
+  }
+</cx-stack>

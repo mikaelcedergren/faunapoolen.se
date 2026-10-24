@@ -1,9 +1,11 @@
 # Website maintenance and redesign
 
-`main` maintains the current production website. `codex/redesign` contains the upcoming website.
-The registered development service uses the branch checked out in this repository; normally keep
-this checkout on `main`. Production uses its selected immutable release, independently of the
-checkout. A commit or push does not publish the website.
+`main` is the development and release target following the owner's approved redesign integration
+on 24 October 2026. `codex/redesign` preserves the reviewed redesign history. The registered
+development service uses the branch checked out in this repository; keep this checkout on `main`
+for ordinary work. Production uses its selected immutable release, independently of the checkout.
+A commit or push does not publish the website. See [the release record](docs/RELEASE-PLAN.md) for
+activation evidence and remaining operational gates.
 
 ## Preserved baseline
 
@@ -19,10 +21,9 @@ into this checkout. No Git history was rewritten.
 
 ## Continuing work
 
-- Make current-site fixes on `main`, verify in development, and publish only when requested.
-- Make new-website changes on `codex/redesign`.
-- Merge subsequent `main` fixes into `codex/redesign` regularly, reviewing conflicts against the
-  redesigned implementation.
+- Make ordinary product and framework-adoption changes on `main`.
+- Preserve `codex/redesign` as the reviewed integration source; do not resume a separate development
+  line without an explicit owner request.
 - Before switching this registered checkout, stop its development service, preserve local work,
   and install the destination branch's frozen lockfile. Restart only after storage compatibility
   is established. Follow the shared [development contract](../SERVER-STANDARD.md#local-development).
@@ -47,8 +48,8 @@ not a browser-only change. Publication remains a separate explicit instruction.
 
 ## Launching the redesign
 
-Review and merge `codex/redesign` into `main` only when the new website is approved. Run the normal
-verification and classified publication flow. The redesign includes newer database migrations;
+The owner approved integration of `codex/redesign` into `main` and publication on 24 October 2026.
+Run the normal verification and classified publication flow. The redesign includes newer database migrations;
 do not start it against the shared production database until the required coordinated maintenance
 has been explicitly authorised and completed. Do not migrate or downgrade the database merely to
 switch branches. Existing production remains selected until a separately authorised publication.

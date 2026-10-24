@@ -19,15 +19,31 @@ const ROLE_FILES = Object.freeze({
       'CAMPAIGN_GENERATION_ENABLED',
       'SESSION_SECRET',
     ]),
-    foreignPrivateKeys: ['OPENAI_API_KEY'] as const,
+    foreignPrivateKeys: [
+      'OPENAI_API_KEY',
+      'BREVO_API_KEY',
+      'COMPANY_EMAIL',
+      'ENQUIRY_EMAIL_ENABLED',
+    ] as const,
     name: '.env.web' as const,
     privateKeys: ['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'SESSION_SECRET'] as const,
   }),
   worker: Object.freeze({
-    allowedKeys: new Set(['CAMPAIGN_GENERATION_ENABLED', 'OPENAI_API_KEY']),
+    allowedKeys: new Set([
+      'CAMPAIGN_GENERATION_ENABLED',
+      'OPENAI_API_KEY',
+      'BREVO_API_KEY',
+      'COMPANY_EMAIL',
+      'ENQUIRY_EMAIL_ENABLED',
+    ]),
     foreignPrivateKeys: ['ADMIN_PASSWORD', 'ADMIN_USERNAME', 'SESSION_SECRET'] as const,
     name: '.env.worker' as const,
-    privateKeys: ['OPENAI_API_KEY'] as const,
+    privateKeys: [
+      'OPENAI_API_KEY',
+      'BREVO_API_KEY',
+      'COMPANY_EMAIL',
+      'ENQUIRY_EMAIL_ENABLED',
+    ] as const,
   }),
 });
 
@@ -50,6 +66,30 @@ export function loadFaunapoolenEnvironmentFiles({
     bypassKey: 'FAUNAPOOLEN_LOAD_ENV_FILE',
     environment,
   });
+  // Owner preview can explicitly opt into enquiry mail through its worker-owned file.
+  // It still has no access to web credentials or a paid campaign provider.
+  if (
+    role === 'worker' &&
+    mode === 'skip' &&
+    environment['NODE_ENV'] === 'development' &&
+    environment['CX_DATA_MODE'] === 'isolated' &&
+    environment['CX_EXECUTION_SCOPE'] === 'development' &&
+    environment['CAMPAIGN_GENERATION_ENABLED'] === '0'
+  ) {
+    const mailEnvironment: NodeJS.ProcessEnv = {};
+    loadPrivateEnvironmentFile({
+      allowedKeys: roleFile.allowedKeys,
+      environment: mailEnvironment,
+      file: path.join(resolveFaunapoolenOperationalRoot(environment), roleFile.name),
+      mode: 'optional-ambient',
+    });
+    for (const name of ['BREVO_API_KEY', 'COMPANY_EMAIL', 'ENQUIRY_EMAIL_ENABLED']) {
+      delete environment[name];
+      if (mailEnvironment[name] !== undefined) environment[name] = mailEnvironment[name];
+    }
+    delete environment['OPENAI_API_KEY'];
+    return;
+  }
   if (mode === 'skip') return;
   const operationalRoot = resolveFaunapoolenOperationalRoot(environment);
   try {

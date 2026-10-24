@@ -1,0 +1,199 @@
+<fp-site-shell leadFocused [showInvitation]="false" [enquiryTarget]="poolEnquiryHref">
+  <cx-hero
+    [heading]="copy.naturePools.title"
+    headingClass="cx-font-regular"
+    layout="cover"
+    align="center"
+    [underMasthead]="true"
+    [parallax]="true"
+    [overlayOpacity]="35"
+  >
+    <p body>{{ copy.naturePools.ingress }}</p>
+    <cx-stack actions gap="sm" align="center">
+      <cx-button
+        [text]="poolEnquiry.cta"
+        mood="primary"
+        size="large"
+        [href]="poolEnquiryHref"
+        appendIcon="arrow-right"
+      />
+      <p class="fp-body cx-text-muted">{{ landing.reassurance }}</p>
+    </cx-stack>
+    <img
+      media
+      [src]="images.naturePoolHero"
+      [alt]="editorial.naturePoolHeroAlt"
+      width="1672"
+      height="941"
+      fetchpriority="high"
+    />
+  </cx-hero>
+  <fp-certification-strip afterHero />
+  <section id="how-it-works" class="cx-container fp-section" aria-labelledby="pool-water-title">
+    <cx-stack gap="xl">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
+        <cx-stack gap="lg" align="start">
+          <cx-stack gap="sm">
+            <p class="fp-case-label">{{ detail.filterLabel }}</p>
+            <h2 id="pool-water-title" class="fp-heading cx-font-serif cx-font-regular">
+              {{ detail.filterTitle }}
+            </h2>
+          </cx-stack>
+          <p class="cx-editorial">{{ detail.filterBody }}</p>
+        </cx-stack>
+        <figure class="fp-pool-figure">
+          <img
+            class="fp-photo"
+            [src]="images.poolDesign"
+            [alt]="editorial.poolDesignAlt"
+            width="1536"
+            height="1024"
+            loading="lazy"
+          />
+        </figure>
+      </cx-grid>
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+        @for (item of filtration; track item.title; let i = $index) {
+          <cx-inline gap="md" align="start">
+            <span class="fp-detail-number" aria-hidden="true">{{ i + 1 }}</span>
+            <cx-stack gap="sm">
+              <h3 class="cx-text-title-2">{{ item.title }}</h3>
+              <p class="cx-editorial cx-text-muted">{{ item.body }}</p>
+            </cx-stack>
+          </cx-inline>
+        }
+      </cx-grid>
+    </cx-stack>
+  </section>
+
+  <section id="garden-layout" class="fp-pool-band" aria-labelledby="pool-layout-title">
+    <div class="cx-container fp-section">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
+        <cx-stack gap="xl" align="start">
+          <cx-stack gap="sm">
+            <p class="fp-case-label">{{ detail.fitLabel }}</p>
+            <h2 id="pool-layout-title" class="fp-heading cx-font-serif cx-font-regular">
+              {{ detail.fitTitle }}
+            </h2>
+          </cx-stack>
+          <p class="cx-editorial">{{ detail.fitBody }}</p>
+          <cx-stack gap="lg">
+            @for (item of layout; track item.title; let i = $index) {
+              <cx-inline gap="md" align="start">
+                <span class="fp-detail-number" aria-hidden="true">{{ i + 1 }}</span>
+                <cx-stack gap="sm">
+                  <h3 class="cx-text-title-2">{{ item.title }}</h3>
+                  <p class="cx-editorial cx-text-muted">{{ item.body }}</p>
+                </cx-stack>
+              </cx-inline>
+            }
+          </cx-stack>
+          <cx-button
+            [text]="detail.fitCta"
+            [href]="poolEnquiryHref"
+            mood="primary"
+            appendIcon="arrow-right"
+            size="large"
+          />
+        </cx-stack>
+        <figure class="fp-pool-figure fp-layout-figure">
+          <img
+            class="fp-photo cx-rounded-xl"
+            src="/assets/images/faunapoolen/editorial/pool-garden-photo.webp"
+            [alt]="detail.fitAlt"
+            width="1024"
+            height="1536"
+            loading="lazy"
+          />
+        </figure>
+      </cx-grid>
+    </div>
+  </section>
+
+  <section
+    id="everyday-by-the-water"
+    class="cx-container fp-section"
+    aria-labelledby="pool-everyday-title"
+  >
+    <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="center">
+      <cx-stack gap="xl" align="start">
+        <cx-stack gap="sm">
+          <p class="fp-case-label">{{ detail.everydayLabel }}</p>
+          <h2 id="pool-everyday-title" class="fp-heading cx-font-serif cx-font-regular">
+            {{ detail.everydayTitle }}
+          </h2>
+        </cx-stack>
+        <p class="cx-editorial">{{ detail.everydayBody }}</p>
+        <ul class="fp-benefit-list">
+          @for (item of everyday; track item.title) {
+            <li>
+              <h3 class="cx-text-title-2">{{ item.title }}</h3>
+              <p class="cx-editorial cx-text-muted">{{ item.body }}</p>
+            </li>
+          }
+        </ul>
+      </cx-stack>
+      <figure class="fp-pool-figure">
+        <img
+          class="fp-photo"
+          src="/assets/images/faunapoolen/editorial/pool-everyday-morning.webp"
+          [alt]="detail.everydayAlt"
+          width="1122"
+          height="1402"
+          loading="lazy"
+        />
+      </figure>
+    </cx-grid>
+  </section>
+
+  <fp-process [steps]="landing.steps" />
+  <fp-gotland-preview leadFocused detailed galleryEnabled [enquiryHref]="poolEnquiryHref" />
+  <fp-pool-cost-comparison />
+  <fp-package-comparison enquiryAnchor="consultation" />
+
+  <fp-pool-aftercare />
+  <div class="cx-bg-surface-alt">
+    <fp-pool-ownership />
+  </div>
+  <section class="cx-container fp-section" aria-labelledby="pool-questions-title">
+    <cx-stack gap="xl">
+      <h2 id="pool-questions-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ landing.questionsTitle }}
+      </h2>
+      <cx-list>
+        @for (item of questions; track item.id) {
+          <cx-list-item
+            [itemId]="item.id"
+            [attr.id]="
+              item.id === 'filtration'
+                ? 'aquascape'
+                : item.id === 'location'
+                  ? 'service-area-title'
+                  : null
+            "
+            class="cx-scroll-target"
+            [heading]="item.question"
+            [expandable]="true"
+          >
+            <p class="fp-body">{{ item.answer }}</p>
+          </cx-list-item>
+        }
+      </cx-list>
+    </cx-stack>
+  </section>
+  <section
+    id="consultation"
+    class="cx-container fp-section fp-enquiry cx-scroll-target"
+    aria-labelledby="pool-enquiry-title"
+  >
+    <div class="cx-editorial fp-enquiry-intro">
+      <h2 id="pool-enquiry-title" class="fp-heading cx-font-serif cx-font-regular">
+        {{ poolEnquiry.heading }}
+      </h2>
+      <p>{{ poolEnquiry.body }}</p>
+      <p>{{ poolEnquiry.followUp }}</p>
+      <fp-direct-contact />
+    </div>
+    <fp-enquiry-form compact />
+  </section>
+</fp-site-shell>

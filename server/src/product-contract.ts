@@ -11,7 +11,7 @@ export function assertFaunapoolenProductManifest(manifest: ProductManifest): voi
     manifest.frontend.framework === 'angular' &&
     manifest.frontend.rendering === 'ssg' &&
     manifest.frontend.designSystem === 'cx-framework' &&
-    manifest.frontend.visualSystem === 'product-skin' &&
+    manifest.frontend.visualSystem === 'framework' &&
     manifest.capabilities.authentication === 'owner' &&
     manifest.capabilities.persistentData === 'structured-records' &&
     manifest.capabilities.backgroundWork === 'durable' &&

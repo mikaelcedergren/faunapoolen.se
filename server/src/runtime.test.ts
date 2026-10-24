@@ -36,7 +36,11 @@ test('compiled web composition listens locally, reports SQLite readiness, and cl
   const runtime = await withinWorkingDirectory(operationalRoot, () =>
     startFaunapoolenServer({
       entrypointUrl: import.meta.url,
-      environment: runtimeEnvironment(port, browserDirectory),
+      environment: {
+        ...runtimeEnvironment(port, browserDirectory),
+        ADMIN_USERNAME: undefined,
+        ADMIN_PASSWORD: undefined,
+      },
     }),
   );
   t.after(async () => {
@@ -65,8 +69,8 @@ test('compiled web composition listens locally, reports SQLite readiness, and cl
   const baseUrl = `http://127.0.0.1:${String(port)}`;
   const login = await fetch(`${baseUrl}/api/admin/login`, {
     body: JSON.stringify({
-      password: 'correct-horse-battery-staple',
-      username: 'owner',
+      password: 'dev',
+      username: 'dev',
     }),
     headers: { 'Content-Type': 'application/json', Origin: baseUrl },
     method: 'POST',

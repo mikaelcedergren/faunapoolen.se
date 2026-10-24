@@ -1,0 +1,105 @@
+<section class="cx-container fp-section" [attr.aria-label]="copy.nav.pricing">
+  <div class="fp-section-heading">
+    <h2 class="fp-heading cx-font-serif cx-font-regular">{{ comparisonTitle }}</h2>
+  </div>
+  <div id="packages" class="cx-scroll-target">
+    <cx-stack gap="xl">
+      <p class="cx-editorial cx-measure-lg-start">
+        {{ landing.priceIntro }} {{ scope.betweenSizes }}
+      </p>
+      @if (packageCatalogue.loading()) {
+        <cx-state-message state="pending" [heading]="pricesLoading" />
+      } @else if (packageCatalogue.error()) {
+        <cx-state-message
+          state="danger"
+          [heading]="pricesUnavailable"
+          [action]="{ text: retryPrices }"
+          (action)="packageCatalogue.reload()"
+        />
+      }
+      <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
+        @for (item of packageCatalogue.packages(); track item.id) {
+          <article class="fp-package">
+            <img
+              class="fp-package-illustration"
+              [src]="'/assets/images/faunapoolen/editorial/package-' + item.id + '-960.webp'"
+              [srcset]="
+                '/assets/images/faunapoolen/editorial/package-' +
+                item.id +
+                '-480.webp 480w, /assets/images/faunapoolen/editorial/package-' +
+                item.id +
+                '-960.webp 960w, /assets/images/faunapoolen/editorial/package-' +
+                item.id +
+                '-1448.webp 1448w'
+              "
+              sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 30vw, 400px"
+              alt=""
+              width="1448"
+              height="1086"
+              loading="lazy"
+            />
+            <cx-stack gap="md" align="start">
+              <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ item.name }}</h3>
+              <span class="fp-accent-rule" aria-hidden="true"></span>
+              <div class="cx-editorial">
+                <p>{{ item.description }}</p>
+              </div>
+              <cx-stack gap="xs">
+                <p class="fp-body-lg">{{ item.area }}</p>
+                <p class="fp-body-lg">{{ item.depth }}</p>
+                <p class="fp-body-lg">{{ item.filtrationSize }}</p>
+                <p class="fp-body-lg">{{ item.materials }}</p>
+              </cx-stack>
+            </cx-stack>
+            <cx-stack gap="sm">
+              @for (feature of item.includes; track feature) {
+                <cx-inline gap="sm" align="start">
+                  <span class="fp-package-marker" aria-hidden="true">
+                    <cx-icon icon="check" size="20" mood="primary" />
+                  </span>
+                  <p class="cx-editorial">{{ feature }}</p>
+                </cx-inline>
+              }
+            </cx-stack>
+            <cx-stack class="fp-package-actions" gap="lg" align="start">
+              <cx-stack gap="sm" align="start">
+                <cx-metric [label]="copy.common.from" [value]="packageCatalogue.price(item)" />
+                <p class="fp-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
+                <p class="fp-body-sm cx-text-muted">{{ copy.common.travelCosts }}</p>
+              </cx-stack>
+              <cx-button
+                [text]="copy.common.viewPackage"
+                mood="accent"
+                appendIcon="arrow-right"
+                [href]="interestHref(item.id)"
+                (click)="choosePackage($event, item.id)"
+                size="large"
+              />
+            </cx-stack>
+          </article>
+        }
+      </cx-grid>
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" align="start">
+        @for (group of scope.groups; track group.title) {
+          <cx-stack class="fp-column" gap="lg">
+            <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ group.title }}</h3>
+            <cx-grid [columns]="group.columns.length" [columnsMobile]="1" gap="md" align="start">
+              @for (column of group.columns; track $index) {
+                <div class="cx-editorial">
+                  <ul>
+                    @for (item of column; track item) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+            </cx-grid>
+          </cx-stack>
+        }
+      </cx-grid>
+      <p class="fp-body-sm cx-text-muted cx-text-center">
+        {{ scope.coordination }} {{ editorial.priceScope }}
+      </p>
+    </cx-stack>
+  </div>
+</section>

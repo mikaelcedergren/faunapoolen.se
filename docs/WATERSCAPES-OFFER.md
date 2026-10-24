@@ -1,0 +1,21 @@
+# Waterscapes offer — 24 October 2026
+
+Owner-approved page structure: garden ponds, koi ponds, streams, waterfalls, Fountainscapes, and rainwater harvesting system, in that order. The existing three-column framework grid now forms two rows on desktop and a single column on mobile. Each keyed content record owns its title, description, photograph, alt text and specific enquiry service route.
+
+Familiar search language remains in visible headings and prose: garden ponds, koi ponds, streams, waterfalls, garden fountains and rainwater harvesting. Swedish and Danish translate those terms naturally, while retaining Aquascape product names. Canonical URLs, redirects and language routing remain unchanged. Page description and introductory copy cover all six choices.
+
+Aquascape terminology checked against:
+
+- [Ecosystem ponds, Pondless waterfalls and Fountainscape](https://www.aquascapeinc.com/water-gardening/backyard-ideas/choosing-the-perfect-water-feature-for-your-yard)
+- [Ecosystem koi pond services](https://www.aquascapeconstruction.com/)
+- [Rainwater Harvesting System](https://www.aquascapeinc.com/rainwater-harvesting-system)
+
+Use ecosystem pond as descriptive terminology, not the unverified title-cased product name EcoSystem Garden Pond. BioStream was not verified on Aquascape's official site, so this page uses streams with Aquascape circulation and filtration. Pondless® Waterfall and Aquascape Rainwater Harvesting System retain their established naming. Fountainscapes remains the owner's requested heading, with garden fountains in the description.
+
+Existing garden, koi, stream, waterfall and fountain photographs are reused. Rainwater collection has a new illustrative photograph showing a roof gutter and downpipe beside a planted garden. It does not depict a specific Aquascape product model or claim to be a completed installation. The image was created with built-in Imagegen and exported as metadata-free WebP quality 82, 1536 × 1024. Original: `docs/reference-images/waterscape-rainwater-original.png`. Website asset: `public/assets/images/faunapoolen/editorial/waterscape-rainwater.webp`.
+
+## Rainwater photograph prompt
+
+> Create a photorealistic-natural illustrative photograph for a Swedish garden website's rainwater harvesting service card. Landscape 3:2 1536x1024. Use the provided photograph ONLY as a calibration for restrained colour, softer optical detail, honest shadows and candid everyday garden character; do not copy the pond or people. Scene: an ordinary cared-for Swedish timber house after a light summer rain. A muted grey roof gutter and downpipe are clearly visible along a corner of the house; the downpipe continues neatly into the ground beside a small discreet flush inspection cover in a gravel strip. Nearby a plain garden tap and loosely resting watering hose suggest using collected water for the garden. An irregular planted bed of ordinary grasses and shrubs, small wet stone path and lawn establish the domestic garden setting. The focus is on roof-water collection and the garden, not machinery, ponds or swimming. No visible tanks, brand-specific equipment or invented branded product; the underground storage is intentionally out of view. No cutaway or diagram. Camera at a casual standing eye level, slightly off-center frame, unposed, natural scale. Subdued soft daylight after rain with modest direction and some deeper real shade. Neutral weathered timber, desaturated natural greens, small believable wet highlights. Softly resolved lens detail without digital sharpening; recognisable garden background, modest optical focus falloff and no heavy blur. Incidental imperfections, not dirt or neglect. NO HDR, no local contrast enhancement, no crystalline textures, no vivid saturation, golden glow, cinematic grading, artificial grain, luxury resort styling, text, labels, logos, watermark, people or swimming pool. This should feel like a candid photograph taken while visiting a real garden, not a polished AI product advertisement.
+
+Each card now selects its own contact-form choice: garden pond, koi pond, stream, waterfall, Fountainscapes or rainwater harvesting system. The choice survives reload and language navigation and is submitted as the visible localized service label through the existing versioned enquiry fields contract. Historical enquiry values are unchanged.

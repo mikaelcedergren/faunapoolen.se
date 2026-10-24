@@ -1,3 +1,4 @@
+import { enquiryMailConfiguration, type EnquiryMailConfiguration } from './enquiry-mail.js';
 import { realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -54,6 +55,7 @@ export interface FaunapoolenEnvironment extends FaunapoolenBaseEnvironment {
 }
 
 export interface FaunapoolenWorkerEnvironment extends FaunapoolenBaseEnvironment {
+  readonly enquiryMail: EnquiryMailConfiguration | undefined;
   readonly providerApiKey: string | undefined;
   readonly providerBaseUrl: string | undefined;
   readonly providerModel: typeof DEFAULT_OPENAI_MODEL;
@@ -157,6 +159,7 @@ export function loadFaunapoolenEnvironment(
     }
     return Object.freeze({
       ...base,
+      enquiryMail: releaseValidation ? undefined : enquiryMailConfiguration(environment),
       providerApiKey,
       providerBaseUrl,
       providerModel,
@@ -165,24 +168,18 @@ export function loadFaunapoolenEnvironment(
 
   // Validation owns no operator credential: fresh unreachable values keep the real auth stack
   // composable without turning development defaults into a release-validation bypass.
+  const localCredentials = !isProduction && execution.dataMode === 'isolated';
   const adminUsername = releaseValidation
     ? randomBase64UrlIdentifier(32)
-    : exactSecret(
-        environment,
-        'ADMIN_USERNAME',
-        execution.dataMode === 'shared' ? undefined : 'faunapoolen-local-owner',
-      );
+    : exactSecret(environment, 'ADMIN_USERNAME', localCredentials ? 'dev' : undefined);
   if (adminUsername.length > 256) {
     throw new Error('ADMIN_USERNAME must contain at most 256 characters.');
   }
   const adminPassword = releaseValidation
     ? randomBase64UrlIdentifier(32)
-    : exactSecret(
-        environment,
-        'ADMIN_PASSWORD',
-        execution.dataMode === 'shared' ? undefined : 'faunapoolen-local-development-password',
-      );
-  if (adminPassword.length < 16 || adminPassword.length > 256) {
+    : exactSecret(environment, 'ADMIN_PASSWORD', localCredentials ? 'dev' : undefined);
+  const usesLocalPassword = localCredentials && environment['ADMIN_PASSWORD'] === undefined;
+  if ((!usesLocalPassword && adminPassword.length < 16) || adminPassword.length > 256) {
     throw new Error('ADMIN_PASSWORD must contain between 16 and 256 characters.');
   }
   const sessionSecret = releaseValidation

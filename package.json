@@ -24,13 +24,15 @@
   },
   "scripts": {
     "dev": "pnpm favicon:check && node scripts/dev.mjs",
+    "dev:owner": "pnpm favicon:check && node scripts/dev.mjs --owner",
     "build": "pnpm run build:browser && pnpm run build:server",
-    "build:browser": "ng build --configuration prod && node scripts/flatten.mjs",
+    "build:browser": "ng build --configuration prod && node scripts/flatten.mjs && node --test --test-isolation=none tests/public-site.test.mjs",
     "build:server": "pnpm --filter faunapoolen-server run build",
     "build:server:release": "node server/node_modules/@mikaelcedergren/cx-framework/scripts/cx-server-artifact.mjs --package faunapoolen-server",
-    "build:release": "ng build --configuration prod --output-path \"$SITE_RELEASE_DIR\" && node scripts/flatten.mjs",
+    "build:release": "ng build --configuration prod --output-path \"$SITE_RELEASE_DIR\" && node scripts/flatten.mjs && node --test --test-isolation=none tests/public-site.test.mjs",
     "build:local": "pnpm favicon:check && ng build --configuration local && node scripts/flatten.mjs",
-    "extract-i18n": "ng extract-i18n --output-path src/locale",
+    "extract-i18n": "ng extract-i18n --format=json --output-path src/locale --out-file messages.en.json",
+    "i18n:check": "node scripts/check-i18n.mjs",
     "start": "pnpm run start:web",
     "start:web": "node server/dist/index.js",
     "start:worker": "node server/dist/worker.js",
@@ -40,7 +42,7 @@
     "typecheck:server": "pnpm --filter faunapoolen-server run typecheck",
     "test": "pnpm run test:server",
     "test:server": "pnpm run build:server && pnpm --filter faunapoolen-server run test && node --test tests/server/dev-launcher.test.mjs",
-    "test:verification": "node --test tests/change-verification.test.mjs",
+    "test:verification": "node --test tests/change-verification.test.mjs tests/sitemap.test.mjs",
     "e2e": "node scripts/run-e2e.mjs",
     "e2e:hmr": "node scripts/run-e2e.mjs --hmr",
     "e2e:install": "playwright install chromium",
@@ -49,9 +51,9 @@
     "favicon:generate": "cx-development-favicon --apply",
     "favicon:check": "cx-development-favicon",
     "platform:check": "cx-platform-check --root .",
-    "style:check": "cx-style-token-check --all",
     "verify:change": "node scripts/verify-change.mjs",
-    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm run style:check && pnpm run typecheck && pnpm run test:verification && pnpm run test && pnpm run build"
+    "style:check": "cx-style-token-check --all",
+    "check": "pnpm run format:check && pnpm run favicon:check && pnpm run platform:check && pnpm style:check && pnpm i18n:check && pnpm run typecheck && pnpm run test:verification && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@angular/cdk": "22.2.2",
@@ -91,7 +93,7 @@
     "@angular/compiler-cli": "22.2.2",
     "@playwright/test": "1.62.0",
     "pnpm": "11.23.0",
-    "prettier": "^3.8.1",
+    "prettier": "^3.9.6",
     "typescript": "~6.0.3"
   }
 }

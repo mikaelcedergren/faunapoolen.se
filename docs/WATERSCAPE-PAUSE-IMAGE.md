@@ -1,0 +1,41 @@
+# Other waterscapes photograph
+
+## Current direction — 24 October 2026
+
+The owner requested a photograph focused on several ornamental waterscapes, replacing the winter scene. The new image shows a small waterfall, winding stream, planted pond and bubbling stone fountain in a leafy garden, with two adults talking quietly in the background and no swimming pool. The initial version was rejected as too saturated, sharp and artificial; the current revision softens colour and detail and follows the saved reference more closely. It follows the saved [photography style](PHOTOGRAPHY-STYLE.md) and reference.
+
+Generated with the built-in Imagegen tool. The original is preserved at `docs/reference-images/waterscapes-garden-candid-original.png`. The existing public URL `public/assets/images/faunapoolen/editorial/waterscape-pause.webp` is preserved (1536 × 1024), with `waterscape-pause-small.webp` (768 × 512) for smaller displays. Both are metadata-free WebP exports at quality 82. English, Swedish and Danish alternative text describes the new scene. The image is illustrative and is not evidence of a completed customer installation.
+
+The full prompt is recorded in [the editorial image record](EDITORIAL-IMAGE-GENERATION.md#24-october-2026-ornamental-waterscapes).
+
+## Superseded direction — 16 October 2026
+
+The owner approved replacing the winter-swimming scene with a quiet winter garden pond scene,
+without people, for the Other waterscapes section. Keep the natural, candid photographic treatment
+in [the photography guide](PHOTOGRAPHY-STYLE.md), the landscape composition and the existing public
+asset URL. This direction supersedes the swimmer motif below. The replacement is now installed:
+a quiet pond with winter ice, snow-covered boulders and dormant planting, without people.
+Generated with built-in Imagegen using the previous scene and approved photographic reference;
+exported at 1536 × 1024 as WebP. The prompt is in the
+[editorial image record](EDITORIAL-IMAGE-GENERATION.md#16-october-2026-quiet-winter-pond).
+It remains illustrative imagery rather than a completed customer installation.
+
+## Superseded winter-bathing photograph
+
+The owner selected the snowy winter-bathing version on 3 October 2026, showing a laughing man with his shoulders and upper chest above the water, looking towards a warmly dressed woman seated with cocoa. Her back faces the camera. The subsequent version with his gaze turned away was rejected in favour of this specific photograph.
+
+Current asset: [waterscape-pause.webp](../public/assets/images/faunapoolen/editorial/waterscape-pause.webp), 1536 × 1024. Created and edited with the built-in image tool. This is concept imagery, not evidence of a completed installation. The accompanying copy describes enjoyment through the seasons without promising that every water feature operates through winter.
+
+### Selected image editing prompt
+
+Revise this winter bathing photograph. Keep the candid family-phone photographic character, natural garden pool and 3:2 landscape format, but make the scene appreciably FUNNIER and MUCH SNOWIER. The BATHER MUST BE A MAN around 45-55, with short wet brown-grey hair, a little ordinary stubble, an average real middle-aged body. Raise him out of the water so his bare shoulders, collarbones and upper chest are visible above the waterline (water at mid-chest), with one forearm lifting slightly and one hand making a small comical bracing gesture. His expression should be an involuntary big laughing gasp at the cold: scrunched eyes, raised eyebrows, wide joyful open smile, cold-pink cheeks, visibly hunched shoulders, 'oh wow that is cold!' and absolutely loving it. NOT pain, fear or distress. He looks at his companion. The person on the bench in the LEFT foreground MUST BE A WOMAN, seen mostly FROM BEHIND with her face hidden, a little hair visible under a wool hat, wearing an oversized puffy winter coat, thick scarf, mittens, wool blanket over knees, holding a mug of hot cocoa. Her relaxed tilted head and slightly lifted shoulders convey she is laughing at his reaction while staying wonderfully warm. Keep her fully dressed, seated, back toward camera. The humor comes from their contrast and shared teasing, no cartoon gimmicks. Cover the garden and stones in generous freshly settled snow, several inches on the banks, fence, branches and bench surroundings, unmistakably snowy Swedish winter, while the natural pool water stays open and dark with realistic ripples. Show a thicker snow cap on the natural stone edge; small plausible cleared access by the entry steps. No ice hole, no solid ice around his body, no hot-spring steam. Natural low winter sunlight, white snow, restrained color, soft believable cold skin tones. Photograph taken casually at human eye level with good composition, slight optical background softness and softly resolved near foreground. Avoid HDR, oversharpening, harsh local contrast, grain, cinematic grading or glossy stock-photo polish. Preserve convincing hands, shoulder anatomy and correct scale of the man relative to the woman. Only these two people. No text or logos.
+
+## Superseded summer photograph
+
+Created on 3 October 2026 with the built-in image generator. The owner requested a completely new photograph for the home-page waterscapes section, without reference to its previous photograph. No input images were supplied to generation. The written [photography style](PHOTOGRAPHY-STYLE.md) guided the result.
+
+Website asset: [waterscape-pause.webp](../public/assets/images/faunapoolen/editorial/waterscape-pause.webp), 1536 × 1024. This is concept imagery, not a completed customer installation.
+
+## Generation prompt
+
+Create an entirely new candid editorial photograph for a Swedish garden-water website. Landscape 3:2, 1536x1024. The section says: 'A place to pause in your own garden. Watch the fish, listen to a stream or settle beside a quiet pond. We also build water features around the way you want to spend time outdoors.' Invent a fresh scene from this message: two adults in their early fifties sitting close together on a low, ordinary weathered timber garden step beside a narrow shallow natural stream in a modest leafy Swedish back garden on a bright late spring afternoon. A woman with short dark hair in a relaxed faded blue linen shirt, and a man with greying hair in an ordinary cream cotton shirt and olive trousers. Each has a simple ceramic coffee cup. The woman has just said something quietly funny; they turn naturally towards each other with small spontaneous smiles. Comfortable closeness, not posing, not looking at the camera. View from a little to one side at the height of a family member sitting nearby, with both relaxed faces visible, half-to-three-quarter bodies, not a rear view. Include enough of the shallow winding stream to understand their pleasure in the space: clear ordinary water trickling over a few small rounded stones, wet gravel, soft ripples and one restrained low cascade, lush irregular ferns and soft grasses, a few pale flowers. Water belongs at human garden scale. Background a softly recognisable apple tree, untrimmed mixed shrubs, patch of grass and faint ordinary wooden boundary fence, no house as focal point. Frame like a spontaneous iPhone photograph taken by someone with a good photographic eye: meaningful interaction, slightly off-centre, informal but well composed. Available dappled daylight, gentle directional sun on faces, deeper real shadows, soft clean highlights and natural restrained greens and skin. A little optical background softness, still identifiable foliage; focus on the people, clean natural facial detail without sharpening, foreground leaves lightly soft. Not portrait-mode cutout blur. No HDR, no enhanced local contrast, no lifted shadows everywhere, no crunchy texture, no oversharpening, no artificial grain, no cinematic grade, no artificial glowing water, no glossy luxury advertising, no staged poses. Keep hands, cups, anatomy and reflections physically believable. Warm, intimate, everyday moment of being together outdoors. No text, logos, borders or watermark.

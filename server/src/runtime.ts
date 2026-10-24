@@ -1,3 +1,5 @@
+import { createSocialService } from './social-service.js';
+import { createSocialAi } from './social-ai.js';
 import type { Server } from 'node:http';
 import { configureFaunapoolenLogging, log } from './logging.js';
 
@@ -30,6 +32,8 @@ import {
   type FaunapoolenEnvironment,
 } from './environment.js';
 import { createGenerationService } from './generation-service.js';
+import { createEnquiryService } from './enquiry-service.js';
+import { createPackageService } from './package-service.js';
 import { verifyFaunapoolenDatabase } from './database.js';
 import { assertFaunapoolenProductManifest } from './product-contract.js';
 
@@ -90,6 +94,8 @@ export async function startFaunapoolenServer({
   try {
     const authService = createOwnerAuthService({
       cookieSecure: environment.cookieSecure,
+      localDevelopmentCredentials:
+        !environment.isProduction && environment.execution.dataMode === 'isolated',
       expectedPassword: environment.adminPassword,
       expectedUsername: environment.adminUsername,
       repository: persistence.ownerAuth,
@@ -104,6 +110,21 @@ export async function startFaunapoolenServer({
       providerConfigured: environment.generationEnabled,
     });
     const app = createFaunapoolenApplication({
+      packageService: createPackageService(
+        persistence.database.sqlite,
+        environment.releaseValidation ? 'test' : environment.execution.executionScope,
+      ),
+      socialService: createSocialService(persistence.database.sqlite),
+      socialAi: createSocialAi(
+        persistence.database.sqlite,
+        persistence.jobs,
+        environment.generationEnabled,
+      ),
+      enquiryService: createEnquiryService({
+        database: persistence.database.sqlite,
+        secret: environment.sessionSecret,
+        executionScope: environment.execution.executionScope,
+      }),
       authService,
       browserServing: configuredBrowserServing,
       campaignService,

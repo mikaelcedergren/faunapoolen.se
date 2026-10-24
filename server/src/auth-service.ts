@@ -62,6 +62,7 @@ export interface OwnerAuthService {
 
 export interface OwnerAuthServiceOptions {
   readonly cookieSecure: boolean;
+  readonly localDevelopmentCredentials?: boolean;
   readonly expectedPassword: string;
   readonly expectedUsername: string;
   readonly now?: () => number;
@@ -72,6 +73,7 @@ export interface OwnerAuthServiceOptions {
 
 export function createOwnerAuthService({
   cookieSecure,
+  localDevelopmentCredentials = false,
   expectedPassword,
   expectedUsername,
   now = Date.now,
@@ -81,7 +83,12 @@ export function createOwnerAuthService({
 }: OwnerAuthServiceOptions): OwnerAuthService {
   validateCredential(expectedUsername, 'Expected owner username');
   validateCredential(expectedPassword, 'Expected owner password');
-  if (expectedPassword.length < 16) {
+  const usesLocalCredentials =
+    localDevelopmentCredentials &&
+    !cookieSecure &&
+    expectedUsername === 'dev' &&
+    expectedPassword === 'dev';
+  if (expectedPassword.length < 16 && !usesLocalCredentials) {
     throw new Error('Expected owner password must contain at least 16 characters.');
   }
   if (typeof cookieSecure !== 'boolean') {

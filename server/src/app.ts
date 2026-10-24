@@ -1,3 +1,6 @@
+import type { SocialService } from './social-service.js';
+import type { SocialAi } from './social-ai.js';
+import { mountSocialRoutes } from './social-routes.js';
 import compression from 'compression';
 import type { RuntimeLogger } from '@mikaelcedergren/cx-framework/server/logging';
 import { log } from './logging.js';
@@ -25,6 +28,8 @@ import type { BrowserServing } from '@mikaelcedergren/cx-framework/server/static
 import express, { type NextFunction, type Request, type Response } from 'express';
 
 import { parseCopyRefinement } from './copy-refinement.js';
+import type { EnquiryService } from './enquiry-contracts.js';
+import type { PackageService } from './package-contracts.js';
 import { type AuthenticatedOwnerSession, type OwnerAuthService } from './auth-service.js';
 import { mountFaunapoolenBrowser } from './browser-serving.js';
 import {
@@ -52,6 +57,10 @@ export interface FaunapoolenApplicationOptions {
   readonly databaseReadiness: DatabaseReadiness;
   readonly environment: FaunapoolenEnvironment;
   readonly generationService: GenerationService;
+  readonly enquiryService: EnquiryService;
+  readonly packageService: PackageService;
+  readonly socialService: SocialService;
+  readonly socialAi: SocialAi;
   readonly identity?: ServerReleaseIdentity;
   readonly logger?: Pick<RuntimeLogger, 'emit'>;
 }
@@ -65,6 +74,10 @@ export function createFaunapoolenApplication({
   databaseReadiness,
   environment,
   generationService,
+  enquiryService,
+  packageService,
+  socialService,
+  socialAi,
   identity,
   logger = log,
 }: FaunapoolenApplicationOptions): express.Express {
@@ -87,6 +100,13 @@ export function createFaunapoolenApplication({
   const originGuard = createOriginGuard({ allowedOrigins: environment.mutationOrigins });
   const jsonBody = express.json({ limit: ADMIN_REQUEST_BODY_LIMIT, strict: true });
   app.use(ADMIN_API_PATH, noStoreHeader());
+  app.get('/api/packages', noStoreHeader(), (_request, response) => {
+    response.json(packageService.read());
+  });
+  app.post('/api/enquiries', noStoreHeader(), originGuard, jsonBody, (request, response) => {
+    const receipt = enquiryService.submit(request.body);
+    response.status(201).json(receipt);
+  });
 
   app.get(
     `${ADMIN_API_PATH}/session`,
@@ -124,7 +144,45 @@ export function createFaunapoolenApplication({
   // a 401 even when the caller also omits Origin or sends malformed JSON.
   app.use(ADMIN_API_PATH, requireOwnerSession(authService));
   app.use(ADMIN_API_PATH, originGuard);
+  mountSocialRoutes(app, socialService, socialAi, environment.generationEnabled);
   app.use(ADMIN_API_PATH, jsonBody);
+  app.get(`${ADMIN_API_PATH}/packages`, (_request, response) => {
+    response.json(packageService.read());
+  });
+  app.patch(`${ADMIN_API_PATH}/packages`, (request, response) => {
+    response.json(packageService.update(request.body));
+  });
+  app.get(`${ADMIN_API_PATH}/customers`, (_request, response) => {
+    response.json({ customers: enquiryService.customers() });
+  });
+  app.patch(`${ADMIN_API_PATH}/customers/:id`, (request, response) => {
+    if (typeof request.params['id'] !== 'string')
+      throw invalidRequest('Invalid customer reference.');
+    const customer = enquiryService.updateCustomer(request.params['id'], request.body);
+    response.json({ customer });
+  });
+  app.post(`${ADMIN_API_PATH}/enquiries/:id/resolve-email`, (request, response) => {
+    if (typeof request.params['id'] !== 'string')
+      throw invalidRequest('Invalid enquiry reference.');
+    enquiryService.resolveNotification(request.params['id'], request.body);
+    response.sendStatus(204);
+  });
+  app.post(`${ADMIN_API_PATH}/enquiries/:id/retry-email`, (request, response) => {
+    if (typeof request.params['id'] !== 'string')
+      throw invalidRequest('Invalid enquiry reference.');
+    enquiryService.retryNotification(request.params['id'], request.body);
+    response.sendStatus(204);
+  });
+  app.get(`${ADMIN_API_PATH}/enquiries`, (_request, response) => {
+    response.json({ enquiries: enquiryService.list() });
+  });
+  app.patch(`${ADMIN_API_PATH}/enquiries/:id`, (request, response) => {
+    const id = request.params['id'];
+    if (typeof id !== 'string') throw invalidRequest('The enquiry reference is invalid.');
+    const enquiry = enquiryService.update(id, request.body);
+    setRevisionEtag(response, enquiry.revision);
+    response.json({ enquiry });
+  });
 
   app.get(
     `${ADMIN_API_PATH}/config`,

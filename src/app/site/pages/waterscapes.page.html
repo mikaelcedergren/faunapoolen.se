@@ -1,0 +1,87 @@
+<fp-site-shell>
+  <cx-hero
+    [underMasthead]="true"
+    align="center"
+    [parallax]="true"
+    [overlayOpacity]="45"
+    headingClass="cx-font-regular"
+    [heading]="copy.waterscapes.title"
+    layout="cover"
+  >
+    <p body>{{ copy.waterscapes.ingress }}</p>
+    <cx-button
+      actions
+      [text]="copy.start"
+      mood="primary"
+      size="large"
+      [href]="configureHref + '?service=pond'"
+    />
+    <img
+      media
+      [src]="images.waterscape"
+      [alt]="editorial.waterscapeAlt"
+      width="1672"
+      height="941"
+      fetchpriority="high"
+    />
+  </cx-hero>
+  <fp-certification-strip afterHero />
+  <section class="cx-bg-surface-alt" aria-labelledby="water-types-title">
+    <div class="cx-container fp-section">
+      <cx-stack gap="xl">
+        <h2 id="water-types-title" class="fp-heading cx-font-serif cx-font-regular">
+          {{ copy.waterscapes.typesTitle }}
+        </h2>
+        <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
+          @for (item of waterTypes; track item.id) {
+            <cx-stack gap="lg" align="start" justify="between">
+              <cx-stack gap="lg">
+                <img
+                  class="fp-guidance-photo"
+                  [src]="item.image"
+                  [alt]="item.alt"
+                  width="1536"
+                  height="1024"
+                  loading="lazy"
+                />
+                <cx-stack gap="sm">
+                  <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ item.title }}</h3>
+                  <p class="cx-editorial">{{ item.body }}</p>
+                  <p class="cx-editorial">{{ item.detail }}</p>
+                </cx-stack>
+              </cx-stack>
+              <cx-button
+                [text]="editorial.discussService"
+                [href]="configureHref + '?service=' + item.service"
+                appendIcon="arrow-right"
+              />
+            </cx-stack>
+          }
+        </cx-grid>
+      </cx-stack>
+    </div>
+  </section>
+  <div class="cx-container fp-section">
+    <section aria-labelledby="waterscape-method-title">
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="2xl" [align]="'center'">
+        <cx-image
+          class="cx-w-full"
+          [image]="{
+            src: images.detail,
+            alt: ui.water_ripples_wet_stone_and_reeds_in_close_detail,
+            loading: 'lazy',
+            intrinsicWidth: 1536,
+            intrinsicHeight: 1024,
+            borderRadius: 'large',
+          }"
+        />
+        <div class="cx-editorial">
+          <h2 id="waterscape-method-title" class="fp-heading cx-font-regular">
+            {{ copy.waterscapes.methodTitle }}
+          </h2>
+          <p>{{ copy.waterscapes.methodBody }}</p>
+        </div>
+      </cx-grid>
+    </section>
+  </div>
+</fp-site-shell>

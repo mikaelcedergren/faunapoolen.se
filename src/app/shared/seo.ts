@@ -1,3 +1,8 @@
+import {
+  PUBLIC_LANGUAGES,
+  LANGUAGE_LOCALES,
+  isPublicLanguage,
+} from '../../../server/src/public-routes';
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
@@ -10,17 +15,23 @@ const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/assets/images/og-image.jpg`;
 export interface PageSeo {
   /** Swedish canonical path, e.g. '/' or '/koi-pond-series.html'. */
   path: string;
+  /** Equivalent English-language route; page slugs remain English in every locale. */
+  enPath?: string;
+  daPath?: string;
+  defaultLanguage?: 'en' | 'sv';
   description: string;
   keywords?: string;
   ogTitle?: string;
   ogDescription?: string;
   /** Absolute image URL; defaults to the site og-image. */
   ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   /** og:type — 'website' (default) or 'article' for blog posts. */
   ogType?: string;
   /** Blog posts only: publish date (ISO 8601; date-only is fine). */
   datePublished?: string;
-  /** Blog posts only: last content change; falls back to datePublished. */
+  /** Last significant content change (YYYY-MM-DD); omit when unknown. Also feeds the sitemap. */
   dateModified?: string;
   noindex?: boolean;
   /**
@@ -51,10 +62,10 @@ const OG_PROPERTIES = [
 const TWITTER_NAMES = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image'];
 
 /**
- * Sets title + per-route description, canonical, hreflang alternates (sv/en/x-default),
+ * Sets title + per-route description, canonical, hreflang alternates for every public language plus x-default,
  * Open Graph, Twitter and JSON-LD @graph on every navigation. Runs during prerendering too,
- * so each static page (both locales) ships with its own metadata. Locale-aware via LOCALE_ID:
- * Swedish lives at the root, English under /en/.
+ * so each static page ships with its own metadata. Locale-aware via LOCALE_ID:
+ * Swedish lives at the root; other languages use their own prefix.
  */
 @Injectable()
 export class SeoTitleStrategy extends TitleStrategy {
@@ -67,19 +78,15 @@ export class SeoTitleStrategy extends TitleStrategy {
     super();
   }
 
-  private get isEnglish(): boolean {
-    return this.localeId.toLowerCase().startsWith('en');
-  }
-
   override updateTitle(snapshot: RouterStateSnapshot): void {
     let route = snapshot.root;
     while (route.firstChild) route = route.firstChild;
 
     const seo = (route.data['seo'] as PageSeo | undefined) ?? { path: '/', description: '' };
     const title = this.buildTitle(snapshot) ?? 'Faunapoolen';
-    const isEn = this.isEnglish;
-    const lang = isEn ? 'en' : 'sv';
-    const inLanguage = isEn ? 'en-US' : 'sv-SE';
+    const candidate = this.localeId.split('-')[0];
+    const lang = isPublicLanguage(candidate) ? candidate : 'en';
+    const inLanguage = LANGUAGE_LOCALES[lang];
 
     if (seo.private) {
       this.renderPrivatePage(title, lang);
@@ -87,11 +94,24 @@ export class SeoTitleStrategy extends TitleStrategy {
     }
 
     const svPath = seo.path;
-    const enPath = svPath === '/' ? '/en/' : `/en${svPath}`;
+    const enPath = seo.enPath ?? (svPath === '/' ? '/en/' : `/en${svPath}`);
     const svUrl = SITE_ORIGIN + svPath;
     const enUrl = SITE_ORIGIN + enPath;
-    const canonical = isEn ? enUrl : svUrl;
-    const siteBase = isEn ? `${SITE_ORIGIN}/en/` : `${SITE_ORIGIN}/`;
+    const daUrl = SITE_ORIGIN + (seo.daPath ?? `/da${svPath}`);
+    const alternates = Object.fromEntries(
+      PUBLIC_LANGUAGES.map((language) => [
+        language,
+        language === 'sv'
+          ? svUrl
+          : language === 'en'
+            ? enUrl
+            : language === 'da'
+              ? daUrl
+              : SITE_ORIGIN + '/' + language + svPath,
+      ]),
+    );
+    const canonical = alternates[lang]!;
+    const siteBase = lang === 'sv' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}/${lang}/`;
 
     const ogImage = seo.ogImage ?? DEFAULT_OG_IMAGE;
     const ogTitle = seo.ogTitle ?? title;
@@ -102,6 +122,8 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ name: 'description', content: seo.description });
     if (seo.keywords) {
       this.meta.updateTag({ name: 'keywords', content: seo.keywords });
+    } else {
+      this.meta.removeTag("name='keywords'");
     }
     // The source pages carry no robots meta on indexable pages (indexable is the default), so only
     // emit one to mark a page noindex — keeps parity with the live <head>.
@@ -114,12 +136,12 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:type', content: seo.ogType ?? 'website' });
     this.meta.updateTag({ property: 'og:url', content: canonical });
     this.meta.updateTag({ property: 'og:site_name', content: 'Faunapoolen' });
-    this.meta.updateTag({ property: 'og:locale', content: isEn ? 'en_US' : 'sv_SE' });
+    this.meta.updateTag({ property: 'og:locale', content: inLanguage.replace('-', '_') });
     this.meta.updateTag({ property: 'og:image', content: ogImage });
     this.meta.updateTag({ property: 'og:title', content: ogTitle });
     this.meta.updateTag({ property: 'og:description', content: ogDescription });
-    this.meta.updateTag({ property: 'og:image:width', content: '1200' });
-    this.meta.updateTag({ property: 'og:image:height', content: '630' });
+    this.meta.updateTag({ property: 'og:image:width', content: String(seo.ogImageWidth ?? 1200) });
+    this.meta.updateTag({ property: 'og:image:height', content: String(seo.ogImageHeight ?? 630) });
     if (seo.ogType === 'article' && seo.datePublished) {
       this.meta.updateTag({ property: 'article:published_time', content: seo.datePublished });
       this.meta.updateTag({
@@ -137,7 +159,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ name: 'twitter:image', content: ogImage });
 
     this.setCanonical(canonical);
-    this.setAlternates(svUrl, enUrl);
+    this.setAlternates(alternates, seo.defaultLanguage === 'sv' ? svUrl : enUrl);
     this.setJsonLd(
       this.buildGraph(canonical, title, seo.description, inLanguage, ogImage, siteBase, seo),
     );
@@ -179,7 +201,7 @@ export class SeoTitleStrategy extends TitleStrategy {
     link.setAttribute('href', url);
   }
 
-  private setAlternates(svUrl: string, enUrl: string): void {
+  private setAlternates(alternates: Record<string, string>, defaultUrl: string): void {
     const head = this.document.head;
     head.querySelectorAll("link[rel='alternate'][hreflang]").forEach((el) => el.remove());
     const add = (hreflang: string, href: string): void => {
@@ -189,9 +211,8 @@ export class SeoTitleStrategy extends TitleStrategy {
       link.setAttribute('href', href);
       head.appendChild(link);
     };
-    add('sv', svUrl);
-    add('en', enUrl);
-    add('x-default', svUrl);
+    for (const [language, url] of Object.entries(alternates)) add(language, url);
+    add('x-default', defaultUrl);
   }
 
   private buildGraph(
@@ -217,6 +238,7 @@ export class SeoTitleStrategy extends TitleStrategy {
       isPartOf: { '@id': `${siteBase}#website` },
       ...(isArticle ? { author: { '@id': `${SITE_ORIGIN}/#organization` } } : {}),
       publisher: { '@id': `${SITE_ORIGIN}/#organization` },
+      ...(seo.dateModified ? { dateModified: seo.dateModified } : {}),
       ...(isArticle
         ? {
             mainEntityOfPage: canonical,

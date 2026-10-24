@@ -92,12 +92,7 @@ export interface CampaignCopyUpdate {
   readonly campaignId: string;
   readonly expectedRevision: number;
   readonly field:
-    | 'callToAction'
-    | 'description'
-    | 'fullCaption'
-    | 'hashtags'
-    | 'headline'
-    | 'primaryText';
+    'callToAction' | 'description' | 'fullCaption' | 'hashtags' | 'headline' | 'primaryText';
   readonly language: CampaignLanguage;
   readonly value: string | readonly string[];
 }
@@ -131,13 +126,7 @@ export interface GenerationAllowance {
 export type GenerationStage = 'strategy' | 'copy' | 'prompts';
 export type GenerationState = 'queued' | 'running' | 'succeeded' | 'failed' | 'ambiguous';
 export type ProviderEffectState =
-  | 'prepared'
-  | 'creating'
-  | 'submitted'
-  | 'polling'
-  | 'succeeded'
-  | 'rejected'
-  | 'ambiguous';
+  'prepared' | 'creating' | 'submitted' | 'polling' | 'succeeded' | 'rejected' | 'ambiguous';
 
 export interface GenerationRun {
   readonly attempt: number;
@@ -867,7 +856,8 @@ export function createCampaignRepository(
   return Object.freeze(repository);
 }
 
-function consumeGenerationAllowance(
+/** Consume the shared paid-work quota inside the caller's admission transaction. */
+export function consumeGenerationAllowance(
   database: SyncSqliteDatabase,
   now: number,
   policy: GenerationWindowPolicy,

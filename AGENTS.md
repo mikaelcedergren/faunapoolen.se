@@ -1,6 +1,7 @@
 # faunapoolen.se
 
-Current-site maintenance belongs on `main`; the upcoming website lives on `codex/redesign`.
+`main` is the development and release target after the approved redesign integration
+(owner direction, 24 October 2026). `codex/redesign` preserves the reviewed redesign history.
 Read [the branch workflow](BRANCH-WORKFLOW.md) before switching or merging these lines of work.
 
 ## Everyday development
@@ -17,11 +18,11 @@ Shared-storage upgrades require a coordinated maintenance window for every write
 [cross-repo implementation record](../SHARED-DATA-DEVELOPMENT-PLAN.md) distinguishes source
 preparation from installed runtime adoption.
 
-Faunapoolen is the public Swedish/English website at [faunapoolen.se](https://faunapoolen.se) and a
-private campaign studio at `/admin`. The public site is an Angular 22 static-prerender application
+Faunapoolen is the public English/Swedish/Danish/Italian/Spanish/Portuguese/German/Polish website at [faunapoolen.se](https://faunapoolen.se),
+private campaign studio at `/admin` and enquiry inbox at `/admin/enquiries`. The public site is an Angular 22 static-prerender application
 served by one compiled TypeScript/Express web process. A separate listener-free worker owns durable
-campaign generation. The public visual skin is a permanent product-owned exception; the admin UI
-uses `@mikaelcedergren/cx-framework`.
+campaign generation. The owner-approved public rebuild uses the Aqua/editorial framework
+composition; the admin retains its existing framework theme choices.
 
 Root standards remain authoritative for shared architecture, releases, operations, ports, and
 toolchain policy:
@@ -65,7 +66,10 @@ one half of an uncertain or full-stack change.
 
 ```text
 src/                         Angular source and route catalogue
-public/                      canonical public images, plain CSS/JS, robots, and sitemap
+public/                      canonical public images and robots policy
+src/app/site/                public page compositions, copy and lazy article bodies
+server/src/public-routes.ts  shared pure URL and redirect catalogue
+scripts/sitemap.mjs          sitemap from rendered canonical pages
 scripts/flatten.mjs          preserves literal .html URLs after prerender
 server/src/index.ts          compiled web entrypoint
 server/src/worker.ts         compiled listener-free worker entrypoint
@@ -92,33 +96,46 @@ append-only migrations; never rewrite an applied migration or bypass the pre-wri
 
 ## Framework boundary
 
+Start framework-guided product work with the installed
+[`ai/design/00-start-here.md`](node_modules/@mikaelcedergren/cx-framework/ai/design/00-start-here.md).
+Use the packaged skills discovered through `.agents/skills/`; their implementation stays in the
+installed package.
+
 The target consumes the published GitHub `main` package through explicit
 `@mikaelcedergren/cx-framework` entrypoints. Never use a local path, tarball, sibling Cortex
 import, copied framework source, or compatibility shim.
 
-The public visual skin is deliberately product-owned because visual churn risks established search
-performance. The exception is visual only: engineering structure, TypeScript, tests, server
-runtime, releases, operations, and AI working rules follow the same architecture as every other
-web product. The private admin UI uses framework components, tokens, layouts, and portable AI
+The owner explicitly replaced the old public skin with the Playground Aqua/editorial design.
+Article content and SEO metadata may be revised, including the DIY and comparison guides
+(owner decision, 3 October 2026). Preserve established public URL continuity when editing. The public and private admin UI use framework components, tokens, layouts, and portable AI
 guidance as-is. If the admin reveals a reusable gap, stop, explain it, and ask what the user wants
 to do. Do not patch it here or change Cortex unless the user explicitly authorises that framework
 work.
 
 ## Public content and URL contract
 
-Swedish is the source locale at the root; English lives under `/en/`. Every route is prerendered.
-Section pages use directory URLs such as `/about/`; product and blog routes deliberately retain
-literal `.html` URLs. `scripts/flatten.mjs` converts Angular's route directories to those stable
-files.
+English is the source editing locale at `/en/`; Swedish remains at the root. Danish, Italian, Spanish, European Portuguese, German and Polish use `/da/`, `/it/`, `/es/`, `/pt/`, `/de/` and `/pl/` (owner request, 24 October 2026).
+Public page route segments are English in all three languages (owner decision, 17 September
+2026). Previous translated paths redirect in one hop through the shared route catalogue. Existing
+article slugs remain unchanged; new article slugs may be Swedish.
+Every public canonical route is prerendered. Visitors choose their language through the language
+switchers; never show browser-language suggestions or redirect visitors away from explicit URLs.
+Literal article `.html` URLs stay unchanged;
+`scripts/flatten.mjs` preserves them. Retired product and section paths receive one-hop redirects
+owned by `server/src/public-routes.ts`, with local Angular aliases using that same catalogue.
 
-The Angular templates, `src/app/app.routes.ts`, `src/locale/messages.en.xlf`, and
-`public/assets/` are the only content sources. Public `styles.css` and `scripts.js` are edited
-directly; there is no generated Sass/minified mirror. Edit the relevant sources together. The route
-catalogue owns title, description, keywords, canonical, hreflang, Open Graph, and JSON-LD metadata.
-The page templates use locale-gated bodies because the Swedish and English prose can differ
-structurally.
+English `$localize` copy and article bodies live in `src/app/site/`. All seven translated JSON
+catalogues in `src/locale/` are consumed by Angular i18n for both production and local development.
+Use `pnpm extract-i18n` then `pnpm i18n:check` when editing source copy. The article catalogue owns
+metadata and the shared SEO strategy emits canonical, hreflang, Open Graph and JSON-LD.
+Keep `tests/fixtures/blog-seo-baseline.json` as a historical record, not a content freeze.
+Verify revised articles against their current reviewed localized content. Public image URLs remain stable.
 
-Never regress these high-ranking Swedish pages:
+The owner accepts minor English auxiliary labels in framework controls, including “Optional” and
+“Clear”, on Swedish and Danish pages. No framework update or local replacement is authorised.
+
+The owner removed the special content and metadata protection for these articles on 3 October 2026.
+Both may now be edited and optimized in all locales without separate protection-rule approval:
 
 - `/blog/posts/difference-between-normal-pool-and-natural-pool.html`
 - `/blog/posts/build-your-own-nature-pool.html`
@@ -126,6 +143,53 @@ Never regress these high-ranking Swedish pages:
 Keep existing URL spelling, redirects, canonicals, hreflang, structured data, image URLs, and
 indexability unless the owner explicitly chooses a product/SEO change. Headings and UI use
 European sentence case. `public/CNAME` is intentionally absent because nginx hosts the site.
+
+The Swedish SEO programme prioritizes Skåne, Halland, Blekinge and Småland without limiting the
+offer to those regions. The owner confirmed EU-wide construction on 24 October 2026, primarily in Sweden and Denmark.
+Keep Skåne, Halland, Blekinge and Småland named in the service-area FAQ for regional SEO. The owner confirmed package
+starting prices of 430,000 / 1,100,000 / 4,400,000 SEK excluding VAT and shipping on 2 October 2026. Keep scope
+and site qualifications beside prices and use the shared package source.
+
+All original articles are eligible for substantive SEO revisions. Retain historical fixtures as
+reference and verify current localized content, metadata and functional links through the common
+article checks. Do not add article-specific frozen-copy exceptions or a parallel legacy renderer. See [implementation notes](docs/SEO-IMPLEMENTATION.md).
+
+Public customer pages use internal website links, with email and telephone contact links allowed. Keep external research references in editorial documentation rather than public source blocks. Public captions, alt text and article copy describe photographs without AI-generation labels. This does not permit presenting illustrative scenes as completed customer installations.
+
+## Photography and AI imagery
+
+The current owner-approved photographic treatment is
+[candid garden photography with natural depth](docs/PHOTOGRAPHY-STYLE.md), including its saved
+visual reference (3 October 2026). Use both when generating or editing public photographs.
+Preserve case-study photography and architectural illustrations. The approved blur is restrained:
+the garden and water texture remain recognisable.
+
+Architectural pool plans use the separate
+[luminous landscape architecture blueprint guide](docs/ARCHITECTURAL-ILLUSTRATION-STYLE.md).
+Use its approved visual references and fixed style prompt. Website exports have transparent
+backgrounds so the actual page colour shows through; do not reintroduce a solid teal rectangle.
+
+The owner-approved direction is beautiful, candid photography that feels natural and lived in
+(17 September 2026). Use the real Gotland case-study photographs as the reference for believable
+light, garden scale, materials and everyday character. Preserve those real photographs.
+
+- Keep images appealing and well composed, with unposed moments, relaxed gestures, ordinary
+  gardens, irregular planting and naturally weathered materials. Imperfection must feel incidental,
+  never deliberately ugly, dirty or degraded.
+- Use available light, restrained natural colour, softer optical detail and plausible reflections.
+  Allow uneven exposure, dark areas that lose detail and occasional washed-out highlights, as in
+  a normal single-exposure photograph.
+- Absolutely no HDR, tone mapping, lifted shadows everywhere, enhanced local contrast, crunchy
+  textures, oversharpening, glowing water, cinematic colour grading or artificial grain. Avoid
+  perfectly staged people and glossy luxury-advertising scenes.
+- The approved evening gathering after a swim and hand touching water are established motifs.
+  Preserve their subject when revising them unless the owner requests a new motif. Other scenes
+  may change when requested; apply this photographic direction throughout the set.
+- Inspect generated images for anatomy, reflections and believable interactions before use.
+  AI concept imagery must not be presented as evidence of a completed customer installation.
+
+The image-generation history and current asset prompts are recorded in
+[the editorial image record](docs/EDITORIAL-IMAGE-GENERATION.md).
 
 ## Campaign studio
 

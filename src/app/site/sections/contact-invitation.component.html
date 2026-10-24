@@ -1,0 +1,17 @@
+<section class="fp-invitation-band" aria-labelledby="contact-invitation-title">
+  <div class="cx-container">
+    <div class="fp-invitation">
+      <div class="fp-invitation-copy">
+        <h2 id="contact-invitation-title" class="cx-font-regular">{{ copy.common.talkTitle }}</h2>
+        <p class="cx-editorial">{{ invitationBody }}</p>
+      </div>
+      <cx-button
+        [text]="copy.start"
+        mood="accent"
+        size="large"
+        [href]="href ?? configureHref"
+        appendIcon="arrow-right"
+      />
+    </div>
+  </div>
+</section>

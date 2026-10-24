@@ -17,6 +17,35 @@ const PASSWORD = 'correct-horse-battery-staple';
 const SESSION_SECRET = 'session-secret-'.repeat(4);
 const START_TIME = Date.UTC(2026, 7, 25, 12, 0, 0);
 
+test('short credentials require the exact local development login and non-secure cookie', () => {
+  const options = {
+    cookieSecure: false,
+    expectedUsername: 'dev',
+    expectedPassword: 'dev',
+    repository: new MemoryAuthRepository(),
+    sessionSecret: SESSION_SECRET,
+    sessionTtlSeconds: 3_600,
+  };
+  assert.throws(() => createOwnerAuthService(options), /at least 16/);
+  assert.doesNotThrow(() =>
+    createOwnerAuthService({ ...options, localDevelopmentCredentials: true }),
+  );
+  assert.throws(
+    () =>
+      createOwnerAuthService({ ...options, localDevelopmentCredentials: true, cookieSecure: true }),
+    /at least 16/,
+  );
+  assert.throws(
+    () =>
+      createOwnerAuthService({
+        ...options,
+        localDevelopmentCredentials: true,
+        expectedPassword: 'short',
+      }),
+    /at least 16/,
+  );
+});
+
 class MemoryAuthRepository implements PersistentOwnerAuthRepository {
   readonly failures = new Map<string, number>();
   readonly sessions = new Map<string, PersistedOwnerSession>();

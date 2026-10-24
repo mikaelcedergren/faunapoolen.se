@@ -1,15 +1,11 @@
+import { PUBLIC_LANGUAGES } from '../server/src/public-routes';
 import { expect, test } from '@playwright/test';
 
 const TEST_ORIGIN = process.env['CX_E2E_BASE_URL'];
 if (!TEST_ORIGIN) throw new Error('Faunapoolen E2E requires its wrapper-owned origin.');
 const OWNED_E2E_PORT = Number(new URL(TEST_ORIGIN).port);
 const OTHER_E2E_ORIGIN = `http://127.0.0.1:${OWNED_E2E_PORT === 49_152 ? 49_153 : 49_152}`;
-const LOCALLY_FULFILLED_URLS = new Set([
-  'https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap',
-  'https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap',
-  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,0',
-  'https://www.googletagmanager.com/gtag/js?id=G-E1BFSP43WZ',
-]);
+
 const unexpectedExternalRequests = new WeakMap<object, string[]>();
 
 test.beforeEach(async ({ context }) => {
@@ -23,15 +19,6 @@ test.beforeEach(async ({ context }) => {
       return;
     }
 
-    if (request.method() === 'GET' && LOCALLY_FULFILLED_URLS.has(url.href)) {
-      await route.fulfill({
-        status: 200,
-        contentType: url.hostname === 'fonts.googleapis.com' ? 'text/css' : 'text/javascript',
-        body: '',
-      });
-      return;
-    }
-
     unexpected.push(`${request.method()} ${url.href}`);
     await route.abort('blockedbyclient');
   });
@@ -39,131 +26,6 @@ test.beforeEach(async ({ context }) => {
 
 test.afterEach(async ({ context }) => {
   expect(unexpectedExternalRequests.get(context) ?? []).toEqual([]);
-});
-
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xnnaekgl';
-const ENQUIRY_ROUTES = [
-  '/contact/',
-  '/pond-packages-landing.html',
-  '/plunge-series.html',
-  '/swim-series.html',
-  '/waterfront-series.html',
-  '/koi-pond-series.html',
-  '/campaigns/pond-packages/',
-];
-
-for (const locale of ['', '/en']) {
-  for (const path of ENQUIRY_ROUTES) {
-    test(`six-field enquiry validates and submits: ${locale}${path}`, async ({ page }) => {
-      const campaign = path.startsWith('/campaigns/');
-      let submission: Record<string, FormDataEntryValue> | undefined;
-      // Page routes take precedence over the external-request guard. No email is sent.
-      await page.route(FORMSPREE_ENDPOINT, async (route) => {
-        const request = route.request();
-        expect(request.method()).toBe('POST');
-        const body = new Response(request.postDataBuffer(), {
-          headers: { 'content-type': request.headers()['content-type'] },
-        });
-        submission = Object.fromEntries(await body.formData());
-        expect(request.isNavigationRequest()).toBe(true);
-        await route.fulfill({
-          status: 200,
-          contentType: 'text/html',
-          body: '<p>Test enquiry accepted</p>',
-        });
-      });
-      await page.goto(`${locale}${path}?utm_source=form-test&utm_campaign=synthetic`);
-      const form = page.locator(`form[action="${FORMSPREE_ENDPOINT}"]`);
-      // The campaign honeypot is visually hidden with opacity, not display:none.
-      const visibleFields = form.locator(
-        'input:visible:not([name="_gotcha"]), select:visible, textarea:visible',
-      );
-      expect(
-        await visibleFields.evaluateAll((fields) =>
-          fields.map((field) => ({
-            name: field.getAttribute('name'),
-            required: field.hasAttribute('required'),
-          })),
-        ),
-      ).toEqual([
-        { name: 'kategori', required: true },
-        { name: campaign ? 'location' : 'plats', required: true },
-        { name: campaign ? 'name' : 'firstName', required: true },
-        { name: 'email', required: true },
-        { name: 'phone', required: false },
-        { name: 'message', required: true },
-      ]);
-      const submit = form.locator('button[type="submit"]');
-      await submit.click();
-      expect(submission).toBeUndefined();
-      await form
-        .locator('[name="kategori"]')
-        .selectOption({ label: locale ? 'Natural pool' : 'Naturpool' });
-      await form.locator(`[name="${campaign ? 'location' : 'plats'}"]`).fill('Lund');
-      await form.locator(`[name="${campaign ? 'name' : 'firstName'}"]`).fill('Synthetic test');
-      await form.locator('[name="email"]').fill('invalid-email');
-      await form.locator('[name="message"]').fill('A small natural pool for our garden.');
-      await submit.click();
-      expect(submission).toBeUndefined();
-      await form.locator('[name="email"]').fill('enquiry@example.com');
-      await form.locator('[name="message"]').fill('');
-      await submit.click();
-      expect(submission).toBeUndefined();
-      await form.locator('[name="message"]').fill('A small natural pool for our garden.');
-      await submit.click();
-      await expect.poll(() => submission).toBeDefined();
-      expect(submission).toMatchObject({
-        kategori: locale ? 'Natural pool' : 'Naturpool',
-        [campaign ? 'location' : 'plats']: 'Lund',
-        [campaign ? 'name' : 'firstName']: 'Synthetic test',
-        email: 'enquiry@example.com',
-        phone: '',
-        message: 'A small natural pool for our garden.',
-      });
-      if (campaign) {
-        expect(submission).toMatchObject({
-          utm_source: 'form-test',
-          utm_campaign: 'synthetic',
-          _gotcha: '',
-        });
-      } else {
-        expect(Object.keys(submission!).sort()).toEqual([
-          'email',
-          'firstName',
-          'kategori',
-          'message',
-          'phone',
-          'plats',
-        ]);
-      }
-      await expect(page.getByText('Test enquiry accepted')).toBeVisible();
-    });
-  }
-}
-
-test('campaign form sends an optional phone number on mobile', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  let phone: string | null = null;
-  await page.route(FORMSPREE_ENDPOINT, (route) => {
-    expect(route.request().isNavigationRequest()).toBe(true);
-    phone = new URLSearchParams(route.request().postData() ?? '').get('phone');
-    return route.fulfill({
-      status: 200,
-      contentType: 'text/html',
-      body: '<p>Test enquiry accepted</p>',
-    });
-  });
-  await page.goto('/campaigns/pond-packages/');
-  const form = page.locator('#campaign-nature-pool-form');
-  await form.locator('[name="kategori"]').selectOption({ label: 'Naturpool' });
-  await form.locator('[name="location"]').fill('Lund');
-  await form.locator('[name="name"]').fill('Synthetic test');
-  await form.locator('[name="email"]').fill('enquiry@example.com');
-  await form.locator('[name="phone"]').fill('0701234567');
-  await form.locator('[name="message"]').fill('A small natural pool for our garden.');
-  await form.locator('button[type="submit"]').click();
-  await expect(page.getByText('Test enquiry accepted')).toBeVisible();
-  expect(phone).toBe('0701234567');
 });
 
 test('the browser records and blocks every origin except its exact E2E server', async ({
@@ -221,7 +83,9 @@ test('API and test-process transports cannot reach another origin', async ({ req
 test('home renders the real Faunapoolen site', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/Faunapoolen/i);
-  await expect(page.locator('nav.navigation')).toBeVisible();
+  const masthead = page.getByRole('banner');
+  await expect(masthead).toBeInViewport({ ratio: 1 });
+  await expect(masthead.getByRole('link', { name: 'Faunapoolen', exact: true })).toBeVisible();
 });
 
 test('a product page (.html) loads', async ({ page }) => {
@@ -234,10 +98,49 @@ test('a blog post loads', async ({ page }) => {
   expect(res?.status()).toBe(200);
 });
 
-test('English mirror loads', async ({ page }) => {
+test('English header and footer share navigation and the closing invitation leads to a consultation', async ({
+  page,
+}) => {
   const res = await page.goto('/en/');
   expect(res?.status()).toBe(200);
   await expect(page.locator('html')).toHaveAttribute('lang', /en/);
+  const headerLinks = await page
+    .locator('cx-masthead .cx-masthead__nav a')
+    .evaluateAll((links) =>
+      links.map((link) => ({ href: link.getAttribute('href'), text: link.textContent?.trim() })),
+    );
+  const footerLinks = await page
+    .locator('footer nav a')
+    .evaluateAll((links) =>
+      links.map((link) => ({ href: link.getAttribute('href'), text: link.textContent?.trim() })),
+    );
+  expect(headerLinks.map((link) => link.href)).toEqual([
+    '/en/',
+    '/en/nature-pools/',
+    '/en/nature-pools/pricing/',
+    '/en/waterscapes/',
+    '/en/blog/',
+    '/en/about/',
+  ]);
+  expect(footerLinks).toEqual(expect.arrayContaining(headerLinks));
+  expect(footerLinks).toHaveLength(headerLinks.length);
+  const footer = page.locator('footer');
+  await expect(
+    footer.getByRole('link', { name: 'Faunapoolen Certified Aquascape Contractor', exact: true }),
+  ).toHaveAttribute('href', '/en/');
+  await expect(footer.locator('a[href="mailto:info@faunapoolen.se"]')).toBeVisible();
+  await expect(footer.locator('.fp-footer-brand img')).toBeVisible();
+  await expect(
+    footer.getByRole('link', { name: 'Request a consultation', exact: true }),
+  ).toHaveAttribute('href', '/en/configure/');
+  await expect(footer.locator('a[href^="tel:"]')).toHaveAttribute('href', 'tel:+46735406757');
+  await expect(
+    footer.getByRole('button', { name: 'Language: English', exact: true }),
+  ).toBeVisible();
+  const invitation = page.locator('section[aria-labelledby="contact-invitation-title"]');
+  await invitation.getByRole('link', { name: 'Request a consultation', exact: true }).click();
+  await expect(page).toHaveURL(/\/en\/configure\/$/);
+  await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toBeVisible();
 });
 
 test('the admin is excluded from search and every public page stays indexable', async ({
@@ -245,17 +148,19 @@ test('the admin is excluded from search and every public page stays indexable', 
 }) => {
   const rules = await (await request.get('/robots.txt')).text();
   expect(rules).toContain('Allow: /');
-  expect(rules).toContain('Disallow: /admin');
-  expect(rules).toContain('Disallow: /en/admin');
+  const privatePaths = PUBLIC_LANGUAGES.map(
+    (language) => `${language === 'sv' ? '' : '/' + language}/admin/`,
+  );
+  for (const path of privatePaths) expect(rules).toContain('Disallow: ' + path.slice(0, -1));
   expect(await (await request.get('/sitemap.xml')).text()).not.toContain('/admin');
 
-  for (const path of ['/admin/', '/en/admin/', '/api/admin/session']) {
+  for (const path of [...privatePaths, '/api/admin/session']) {
     const res = await request.get(path);
     expect(res.headers()['x-robots-tag'], path).toBe('noindex, nofollow');
   }
 
   // The login page carries the directive itself and nothing a crawler could index it by.
-  for (const path of ['/admin/', '/en/admin/']) {
+  for (const path of privatePaths) {
     const html = await (await request.get(path)).text();
     expect(html, path).toContain('<meta name="robots" content="noindex, nofollow">');
     expect(html, path).not.toContain('rel="canonical"');
@@ -619,7 +524,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
 
   const campaignLocation = page.getByRole('navigation', { name: 'Campaign location' });
   await expect(
-    campaignLocation.getByRole('listitem').getByText('Campaign Studio', { exact: true }),
+    campaignLocation.getByRole('listitem').getByText('Campaign studio', { exact: true }),
   ).toBeVisible();
   await expect(page.locator('cx-side-nav')).toHaveCount(1);
   await expect(page.getByRole('complementary', { name: 'Main navigation' })).toBeVisible();
@@ -796,7 +701,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await headline.blur();
   await expect(page.getByRole('button', { name: 'Retry save', exact: true })).toBeVisible();
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-save-error.png' });
-  await campaignLocation.getByRole('button', { name: 'Campaign Studio', exact: true }).click();
+  await campaignLocation.getByRole('button', { name: 'Campaign studio', exact: true }).click();
   await expect(page.getByText('Leave without saving?', { exact: true })).toBeVisible();
   await page.screenshot({
     animations: 'disabled',
@@ -864,7 +769,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     'No HDR tone mapping',
   );
 
-  await campaignLocation.getByRole('button', { name: 'Campaign Studio', exact: true }).click();
+  await campaignLocation.getByRole('button', { name: 'Campaign studio', exact: true }).click();
   await expect(page.getByText('Water for a smaller garden', { exact: true })).toBeVisible();
   await page.screenshot({
     animations: 'disabled',
@@ -944,51 +849,57 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   expect(browserErrors).toEqual([]);
 });
 
-for (const failure of ['http', 'network'] as const) {
-  test(`admin preserves its session after a ${failure} logout failure and can retry`, async ({
-    page,
-  }) => {
-    const pageErrors: string[] = [];
-    page.on('pageerror', (error) => pageErrors.push(error.message));
-    const login = await page.context().request.post('/api/admin/login', {
-      headers: { Origin: TEST_ORIGIN },
-      data: {
-        username: 'faunapoolen-e2e-owner',
-        password: 'faunapoolen-e2e-owner-password',
-      },
-    });
-    expect(login.ok()).toBe(true);
-    await page.goto('/admin');
-    await expect(page.getByRole('button', { name: 'Create campaign' })).toBeVisible();
+for (const section of ['', 'customers/', 'packages/', 'social-posts/']) {
+  for (const failure of ['http', 'network'] as const) {
+    test(`${section || 'campaigns'} preserves its session after a ${failure} logout failure and can retry`, async ({
+      page,
+    }) => {
+      const pageErrors: string[] = [];
+      page.on('pageerror', (error) => pageErrors.push(error.message));
+      const login = await page.context().request.post('/api/admin/login', {
+        headers: { Origin: TEST_ORIGIN },
+        data: {
+          username: 'faunapoolen-e2e-owner',
+          password: 'faunapoolen-e2e-owner-password',
+        },
+      });
+      expect(login.ok()).toBe(true);
+      await page.goto(`/en/admin/${section}`);
+      await expect(page.getByRole('button', { name: 'Account actions for Admin' })).toBeVisible();
 
-    await page.route('**/api/admin/logout', async (route) => {
-      if (failure === 'network') {
-        await route.abort('failed');
-      } else {
-        await route.fulfill({
-          status: 503,
-          json: { error: { message: 'Logout temporarily unavailable.' } },
-        });
-      }
-    });
-    await page.getByRole('button', { name: 'Account actions for Admin' }).click();
-    await page.getByText('Log out', { exact: true }).click();
-    await expect(
-      page.getByText('Could not confirm log out. Try again.', { exact: true }),
-    ).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Create campaign' })).toBeVisible();
-    const stillAuthenticated = await page.context().request.get('/api/admin/session');
-    expect(await stillAuthenticated.json()).toMatchObject({ authenticated: true });
-    expect(pageErrors).toEqual([]);
+      await page.route('**/api/admin/logout', async (route) => {
+        if (failure === 'network') {
+          await route.abort('failed');
+        } else {
+          await route.fulfill({
+            status: 503,
+            json: { error: { message: 'Logout temporarily unavailable.' } },
+          });
+        }
+      });
+      await page.getByRole('button', { name: 'Account actions for Admin' }).click();
+      await page.getByText('Log out', { exact: true }).click();
+      await expect(
+        page.getByText('Could not confirm log out. Try again.', { exact: true }),
+      ).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Account actions for Admin' })).toBeVisible();
+      const stillAuthenticated = await page.context().request.get('/api/admin/session');
+      expect(await stillAuthenticated.json()).toMatchObject({ authenticated: true });
+      expect(pageErrors).toEqual([]);
+      await page.screenshot({
+        path: `/tmp/fauna-logout-${section.replace('/', '') || 'campaigns'}-${failure}.png`,
+        fullPage: true,
+      });
 
-    await page.unroute('**/api/admin/logout');
-    await page.getByRole('button', { name: 'Account actions for Admin' }).click();
-    await page.getByText('Log out', { exact: true }).click();
-    await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
-    const signedOut = await page.context().request.get('/api/admin/session');
-    expect(await signedOut.json()).toMatchObject({ authenticated: false });
-    expect(pageErrors).toEqual([]);
-  });
+      await page.unroute('**/api/admin/logout');
+      await page.getByRole('button', { name: 'Account actions for Admin' }).click();
+      await page.getByText('Log out', { exact: true }).click();
+      await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
+      const signedOut = await page.context().request.get('/api/admin/session');
+      expect(await signedOut.json()).toMatchObject({ authenticated: false });
+      expect(pageErrors).toEqual([]);
+    });
+  }
 }
 
 test('a fresh browser session recovers failed work before its campaign row exists', async ({
@@ -1052,12 +963,7 @@ test('a fresh browser session recovers failed work before its campaign row exist
     });
   });
 
-  // Wait for the hydrated application before filling server-rendered login inputs.
-  const sessionLoaded = page.waitForResponse(
-    (response) => new URL(response.url()).pathname === '/api/admin/session',
-  );
   await page.goto('/admin');
-  await sessionLoaded;
   await page.getByRole('textbox', { name: 'Username' }).fill('faunapoolen-e2e-owner');
   await page.getByRole('textbox', { name: 'Password' }).fill('faunapoolen-e2e-owner-password');
   await page.getByRole('button', { name: 'Sign in' }).click();

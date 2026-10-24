@@ -1,3 +1,5 @@
+import { createSocialService } from './social-service.js';
+import { createSocialAi } from './social-ai.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import type { AddressInfo } from 'node:net';
@@ -21,6 +23,10 @@ import {
   type PersistentOwnerAuthRepository,
 } from './auth-service.js';
 import { createFaunapoolenApplication } from './app.js';
+import { createEnquiryService } from './enquiry-service.js';
+import { createPackageService } from './package-service.js';
+import type { PackageCatalogue } from './package-contracts.js';
+import { createFaunapoolenPersistence } from './campaign-repository.js';
 import { createFaunapoolenBrowserServing } from './browser-serving.js';
 import type { FaunapoolenEnvironment } from './environment.js';
 import type {
@@ -262,10 +268,9 @@ async function createFixture(
     readonly logger?: Pick<RuntimeLogger, 'emit'>;
   } = {},
 ): Promise<Fixture> {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'faunapoolen-target-app-'));
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'faunapoolen-target-app-')));
   const browserDirectory = path.join(root, 'browser');
   writeBrowserFixture(browserDirectory);
-  t.after(() => fs.rmSync(root, { force: true, recursive: true }));
 
   const environment = createEnvironment(root, browserDirectory);
   const campaigns = new FakeCampaignService();
@@ -285,7 +290,20 @@ async function createFixture(
     sessionSecret: SESSION_SECRET,
     sessionTtlSeconds: 3_600,
   });
+  const socialPersistence = createFaunapoolenPersistence({
+    executionScope: 'test',
+    operationalRoot: root,
+    databasePath: path.join(root, 'enquiries.db'),
+  });
+  const enquiryDatabase = socialPersistence.database;
   const app = createFaunapoolenApplication({
+    packageService: createPackageService(enquiryDatabase.sqlite, 'test'),
+    socialService: createSocialService(socialPersistence.database.sqlite),
+    socialAi: createSocialAi(socialPersistence.database.sqlite, socialPersistence.jobs, false),
+    enquiryService: createEnquiryService({
+      database: enquiryDatabase.sqlite,
+      secret: SESSION_SECRET,
+    }),
     authService,
     browserServing: createFaunapoolenBrowserServing(environment),
     campaignService: campaigns,
@@ -307,6 +325,10 @@ async function createFixture(
       }),
   );
   const address = server.address() as AddressInfo;
+  t.after(() => {
+    enquiryDatabase.close();
+    fs.rmSync(root, { force: true, recursive: true });
+  });
   return {
     baseUrl: `http://127.0.0.1:${String(address.port)}`,
     campaigns,
@@ -350,7 +372,7 @@ function writeBrowserFixture(browserDirectory: string): void {
     path.join(browserDirectory, 'api', 'admin', 'config', 'index.html'),
     '<p>must-never-shadow-api</p>',
   );
-  fs.writeFileSync(path.join(browserDirectory, 'koi-pond-series.html'), '<p>target-literal</p>');
+  fs.writeFileSync(path.join(browserDirectory, 'synthetic-page.html'), '<p>target-literal</p>');
   fs.writeFileSync(path.join(browserDirectory, '404.html'), '<p>target-404</p>');
   fs.writeFileSync(path.join(browserDirectory, 'main-abcdef12.js'), 'synthetic-app-bundle');
 }
@@ -389,6 +411,130 @@ const IDENTITY: ServerReleaseIdentity = {
   artifactFiles: 10,
   artifactBytes: 1_024,
 };
+
+test('public packages reflect authenticated saves, with origin and revision protection', async (t) => {
+  const fixture = await createFixture(t);
+  const publicUrl = fixture.baseUrl + '/api/packages';
+  const adminUrl = fixture.baseUrl + '/api/admin/packages';
+  const initial = await fetch(publicUrl);
+  assert.match(initial.headers.get('cache-control') ?? '', /no-store/);
+  const catalogue = (await initial.json()) as PackageCatalogue;
+  assert.equal((await fetch(adminUrl)).status, 401);
+  assert.equal(
+    (
+      await fetch(adminUrl, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(catalogue),
+      })
+    ).status,
+    401,
+  );
+  const cookie = await login(fixture);
+  catalogue.packages[0]!.price = 460000;
+  catalogue.packages[0]!.titles.en = 'Synthetic renamed package';
+  const update = (origin: string) =>
+    fetch(adminUrl, {
+      method: 'PATCH',
+      headers: { cookie, origin, 'content-type': 'application/json' },
+      body: JSON.stringify(catalogue),
+    });
+  assert.equal((await update('https://untrusted.example.test')).status, 403);
+  assert.equal((await update(ORIGIN)).status, 200);
+  const current = (await (await fetch(publicUrl)).json()) as PackageCatalogue;
+  assert.equal(current.packages[0]!.price, 460000);
+  assert.equal(current.packages[0]!.titles.en, 'Synthetic renamed package');
+  assert.equal((await update(ORIGIN)).status, 409);
+});
+
+test('public enquiries persist once and private status changes require session, origin and revision', async (t) => {
+  const fixture = await createFixture(t);
+  const input = {
+    requestId: '98765432-1234-4123-8123-123456789012',
+    language: 'da',
+    name: 'Synthetic enquiry',
+    email: 'inbox@example.test',
+    phone: '',
+    location: 'Test place',
+    contactPeriod: '',
+    notes: 'Synthetic note',
+    service: 'unsure',
+    packageId: 'unsure',
+    siteId: 'unsure',
+    sizeId: 'included',
+    featureIds: [],
+    annualCare: false,
+  };
+  const post = (origin = ORIGIN) =>
+    fetch(fixture.baseUrl + '/api/enquiries', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', origin },
+      body: JSON.stringify(input),
+    });
+  assert.equal((await post('https://other.invalid')).status, 403);
+  const receipt = await post();
+  assert.equal(receipt.status, 201);
+  assert.equal(receipt.headers.get('cache-control'), 'private, no-store');
+  assert.deepEqual(await receipt.json(), { id: input.requestId });
+  assert.equal((await post()).status, 201);
+  assert.equal((await fetch(fixture.baseUrl + '/api/admin/enquiries')).status, 401);
+  assert.equal((await fetch(fixture.baseUrl + '/api/admin/customers')).status, 401);
+  const cookie = await login(fixture);
+  const list = await fetch(fixture.baseUrl + '/api/admin/enquiries', { headers: { cookie } });
+  const data = (await list.json()) as { enquiries: { revision: number; language: string }[] };
+  assert.equal(data.enquiries.length, 1);
+  assert.equal(data.enquiries[0]?.language, 'da');
+  const customers = (await (
+    await fetch(fixture.baseUrl + '/api/admin/customers', { headers: { cookie } })
+  ).json()) as { customers: { id: string; enquiries: unknown[] }[] };
+  assert.equal(customers.customers.length, 1);
+  assert.equal(customers.customers[0]?.enquiries.length, 1);
+  const customerUrl = fixture.baseUrl + '/api/admin/customers/' + customers.customers[0]!.id;
+  const body = JSON.stringify({ status: 'customer', expectedRevision: 1 });
+  assert.equal(
+    (
+      await fetch(customerUrl, {
+        method: 'PATCH',
+        headers: { cookie, 'content-type': 'application/json' },
+        body,
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await fetch(customerUrl, {
+        method: 'PATCH',
+        headers: { cookie, origin: ORIGIN, 'content-type': 'application/json' },
+        body,
+      })
+    ).status,
+    200,
+  );
+
+  const update = (headers: Record<string, string>, revision = 1) =>
+    fetch(fixture.baseUrl + '/api/admin/enquiries/' + input.requestId, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: JSON.stringify({ status: 'contacted', expectedRevision: revision }),
+    });
+  assert.equal((await update({ cookie })).status, 403);
+  const saved = await update({ cookie, origin: ORIGIN });
+  assert.equal(saved.status, 200);
+  assert.equal((await update({ cookie, origin: ORIGIN })).status, 409);
+  for (const url of [
+    '/admin/enquiries',
+    '/en/admin/enquiries',
+    '/da/admin/enquiries',
+    '/admin/customers',
+    '/en/admin/customers',
+    '/da/admin/customers',
+  ])
+    assert.equal(
+      (await fetch(fixture.baseUrl + url)).headers.get('x-robots-tag'),
+      'noindex, nofollow',
+    );
+});
 
 test('route order preserves health, identity, static output, noindex, security, and API privacy', async (t) => {
   const fixture = await createFixture(t, { identity: IDENTITY });
@@ -434,7 +580,7 @@ test('route order preserves health, identity, static output, noindex, security, 
   const staticPage = await fetch(`${fixture.baseUrl}/about/`);
   assert.equal(staticPage.status, 200);
   assert.match(await staticPage.text(), /target-about/);
-  const literal = await fetch(`${fixture.baseUrl}/koi-pond-series.html`);
+  const literal = await fetch(`${fixture.baseUrl}/synthetic-page.html`);
   assert.equal(literal.status, 200);
   assert.match(await literal.text(), /target-literal/);
 });
@@ -820,4 +966,77 @@ test('refinement uses authenticated origin-protected admission with an exact bou
   const accepted = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
   assert.equal(accepted.status, 202);
   assert.deepEqual(fixture.generations.refinements[0]?.refinement.draft, body.draft);
+});
+
+test('social API protects reads, uploads, exports and mutations with session, origin and revisions', async (t) => {
+  const fixture = await createFixture(t),
+    base = fixture.baseUrl + '/api/admin/social-posts';
+  const post = {
+    name: 'Synthetic post',
+    text: 'Pond life',
+    variants: [
+      {
+        platform: 'facebook',
+        text: 'Pond life',
+        title: '',
+        published: false,
+        format: 'square',
+        fit: 'contain',
+        x: 50,
+        y: 50,
+        start: 0,
+        end: null,
+      },
+    ],
+  };
+  assert.equal((await fetch(base)).status, 401);
+  assert.equal((await fetch(base + '/123/media')).status, 401);
+  const cookie = await login(fixture),
+    id = '12345678-1234-4123-8123-123456789012';
+  const create = (headers: Record<string, string>) =>
+    fetch(base, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: JSON.stringify({ id, post }),
+    });
+  assert.equal((await create({ cookie })).status, 403);
+  assert.equal((await create({ cookie, origin: ORIGIN })).status, 201);
+  const response = await fetch(base + '/' + id, { headers: { cookie } });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('cache-control'), 'private, no-store');
+  assert.equal(
+    (
+      await fetch(base + '/' + id + '/media', {
+        method: 'PUT',
+        headers: { cookie, 'content-type': 'application/octet-stream' },
+        body: 'bad',
+      })
+    ).status,
+    403,
+  );
+  assert.equal(
+    (
+      await fetch(base + '/' + id, {
+        method: 'PATCH',
+        headers: { cookie, origin: ORIGIN, 'content-type': 'application/json' },
+        body: JSON.stringify({ expectedRevision: 3, post }),
+      })
+    ).status,
+    409,
+  );
+  assert.equal(
+    (
+      await fetch(base + '/' + id + '/adapt', {
+        method: 'POST',
+        headers: { cookie, origin: ORIGIN, 'content-type': 'application/json' },
+        body: JSON.stringify({ expectedRevision: 1 }),
+      })
+    ).status,
+    503,
+  );
+  for (const prefix of ['', '/en', '/da'])
+    assert.equal(
+      (await fetch(fixture.baseUrl + prefix + '/admin/social-posts')).headers.get('x-robots-tag'),
+      'noindex, nofollow',
+    );
 });
