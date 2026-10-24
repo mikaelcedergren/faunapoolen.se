@@ -1,7 +1,7 @@
 import type { Routes } from '@angular/router';
 import { siteRoutes } from './site/site.routes';
 import type { PageSeo } from './shared/seo';
-import { LEGACY_REDIRECTS } from '../../server/src/public-routes';
+import { LEGACY_REDIRECTS, publicLanguageFromPath } from '../../server/src/public-routes';
 import { activeLanguage, languageBase } from './site/language';
 
 const base = languageBase(activeLanguage());
@@ -29,7 +29,9 @@ export const routes: Routes = [
   })),
   ...siteRoutes,
   ...Object.entries(LEGACY_REDIRECTS)
-    .filter(([from]) => (base === '/' ? !/^\/(en|da)\//.test(from) : from.startsWith(base)))
+    .filter(([from]) =>
+      base === '/' ? publicLanguageFromPath(from) === 'sv' : from.startsWith(base),
+    )
     .map(([from, to]) => ({
       path: from.slice(base.length),
       pathMatch: 'full' as const,

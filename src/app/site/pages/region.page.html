@@ -64,11 +64,21 @@
             <cx-image
               class="cx-w-full"
               [image]="{
-                src: projectPhoto.src,
+                src: projectPhoto.preview,
+                srcset:
+                  projectPhoto.preview +
+                  ' ' +
+                  projectPhoto.width / 2 +
+                  'w, ' +
+                  projectPhoto.src +
+                  ' ' +
+                  projectPhoto.width +
+                  'w',
+                sizes: '(max-width: 767px) calc(100vw - 48px), 560px',
                 alt: projectPhoto.alt,
                 loading: 'lazy',
-                intrinsicWidth: 1920,
-                intrinsicHeight: 1440,
+                intrinsicWidth: projectPhoto.width,
+                intrinsicHeight: projectPhoto.height,
                 borderRadius: 'large',
               }"
             />

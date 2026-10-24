@@ -96,19 +96,25 @@ test('legacy price URLs retain their redirect without promoting unrelated offers
 });
 
 for (const pool of [
-  { id: 'glade', name: 'Dagliga dopp', price: /430\s*000/, area: 'Från 17,5 m² badyta', index: 0 },
+  {
+    id: 'glade',
+    name: 'Dagliga dopp',
+    price: /430\s*000/,
+    area: 'Från 2 m × 2,5 m (5 m²)',
+    index: 0,
+  },
   {
     id: 'summer',
     name: 'Bada tillsammans',
     price: /1\s*100\s*000/,
-    area: 'Från 24 m² badyta',
+    area: 'Från 4 m × 4 m (16 m²)',
     index: 1,
   },
   {
     id: 'horizon',
     name: 'Mer plats',
     price: /4\s*400\s*000/,
-    area: 'Från 100 m² badyta',
+    area: 'Från 10 m × 10 m (100 m²)',
     index: 2,
   },
 ]) {

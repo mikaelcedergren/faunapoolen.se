@@ -11,7 +11,7 @@ import {
 import express from 'express';
 
 import type { FaunapoolenEnvironment } from './environment.js';
-import { legacyRedirect } from './public-routes.js';
+import { legacyRedirect, publicLanguageFromPath } from './public-routes.js';
 
 export function createFaunapoolenBrowserServing(
   environment: FaunapoolenEnvironment,
@@ -68,7 +68,8 @@ export function mountFaunapoolenBrowser(
       }
 
       response.status(404);
-      const localePrefix = /^\/(en|da)(\/|$)/.exec(request.path)?.[1];
+      const language = publicLanguageFromPath(request.path);
+      const localePrefix = language === 'sv' ? '' : language;
       const localeDirectory = requestBrowserDirectory + (localePrefix ? `/${localePrefix}` : '');
       const notFoundFile = `${localeDirectory}/404.html`;
       const csrShellFile = `${localeDirectory}/index.csr.html`;

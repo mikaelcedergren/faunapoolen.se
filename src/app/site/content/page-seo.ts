@@ -7,7 +7,7 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
   },
   'nature-pools': {
     title: $localize`:@@seo.nature-pools.title:Build a nature pool – design and construction | Faunapoolen`,
-    description: $localize`:@@seo.nature-pools.description:Your own nature pool, designed and built by an Aquascape™ certified contractor. See a completed project, compare starting prices and request a free first phone consultation.`,
+    description: $localize`:@@seo.nature-pools.description:Your own nature pool, designed and built by a Certified Aquascape Contractor. See a completed project, compare starting prices and request a free first phone consultation.`,
   },
   pricing: {
     title: $localize`:@@seo.pricing.title:Nature pool prices – compare packages | Faunapoolen`,
@@ -19,7 +19,7 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
   },
   waterscapes: {
     title: $localize`:@@seo.waterscapes.title:Garden ponds, streams and waterfalls | Faunapoolen`,
-    description: $localize`:@@seo.waterscapes.description:We design and build ponds, streams and waterfalls for your garden. Explore the options and discuss the site, care and your ideas with us.`,
+    description: $localize`:@@seo.waterscapes.description:Garden ponds, koi ponds, streams, waterfalls, fountains and rainwater harvesting, designed and built with Aquascape systems. Explore options for your garden.`,
   },
   guides: {
     title: $localize`:@@seo.guides.title:Nature pool guides: planning, filtration and care | Faunapoolen`,

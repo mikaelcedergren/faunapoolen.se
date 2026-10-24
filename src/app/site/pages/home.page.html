@@ -85,7 +85,7 @@
           <cx-stack gap="lg">
             <img
               class="fp-guidance-photo"
-              src="/assets/images/faunapoolen/gotland/1423-small.webp"
+              src="/assets/images/faunapoolen/gotland/1451-small.webp"
               [alt]="editorial.buildAlt"
               width="960"
               height="720"
@@ -131,6 +131,8 @@
       <img
         class="fp-photo"
         [src]="images.waterscapePause"
+        [srcset]="images.waterscapePauseSmall + ' 768w, ' + images.waterscapePause + ' 1536w'"
+        sizes="(max-width: 767px) calc(100vw - 48px), (max-width: 1279px) 60vw, 736px"
         [alt]="editorial.waterscapePauseAlt"
         width="1536"
         height="1024"

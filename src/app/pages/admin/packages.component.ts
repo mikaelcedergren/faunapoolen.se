@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES, LANGUAGE_ENGLISH_NAMES } from '../../../../server/src/public-routes';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -54,11 +55,12 @@ export class PackagesComponent {
   protected readonly savedNotice = signal(false);
   protected readonly leaveOpen = signal(false);
   protected readonly attempted = signal(false);
-  protected readonly languages: { id: PackageLanguage; label: string }[] = [
-    { id: 'en', label: 'English title' },
-    { id: 'sv', label: 'Swedish title' },
-    { id: 'da', label: 'Danish title' },
-  ];
+  protected readonly languages: { id: PackageLanguage; label: string }[] = PUBLIC_LANGUAGES.map(
+    (id) => ({
+      id,
+      label: LANGUAGE_ENGLISH_NAMES[id] + ' title',
+    }),
+  );
   readonly dirty = computed(
     () => !!this.saved() && JSON.stringify(this.saved()!.packages) !== JSON.stringify(this.draft()),
   );

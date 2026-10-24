@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { HtmlParser } from '@angular/compiler';
-import { PUBLIC_CANONICAL_PATHS } from '../server/src/public-routes.ts';
+import { PUBLIC_CANONICAL_PATHS, PUBLIC_LANGUAGES } from '../server/src/public-routes.ts';
 
 const ORIGIN = 'https://faunapoolen.se';
 const parser = new HtmlParser();
@@ -84,11 +84,14 @@ export function writeSitemap(browserDirectory) {
       if (new URL(canonical).pathname !== pathname)
         throw new Error(`Canonical does not identify its rendered file: ${file}`);
       const alternates = links.filter((link) => link.rel === 'alternate' && link.hreflang);
-      if (alternates.length !== 4 || new Set(alternates.map((link) => link.hreflang)).size !== 4)
+      if (
+        alternates.length !== PUBLIC_LANGUAGES.length + 1 ||
+        new Set(alternates.map((link) => link.hreflang)).size !== PUBLIC_LANGUAGES.length + 1
+      )
         throw new Error(`Incomplete language alternates: ${canonical}`);
       for (const alternate of alternates) {
         if (
-          !['sv', 'en', 'da', 'x-default'].includes(alternate.hreflang) ||
+          ![...PUBLIC_LANGUAGES, 'x-default'].includes(alternate.hreflang) ||
           !expected.has(alternate.href)
         )
           throw new Error(`Invalid language counterpart: ${canonical}`);

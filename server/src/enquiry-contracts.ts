@@ -1,7 +1,8 @@
+import type { PublicLanguage } from './public-routes.js';
 /** Product-owned transport contract. Types only: safe for the public form and private inbox. */
 export interface EnquiryInput {
   requestId: string;
-  language: 'en' | 'sv' | 'da';
+  language: PublicLanguage;
   name: string;
   email: string;
   phone: string;
@@ -25,7 +26,7 @@ export interface EnquirySubmission {
   requestId: string;
   email: string;
   name?: string;
-  language?: 'en' | 'sv' | 'da';
+  language?: PublicLanguage;
   formVersion: string;
   fields: EnquiryField[];
 }
@@ -51,7 +52,7 @@ export interface EnquiryRecord {
   requestId: string;
   email: string;
   name: string;
-  language: 'en' | 'sv' | 'da';
+  language: PublicLanguage;
   customerId: string;
   formVersion: string;
   fields: EnquiryField[];

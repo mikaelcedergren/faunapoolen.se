@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES, type PublicLanguage } from './public-routes.js';
 import { HttpError } from '@mikaelcedergren/cx-framework/server/errors';
 import {
   withImmediateTransaction,
@@ -49,8 +50,8 @@ export function createPackageService(database: SyncSqliteDatabase, scope: string
         const item = exact(entry, ['id', 'titles', 'price']);
         if (item['id'] !== PACKAGE_IDS[index])
           invalid('Package identities and order cannot change.');
-        const titles = exact(item['titles'], ['en', 'sv', 'da']);
-        const title = (locale: 'en' | 'sv' | 'da') => {
+        const titles = exact(item['titles'], [...PUBLIC_LANGUAGES]);
+        const title = (locale: PublicLanguage) => {
           const text = titles[locale];
           if (
             typeof text !== 'string' ||
@@ -71,7 +72,9 @@ export function createPackageService(database: SyncSqliteDatabase, scope: string
           invalid('Enter a whole SEK amount between 1 and 100,000,000.');
         return {
           id: PACKAGE_IDS[index]!,
-          titles: { en: title('en'), sv: title('sv'), da: title('da') },
+          titles: Object.fromEntries(
+            PUBLIC_LANGUAGES.map((language) => [language, title(language)]),
+          ) as PackageValues['titles'],
           price,
         };
       });

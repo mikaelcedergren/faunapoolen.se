@@ -5,6 +5,7 @@ import test from 'node:test';
 import { HtmlParser } from '@angular/compiler';
 import {
   PUBLIC_CANONICAL_PATHS,
+  PUBLIC_LANGUAGES,
   PUBLIC_PAGES,
   GUIDE_SLUGS,
   LEGACY_REDIRECTS,
@@ -58,12 +59,12 @@ test('sitemap contains only the complete public canonical catalogue', () => {
 
 const pathFile = (path) => (path.endsWith('/') ? path.slice(1) + 'index.html' : path.slice(1));
 const translations = Object.fromEntries(
-  ['en', 'sv', 'da'].map((locale) => [
+  PUBLIC_LANGUAGES.map((locale) => [
     locale,
     JSON.parse(readFileSync(join(root, `src/locale/messages.${locale}.json`), 'utf8')).translations,
   ]),
 );
-for (const locale of ['en', 'sv', 'da']) {
+for (const locale of PUBLIC_LANGUAGES) {
   for (const [page, path] of Object.entries(PUBLIC_PAGES[locale])) {
     test(`${locale}: ${page} uses English page slugs and localized SEO before JavaScript`, () => {
       const nodes = read(pathFile(path));
@@ -138,7 +139,7 @@ for (const locale of ['en', 'sv', 'da']) {
     });
   }
 }
-for (const locale of ['en', 'sv', 'da']) {
+for (const locale of PUBLIC_LANGUAGES) {
   test(`${locale}: price guide leads to relevant pages before an enquiry`, () => {
     const prefix = locale === 'sv' ? '' : '/' + locale;
     const nodes = read(pathFile(prefix + '/blog/posts/naturpool-pris.html'));
@@ -265,12 +266,10 @@ for (const path of PUBLIC_CANONICAL_PATHS) {
     assert.equal(canonical.length, 1);
     assert.equal(attr(canonical[0], 'href'), 'https://faunapoolen.se' + path);
     const alternates = walk(nodes, (n) => n.name === 'link' && attr(n, 'hreflang'));
-    assert.deepEqual(alternates.map((n) => attr(n, 'hreflang')).sort(), [
-      'da',
-      'en',
-      'sv',
-      'x-default',
-    ]);
+    assert.deepEqual(
+      alternates.map((n) => attr(n, 'hreflang')).sort(),
+      [...PUBLIC_LANGUAGES, 'x-default'].sort(),
+    );
     for (const alternate of alternates) {
       const target = new URL(attr(alternate, 'href')).pathname;
       assert.ok(PUBLIC_CANONICAL_PATHS.includes(target));
@@ -298,7 +297,7 @@ for (const path of PUBLIC_CANONICAL_PATHS) {
   });
 }
 
-for (const locale of ['en', 'sv', 'da']) {
+for (const locale of PUBLIC_LANGUAGES) {
   test(`${locale}: package shells retain VAT exclusions without freezing editable prices`, () => {
     const prefix = locale === 'sv' ? '' : locale + '/';
     const nodes = read(prefix + 'nature-pools/pricing/index.html');

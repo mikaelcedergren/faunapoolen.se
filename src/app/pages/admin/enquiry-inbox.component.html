@@ -55,13 +55,7 @@
             </cx-stack>
             <p>
               Submitted by {{ enquiry.name || enquiry.email }} ·
-              {{
-                enquiry.language === 'sv'
-                  ? 'Swedish'
-                  : enquiry.language === 'da'
-                    ? 'Danish'
-                    : 'English'
-              }}
+              {{ languageNames[enquiry.language ?? 'en'] }}
             </p>
             @let answers = answeredFields(enquiry);
             @if (answers.length) {

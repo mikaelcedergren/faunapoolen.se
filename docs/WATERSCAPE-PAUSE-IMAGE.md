@@ -1,6 +1,26 @@
-# Waterscapes through the seasons
+# Other waterscapes photograph
 
-## Current winter photograph
+## Current direction — 24 October 2026
+
+The owner requested a photograph focused on several ornamental waterscapes, replacing the winter scene. The new image shows a small waterfall, winding stream, planted pond and bubbling stone fountain in a leafy garden, with two adults talking quietly in the background and no swimming pool. The initial version was rejected as too saturated, sharp and artificial; the current revision softens colour and detail and follows the saved reference more closely. It follows the saved [photography style](PHOTOGRAPHY-STYLE.md) and reference.
+
+Generated with the built-in Imagegen tool. The original is preserved at `docs/reference-images/waterscapes-garden-candid-original.png`. The existing public URL `public/assets/images/faunapoolen/editorial/waterscape-pause.webp` is preserved (1536 × 1024), with `waterscape-pause-small.webp` (768 × 512) for smaller displays. Both are metadata-free WebP exports at quality 82. English, Swedish and Danish alternative text describes the new scene. The image is illustrative and is not evidence of a completed customer installation.
+
+The full prompt is recorded in [the editorial image record](EDITORIAL-IMAGE-GENERATION.md#24-october-2026-ornamental-waterscapes).
+
+## Superseded direction — 16 October 2026
+
+The owner approved replacing the winter-swimming scene with a quiet winter garden pond scene,
+without people, for the Other waterscapes section. Keep the natural, candid photographic treatment
+in [the photography guide](PHOTOGRAPHY-STYLE.md), the landscape composition and the existing public
+asset URL. This direction supersedes the swimmer motif below. The replacement is now installed:
+a quiet pond with winter ice, snow-covered boulders and dormant planting, without people.
+Generated with built-in Imagegen using the previous scene and approved photographic reference;
+exported at 1536 × 1024 as WebP. The prompt is in the
+[editorial image record](EDITORIAL-IMAGE-GENERATION.md#16-october-2026-quiet-winter-pond).
+It remains illustrative imagery rather than a completed customer installation.
+
+## Superseded winter-bathing photograph
 
 The owner selected the snowy winter-bathing version on 3 October 2026, showing a laughing man with his shoulders and upper chest above the water, looking towards a warmly dressed woman seated with cocoa. Her back faces the camera. The subsequent version with his gaze turned away was rejected in favour of this specific photograph.
 

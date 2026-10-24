@@ -23,6 +23,8 @@ import { MAX_IDEA_CHARACTERS, MIN_IDEA_CHARACTERS } from './generation-content.j
 import { SOCIAL_MIGRATION } from './social-schema.js';
 import { CUSTOMER_MIGRATION } from './customer-schema.js';
 import { PACKAGE_MIGRATION } from './package-schema.js';
+import { PACKAGE_TRANSLATIONS_MIGRATION } from './package-translations-schema.js';
+import { PACKAGE_ITALIAN_TITLE_MIGRATION } from './package-italian-title-schema.js';
 import { ENQUIRY_MIGRATION } from './enquiry-schema.js';
 
 export const MAX_GENERATION_RUNS = 2_000;
@@ -541,6 +543,8 @@ export const FAUNAPOOLEN_MIGRATIONS = Object.freeze([
   SOCIAL_MIGRATION,
   CUSTOMER_MIGRATION,
   PACKAGE_MIGRATION,
+  PACKAGE_TRANSLATIONS_MIGRATION,
+  PACKAGE_ITALIAN_TITLE_MIGRATION,
 ] as const satisfies readonly SqliteMigration[]);
 
 const REQUIRED_TABLES = Object.freeze([

@@ -2,8 +2,8 @@ export const NATURE_POOL_LANDING = {
   reassurance: $localize`:@@site.poolLanding.reassurance:Your first phone consultation is free. No finished plan needed.`,
   questionsTitle: $localize`:@@site.poolLanding.questionsTitle:A few answers before we talk.`,
   benefitsIntro: $localize`:@@site.poolLanding.benefitsIntro:You want a place to swim that feels at home in your garden, without the regular chemical treatment of a conventional pool. But it can be hard to know what will fit, what it will cost or where to begin. We help you find a design that suits your space, your budget and the way you want to enjoy the water.`,
-  caseBody: $localize`:@@site.poolLanding.caseBody:A finished Faunapoolen project on southern Gotland, designed around the house and garden with natural stone edges and planting.`,
-  certificationBody: $localize`:@@site.poolLanding.certificationBody:Aquascape™ certified expertise, from planning and construction to showing you how to care for your pool.`,
+  caseBody: $localize`:@@site.poolLanding.caseBody:A finished Faunapoolen project on southern Gotland, designed around the house and garden with natural boulders and planting.`,
+  certificationBody: $localize`:@@site.poolLanding.certificationBody:As a Certified Aquascape Contractor, we help with everything from planning and construction to showing you how to care for your pool.`,
   priceIntro: $localize`:@@site.poolLanding.priceIntro:Explore three starting points, from a compact plunge pool to a larger pool for swimming. We’ll help you choose the size and features that suit you.`,
   scope: $localize`:@@site.poolLanding.scope:Your quotation confirms the full scope, including what is covered for excavation, soil removal, electrical work, filling and transport. We agree this with you before you commit.`,
   steps: [
@@ -37,7 +37,7 @@ export const NATURE_POOL_LANDING = {
     {
       id: 'budget',
       question: $localize`:@@site.poolLanding.budget.question:What can change the final price?`,
-      answer: $localize`:@@site.poolLanding.budget.answer:Ground conditions, access, filtration, materials and the surrounding garden all affect the cost. The starting prices exclude VAT and shipping; your quotation sets out the work and materials for your property before you decide.`,
+      answer: $localize`:@@site.poolLanding.budget.answer:Your final price depends on ground conditions, site access and your choice of filtration, materials and landscaping. Depending on your location, travel and accommodation for our team can also add significantly to the total. Our starting prices exclude VAT and shipping, and your quotation sets out the work, materials and costs before you decide.`,
     },
   ],
 } as const;

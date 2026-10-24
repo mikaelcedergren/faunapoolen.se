@@ -16,9 +16,9 @@ export const FAUNAPOOLEN_TESTIMONIALS = [
 ] as const;
 
 export const FAUNAPOOLEN_EVIDENCE_COPY = {
-  certification: $localize`:@@site.evidence_copy.certification:Faunapoolen is Aquascape™ certified`,
+  certification: $localize`:@@site.evidence_copy.certification:Faunapoolen is a Certified Aquascape Contractor`,
   certificationBody: $localize`:@@site.evidence_copy.certificationBody:We plan and build your pool using Aquascape™ technology, and help you maintain it.`,
-  certificationDetail: $localize`:@@site.evidence_copy.certificationDetail:Aquascape™’s Certified Aquascape™ Contractor programme provides training in building and maintaining water features. We use its technology and take responsibility for your project.`,
+  certificationDetail: $localize`:@@site.evidence_copy.certificationDetail:Aquascape™’s Certified Aquascape Contractor programme provides training in building and maintaining water features. We use its technology and take responsibility for your project.`,
   certificationLink: $localize`:@@site.evidence_copy.certificationLink:About certification at Aquascape™`,
   technologyLine: $localize`:@@site.evidence_copy.technologyLine:With biological filtration from Aquascape™`,
   packageBrand: $localize`:@@site.evidence_copy.packageBrand:A package by Faunapoolen`,

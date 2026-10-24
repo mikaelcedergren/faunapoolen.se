@@ -16,7 +16,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     title: $localize`:@@blog.naturpool-pris.title:How much does a nature pool cost, and what is included?`,
     intro: $localize`:@@blog.naturpool-pris.intro:From the first budget to a clearer comparison: understand nature pool prices, what our packages include and how your garden shapes the final cost.`,
     image: '/assets/images/guides/naturpool-pris.webp',
-    imageAlt: $localize`:@@blog.naturpool-pris.imageAlt:A modest nature pool with stone edges and planted surroundings beside a cottage garden.`,
+    imageAlt: $localize`:@@blog.naturpool-pris.imageAlt:A modest nature pool with decorative stone boulders and planted surroundings beside a cottage garden.`,
     summary: $localize`:@@blog.naturpool-pris.summary:Understand starting prices, included work and site-specific costs before comparing nature pool packages.`,
     related: [
       'vad-kostar-det-att-aga-en-naturpool',

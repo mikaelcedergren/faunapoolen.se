@@ -3,19 +3,22 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
-import { PUBLIC_CANONICAL_PATHS } from '../server/src/public-routes.ts';
+import { PUBLIC_CANONICAL_PATHS, PUBLIC_LANGUAGES } from '../server/src/public-routes.ts';
 import { writeSitemap } from '../scripts/sitemap.mjs';
 const origin = 'https://faunapoolen.se';
 function fixture(t) {
   const directory = mkdtempSync(join(tmpdir(), 'fauna-sitemap-'));
   t.after(() => rmSync(directory, { recursive: true, force: true }));
   for (const path of PUBLIC_CANONICAL_PATHS) {
-    const base = path.replace(/^\/(en|da)(?=\/)/, '');
+    const base = path.replace(
+      new RegExp('^/(' + PUBLIC_LANGUAGES.filter((l) => l !== 'sv').join('|') + ')(?=/)'),
+      '',
+    );
     const file = join(directory, path.slice(1), ...(path.endsWith('/') ? ['index.html'] : []));
     mkdirSync(dirname(file), { recursive: true });
     writeFileSync(
       file,
-      `<html><head><link href="${origin}${path}" rel="canonical">${['sv', 'en', 'da', 'x-default'].map((lang) => `<link href="${origin}${lang === 'sv' || lang === 'x-default' ? '' : '/' + lang}${base}" hreflang="${lang}" rel="alternate">`).join('')}</head><body>Public fixture</body></html>`,
+      `<html><head><link href="${origin}${path}" rel="canonical">${[...PUBLIC_LANGUAGES, 'x-default'].map((lang) => `<link href="${origin}${lang === 'sv' || lang === 'x-default' ? '' : '/' + lang}${base}" hreflang="${lang}" rel="alternate">`).join('')}</head><body>Public fixture</body></html>`,
     );
   }
   return directory;

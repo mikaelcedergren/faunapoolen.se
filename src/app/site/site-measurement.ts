@@ -1,3 +1,4 @@
+import { FAUNAPOOLEN_SERVICES } from './content/faunapoolen-editorial';
 import { DOCUMENT } from '@angular/common';
 import { inject, Injectable, signal } from '@angular/core';
 import { PUBLIC_CANONICAL_PATHS } from '../../../server/src/public-routes';
@@ -203,7 +204,7 @@ export class SiteMeasurement {
       ...(context.packageId && ['glade', 'summer', 'horizon', 'unsure'].includes(context.packageId)
         ? { package_id: context.packageId }
         : {}),
-      ...(context.service && ['pool', 'pond', 'stream', 'unsure'].includes(context.service)
+      ...(context.service && FAUNAPOOLEN_SERVICES.some((item) => item.id === context.service)
         ? { service: context.service }
         : {}),
       ...(context.error ? { error_category: context.error } : {}),

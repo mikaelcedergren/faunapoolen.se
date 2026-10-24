@@ -25,13 +25,13 @@ export class CertificationStoryComponent {
     (item) => item.id === '1451',
   )!;
   protected readonly certificationStory = {
-    eyebrow: $localize`:@@site.certificationStory.eyebrow:Aquascape™ certified`,
+    eyebrow: $localize`:@@site.certificationStory.eyebrow:Certified Aquascape Contractor`,
     heading: $localize`:@@site.certificationStory.heading:Your vision, in experienced hands.`,
-    body: $localize`:@@site.certificationStory.body:Faunapoolen is an Aquascape™ certified contractor. We help you make confident choices, from the first sketch to caring for the finished pool.`,
+    body: $localize`:@@site.certificationStory.body:Faunapoolen is a Certified Aquascape Contractor. We help you make confident choices, from the first sketch to caring for the finished pool.`,
     benefits: [
       {
         heading: $localize`:@@site.certificationStory.training.heading:Knowledge behind your choices`,
-        body: $localize`:@@site.certificationStory.training.body:Aquascape™ trains its certified contractors in building and maintaining water features. We help you understand what suits your garden.`,
+        body: $localize`:@@site.certificationStory.training.body:Aquascape™ trains Certified Aquascape Contractors in building and maintaining water features. We help you understand what suits your garden.`,
       },
       {
         heading: $localize`:@@site.certificationStory.methods.heading:Care in the construction`,

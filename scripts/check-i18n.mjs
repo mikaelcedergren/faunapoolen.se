@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES } from '../server/src/public-routes.ts';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -7,7 +8,7 @@ const keys = Object.keys(english.translations).sort();
 const prune = process.argv.slice(2).join(' ') === '--prune';
 assert.ok(process.argv.length === 2 || prune, 'Usage: check-i18n.mjs [--prune]');
 const placeholders = (value) => [...value.matchAll(/\{\$([^}]+)\}/g)].map((m) => m[1]).sort();
-for (const locale of ['sv', 'da']) {
+for (const locale of PUBLIC_LANGUAGES.filter((locale) => locale !== 'en')) {
   const file = directory + `messages.${locale}.json`;
   const catalogue = JSON.parse(readFileSync(file, 'utf8'));
   assert.equal(catalogue.locale, locale);
@@ -42,5 +43,5 @@ for (const locale of ['sv', 'da']) {
     );
 }
 console.log(
-  `Translation catalogues: ${keys.length} English messages, complete Swedish and Danish counterparts.`,
+  `Translation catalogues: ${keys.length} English messages, complete counterparts for ${PUBLIC_LANGUAGES.length - 1} languages.`,
 );

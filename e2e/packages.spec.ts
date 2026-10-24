@@ -16,17 +16,44 @@ test('package edits update public cards and choices in each language and protect
     packages: [
       {
         id: 'glade',
-        titles: { en: 'Daily dips', sv: 'Dagliga dopp', da: 'Daglige dukkerter' },
+        titles: {
+          en: 'Daily dips',
+          sv: 'Dagliga dopp',
+          da: 'Daglige dukkerter',
+          it: 'Bagni quotidiani',
+          es: 'Chapuzones diarios',
+          pt: 'Mergulhos diários',
+          de: 'Täglich eintauchen',
+          pl: 'Codzienne kąpiele',
+        },
         price: 430000,
       },
       {
         id: 'summer',
-        titles: { en: 'Swim together', sv: 'Bada tillsammans', da: 'Bad sammen' },
+        titles: {
+          en: 'Swim together',
+          sv: 'Bada tillsammans',
+          da: 'Bad sammen',
+          it: 'Nuotare insieme',
+          es: 'Nadar juntos',
+          pt: 'Nadar em conjunto',
+          de: 'Gemeinsam schwimmen',
+          pl: 'Wspólne pływanie',
+        },
         price: 1100000,
       },
       {
         id: 'horizon',
-        titles: { en: 'More room', sv: 'Mer plats', da: 'Mere plads' },
+        titles: {
+          en: 'More room',
+          sv: 'Mer plats',
+          da: 'Mere plads',
+          it: 'Più spazio',
+          es: 'Más espacio',
+          pt: 'Mais espaço',
+          de: 'Mehr Platz',
+          pl: 'Więcej miejsca',
+        },
         price: 4400000,
       },
     ],
@@ -48,6 +75,7 @@ test('package edits update public cards and choices in each language and protect
   await first.getByRole('textbox', { name: 'English title', exact: true }).fill('Morning swims');
   await first.getByRole('textbox', { name: 'Swedish title', exact: true }).fill('Morgondopp');
   await first.getByRole('textbox', { name: 'Danish title', exact: true }).fill('Morgensvømning');
+  await first.getByRole('textbox', { name: 'Polish title', exact: true }).fill('Poranne kąpiele');
   await first.getByRole('spinbutton', { name: 'From price', exact: true }).fill('450000');
   await page.getByRole('link', { name: 'Customers', exact: true }).click();
   await expect(page.getByRole('alertdialog')).toBeVisible();
@@ -68,6 +96,11 @@ test('package edits update public cards and choices in each language and protect
     ['/en/nature-pools/pricing/', 'Morning swims'],
     ['/', 'Morgondopp'],
     ['/da/', 'Morgensvømning'],
+    ['/it/', 'Bagni quotidiani'],
+    ['/es/', 'Chapuzones diarios'],
+    ['/pt/', 'Mergulhos diários'],
+    ['/de/', 'Täglich eintauchen'],
+    ['/pl/', 'Poranne kąpiele'],
   ]) {
     await page.goto(url!);
     const card = page

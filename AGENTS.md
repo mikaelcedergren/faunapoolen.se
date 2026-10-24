@@ -18,7 +18,7 @@ Shared-storage upgrades require a coordinated maintenance window for every write
 [cross-repo implementation record](../SHARED-DATA-DEVELOPMENT-PLAN.md) distinguishes source
 preparation from installed runtime adoption.
 
-Faunapoolen is the public English/Swedish/Danish website at [faunapoolen.se](https://faunapoolen.se),
+Faunapoolen is the public English/Swedish/Danish/Italian/Spanish/Portuguese/German/Polish website at [faunapoolen.se](https://faunapoolen.se),
 private campaign studio at `/admin` and enquiry inbox at `/admin/enquiries`. The public site is an Angular 22 static-prerender application
 served by one compiled TypeScript/Express web process. A separate listener-free worker owns durable
 campaign generation. The owner-approved public rebuild uses the Aqua/editorial framework
@@ -114,7 +114,7 @@ work.
 
 ## Public content and URL contract
 
-English is the source editing locale at `/en/`; Swedish remains at the root and Danish at `/da/`.
+English is the source editing locale at `/en/`; Swedish remains at the root. Danish, Italian, Spanish, European Portuguese, German and Polish use `/da/`, `/it/`, `/es/`, `/pt/`, `/de/` and `/pl/` (owner request, 24 October 2026).
 Public page route segments are English in all three languages (owner decision, 17 September
 2026). Previous translated paths redirect in one hop through the shared route catalogue. Existing
 article slugs remain unchanged; new article slugs may be Swedish.
@@ -124,7 +124,7 @@ Literal article `.html` URLs stay unchanged;
 `scripts/flatten.mjs` preserves them. Retired product and section paths receive one-hop redirects
 owned by `server/src/public-routes.ts`, with local Angular aliases using that same catalogue.
 
-English `$localize` copy and article bodies live in `src/app/site/`. Swedish and Danish JSON
+English `$localize` copy and article bodies live in `src/app/site/`. All seven translated JSON
 catalogues in `src/locale/` are consumed by Angular i18n for both production and local development.
 Use `pnpm extract-i18n` then `pnpm i18n:check` when editing source copy. The article catalogue owns
 metadata and the shared SEO strategy emits canonical, hreflang, Open Graph and JSON-LD.
@@ -145,8 +145,8 @@ indexability unless the owner explicitly chooses a product/SEO change. Headings 
 European sentence case. `public/CNAME` is intentionally absent because nginx hosts the site.
 
 The Swedish SEO programme prioritizes Skåne, Halland, Blekinge and Småland without limiting the
-offer to those regions. Public commercial copy serves all of Sweden and welcomes Denmark;
-EU-wide delivery is a future ambition, not a current blanket promise. The owner confirmed package
+offer to those regions. The owner confirmed EU-wide construction on 24 October 2026, primarily in Sweden and Denmark.
+Keep Skåne, Halland, Blekinge and Småland named in the service-area FAQ for regional SEO. The owner confirmed package
 starting prices of 430,000 / 1,100,000 / 4,400,000 SEK excluding VAT and shipping on 2 October 2026. Keep scope
 and site qualifications beside prices and use the shared package source.
 

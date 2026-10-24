@@ -11,15 +11,17 @@ import express from 'express';
 import { createFaunapoolenBrowserServing, mountFaunapoolenBrowser } from './browser-serving.js';
 import {
   PUBLIC_PAGES,
+  PUBLIC_LANGUAGES,
+  type PublicLanguage,
   LEGACY_REDIRECTS,
   GUIDE_SLUGS,
   PUBLIC_CANONICAL_PATHS,
 } from './public-routes.js';
 import type { FaunapoolenEnvironment } from './environment.js';
 
-const sections = (locale: 'sv' | 'en' | 'da') =>
+const sections = (locale: PublicLanguage) =>
   Object.values(PUBLIC_PAGES[locale]).map((p) =>
-    p.replace(/^\/(en|da)/, '').replace(/^\/|\/$/g, ''),
+    p.slice(locale === 'sv' ? 1 : locale.length + 2).replace(/\/$/, ''),
   );
 
 const PUBLIC_LITERAL_HTML_ROUTES = Object.values(GUIDE_SLUGS).map((slug) => 'blog/posts/' + slug);
@@ -62,7 +64,7 @@ function writeFixture(browserDirectory: string): void {
 
 function writeCompleteRouteFixture(browserDirectory: string): void {
   writeFixture(browserDirectory);
-  for (const locale of ['', 'en', 'da'] as const) {
+  for (const locale of PUBLIC_LANGUAGES.map((language) => (language === 'sv' ? '' : language))) {
     for (const route of sections(locale || 'sv')) {
       const file = path.join(browserDirectory, locale, route, 'index.html');
       fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -147,7 +149,7 @@ test('all public locale outputs retain their section or literal-file URL', async
   const baseUrl = await start(app, t);
 
   let requests = 0;
-  for (const locale of ['', 'en', 'da'] as const) {
+  for (const locale of PUBLIC_LANGUAGES.map((language) => (language === 'sv' ? '' : language))) {
     const prefix = locale ? `/${locale}` : '';
     for (const route of sections(locale || 'sv')) {
       const pathname = `${prefix}/${route}${route ? '/' : ''}` || '/';

@@ -9,7 +9,7 @@ import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
       class="fp-certification-mark"
       [class.fp-certification-mark--large]="large()"
       [src]="aquascapeImages.certificationEmblem"
-      [alt]="'Aquascape™ — ' + editorial.contractorLabel"
+      [alt]="editorial.contractorLabel"
       width="448"
       height="351"
     />

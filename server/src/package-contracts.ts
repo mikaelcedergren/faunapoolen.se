@@ -1,6 +1,7 @@
+import type { PublicLanguage } from './public-routes.js';
 export const PACKAGE_IDS = ['glade', 'summer', 'horizon'] as const;
 export type PackageId = (typeof PACKAGE_IDS)[number];
-export type PackageLanguage = 'en' | 'sv' | 'da';
+export type PackageLanguage = PublicLanguage;
 export interface PackageValues {
   id: PackageId;
   titles: Record<PackageLanguage, string>;

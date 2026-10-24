@@ -8,6 +8,11 @@ import {
 import { APP_BASE_HREF, DOCUMENT, registerLocaleData, ViewportScroller } from '@angular/common';
 import sv from '@angular/common/locales/sv';
 import da from '@angular/common/locales/da';
+import it from '@angular/common/locales/it';
+import es from '@angular/common/locales/es';
+import pt from '@angular/common/locales/pt-PT';
+import de from '@angular/common/locales/de';
+import pl from '@angular/common/locales/pl';
 import { activeLanguage, languageBase } from './site/language';
 import {
   provideClientHydration,
@@ -20,6 +25,11 @@ import { routes } from './app.routes';
 import { SeoTitleStrategy } from './shared/seo';
 registerLocaleData(sv);
 registerLocaleData(da);
+registerLocaleData(it);
+registerLocaleData(es);
+registerLocaleData(pt, 'pt');
+registerLocaleData(de);
+registerLocaleData(pl);
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -4,10 +4,21 @@
       <ng-template #photo>
         <img
           class="fp-photo"
-          [src]="projectPhoto.src"
+          [src]="projectPhoto.preview"
+          [attr.srcset]="
+            projectPhoto.preview +
+            ' ' +
+            projectPhoto.width / 2 +
+            'w, ' +
+            projectPhoto.src +
+            ' ' +
+            projectPhoto.width +
+            'w'
+          "
+          sizes="(max-width: 767px) calc(100vw - 72px), 560px"
           [alt]="projectPhoto.alt"
-          width="1920"
-          height="1440"
+          [width]="projectPhoto.width"
+          [height]="projectPhoto.height"
           loading="lazy"
         />
       </ng-template>

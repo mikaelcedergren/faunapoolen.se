@@ -11,9 +11,20 @@
     <img
       media
       [src]="projectPhoto.src"
+      [attr.srcset]="
+        projectPhoto.preview +
+        ' ' +
+        projectPhoto.width / 2 +
+        'w, ' +
+        projectPhoto.src +
+        ' ' +
+        projectPhoto.width +
+        'w'
+      "
+      sizes="100vw"
       [alt]="projectPhoto.alt"
-      width="1920"
-      height="1440"
+      [width]="projectPhoto.width"
+      [height]="projectPhoto.height"
       fetchpriority="high"
     />
   </cx-hero>

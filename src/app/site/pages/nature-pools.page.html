@@ -17,7 +17,7 @@
         [href]="poolEnquiryHref"
         appendIcon="arrow-right"
       />
-      <p class="fp-body-sm cx-text-muted">{{ landing.reassurance }}</p>
+      <p class="fp-body cx-text-muted">{{ landing.reassurance }}</p>
     </cx-stack>
     <img
       media
@@ -43,9 +43,9 @@
         </cx-stack>
         <figure class="fp-pool-figure">
           <img
-            class="fp-pool-illustration"
-            src="/assets/images/faunapoolen/editorial/pool-filtration-architecture.webp"
-            [alt]="detail.filterAlt"
+            class="fp-photo"
+            [src]="images.poolDesign"
+            [alt]="editorial.poolDesignAlt"
             width="1536"
             height="1024"
             loading="lazy"

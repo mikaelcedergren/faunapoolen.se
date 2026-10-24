@@ -1,3 +1,4 @@
+import type { PublicLanguage } from './public-routes.js';
 import { randomUUID } from 'node:crypto';
 import {
   withImmediateTransaction,
@@ -88,7 +89,7 @@ export function createEnquiryMailWorker({
     const input = JSON.parse(claim.json) as {
       email: string;
       name: string;
-      language: 'en' | 'sv' | 'da';
+      language: PublicLanguage;
       formVersion: string;
       fields: EnquiryField[];
     };

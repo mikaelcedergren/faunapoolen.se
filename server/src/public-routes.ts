@@ -1,3 +1,43 @@
+export const PUBLIC_LANGUAGES = ['en', 'sv', 'da', 'it', 'es', 'pt', 'de', 'pl'] as const;
+export type PublicLanguage = (typeof PUBLIC_LANGUAGES)[number];
+export const LANGUAGE_NAMES = {
+  en: 'English',
+  sv: 'Svenska',
+  da: 'Dansk',
+  it: 'Italiano',
+  es: 'Español',
+  pt: 'Português',
+  de: 'Deutsch',
+  pl: 'Polski',
+} as const;
+export const LANGUAGE_ENGLISH_NAMES = {
+  en: 'English',
+  sv: 'Swedish',
+  da: 'Danish',
+  it: 'Italian',
+  es: 'Spanish',
+  pt: 'Portuguese',
+  de: 'German',
+  pl: 'Polish',
+} as const;
+export const LANGUAGE_LOCALES = {
+  en: 'en-US',
+  sv: 'sv-SE',
+  da: 'da-DK',
+  it: 'it-IT',
+  es: 'es-ES',
+  pt: 'pt-PT',
+  de: 'de-DE',
+  pl: 'pl-PL',
+} as const;
+export function isPublicLanguage(value: string | undefined): value is PublicLanguage {
+  return PUBLIC_LANGUAGES.some((language) => language === value);
+}
+export function publicLanguageFromPath(path: string): PublicLanguage {
+  const segment = path.split('/')[1];
+  return isPublicLanguage(segment) ? segment : 'sv';
+}
+
 /** One URL authority for prerendering, HTTP redirects, browser navigation and the sitemap.
  * Page slugs are English in every locale; existing article addresses remain literal. */
 const pagePaths = {
@@ -17,7 +57,7 @@ const pagePaths = {
   configure: '/configure/',
 } as const;
 export type PublicPage = keyof typeof pagePaths;
-function localizedPages(prefix: '' | '/en' | '/da'): Record<PublicPage, string> {
+function localizedPages(prefix: '' | `/${PublicLanguage}`): Record<PublicPage, string> {
   return Object.fromEntries(
     Object.entries(pagePaths).map(([key, path]) => [key, prefix + path]),
   ) as Record<PublicPage, string>;
@@ -26,8 +66,12 @@ export const PUBLIC_PAGES = {
   sv: localizedPages(''),
   en: localizedPages('/en'),
   da: localizedPages('/da'),
+  it: localizedPages('/it'),
+  es: localizedPages('/es'),
+  pt: localizedPages('/pt'),
+  de: localizedPages('/de'),
+  pl: localizedPages('/pl'),
 } as const;
-export type PublicLanguage = keyof typeof PUBLIC_PAGES;
 export const GUIDE_SLUGS = {
   'naturpool-10-vanliga-fragor': 'naturpool-10-vanliga-fragor.html',
   'naturpool-pris': 'naturpool-pris.html',
@@ -55,7 +99,7 @@ export const GUIDE_SLUGS = {
   'naturpool-sakerhet-och-tillstand': 'naturpool-sakerhet-och-tillstand.html',
   'vad-kostar-det-att-aga-en-naturpool': 'vad-kostar-det-att-aga-en-naturpool.html',
 } as const;
-export const PUBLIC_CANONICAL_PATHS = (['sv', 'en', 'da'] as const).flatMap((locale) => [
+export const PUBLIC_CANONICAL_PATHS = PUBLIC_LANGUAGES.flatMap((locale) => [
   ...Object.values(PUBLIC_PAGES[locale]),
   ...Object.values(GUIDE_SLUGS).map(
     (slug) => `${locale === 'sv' ? '' : '/' + locale}/blog/posts/${slug}`,
@@ -97,7 +141,7 @@ const translatedPaths: Partial<Record<PublicLanguage, Partial<Record<PublicPage,
 };
 export const LEGACY_REDIRECTS: Readonly<Record<string, string>> = Object.freeze(
   Object.fromEntries(
-    (['sv', 'en', 'da'] as const).flatMap((locale) => {
+    PUBLIC_LANGUAGES.flatMap((locale) => {
       const prefix = locale === 'sv' ? '' : `/${locale}`;
       const inherited = Object.entries(legacy).flatMap(([oldPath, page]) => {
         const from = `${prefix}/${oldPath}`;

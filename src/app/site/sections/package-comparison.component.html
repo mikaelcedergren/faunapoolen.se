@@ -47,7 +47,8 @@
               <cx-stack gap="xs">
                 <p class="fp-body-lg">{{ item.area }}</p>
                 <p class="fp-body-lg">{{ item.depth }}</p>
-                <p class="fp-body-lg">{{ item.footprint }}</p>
+                <p class="fp-body-lg">{{ item.filtrationSize }}</p>
+                <p class="fp-body-lg">{{ item.materials }}</p>
               </cx-stack>
             </cx-stack>
             <cx-stack gap="sm">
@@ -64,6 +65,7 @@
               <cx-stack gap="sm" align="start">
                 <cx-metric [label]="copy.common.from" [value]="packageCatalogue.price(item)" />
                 <p class="fp-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
+                <p class="fp-body-sm cx-text-muted">{{ copy.common.travelCosts }}</p>
               </cx-stack>
               <cx-button
                 [text]="copy.common.viewPackage"
@@ -81,7 +83,17 @@
         @for (group of scope.groups; track group.title) {
           <cx-stack class="fp-column" gap="lg">
             <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ group.title }}</h3>
-            <p class="fp-body-lg">{{ group.body }}</p>
+            <cx-grid [columns]="group.columns.length" [columnsMobile]="1" gap="md" align="start">
+              @for (column of group.columns; track $index) {
+                <div class="cx-editorial">
+                  <ul>
+                    @for (item of column; track item) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+              }
+            </cx-grid>
           </cx-stack>
         }
       </cx-grid>

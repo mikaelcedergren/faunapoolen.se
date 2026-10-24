@@ -1,5 +1,5 @@
 import type { GUIDE_SLUGS } from '../../../../server/src/public-routes';
-export type FaunapoolenLocale = 'en' | 'sv' | 'da';
+export type { PublicLanguage as FaunapoolenLocale } from '../../../../server/src/public-routes';
 export type FaunapoolenPage =
   | 'home'
   | 'nature-pools'
@@ -24,7 +24,8 @@ export interface FaunapoolenPackage {
   readonly name: string;
   readonly area: string;
   readonly depth: string;
-  readonly footprint: string;
+  readonly filtrationSize: string;
+  readonly materials: string;
   readonly description: string;
   readonly includes: readonly string[];
   readonly price: number;
@@ -33,38 +34,57 @@ export interface FaunapoolenPackage {
 export const FAUNAPOOLEN_PACKAGES: readonly Omit<FaunapoolenPackage, 'name' | 'price'>[] = [
   {
     id: 'glade',
-    area: $localize`:@@site.packages.glade.area:From 17.5 m² swim area`,
-    depth: $localize`:@@site.packages.glade.depth:1.2 m swimming depth`,
-    footprint: $localize`:@@site.packages.glade.footprint:Approx. 30–40 m² total footprint`,
-    description: $localize`:@@site.packages.glade.description:A compact plunge pool for cooling off, sauna breaks and smaller gardens.`,
+    area: $localize`:@@site.packages.glade.area:Starting from 2 m × 2.5 m (5 m²)`,
+    depth: $localize`:@@site.packages.glade.depth:0.9 m depth`,
+    filtrationSize: $localize`:@@site.packages.glade.filtrationSize:Filtration size of 30%`,
+    materials: $localize`:@@site.packages.glade.materials:4 tons decorative boulders, 2 tons gravel`,
+    description: $localize`:@@site.packages.glade.description:A compact plunge pool with Aquascape biological filtration, for cooling off after the sauna or in a smaller garden.`,
     includes: [
+      $localize`:@@site.packages.includes.waterfalls:Waterfall & BioStream integration`,
       $localize`:@@site.packages.glade.includes.0:Aquascape BioFalls filtration`,
-      $localize`:@@site.packages.glade.includes.1:Aquatic plants for biological balance`,
-      $localize`:@@site.packages.glade.includes.2:Compact layout for smaller gardens`,
+      $localize`:@@site.packages.includes.skimmer:Aquascape Signature Series skimmer`,
+      $localize`:@@site.packages.glade.includes.1:Aquatic plants for ecosystem balance`,
+      $localize`:@@site.packages.glade.includes.2:Custom design for smaller gardens`,
+      $localize`:@@site.packages.includes.maintenance:One year of maintenance included`,
     ],
   },
   {
     id: 'summer',
-    area: $localize`:@@site.packages.summer.area:From 24 m² swim area`,
-    depth: $localize`:@@site.packages.summer.depth:1.5 m swimming depth`,
-    footprint: $localize`:@@site.packages.summer.footprint:Approx. 45–60 m² total footprint`,
-    description: $localize`:@@site.packages.summer.description:A pool for swimming together, with natural stone, lighting and water jets.`,
+    area: $localize`:@@site.packages.summer.area:Starting from 4 m × 4 m (16 m²)`,
+    depth: $localize`:@@site.packages.summer.depth:1.5 m depth`,
+    filtrationSize: $localize`:@@site.packages.summer.filtrationSize:Filtration size of 30%`,
+    materials: $localize`:@@site.packages.summer.materials:21 tons decorative boulders, 11 tons gravel`,
+    description: $localize`:@@site.packages.summer.description:A pool for swimming together, with decorative stone boulders, lighting and circulation jets.`,
     includes: [
-      $localize`:@@site.packages.summer.includes.0:Wetland filtration and a separate water intake`,
-      $localize`:@@site.packages.summer.includes.1:Natural stone and integrated lighting`,
-      $localize`:@@site.packages.summer.includes.2:Water jets for circulation`,
+      $localize`:@@site.packages.includes.waterfalls:Waterfall & BioStream integration`,
+      $localize`:@@site.packages.glade.includes.0:Aquascape BioFalls filtration`,
+      $localize`:@@site.packages.includes.skimmer:Aquascape Signature Series skimmer`,
+      $localize`:@@site.packages.summer.includes.lighting:Integrated light system`,
+      $localize`:@@site.packages.summer.includes.dosing:Aquascape Automatic Dosing System`,
+      $localize`:@@site.packages.summer.includes.iongen:Aquascape IonGen system`,
+      $localize`:@@site.packages.glade.includes.1:Aquatic plants for ecosystem balance`,
+      $localize`:@@site.packages.summer.includes.design:Designs for larger garden areas`,
+      $localize`:@@site.packages.includes.maintenance:One year of maintenance included`,
     ],
   },
   {
     id: 'horizon',
-    area: $localize`:@@site.packages.horizon.area:From 100 m² swim area`,
-    depth: $localize`:@@site.packages.horizon.depth:1.5–1.8 m swimming depth`,
-    footprint: $localize`:@@site.packages.horizon.footprint:Approx. 160–200 m² total footprint`,
-    description: $localize`:@@site.packages.horizon.description:A spacious pool with waterfalls, boulders and a planted landscape.`,
+    area: $localize`:@@site.packages.horizon.area:Starting from 10 m × 10 m (100 m²)`,
+    depth: $localize`:@@site.packages.horizon.depth:1.8 m depth`,
+    filtrationSize: $localize`:@@site.packages.horizon.filtrationSize:Filtration size of 30%`,
+    materials: $localize`:@@site.packages.horizon.materials:140 tons decorative boulders, 82 tons gravel`,
+    description: $localize`:@@site.packages.horizon.description:A spacious pool with waterfalls, decorative stone boulders and a planted landscape.`,
     includes: [
-      $localize`:@@site.packages.horizon.includes.0:Waterfalls and feature boulders`,
-      $localize`:@@site.packages.horizon.includes.1:Planted garden and aquatic areas`,
-      $localize`:@@site.packages.horizon.includes.2:Integrated lighting`,
+      $localize`:@@site.packages.includes.waterfalls:Waterfall & BioStream integration`,
+      $localize`:@@site.packages.horizon.includes.filtration:Aquascape wetland filtration`,
+      $localize`:@@site.packages.horizon.includes.skimmer:Intake bay skimmer`,
+      $localize`:@@site.packages.summer.includes.lighting:Integrated light system`,
+      $localize`:@@site.packages.summer.includes.dosing:Aquascape Automatic Dosing System`,
+      $localize`:@@site.packages.summer.includes.iongen:Aquascape IonGen system`,
+      $localize`:@@site.packages.glade.includes.1:Aquatic plants for ecosystem balance`,
+      $localize`:@@site.packages.horizon.includes.design:Designed for large estates, hotels and retreats`,
+      $localize`:@@site.packages.horizon.includes.downspout:Aquascape Downspout Filter for rainwater top-ups`,
+      $localize`:@@site.packages.includes.maintenance:One year of maintenance included`,
     ],
   },
 ] as const;
@@ -105,10 +125,6 @@ interface FaunapoolenSiteCopy {
     readonly title: string;
     readonly ingress: string;
     readonly typesTitle: string;
-    readonly types: readonly {
-      readonly title: string;
-      readonly body: string;
-    }[];
     readonly methodTitle: string;
     readonly methodBody: string;
   };
@@ -142,6 +158,7 @@ interface FaunapoolenSiteCopy {
   readonly common: {
     readonly from: string;
     readonly priceExclusions: string;
+    readonly travelCosts: string;
     readonly familyPackage: string;
     readonly viewPackage: string;
     readonly talkTitle: string;
@@ -164,10 +181,10 @@ export const FAUNAPOOLEN_COPY = {
   home: {
     eyebrow: $localize`:@@site.copy.home.eyebrow:Nature pools for your garden`,
     title: $localize`:@@site.copy.home.title:Make your garden the best part of being home.`,
-    ingress: $localize`:@@site.copy.home.ingress:As an Aquascape™ certified contractor, we design and build nature pools for morning swims, long summer evenings and time together.`,
+    ingress: $localize`:@@site.copy.home.ingress:As the only Certified Aquascape Contractor in the northern EU, we design and build nature pools for morning swims, long summer evenings and time together.`,
     primary: $localize`:@@site.copy.home.primary:Request a consultation`,
     secondary: $localize`:@@site.copy.home.secondary:See a completed natural pool`,
-    caseBody: $localize`:@@site.copy.home.caseBody:We built this nature pool beside Brita’s home on southern Gotland, with natural stone edges that connect it to the surrounding garden. Today, it’s a place for her and her grandchildren to swim and spend time together.`,
+    caseBody: $localize`:@@site.copy.home.caseBody:We built this nature pool beside Brita’s home on southern Gotland, with natural boulders that connect it to the surrounding garden. Today, it’s a place for her and her grandchildren to swim and spend time together.`,
     processTitle: $localize`:@@site.copy.home.processTitle:From the first idea to your first swim.`,
     waterscapeEyebrow: $localize`:@@site.copy.home.waterscapeEyebrow:Other waterscapes`,
     waterscapeTitle: $localize`:@@site.copy.home.waterscapeTitle:A place to pause in your own garden.`,
@@ -188,22 +205,8 @@ export const FAUNAPOOLEN_COPY = {
   waterscapes: {
     eyebrow: $localize`:@@site.copy.waterscapes.eyebrow:Waterscapes`,
     title: $localize`:@@site.copy.waterscapes.title:Your own place to slow down.`,
-    ingress: $localize`:@@site.copy.waterscapes.ingress:A pond to spend time beside or a stream within earshot of the terrace. We design and build ponds, streams and waterfalls for your garden.`,
+    ingress: $localize`:@@site.copy.waterscapes.ingress:A pond to spend time beside or a stream within earshot of the terrace. We design and build garden ponds, koi ponds, streams, waterfalls and fountains, with rainwater harvesting options for your garden.`,
     typesTitle: $localize`:@@site.copy.waterscapes.typesTitle:What would you enjoy coming outside for?`,
-    types: [
-      {
-        title: $localize`:@@site.copy.waterscapes.types.0.title:Koi ponds`,
-        body: $localize`:@@site.copy.waterscapes.types.0.body:For time spent watching the fish. We plan depth, shelter and filtration for the pond, and explain the care it needs.`,
-      },
-      {
-        title: $localize`:@@site.copy.waterscapes.types.1.title:Streams and waterfalls`,
-        body: $localize`:@@site.copy.waterscapes.types.1.body:For the sound of moving water near a favourite seat. We plan the flow, levels and access for maintenance.`,
-      },
-      {
-        title: $localize`:@@site.copy.waterscapes.types.2.title:Fountains`,
-        body: $localize`:@@site.copy.waterscapes.types.2.body:For the gentle sound of water beside a terrace or favourite seat. We help you choose a fountain that suits your garden and the space you have.`,
-      },
-    ],
     methodTitle: $localize`:@@site.copy.waterscapes.methodTitle:Designed for your garden. Planned for care.`,
     methodBody: $localize`:@@site.copy.waterscapes.methodBody:The right choice depends on your space, budget and how much care you want to take on. We plan circulation and filtration, with equipment you can reach for servicing.`,
   },
@@ -237,6 +240,7 @@ export const FAUNAPOOLEN_COPY = {
   common: {
     from: $localize`:@@site.copy.common.from:From`,
     priceExclusions: $localize`:@@site.copy.common.priceExclusions:excl. VAT and shipping`,
+    travelCosts: $localize`:@@site.copy.common.travelCosts:Travel and accommodation costs depend on your location and may significantly affect the final price.`,
     familyPackage: $localize`:@@site.copy.common.familyPackage:For family swimming`,
     viewPackage: $localize`:@@site.copy.common.viewPackage:Enquire about this pool`,
     talkTitle: $localize`:@@site.copy.common.talkTitle:Find out what suits your garden.`,

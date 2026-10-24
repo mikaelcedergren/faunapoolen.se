@@ -63,7 +63,7 @@ export class GotlandPreviewComponent extends SitePage {
       body: NATURE_POOL_DETAILS.projectGardenBody,
     },
     {
-      id: '1455',
+      id: '1496',
       title: NATURE_POOL_DETAILS.projectStoneTitle,
       body: NATURE_POOL_DETAILS.projectStoneBody,
     },

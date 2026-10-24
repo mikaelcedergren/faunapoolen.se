@@ -69,7 +69,7 @@ export const FAQ_ITEMS = [
   {
     id: 'location',
     question: $localize`:@@site.faq.location.question:Where do you build nature pools?`,
-    answer: $localize`:@@site.faq.location.answer:We build nature pools throughout Sweden and in Denmark, including Skåne, Halland, Blekinge and Småland. Tell us your town or postcode so we can discuss the property and agree the next step.`,
+    answer: $localize`:@@site.faq.location.answer:We build nature pools throughout the EU, with a focus on Sweden and Denmark. In Sweden, we cover the whole country, including Skåne, Halland, Blekinge and Småland. Tell us your town or postcode so we can discuss the property and agree the next step.`,
   },
   {
     id: 'existing',

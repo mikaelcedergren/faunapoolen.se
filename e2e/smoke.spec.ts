@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES } from '../server/src/public-routes';
 import { expect, test } from '@playwright/test';
 
 const TEST_ORIGIN = process.env['CX_E2E_BASE_URL'];
@@ -125,7 +126,7 @@ test('English header and footer share navigation and the closing invitation lead
   expect(footerLinks).toHaveLength(headerLinks.length);
   const footer = page.locator('footer');
   await expect(
-    footer.getByRole('link', { name: 'Faunapoolen Aquascape™ certified', exact: true }),
+    footer.getByRole('link', { name: 'Faunapoolen Certified Aquascape Contractor', exact: true }),
   ).toHaveAttribute('href', '/en/');
   await expect(footer.locator('a[href="mailto:info@faunapoolen.se"]')).toBeVisible();
   await expect(footer.locator('.fp-footer-brand img')).toBeVisible();
@@ -147,18 +148,19 @@ test('the admin is excluded from search and every public page stays indexable', 
 }) => {
   const rules = await (await request.get('/robots.txt')).text();
   expect(rules).toContain('Allow: /');
-  expect(rules).toContain('Disallow: /admin');
-  expect(rules).toContain('Disallow: /en/admin');
-  expect(rules).toContain('Disallow: /da/admin');
+  const privatePaths = PUBLIC_LANGUAGES.map(
+    (language) => `${language === 'sv' ? '' : '/' + language}/admin/`,
+  );
+  for (const path of privatePaths) expect(rules).toContain('Disallow: ' + path.slice(0, -1));
   expect(await (await request.get('/sitemap.xml')).text()).not.toContain('/admin');
 
-  for (const path of ['/admin/', '/en/admin/', '/da/admin/', '/api/admin/session']) {
+  for (const path of [...privatePaths, '/api/admin/session']) {
     const res = await request.get(path);
     expect(res.headers()['x-robots-tag'], path).toBe('noindex, nofollow');
   }
 
   // The login page carries the directive itself and nothing a crawler could index it by.
-  for (const path of ['/admin/', '/en/admin/', '/da/admin/']) {
+  for (const path of privatePaths) {
     const html = await (await request.get(path)).text();
     expect(html, path).toContain('<meta name="robots" content="noindex, nofollow">');
     expect(html, path).not.toContain('rel="canonical"');

@@ -32,10 +32,10 @@ function pageRoute(page: Exclude<FaunapoolenPage, 'guide'>): Route {
     daPath: sitePath(page, 'da'),
     description: PAGE_SEO[page].description,
     ogImageWidth: page === 'gotland' ? 1920 : 1536,
-    ogImageHeight: page === 'gotland' ? 1440 : 1024,
+    ogImageHeight: page === 'gotland' ? 1920 : 1024,
     ogImage:
       'https://faunapoolen.se/assets/images/faunapoolen/' +
-      (page === 'gotland' ? 'gotland/1528.webp' : 'hero-family.webp'),
+      (page === 'gotland' ? 'gotland/gotland-waterfall.webp' : 'hero-family.webp'),
   };
   if (['nature-pools', 'pricing', 'skane', 'halland', 'blekinge', 'smaland'].includes(page)) {
     const names: Record<string, string> = {

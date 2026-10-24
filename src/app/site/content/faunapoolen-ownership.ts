@@ -8,7 +8,7 @@ export const POOL_OWNERSHIP = {
     {
       id: 'care',
       title: $localize`:@@site.ownership.care.title:How much care does it need?`,
-      answer: $localize`:@@site.ownership.care.answer:Around 30 minutes a week in the swimming season.`,
+      answer: $localize`:@@site.ownership.care.answer:Around 10 minutes a week in the swimming season.`,
       detail: $localize`:@@site.ownership.care.detail:Remove leaves, empty the skimmer and check the water level and circulation. Allow extra time for spring start-up, autumn leaves and winter preparation. Your care plan covers the equipment and planting in your pool.`,
     },
     {
@@ -20,25 +20,25 @@ export const POOL_OWNERSHIP = {
     {
       id: 'build',
       title: $localize`:@@site.ownership.build.title:How long does construction take?`,
-      answer: $localize`:@@site.ownership.build.answer:Usually 3–6 weeks on site.`,
-      detail: $localize`:@@site.ownership.build.detail:This covers construction from excavation to handover. Planning and any permits come beforehand. Ground conditions, access, weather and the size of your pool affect the schedule, which we agree before work begins.`,
+      answer: $localize`:@@site.ownership.build.answer:The schedule depends on your pool and site.`,
+      detail: $localize`:@@site.ownership.build.detail:Pool size, ground conditions, access and weather affect the time from excavation to handover. Planning and any permits come beforehand. We agree a schedule for your project before construction begins.`,
     },
   ],
 } as const;
 
 export const POOL_AFTERCARE = {
   title: $localize`:@@site.aftercare.title:Confidence beyond the first swim.`,
-  guaranteeTitle: $localize`:@@site.aftercare.guarantee.title:Your guarantees`,
-  guaranteeBody: $localize`:@@site.aftercare.guarantee.body:Your pool comes with a five-year guarantee on our installation work and three years on pumps and equipment. The pool liner is covered against manufacturing defects for 20 years.`,
+  guaranteeTitle: $localize`:@@site.aftercare.guarantee.title:Clear warranty terms`,
+  guaranteeBody: $localize`:@@site.aftercare.guarantee.body:Your quotation sets out the warranty cover for installation work, equipment and the pool liner, including the duration, conditions and any exclusions. You can review these before deciding to go ahead.`,
   items: [
     {
       title: $localize`:@@site.aftercare.handover.title:A personal handover`,
-      body: $localize`:@@site.aftercare.handover.body:We start the system together and practise the regular care tasks with you. You receive a care plan for your pool, covering the equipment, planting and each season.`,
+      body: $localize`:@@site.aftercare.handover.body:We start the system together and show you how to care for your pool. You receive a care plan covering the equipment, planting and seasonal tasks.`,
     },
     {
-      title: $localize`:@@site.aftercare.followup.title:We come back`,
-      body: $localize`:@@site.aftercare.followup.body:At handover, we book your included first-season site visit. We check circulation, equipment and plant establishment, make the commissioning adjustments needed and answer your questions.`,
+      title: $localize`:@@site.aftercare.followup.title:One year of maintenance`,
+      body: $localize`:@@site.aftercare.followup.body:Your pool package includes one year of maintenance. Your quotation sets out the visits and work included, so you know what to expect after handover.`,
     },
   ],
-  terms: $localize`:@@site.aftercare.terms:Cover starts at handover. Workmanship covers installation defects; equipment and liner cover follow their product terms. Normal wear, frost damage and damage caused by missed care instructions are excluded. One first-season visit and commissioning adjustments are included; cleaning, routine servicing and later visits are quoted separately. Full terms accompany your quotation.`,
+  terms: $localize`:@@site.aftercare.terms:Planning changes around your pool? Speak to us before moving stones, changing materials or altering the installation, so we can explain any effect on its performance and warranty cover.`,
 } as const;

@@ -38,16 +38,16 @@ function film(id: string, number: number, duration: string, portrait = false): G
 // The portrait film remains in the archive but is not part of the page stories.
 export const GOTLAND_MEDIA: readonly (GotlandPhoto | GotlandFilm)[] = [
   photo(
+    'gotland-waterfall',
+    1920,
+    1920,
+    $localize`:@@site.gotland.photo.gotland-waterfall:A wooden walkway beside the Gotland nature pool, with natural stone, planting and a small waterfall in warm evening light`,
+  ),
+  photo(
     '1528',
     1920,
     1440,
     $localize`:@@site.gotland.photo.1528:The nature pool surrounded by stone and greenery, with the house beyond`,
-  ),
-  photo(
-    '1455',
-    1440,
-    1920,
-    $localize`:@@site.gotland.photo.1455:Sunlight across the stones beneath the water`,
   ),
   film('1226470321', 1, '0:32', false),
   photo(
@@ -70,12 +70,6 @@ export const GOTLAND_MEDIA: readonly (GotlandPhoto | GotlandFilm)[] = [
     $localize`:@@site.gotland.photo.1437:The house and nature pool with planting along the water’s edge`,
   ),
   film('1226470011', 2, '0:14', true),
-  photo(
-    '1423',
-    1920,
-    1440,
-    $localize`:@@site.gotland.photo.1423:Stone steps leading down into the nature pool`,
-  ),
   photo(
     '1525',
     1440,

@@ -1,3 +1,4 @@
+import { LANGUAGE_ENGLISH_NAMES } from './public-routes.js';
 import type { EnquirySubmission } from './enquiry-contracts.js';
 
 const escapeHtml = (value: string): string =>
@@ -19,7 +20,7 @@ export function enquiryEmailContent(
 ): { subject: string; htmlContent: string; textContent: string } {
   const name = input.name?.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
   const heading = name ? `New enquiry from ${name}` : 'New website enquiry';
-  const language = { en: 'English', sv: 'Swedish', da: 'Danish' }[input.language ?? 'en'];
+  const language = LANGUAGE_ENGLISH_NAMES[input.language ?? 'en'];
   const fields = input.fields.filter((field) => field.value.trim());
   const isMessage = (field: (typeof fields)[number]) => ['notes', 'message'].includes(field.id);
   const messages = fields.filter(isMessage);

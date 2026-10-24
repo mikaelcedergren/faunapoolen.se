@@ -27,9 +27,25 @@ for (const [path, heading, cta, contact] of [
 for (const [entry, linkName, index, service, packageId] of [
   ['/en/nature-pools/', 'Enquire about this pool', 1, 'pool', 'summer'],
   ['/en/nature-pools/pricing/', 'Enquire about this pool', 1, 'pool', 'summer'],
-  ['/en/waterscapes/', 'Ask us about this', 1, 'stream', 'unsure'],
+  ['/en/waterscapes/', 'Ask us about this', 0, 'pond', 'unsure'],
+  ['/en/waterscapes/', 'Ask us about this', 1, 'koi', 'unsure'],
+  ['/en/waterscapes/', 'Ask us about this', 2, 'stream', 'unsure'],
+  ['/en/waterscapes/', 'Ask us about this', 3, 'waterfall', 'unsure'],
+  ['/en/waterscapes/', 'Ask us about this', 4, 'fountain', 'unsure'],
+  ['/en/waterscapes/', 'Ask us about this', 5, 'rainwater', 'unsure'],
 ] as const) {
-  test(`${entry} interest reaches the inbox without purchase configuration`, async ({ page }) => {
+  const serviceLabel = {
+    pool: 'Nature pool',
+    pond: 'Garden pond',
+    koi: 'Koi pond',
+    stream: 'Stream',
+    waterfall: 'Waterfall',
+    fountain: 'Fountainscapes',
+    rainwater: 'Rainwater harvesting system',
+  }[service];
+  test(`${entry} ${service} interest reaches the inbox without purchase configuration`, async ({
+    page,
+  }) => {
     await page.goto(entry);
     await page.getByRole('link', { name: linkName, exact: true }).nth(index).click();
     await expect(page).toHaveURL(
@@ -37,6 +53,12 @@ for (const [entry, linkName, index, service, packageId] of [
         ? new RegExp(entry.replace(/\/$/, '') + '/?\\?package=summer#consultation$')
         : /\/en\/configure\/\?/,
     );
+    if (service !== 'pool') {
+      await expect(page).toHaveURL(new RegExp('service=' + service));
+      await expect(page.getByRole('combobox')).toContainText(serviceLabel);
+      await page.reload();
+      await expect(page.getByRole('combobox')).toContainText(serviceLabel);
+    }
     await page
       .getByRole('textbox', { name: 'Name', exact: true })
       .fill(`Synthetic ${service} consultation`);
@@ -62,7 +84,7 @@ for (const [entry, linkName, index, service, packageId] of [
         expect.objectContaining({ id: 'location', value: 'Synthetic garden' }),
         expect.objectContaining({
           id: 'service',
-          value: service === 'pool' ? 'Nature pool' : 'Stream or waterfall',
+          value: serviceLabel,
         }),
       ]),
     );
@@ -104,13 +126,13 @@ for (const prefix of ['', '/en', '/da']) {
     await expect(page.locator('.fp-pool-figure figcaption')).toHaveCount(0);
     await expect(preview.locator('.fp-case-label')).toHaveCount(0);
 
-    const photo = preview.locator('a[href$="1455.webp"]');
+    const photo = preview.locator('a[href$="1496.webp"]');
     await photo.click();
     const lightbox = page.getByRole('dialog');
     await expect(lightbox).toBeVisible();
-    await expect(lightbox.locator('img')).toHaveAttribute('src', /1455\.webp$/);
-    await page.keyboard.press('ArrowRight');
     await expect(lightbox.locator('img')).toHaveAttribute('src', /1496\.webp$/);
+    await page.keyboard.press('ArrowRight');
+    await expect(lightbox.locator('img')).toHaveAttribute('src', /1451\.webp$/);
     await page.keyboard.press('Escape');
     await expect(lightbox).toBeHidden();
     await expect(photo).toBeFocused();
@@ -118,7 +140,7 @@ for (const prefix of ['', '/en', '/da']) {
 
     const galleryButton = preview.locator('cx-card').getByRole('button');
     await galleryButton.click();
-    await expect(lightbox.locator('img')).toHaveAttribute('src', /1528\.webp$/);
+    await expect(lightbox.locator('img')).toHaveAttribute('src', /gotland-waterfall\.webp$/);
     await page.keyboard.press('Escape');
     await expect(galleryButton).toBeFocused();
     await expect(page).toHaveURL(originalUrl);

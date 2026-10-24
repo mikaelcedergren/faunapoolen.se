@@ -7,5 +7,10 @@ Allow: /
 Disallow: /admin
 Disallow: /en/admin
 Disallow: /da/admin
+Disallow: /it/admin
+Disallow: /es/admin
+Disallow: /pt/admin
+Disallow: /de/admin
+Disallow: /pl/admin
 
 Sitemap: https://faunapoolen.se/sitemap.xml

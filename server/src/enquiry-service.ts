@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES } from './public-routes.js';
 import { createHash, createHmac, randomUUID } from 'node:crypto';
 import { HttpError } from '@mikaelcedergren/cx-framework/server/errors';
 import {
@@ -73,7 +74,7 @@ export function parseEnquiry(value: unknown): EnquiryInput {
   return {
     requestId,
     email,
-    language: choice(r['language'], ['en', 'sv', 'da']),
+    language: choice(r['language'], PUBLIC_LANGUAGES),
     name: text(r['name'], 1, 120),
     phone: text(r['phone'], 0, 60),
     location: text(r['location'], 1, 160),
@@ -174,7 +175,7 @@ function submission(value: unknown): Required<EnquirySubmission> {
       requestId,
       email,
       name: text(r['name'] ?? '', 0, 120),
-      language: choice(r['language'] ?? 'en', ['en', 'sv', 'da']),
+      language: choice(r['language'] ?? 'en', PUBLIC_LANGUAGES),
       formVersion,
       fields,
     };

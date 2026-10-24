@@ -107,7 +107,6 @@
     margin-inline: auto;
     align-items: center;
     gap: var(--space-xl);
-    font-size: var(--font-size-body-sm);
     text-align: center;
   }
 
@@ -142,6 +141,7 @@
   .fp-certification-line > .fp-certification-stamp {
     outline: var(--line);
     margin-block: calc(-1 * var(--space-xl));
+    scale: 1.1;
   }
 
   .fp-certification-photo {

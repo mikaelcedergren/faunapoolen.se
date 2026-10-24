@@ -1,3 +1,4 @@
+import { LANGUAGE_LOCALES } from '../../../../server/src/public-routes';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -79,9 +80,10 @@ export class GuidePage extends SitePage {
 
   protected readonly updatedLabel = $localize`:@@site.guides.updated:Updated`;
   protected readonly updatedDate = this.guide.seo.dateModified
-    ? new Intl.DateTimeFormat(this.locale, { dateStyle: 'long', timeZone: 'UTC' }).format(
-        new Date(this.guide.seo.dateModified),
-      )
+    ? new Intl.DateTimeFormat(LANGUAGE_LOCALES[this.locale], {
+        dateStyle: 'long',
+        timeZone: 'UTC',
+      }).format(new Date(this.guide.seo.dateModified))
     : '';
   private readonly sanitizer = inject(DomSanitizer);
   private readonly packageCatalogue =

@@ -33,7 +33,7 @@
           {{ copy.waterscapes.typesTitle }}
         </h2>
         <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
-          @for (item of waterTypes; track item.title) {
+          @for (item of waterTypes; track item.id) {
             <cx-stack gap="lg" align="start" justify="between">
               <cx-stack gap="lg">
                 <img

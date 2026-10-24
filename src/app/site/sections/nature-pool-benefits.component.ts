@@ -17,7 +17,7 @@ export class NaturePoolBenefitsComponent {
   protected readonly benefits = {
     eyebrow: $localize`:@@site.poolBenefits.eyebrow:Why choose a nature pool?`,
     heading: $localize`:@@site.poolBenefits.heading:Your own swimming spot, naturally.`,
-    body: $localize`:@@site.poolBenefits.body:Step outside for a morning dip, bring everyone together for an afternoon swim, or unwind beside the water. Your nature pool becomes part of the garden, with natural stone and planting around your own swimming spot. We help you choose the size, shape and features that suit your space and the way you want to spend time outdoors.`,
+    body: $localize`:@@site.poolBenefits.body:Step outside for a morning dip, bring everyone together for an afternoon swim, or unwind beside the water. Your nature pool becomes part of your garden and your lifestyle, with natural stone and planting around your own swimming spot. We help you choose the size, shape and features that suit your space and the way you want to spend time outdoors.`,
     items: [
       {
         heading: $localize`:@@site.poolBenefits.chlorine.heading:Swim without routine chlorine treatment`,
@@ -33,7 +33,7 @@ export class NaturePoolBenefitsComponent {
       },
       {
         heading: $localize`:@@site.poolBenefits.environment.heading:Reduce your pool’s environmental impact`,
-        body: $localize`:@@site.poolBenefits.environment.body:Efficient pumps and fewer water changes help save resources, while keeping chemical pool treatments out of your garden.`,
+        body: $localize`:@@site.poolBenefits.environment.body:No water changes are needed, helping save resources while keeping chemical pool treatments out of your garden.`,
       },
     ],
   };

@@ -14,10 +14,39 @@
       "sourceRoot": "src",
       "prefix": "fp",
       "i18n": {
-        "sourceLocale": { "code": "en", "subPath": "en" },
+        "sourceLocale": {
+          "code": "en",
+          "subPath": "en"
+        },
         "locales": {
-          "sv": { "translation": "src/locale/messages.sv.json", "subPath": "" },
-          "da": { "translation": "src/locale/messages.da.json", "subPath": "da" }
+          "sv": {
+            "translation": "src/locale/messages.sv.json",
+            "subPath": ""
+          },
+          "da": {
+            "translation": "src/locale/messages.da.json",
+            "subPath": "da"
+          },
+          "it": {
+            "translation": "src/locale/messages.it.json",
+            "subPath": "it"
+          },
+          "es": {
+            "translation": "src/locale/messages.es.json",
+            "subPath": "es"
+          },
+          "pt": {
+            "translation": "src/locale/messages.pt.json",
+            "subPath": "pt"
+          },
+          "de": {
+            "translation": "src/locale/messages.de.json",
+            "subPath": "de"
+          },
+          "pl": {
+            "translation": "src/locale/messages.pl.json",
+            "subPath": "pl"
+          }
         }
       },
       "architect": {
@@ -56,7 +85,12 @@
           },
           "configurations": {
             "local": {
-              "fileReplacements": [{ "replace": "src/main.ts", "with": "src/main.local.ts" }],
+              "fileReplacements": [
+                {
+                  "replace": "src/main.ts",
+                  "with": "src/main.local.ts"
+                }
+              ],
               "index": {
                 "input": "src/index.development.html",
                 "output": "index.html"

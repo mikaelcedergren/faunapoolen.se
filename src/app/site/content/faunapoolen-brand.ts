@@ -14,6 +14,7 @@ export const FAUNAPOOLEN_IMAGES = {
   evening: `${ASSET_ROOT}/evening-deck.webp`,
   waterscape: `${ASSET_ROOT}/editorial/waterscapes-evening.webp`,
   waterscapePause: `${ASSET_ROOT}/editorial/waterscape-pause.webp`,
+  waterscapePauseSmall: `${ASSET_ROOT}/editorial/waterscape-pause-small.webp`,
 } as const;
 
 /** Supplier imagery and the owner-supplied certification emblem. */

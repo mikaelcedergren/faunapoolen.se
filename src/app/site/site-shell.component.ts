@@ -1,3 +1,4 @@
+import { FAUNAPOOLEN_SERVICES } from './content/faunapoolen-editorial';
 import {
   afterNextRender,
   booleanAttribute,
@@ -109,7 +110,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
   }
   protected readonly contactUs = $localize`:@@site.masthead.contactUs:Contact us`;
   protected readonly footerContact = $localize`:@@site.footer.contact:Contact`;
-  protected readonly footerCertification = $localize`:@@site.footer.certification:Aquascape™ certified`;
+  protected readonly footerCertification = $localize`:@@site.footer.certification:Certified Aquascape Contractor`;
   protected readonly footerGroups = [
     {
       label: $localize`:@@site.footer.explore:Explore`,
@@ -143,7 +144,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
     if (this.page === 'configure' || this.page === 'nature-pools') {
       const service = query.get('service');
       const selected = query.get('package');
-      if (service && ['pool', 'pond', 'stream', 'unsure'].includes(service))
+      if (service && FAUNAPOOLEN_SERVICES.some((item) => item.id === service))
         kept.set('service', service);
       if (selected && ['glade', 'summer', 'horizon'].includes(selected))
         kept.set('package', selected);
@@ -153,7 +154,9 @@ export class SiteShellComponent extends SitePage implements OnInit {
   protected readonly languageOptions = this.languages.map((language) => ({
     id: language.locale,
     label: language.label,
-    flag: { en: '🇬🇧', sv: '🇸🇪', da: '🇩🇰' }[language.locale],
+    flag: { en: '🇬🇧', sv: '🇸🇪', da: '🇩🇰', it: '🇮🇹', es: '🇪🇸', pt: '🇵🇹', de: '🇩🇪', pl: '🇵🇱' }[
+      language.locale
+    ],
   }));
 
   protected changeLanguage(id: string): void {

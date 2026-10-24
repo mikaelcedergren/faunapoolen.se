@@ -1,3 +1,4 @@
+import { PUBLIC_LANGUAGES } from '../server/src/public-routes';
 import { expect, test } from '@playwright/test';
 
 test('FAQ answers open by keyboard and language changes keep the FAQ page', async ({ page }) => {
@@ -152,7 +153,7 @@ test('an enquiry reaches the real private inbox and its saved status survives re
   await expect(page.getByRole('button', { name: 'Reopen enquiry', exact: true })).toBeVisible();
 });
 
-for (const locale of ['en', 'sv', 'da'])
+for (const locale of PUBLIC_LANGUAGES)
   test(`${locale} public pages fit a phone and return a real localised 404`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const prefix = locale === 'sv' ? '' : `/${locale}`;
@@ -223,7 +224,10 @@ test('Gotland keeps landscape films beside their stories and the lightbox limite
   await expect(page.locator('fp-gotland-film')).toHaveCount(4);
   await expect(page.locator('iframe[src*="1226470011"]')).toHaveCount(0);
   await expect(page.locator('cx-masonry iframe')).toHaveCount(0);
-  await expect(page.locator('cx-masonry [data-gotland-photo]')).toHaveCount(10);
+  await expect(page.locator('cx-masonry [data-gotland-photo]')).toHaveCount(9);
+  await expect(
+    page.locator('[data-gotland-photo="1423"], [data-gotland-photo="1455"]'),
+  ).toHaveCount(0);
   await expect(page.locator('main blockquote')).toHaveCount(1);
   await expect(page.locator('.fp-project-quote figcaption')).toHaveText('From Brita');
   await expect(page.getByRole('link', { name: 'Open on Vimeo' })).toHaveCount(0);
@@ -235,13 +239,13 @@ test('Gotland keeps landscape films beside their stories and the lightbox limite
     .click();
   await expect(page.getByRole('option', { name: /Svenska/ })).toBeVisible();
   await page.keyboard.press('Escape');
-  const photo = page.locator('[data-gotland-photo="1455"]');
+  const photo = page.locator('[data-gotland-photo="1496"]');
   await photo.click();
   const lightbox = page.getByRole('dialog');
   await expect(lightbox).toBeVisible();
-  await expect(lightbox.locator('img')).toHaveAttribute('src', /1455\.webp$/);
-  await page.getByRole('button', { name: 'Next image', exact: true }).click();
   await expect(lightbox.locator('img')).toHaveAttribute('src', /1496\.webp$/);
+  await page.getByRole('button', { name: 'Next image', exact: true }).click();
+  await expect(lightbox.locator('img')).toHaveAttribute('src', /1451\.webp$/);
   await page.keyboard.press('Escape');
   await expect(lightbox).toBeHidden();
 });

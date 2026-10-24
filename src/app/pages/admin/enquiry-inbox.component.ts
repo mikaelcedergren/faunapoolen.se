@@ -1,3 +1,4 @@
+import { LANGUAGE_ENGLISH_NAMES } from '../../../../server/src/public-routes';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -45,6 +46,7 @@ import type {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnquiryInboxComponent {
+  protected readonly languageNames = LANGUAGE_ENGLISH_NAMES;
   readonly sessionExpired = output<void>();
   private readonly lifetime = new AbortController();
   private readonly route = inject(ActivatedRoute);

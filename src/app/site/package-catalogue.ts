@@ -1,3 +1,4 @@
+import { LANGUAGE_LOCALES } from '../../../server/src/public-routes';
 import { afterNextRender, computed, Injectable, signal } from '@angular/core';
 import type { PackageCatalogue } from '../../../server/src/package-contracts';
 import { FAUNAPOOLEN_PACKAGES, type FaunapoolenPackage } from './content/faunapoolen-content';
@@ -10,7 +11,7 @@ export class PublicPackageCatalogue {
   readonly loading = signal(true);
   readonly error = signal(false);
   private readonly locale = activeLanguage();
-  private readonly currency = new Intl.NumberFormat(this.locale, {
+  private readonly currency = new Intl.NumberFormat(LANGUAGE_LOCALES[this.locale], {
     style: 'currency',
     currency: 'SEK',
     maximumFractionDigits: 0,
