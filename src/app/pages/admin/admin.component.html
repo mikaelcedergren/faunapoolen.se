@@ -68,6 +68,9 @@
       }
 
       <main class="fp-admin-content">
+        @if (logoutError()) {
+          <cx-alert mood="danger" [heading]="logoutError()" />
+        }
         @switch (view()) {
           @case ('social') {
             <fp-social-posts (sessionExpired)="expireSession()" />

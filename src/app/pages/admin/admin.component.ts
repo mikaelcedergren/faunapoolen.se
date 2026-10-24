@@ -341,6 +341,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly usernameValidation = signal<CxFieldValidation | undefined>(undefined);
   protected readonly passwordValidation = signal<CxFieldValidation | undefined>(undefined);
   protected readonly requestError = signal('');
+  protected readonly logoutError = signal('');
 
   protected readonly view = signal<View>(this.initialView);
   protected readonly section = signal<CampaignSection>('copy');
@@ -762,17 +763,21 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
 
     this.submitting.set(true);
+    this.logoutError.set('');
     try {
-      await this.request('/api/admin/logout', { method: 'POST' });
-    } finally {
+      const response = await this.request('/api/admin/logout', { method: 'POST' });
+      if (!response.ok) throw new Error('Logout was not acknowledged.');
       this.generationPollSequence += 1;
       this.authenticated.set(false);
       this.username.set('');
       this.password.set('');
       this.requestError.set('');
       this.resetStudio();
-      this.submitting.set(false);
       queueMicrotask(() => this.usernameField?.focus());
+    } catch {
+      this.logoutError.set('Could not confirm log out. Try again.');
+    } finally {
+      this.submitting.set(false);
     }
   }
 
@@ -1628,6 +1633,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private resetStudio(): void {
+    this.logoutError.set('');
     this.view.set(this.initialView);
     this.section.set('copy');
     this.copyEdits.set({});

@@ -94,7 +94,9 @@ for (const [entry, linkName, index, service, packageId] of [
           expect.objectContaining({ id: 'package', value: 'Swim together' }),
         ]),
       );
-    await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
+    await expect(
+      page.getByText('Your enquiry has been received', { exact: true }),
+    ).toBeInViewport();
     await expect(page.getByRole('textbox')).toHaveCount(0);
   });
 }
@@ -232,7 +234,7 @@ test('the inline enquiry keeps contact details when changing pool preference', a
   expect(response.request().postDataJSON().fields).toEqual(
     expect.arrayContaining([expect.objectContaining({ id: 'package', value: 'Not decided yet' })]),
   );
-  await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
+  await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeInViewport();
 });
 
 test('an inline enquiry recovers from an interrupted receipt without creating a second request', async ({
@@ -275,7 +277,16 @@ test('an inline enquiry recovers from an interrupted receipt without creating a 
   );
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-pool-enquiry-retry.png' });
   await submit.click();
-  await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
+  await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeInViewport();
+  await expect
+    .poll(async () => {
+      const receipt = await page
+        .getByText('Your enquiry has been received', { exact: true })
+        .boundingBox();
+      const header = await page.locator('cx-masthead > header').boundingBox();
+      return !!receipt && !!header && receipt.y >= header.y + header.height;
+    })
+    .toBe(true);
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-pool-enquiry-received.png' });
   expect(requests).toHaveLength(2);
   expect(requests[1]).toBe(requests[0]);

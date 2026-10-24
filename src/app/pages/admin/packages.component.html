@@ -6,11 +6,9 @@
       Saving updates package titles and starting prices on this website. Prices are in SEK,
       excluding VAT and shipping.
     </p>
-    @if (error()) {
+    @if (error() && !saved()) {
       <cx-alert mood="danger" [heading]="error()" />
-      @if (!saved() || conflict()) {
-        <cx-button text="Reload packages" icon="reload" (pressed)="reload()" />
-      }
+      <cx-button text="Reload packages" icon="reload" (pressed)="reload()" />
     }
     @if (saved()) {
       <cx-grid [columns]="3" [columnsMobile]="1" gap="xl">
@@ -59,6 +57,12 @@
           [disabled]="!dirty() || conflict()"
           (pressed)="save()"
         />
+        @if (error()) {
+          <cx-alert mood="danger" [heading]="error()" />
+          @if (conflict()) {
+            <cx-button text="Reload packages" icon="reload" (pressed)="reload()" />
+          }
+        }
         @if (savedNotice()) {
           <p role="status">Changes saved</p>
         }
