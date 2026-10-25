@@ -487,6 +487,10 @@
     "site.gotland_copy.previous": "Immagine precedente",
     "site.gotland_copy.next": "Immagine successiva",
     "site.gotland_copy.attribution": "Da Brita",
+    "site.gotland.before.body": "Gotland è nota per il suo substrato calcareo, con suoli poco profondi e roccia affiorante in ampie zone dell’isola. Qui il terreno era molto duro, con erba, arbusti e alberi sparsi. Accanto alle piccole casette, uno spazio aperto si prestava naturalmente a ospitare una piscina.",
+    "site.gotland.before.heading": "Prima della piscina",
+    "site.gotland.before.house.alt": "Piccole casette in legno e un sentiero in pietra accanto a un terreno aperto ed erboso, prima della costruzione della piscina naturale.",
+    "site.gotland.before.landscape.alt": "Erba, arbusti, alberi sparsi e una grande pietra nel giardino prima della costruzione della piscina naturale.",
     "site.gotland.story.home.heading": "Un luogo per nuotare accanto a casa",
     "site.gotland.story.home.body": "Appena fuori casa, il giardino si apre sull’acqua. Abbiamo realizzato questa piscina naturale perché fosse parte dell’ambiente, con spazio per nuotare e trascorrere del tempo insieme.",
     "site.gotland.story.stone.heading": "Pietra, acqua e un bordo più naturale",
@@ -781,6 +785,10 @@
     "site.footer.contact": "Contatti",
     "site.footer.certification": "Certified Aquascape Contractor",
     "site.footer.explore": "Scopri",
-    "site.language.label": "Lingua"
+    "site.language.label": "Lingua",
+    "site.gotland.before.terrace.alt": "Vista dalla casa principale sul giardino aperto, con tre persone sulla terrazza in pietra prima della costruzione della piscina naturale.",
+    "site.gotland.before.aerial.alt": "Vista aerea degli edifici e del giardino prima della costruzione della piscina naturale, con i confini della proprietà segnati in giallo.",
+    "site.gotland.after.heading": "La piscina completata",
+    "site.gotland.after.body": "Lo spazio aperto accanto alle casette è ora una piscina naturale, delimitata da pietre naturali e piante. Questi filmati e fotografie mostrano il progetto completato."
   }
 }

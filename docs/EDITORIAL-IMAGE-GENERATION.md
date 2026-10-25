@@ -8,6 +8,38 @@ Current style authorities, each with approved visual references:
 Earlier prompts below record provenance. Use the relevant current style guide for future edits;
 the blueprint guide owns the reusable prompt, scene briefs and transparent website export rules.
 
+## 25 October 2026: Swim together waterfall direction
+
+Owner requested the same illustration with the connecting waterfall returning from the planted
+pond into the swimming pool. The canonical `public/assets/images/faunapoolen/editorial/package-summer.png`
+and its three served `package-summer-{480,960,1448}.webp` exports change. The approved reference
+snapshots remain unchanged. Responsive WebP exports use quality 85 and preserve alpha transparency.
+The exact corrected 1448 × 1086 composite is preserved in
+`docs/reference-images/package-summer-waterfall-corrected.png`.
+
+Generated with built-in Imagegen, using the existing production image as the edit target and
+style reference, genuine transparency enabled, and the unchanged master prompt from the
+[architectural illustration guide](ARCHITECTURAL-ILLUSTRATION-STYLE.md), followed by this scene prompt:
+
+> Use case: precise-object-edit. This is a surgical EDIT, not a new illustration. The attached existing Swim together medium package image is the sole EDIT TARGET and approved visual reference. Preserve this exact image, geometry, all stones, planted pond, curved timber path, deck and its two loungers, pool entry steps, trees, foliage, water color, fine drafting lines, canvas, framing and transparency. Change ONLY the small waterfall at the boundary between the planted pond at bottom-left and the swimming pool at upper-right.
+>
+> Currently the white waterfall drops down-left into the planted pond and makes a circular splash among the plants. REVERSE THIS FLOW: the planted pond is the upstream side; water must pass over the SAME stone divider and fall UP-RIGHT into the OPEN BLUE SWIMMING POOL. Put the white falling-water strands on the upper-right/pool-facing side of this same spillway, with a small foamy landing and expanding ripples entirely inside the blue swimming pool. Remove the former down-left falling water and splash from the planted side, restoring that tiny area as calm planted pond water. Make the lip and tiny drop read coherently as water leaving the planted pond and entering the main pool. Do not merely add a second waterfall: there must be exactly one waterfall at this connection, now reversed. Keep the edit confined to the existing waterfall and its immediately adjacent landing water. Everything else must remain identical, including other water details. No arrows, new features, labels or redesign.
+>
+> Output one genuine transparent PNG on the existing 1448 by 1086, 4:3 canvas. Preserve exact full illustration scale and positioning.
+
+Full-image attempts changed surrounding details, so the owner explicitly approved precise
+compositing. The selected first output supplied only the waterfall, its landing ripples, and the
+small planted-water area exposed by removing the old cascade. It was aligned and masked onto the
+original, retaining the adjacent original boulder. The second full-image attempt was rejected.
+
+Pixel comparison of the full-resolution composite confirms the entire original alpha channel
+and all pixels outside the local patch are unchanged. When integrating onto `main`, its newer
+mobile image budget and export dimensions were retained: the public PNG is 770 × 577 and the
+largest WebP is 1303 × 977, with the existing 480px and 960px variants. These web exports are
+resized copies; the archived full-resolution composite preserves the exact pixels. All public
+exports remain below 750,000 bytes and retain their stable URLs and transparency.
+The waterfall now lands on the open swimming-water side; the planted side has no falling water.
+
 The five main editorial images were regenerated on 17 September 2026 with the built-in image generation tool. They are AI concept imagery, not photographs documenting completed installations.
 
 The owner retained two motifs: a family gathering on the deck after a swim, and a hand touching water. The other three images use new scenes. The accepted direction is beautiful, natural photography with unposed moments, restrained colour, softer detail and imperfect available light. No HDR, tone mapping or enhanced local contrast. The real Gotland photographs supplied the reference for light, materials and garden character and were not modified.

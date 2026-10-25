@@ -441,6 +441,10 @@
     "site.gotland.story.stone.body": "Naturstenen ger poolen dess form, medan växterna knyter samman vattnet med trädgården. De oregelbundna kanterna gör att utsikten förändras när du rör dig runt poolen.",
     "site.gotland.story.stone.heading": "Sten, vatten och mjukare kanter",
     "site.gotland_copy.attribution": "Från Brita",
+    "site.gotland.before.body": "Gotland är känt för sin kalkstensberggrund, med tunna jordlager och berg i dagen över stora delar av ön. Här var marken mycket hård, med gräs, buskar och spridda träd. Intill de små stugorna fanns en öppen yta som passade naturligt för en pool.",
+    "site.gotland.before.heading": "Innan poolen byggdes",
+    "site.gotland.before.house.alt": "Små trästugor och en stengång intill öppen, gräsbevuxen mark innan naturpoolen byggdes.",
+    "site.gotland.before.landscape.alt": "Gräs, buskar, spridda träd och en stor sten i trädgården innan naturpoolen byggdes.",
     "site.gotland_copy.enlarge": "Förstora bilden",
     "site.gotland_copy.next": "Nästa bild",
     "site.gotland_copy.previous": "Föregående bild",
@@ -781,6 +785,10 @@
     "site.services.koi.name": "Koidamm",
     "site.services.waterfall.name": "Vattenfall",
     "site.services.fountain.name": "Fountainscapes",
-    "site.services.rainwater.name": "System för regnvatteninsamling"
+    "site.services.rainwater.name": "System för regnvatteninsamling",
+    "site.gotland.before.terrace.alt": "Vy från huvudbyggnaden över den öppna trädgården, med tre personer på stenterrassen innan naturpoolen byggdes.",
+    "site.gotland.before.aerial.alt": "Flygbild över byggnaderna och trädgården innan naturpoolen byggdes, med fastighetsgränser markerade i gult.",
+    "site.gotland.after.heading": "Den färdiga poolen",
+    "site.gotland.after.body": "Den öppna ytan intill stugorna är nu en naturpool, inramad av natursten och växter. Filmerna och fotografierna visar det färdiga projektet."
   }
 }

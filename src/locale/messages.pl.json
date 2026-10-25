@@ -487,6 +487,10 @@
     "site.gotland_copy.previous": "Poprzednie zdjęcie",
     "site.gotland_copy.next": "Następne zdjęcie",
     "site.gotland_copy.attribution": "Od Brity",
+    "site.gotland.before.body": "Gotlandia słynie z wapiennego podłoża, z cienką warstwą gleby i odsłoniętymi skałami na znacznych obszarach wyspy. Tutaj grunt był bardzo twardy, porośnięty trawą, krzewami i pojedynczymi drzewami. Otwarta przestrzeń przy małych domkach stanowiła naturalne miejsce na basen.",
+    "site.gotland.before.heading": "Zanim powstał basen",
+    "site.gotland.before.house.alt": "Małe drewniane domki i kamienna ścieżka przy otwartym, trawiastym terenie przed budową basenu naturalnego.",
+    "site.gotland.before.landscape.alt": "Trawa, krzewy, pojedyncze drzewa i duży kamień w ogrodzie przed budową basenu naturalnego.",
     "site.gotland.story.home.heading": "Miejsce do kąpieli tuż przy domu",
     "site.gotland.story.home.body": "Tuż za domem ogród otwiera się na wodę. Zbudowaliśmy ten basen naturalny tak, by był częścią otoczenia, z miejscem na kąpiel i wspólne chwile.",
     "site.gotland.story.stone.heading": "Kamień, woda i łagodniejszy brzeg",
@@ -781,6 +785,10 @@
     "site.footer.contact": "Kontakt",
     "site.footer.certification": "Certified Aquascape Contractor",
     "site.footer.explore": "Odkrywaj",
-    "site.language.label": "Język"
+    "site.language.label": "Język",
+    "site.gotland.before.terrace.alt": "Widok z głównego domu na otwarty ogród, z trzema osobami na kamiennym tarasie przed budową basenu naturalnego.",
+    "site.gotland.before.aerial.alt": "Widok budynków i ogrodu z lotu ptaka przed budową basenu naturalnego, z granicami działki zaznaczonymi na żółto.",
+    "site.gotland.after.heading": "Gotowy basen",
+    "site.gotland.after.body": "Otwarta przestrzeń przy domkach jest dziś basenem naturalnym otoczonym naturalnym kamieniem i roślinami. Te filmy i zdjęcia pokazują ukończony projekt."
   }
 }

@@ -487,6 +487,10 @@
     "site.gotland_copy.previous": "Vorheriges Bild",
     "site.gotland_copy.next": "Nächstes Bild",
     "site.gotland_copy.attribution": "Von Brita",
+    "site.gotland.before.body": "Gotland ist für seinen Kalksteinuntergrund bekannt. In weiten Teilen der Insel sind die Bodenschichten dünn und der Fels liegt offen. Hier war der Boden sehr hart, mit Gras, Sträuchern und vereinzelten Bäumen. Eine offene Fläche neben den kleinen Holzhäusern bot sich als Platz für einen Pool an.",
+    "site.gotland.before.heading": "Bevor der Pool entstand",
+    "site.gotland.before.house.alt": "Kleine Holzhäuser und ein Steinweg neben einer offenen Grasfläche, bevor der Naturpool gebaut wurde.",
+    "site.gotland.before.landscape.alt": "Gras, Sträucher, vereinzelte Bäume und ein großer Stein im Garten, bevor der Naturpool gebaut wurde.",
     "site.gotland.story.home.heading": "Ein Badeplatz neben dem Haus",
     "site.gotland.story.home.body": "Direkt vor dem Haus öffnet sich der Garten zum Wasser. Wir haben diesen Naturpool so gebaut, dass er Teil seiner Umgebung ist – mit Platz zum Schwimmen und für gemeinsame Zeit.",
     "site.gotland.story.stone.heading": "Stein, Wasser und ein sanfter Übergang",
@@ -781,6 +785,10 @@
     "site.footer.contact": "Kontakt",
     "site.footer.certification": "Certified Aquascape Contractor",
     "site.footer.explore": "Entdecken",
-    "site.language.label": "Sprache"
+    "site.language.label": "Sprache",
+    "site.gotland.before.terrace.alt": "Blick vom Haupthaus über den offenen Garten, mit drei Personen auf der Steinterrasse, bevor der Naturpool gebaut wurde.",
+    "site.gotland.before.aerial.alt": "Luftaufnahme der Gebäude und des Gartens vor dem Bau des Naturpools, mit gelb markierten Grundstücksgrenzen.",
+    "site.gotland.after.heading": "Der fertige Pool",
+    "site.gotland.after.body": "Auf der offenen Fläche neben den kleinen Holzhäusern liegt heute ein Naturpool, eingefasst von Naturstein und Pflanzen. Diese Filme und Fotos zeigen das fertige Projekt."
   }
 }

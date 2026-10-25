@@ -29,53 +29,89 @@
     />
   </cx-hero>
   <fp-certification-strip />
-  @for (story of gotlandStories; track story.film.id) {
-    <section
-      class="cx-container fp-section fp-feature fp-feature--film"
-      [class.fp-feature--reversed]="$odd"
-      [attr.aria-labelledby]="'gotland-' + story.film.id"
-    >
-      <div class="cx-editorial">
-        <h2 [id]="'gotland-' + story.film.id" class="fp-heading cx-font-regular">
-          {{ story.heading }}
+  <section class="cx-container fp-section" aria-labelledby="gotland-before-title">
+    <cx-stack gap="2xl">
+      <div class="cx-editorial cx-measure-md cx-text-center cx-py-xl">
+        <h2 id="gotland-before-title" class="cx-text-display cx-font-regular">
+          {{ gotlandBefore.heading }}
         </h2>
-        <p>{{ story.body }}</p>
+        <p>{{ gotlandBefore.body }}</p>
       </div>
-      <fp-gotland-film [film]="story.film" [heading]="story.heading" />
-    </section>
-    @if (!$last) {
-      <div class="cx-container"><cx-divider /></div>
-    }
-  }
-  <div class="cx-container fp-section">
-    <section [attr.aria-label]="evidence.caseTitle">
-      <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
-        @for (item of gotlandPhotos; track item.id) {
-          <a
-            class="cx-figure"
-            [attr.data-gotland-photo]="item.id"
-            [href]="item.src"
-            (click)="gallery.openPhoto($event, item.id)"
-            [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
-          >
+      <cx-grid [columns]="2" [columnsMobile]="1" gap="lg">
+        @for (item of gotlandBefore.photos; track item.id) {
+          <figure class="cx-figure">
             <img
-              class="cx-w-full cx-rounded-xl"
+              class="cx-rounded-xl"
               [src]="item.preview"
-              [attr.srcset]="
-                item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
-              "
-              sizes="(max-width: 767px) 50vw, 400px"
+              [attr.srcset]="item.preview + ' 600w, ' + item.src + ' 1200w'"
+              sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1279px) calc((100vw - 72px) / 2), 578px"
               [alt]="item.alt"
               [width]="item.width"
               [height]="item.height"
-              [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
+              loading="lazy"
               decoding="async"
             />
-          </a>
+          </figure>
         }
-      </cx-masonry>
-    </section>
-  </div>
+      </cx-grid>
+    </cx-stack>
+  </section>
+  <div class="cx-container"><cx-divider /></div>
+  <section class="cx-container fp-section" aria-labelledby="gotland-after-title">
+    <cx-stack gap="2xl">
+      <div class="cx-editorial cx-measure-md cx-text-center cx-py-xl cx-pb-2xl">
+        <h2 id="gotland-after-title" class="cx-text-display cx-font-regular">
+          {{ gotlandAfter.heading }}
+        </h2>
+        <p>{{ gotlandAfter.body }}</p>
+      </div>
+      @for (story of gotlandStories; track story.film.id) {
+        <section
+          class="fp-feature fp-feature--film"
+          [class.fp-feature--reversed]="$odd"
+          [attr.aria-labelledby]="'gotland-' + story.film.id"
+        >
+          <div class="cx-editorial">
+            <h3 [id]="'gotland-' + story.film.id" class="fp-heading cx-font-serif cx-font-regular">
+              {{ story.heading }}
+            </h3>
+            <p>{{ story.body }}</p>
+          </div>
+          <fp-gotland-film [film]="story.film" [heading]="story.heading" />
+        </section>
+        @if (!$last) {
+          <cx-divider />
+        }
+      }
+      <section [attr.aria-label]="evidence.caseTitle">
+        <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
+          @for (item of gotlandPhotos; track item.id) {
+            <a
+              class="cx-figure"
+              [attr.data-gotland-photo]="item.id"
+              [href]="item.src"
+              (click)="gallery.openPhoto($event, item.id)"
+              [attr.aria-label]="gotlandCopy.enlarge + ': ' + item.alt"
+            >
+              <img
+                class="cx-w-full cx-rounded-xl"
+                [src]="item.preview"
+                [attr.srcset]="
+                  item.preview + ' ' + item.width / 2 + 'w, ' + item.src + ' ' + item.width + 'w'
+                "
+                sizes="(max-width: 767px) 50vw, 400px"
+                [alt]="item.alt"
+                [width]="item.width"
+                [height]="item.height"
+                [attr.loading]="$index < 5 ? 'eager' : 'lazy'"
+                decoding="async"
+              />
+            </a>
+          }
+        </cx-masonry>
+      </section>
+    </cx-stack>
+  </section>
   <figure class="fp-section fp-project-quote" [attr.data-review]="testimonials[0].id">
     <blockquote>“{{ testimonials[0].quote }}”</blockquote>
     <figcaption class="cx-text-muted">

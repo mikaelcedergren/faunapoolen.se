@@ -487,6 +487,10 @@
     "site.gotland_copy.previous": "Imagem anterior",
     "site.gotland_copy.next": "Imagem seguinte",
     "site.gotland_copy.attribution": "Da Brita",
+    "site.gotland.before.body": "Gotland é conhecida pelo seu substrato calcário, com solos pouco profundos e rocha à superfície em grande parte da ilha. Aqui, o terreno era muito duro, com erva, arbustos e árvores dispersas. Junto às pequenas casas, uma área aberta oferecia um lugar natural para uma piscina.",
+    "site.gotland.before.heading": "Antes da piscina",
+    "site.gotland.before.house.alt": "Pequenas casas de madeira e um caminho de pedra junto a um terreno aberto coberto de erva, antes da construção da piscina natural.",
+    "site.gotland.before.landscape.alt": "Erva, arbustos, árvores dispersas e uma pedra grande no jardim antes da construção da piscina natural.",
     "site.gotland.story.home.heading": "Um lugar para nadar junto a casa",
     "site.gotland.story.home.body": "Logo à saída de casa, o jardim abre-se para a água. Construímos esta piscina natural para fazer parte da envolvente, com espaço para nadar e passar tempo em companhia.",
     "site.gotland.story.stone.heading": "Pedra, água e uma margem mais suave",
@@ -781,6 +785,10 @@
     "site.footer.contact": "Contacto",
     "site.footer.certification": "Certified Aquascape Contractor",
     "site.footer.explore": "Explorar",
-    "site.language.label": "Idioma"
+    "site.language.label": "Idioma",
+    "site.gotland.before.terrace.alt": "Vista da casa principal para o jardim aberto, com três pessoas no terraço de pedra antes da construção da piscina natural.",
+    "site.gotland.before.aerial.alt": "Vista aérea dos edifícios e do jardim antes da construção da piscina natural, com os limites da propriedade assinalados a amarelo.",
+    "site.gotland.after.heading": "A piscina concluída",
+    "site.gotland.after.body": "A área aberta junto às pequenas casas é agora uma piscina natural, rodeada de pedra natural e plantas. Estes vídeos e fotografias mostram o projeto concluído."
   }
 }

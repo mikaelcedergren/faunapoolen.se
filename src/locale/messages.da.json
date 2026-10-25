@@ -441,6 +441,10 @@
     "site.gotland.story.stone.body": "Natursten giver poolen sin form, mens planterne forbinder vandet med haven. De uregelmæssige kanter giver nye udsigter, når du bevæger dig rundt om poolen.",
     "site.gotland.story.stone.heading": "Sten, vand og blødere kanter",
     "site.gotland_copy.attribution": "Fra Brita",
+    "site.gotland.before.body": "Gotland er kendt for sin kalkstensundergrund med tynde jordlag og blotlagt klippe på store dele af øen. Her var jorden meget hård med græs, buske og spredte træer. Ved de små hytter lå et åbent område, der var et naturligt sted til en pool.",
+    "site.gotland.before.heading": "Før poolen blev bygget",
+    "site.gotland.before.house.alt": "Små træhytter og en stensti ved et åbent, græsklædt område, før naturpoolen blev bygget.",
+    "site.gotland.before.landscape.alt": "Græs, buske, spredte træer og en stor sten i haven, før naturpoolen blev bygget.",
     "site.gotland_copy.enlarge": "Forstør billedet",
     "site.gotland_copy.next": "Næste billede",
     "site.gotland_copy.previous": "Forrige billede",
@@ -781,6 +785,10 @@
     "site.services.koi.name": "Koidam",
     "site.services.waterfall.name": "Vandfald",
     "site.services.fountain.name": "Fountainscapes",
-    "site.services.rainwater.name": "System til regnvandsopsamling"
+    "site.services.rainwater.name": "System til regnvandsopsamling",
+    "site.gotland.before.terrace.alt": "Udsigt fra hovedhuset over den åbne have med tre personer på stenterrassen, før naturpoolen blev bygget.",
+    "site.gotland.before.aerial.alt": "Luftfoto af bygningerne og haven, før naturpoolen blev bygget, med ejendomsgrænser markeret med gult.",
+    "site.gotland.after.heading": "Den færdige pool",
+    "site.gotland.after.body": "Det åbne område ved hytterne er nu en naturpool omkranset af natursten og beplantning. Filmene og fotografierne viser det færdige projekt."
   }
 }

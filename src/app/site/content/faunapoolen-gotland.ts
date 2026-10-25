@@ -106,6 +106,43 @@ export const GOTLAND_COPY = {
   attribution: $localize`:@@site.gotland_copy.attribution:From Brita`,
 } satisfies Record<string, string>;
 
+// Case-study context only; these photographs are not part of the shared gallery.
+export const GOTLAND_BEFORE = {
+  heading: $localize`:@@site.gotland.before.heading:Before the pool`,
+  body: $localize`:@@site.gotland.before.body:Gotland is known for its limestone bedrock, with thin soils and exposed rock across large parts of the island. Here, the ground was very hard, with grass, shrubs and scattered trees. Beside the small cottages, an open area offered a natural place for a pool.`,
+  photos: [
+    photo(
+      'before-house',
+      1200,
+      900,
+      $localize`:@@site.gotland.before.house.alt:Small timber cottages and a stone path beside open, grassy ground before the nature pool was built.`,
+    ),
+    photo(
+      'before-landscape',
+      1200,
+      900,
+      $localize`:@@site.gotland.before.landscape.alt:Grass, shrubs, scattered trees and a large stone in the garden before the nature pool was built.`,
+    ),
+    photo(
+      'before-terrace',
+      1200,
+      1260,
+      $localize`:@@site.gotland.before.terrace.alt:View from the main house across the open garden, with three people on the stone terrace before the nature pool was built.`,
+    ),
+    photo(
+      'before-aerial',
+      1200,
+      1261,
+      $localize`:@@site.gotland.before.aerial.alt:Aerial view of the buildings and garden before the nature pool was built, with yellow property boundary markings.`,
+    ),
+  ],
+} as const;
+
+export const GOTLAND_AFTER = {
+  heading: $localize`:@@site.gotland.after.heading:The finished pool`,
+  body: $localize`:@@site.gotland.after.body:The open space beside the cottages is now a nature pool, edged with natural stone and planting. These films and photographs show the completed project.`,
+} as const;
+
 export const GOTLAND_STORIES = [
   {
     film: film('1226470321', 1, '0:32'),
