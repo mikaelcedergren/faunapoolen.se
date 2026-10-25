@@ -505,7 +505,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
 
   await page.goto('/admin');
 
-  await expect(page.locator('html')).toHaveClass(/theme-light/);
+  await expect(page.locator('html')).toHaveClass(/theme-aqua/);
   await expect(page.locator('nav.navigation')).toHaveCount(0);
   await expect(page.getByText('Sign in to your campaign studio.')).toHaveCount(0);
 
@@ -524,7 +524,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
 
   const campaignLocation = page.getByRole('navigation', { name: 'Campaign location' });
   await expect(
-    campaignLocation.getByRole('listitem').getByText('Campaign studio', { exact: true }),
+    campaignLocation.getByRole('listitem').getByText('Campaigns', { exact: true }),
   ).toBeVisible();
   await expect(page.locator('cx-side-nav')).toHaveCount(1);
   await expect(page.getByRole('complementary', { name: 'Main navigation' })).toBeVisible();
@@ -556,7 +556,12 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'A natural place to swim' })).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-  await expect(page.getByRole('button', { name: 'Campaigns', exact: true })).toHaveCount(0);
+  await expect(
+    campaignLocation.getByRole('button', { name: 'Campaigns', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('main').getByRole('button', { name: 'Campaigns', exact: true }),
+  ).toHaveCount(0);
 
   const campaignTabs = page.getByRole('tablist', { name: 'Campaign sections' });
   const topBarBounds = await page.locator('cx-top-bar').boundingBox();
@@ -701,7 +706,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
   await headline.blur();
   await expect(page.getByRole('button', { name: 'Retry save', exact: true })).toBeVisible();
   await page.screenshot({ animations: 'disabled', path: '/tmp/fauna-admin-after-save-error.png' });
-  await campaignLocation.getByRole('button', { name: 'Campaign studio', exact: true }).click();
+  await campaignLocation.getByRole('button', { name: 'Campaigns', exact: true }).click();
   await expect(page.getByText('Leave without saving?', { exact: true })).toBeVisible();
   await page.screenshot({
     animations: 'disabled',
@@ -769,7 +774,7 @@ test('admin signs in and builds one explained bilingual campaign', async ({ page
     'No HDR tone mapping',
   );
 
-  await campaignLocation.getByRole('button', { name: 'Campaign studio', exact: true }).click();
+  await campaignLocation.getByRole('button', { name: 'Campaigns', exact: true }).click();
   await expect(page.getByText('Water for a smaller garden', { exact: true })).toBeVisible();
   await page.screenshot({
     animations: 'disabled',

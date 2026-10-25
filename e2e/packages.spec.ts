@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Save changes', exact: true })).toBeVisible();
 });
 
-test('package edits update public cards and choices in each language and protect unsaved work', async ({
+test('price edits preserve translated titles, update public cards and protect unsaved work', async ({
   page,
 }) => {
   let catalogue = {
@@ -58,9 +58,13 @@ test('package edits update public cards and choices in each language and protect
       },
     ],
   };
+  const originalTitles = catalogue.packages.map((item) => ({ ...item.titles }));
   await page.route('**/api/admin/packages', async (route) => {
     if (route.request().method() === 'PATCH') {
       const update = route.request().postDataJSON();
+      expect(update.packages.map((item: { titles: unknown }) => item.titles)).toEqual(
+        originalTitles,
+      );
       catalogue = { ...update, revision: catalogue.revision + 1 };
     }
     await route.fulfill({ json: catalogue });
@@ -68,18 +72,15 @@ test('package edits update public cards and choices in each language and protect
   await page.route('**/api/packages', (route) => route.fulfill({ json: catalogue }));
   await page.goto('/en/admin/packages/');
   const first = page.getByRole('region', { name: 'Daily dips', exact: true });
-  await expect(first.getByRole('textbox', { name: 'English title', exact: true })).toHaveValue(
-    'Daily dips',
+  await expect(page.getByRole('textbox')).toHaveCount(0);
+  await expect(first.getByRole('spinbutton', { name: 'From price', exact: true })).toHaveValue(
+    '430000',
   );
   await page.screenshot({
     animations: 'disabled',
     path: '/tmp/fauna-packages-before.png',
     fullPage: true,
   });
-  await first.getByRole('textbox', { name: 'English title', exact: true }).fill('Morning swims');
-  await first.getByRole('textbox', { name: 'Swedish title', exact: true }).fill('Morgondopp');
-  await first.getByRole('textbox', { name: 'Danish title', exact: true }).fill('Morgensvømning');
-  await first.getByRole('textbox', { name: 'Polish title', exact: true }).fill('Poranne kąpiele');
   await first.getByRole('spinbutton', { name: 'From price', exact: true }).fill('450000');
   await page.getByRole('link', { name: 'Customers', exact: true }).click();
   await expect(page.getByRole('alertdialog')).toBeVisible();
@@ -95,25 +96,25 @@ test('package edits update public cards and choices in each language and protect
   await page.reload();
   await expect(
     page
-      .getByRole('region', { name: 'Morning swims', exact: true })
-      .getByRole('textbox', { name: 'Swedish title', exact: true }),
-  ).toHaveValue('Morgondopp');
+      .getByRole('region', { name: 'Daily dips', exact: true })
+      .getByRole('spinbutton', { name: 'From price', exact: true }),
+  ).toHaveValue('450000');
   await page.screenshot({
     animations: 'disabled',
     path: '/tmp/fauna-packages-after.png',
     fullPage: true,
   });
   for (const [url, title] of [
-    ['/en/', 'Morning swims'],
-    ['/en/nature-pools/', 'Morning swims'],
-    ['/en/nature-pools/pricing/', 'Morning swims'],
-    ['/', 'Morgondopp'],
-    ['/da/', 'Morgensvømning'],
+    ['/en/', 'Daily dips'],
+    ['/en/nature-pools/', 'Daily dips'],
+    ['/en/nature-pools/pricing/', 'Daily dips'],
+    ['/', 'Dagliga dopp'],
+    ['/da/', 'Daglige dukkerter'],
     ['/it/', 'Bagni quotidiani'],
     ['/es/', 'Chapuzones diarios'],
     ['/pt/', 'Mergulhos diários'],
     ['/de/', 'Täglich eintauchen'],
-    ['/pl/', 'Poranne kąpiele'],
+    ['/pl/', 'Codzienne kąpiele'],
   ]) {
     await page.goto(url!);
     const card = page
@@ -123,15 +124,15 @@ test('package edits update public cards and choices in each language and protect
     await expect(card.getByRole('link')).toHaveAttribute('href', /package=glade/);
   }
   await page.goto('/en/configure/?package=glade');
-  await expect(page.locator('cx-dropdown').filter({ hasText: 'Morning swims' })).toBeVisible();
+  await expect(page.locator('cx-dropdown').filter({ hasText: 'Daily dips' })).toBeVisible();
 });
 
 test('failed saves keep edits and public read failures never show stale prices', async ({
   page,
 }) => {
   await page.goto('/en/admin/packages/');
-  const title = page.getByRole('textbox', { name: 'English title', exact: true }).first();
-  await title.fill('Unsaved package title');
+  const price = page.getByRole('spinbutton', { name: 'From price', exact: true }).first();
+  await price.fill('470000');
   await page.route('**/api/admin/packages', async (route) => {
     if (route.request().method() === 'PATCH') await route.fulfill({ status: 503, json: {} });
     else await route.continue();
@@ -143,7 +144,7 @@ test('failed saves keep edits and public read failures never show stale prices',
     }),
   ).toBeInViewport();
   await expect(page.getByRole('button', { name: 'Save changes', exact: true })).toBeInViewport();
-  await expect(title).toHaveValue('Unsaved package title');
+  await expect(price).toHaveValue('470000');
   await page.screenshot({
     animations: 'disabled',
     path: '/tmp/fauna-packages-save-error.png',

@@ -6,7 +6,7 @@
       [collapsed]="sideNavCollapsed()"
       (collapsedChange)="sideNavCollapsed.set($event)"
     >
-      <span header class="fp-admin-brand">Faunapoolen</span>
+      <span header class="fp-admin-brand">Admin</span>
       <cx-account-control
         footer
         username="Admin"
@@ -18,7 +18,7 @@
       />
     </cx-side-nav>
 
-    <section class="fp-admin-main" aria-label="Faunapoolen campaign studio">
+    <section class="fp-admin-main" aria-label="Faunapoolen admin">
       <cx-top-bar [pageTitle]="topBarTitle()" (breadcrumbSelect)="onBreadcrumbSelect($event)">
         <div actions>
           @if (view() === 'list' && !generating()) {
@@ -73,7 +73,19 @@
         }
         @switch (view()) {
           @case ('social') {
-            <fp-social-posts (sessionExpired)="expireSession()" />
+            @if (socialPreviewAccepted()) {
+              <fp-social-posts (sessionExpired)="expireSession()" />
+            } @else {
+              <section class="fp-campaign-state" aria-label="Social posts preview notice">
+                <cx-state-message
+                  heading="Social posts is still in development"
+                  description="This feature isn't ready yet. Please don't use it for your work at the moment."
+                  icon="warning"
+                  [action]="enterSocialPreviewAction"
+                  (action)="socialPreviewAccepted.set(true)"
+                />
+              </section>
+            }
           }
           @case ('inbox') {
             <fp-enquiry-inbox (sessionExpired)="expireSession()" />

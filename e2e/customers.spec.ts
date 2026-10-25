@@ -109,7 +109,7 @@ test('email failure and unconfirmed outcomes offer distinct recovery actions', a
   await page.getByRole('button', { name: 'Retry email', exact: true }).click();
   await expect(page.getByText('New · Email queued', { exact: true })).toBeVisible();
   customer.enquiries[0]!.notification.state = 'uncertain';
-  await page.getByRole('button', { name: 'Reload', exact: true }).click();
+  await page.reload();
   await expect(page.getByRole('button', { name: 'Retry email', exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Review email status', exact: true }).click();
   await expect(
@@ -124,13 +124,13 @@ test('email failure and unconfirmed outcomes offer distinct recovery actions', a
   await page.getByRole('button', { name: 'Already sent', exact: true }).click();
   await expect(page.getByText('New · Marked as sent', { exact: true })).toBeVisible();
   failLoad = true;
-  await page.getByRole('button', { name: 'Reload', exact: true }).click();
+  await page.reload();
   await expect(
     page.getByText('Customers could not be loaded. Try again.', { exact: true }),
   ).toBeVisible();
   await page.screenshot({ path: '/tmp/fauna-customers-load-error.png', fullPage: true });
   failLoad = false;
-  await page.getByRole('button', { name: 'Reload', exact: true }).click();
+  await page.reload();
   await expect(
     page.getByText('Customers could not be loaded. Try again.', { exact: true }),
   ).toHaveCount(0);

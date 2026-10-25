@@ -219,7 +219,7 @@ type PromptSection = {
   why: string;
 };
 
-const DEFAULT_THEME: CxThemeMode = 'light';
+const DEFAULT_THEME: CxThemeMode = 'aqua';
 const THEME_STORAGE_KEY = 'fp-admin-theme';
 const FALLBACK_MAX_IDEA_CHARACTERS = 3_000;
 const MIN_IDEA_CHARACTERS = 8;
@@ -344,6 +344,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly logoutError = signal('');
 
   protected readonly view = signal<View>(this.initialView);
+  protected readonly socialPreviewAccepted = signal(false);
+  protected readonly enterSocialPreviewAction: CxStateMessageAction = {
+    text: 'Take me there anyway',
+  };
   protected readonly section = signal<CampaignSection>('copy');
   protected readonly listLoading = signal(true);
   protected readonly listError = signal('');
@@ -373,16 +377,16 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly inspectedPrompt = signal<PromptSection | undefined>(undefined);
   protected readonly sideNavItems: CxSideNavItem[] = [
     {
-      id: 'packages',
-      label: 'Packages',
-      icon: 'form',
-      routerLink: '/admin/packages',
-      routerLinkActiveOptions: { exact: true },
+      id: 'enquiries',
+      label: 'Customers',
+      icon: 'users',
+      routerLink: '/admin/customers',
+      routerLinkActiveOptions: { exact: false },
     },
     {
       id: 'campaign-studio',
-      label: 'Campaign studio',
-      icon: 'form',
+      label: 'Campaigns',
+      icon: 'flag',
       routerLink: '/admin',
       routerLinkActiveOptions: { exact: true },
     },
@@ -394,11 +398,11 @@ export class AdminComponent implements OnInit, OnDestroy {
       routerLinkActiveOptions: { exact: true },
     },
     {
-      id: 'enquiries',
-      label: 'Customers',
-      icon: 'form',
-      routerLink: '/admin/customers',
-      routerLinkActiveOptions: { exact: false },
+      id: 'packages',
+      label: 'Settings',
+      icon: 'settings',
+      routerLink: '/admin/packages',
+      routerLinkActiveOptions: { exact: true },
     },
   ];
   protected readonly sectionTabs: CxTabItem[] = [
@@ -599,12 +603,12 @@ export class AdminComponent implements OnInit, OnDestroy {
   protected readonly topBarTitle = computed<CxTopBarTitle>(() => {
     const root =
       this.view() === 'packages'
-        ? { id: 'packages', label: 'Packages' }
+        ? { id: 'packages', label: 'Settings' }
         : this.view() === 'social'
           ? { id: 'social-posts', label: 'Social posts' }
           : this.view() === 'inbox'
             ? { id: 'enquiries', label: 'Customers' }
-            : { id: 'campaign-studio', label: 'Campaign studio' };
+            : { id: 'campaign-studio', label: 'Campaigns' };
     if (this.view() === 'campaign') {
       return {
         kind: 'breadcrumbs',
@@ -1633,6 +1637,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   }
 
   private resetStudio(): void {
+    this.socialPreviewAccepted.set(false);
     this.logoutError.set('');
     this.view.set(this.initialView);
     this.section.set('copy');

@@ -1,6 +1,6 @@
 <cx-stack gap="lg">
-  <cx-inline gap="md" [wrap]="true">
-    @if (selectedId()) {
+  @if (selectedId()) {
+    <cx-inline gap="md" [wrap]="true">
       <cx-button
         text="All customers"
         icon="arrow-left"
@@ -8,16 +8,8 @@
         [disabled]="saving()"
         (pressed)="select('')"
       />
-    }
-    <cx-button
-      text="Reload"
-      icon="reload"
-      [transparent]="true"
-      [loading]="loading()"
-      [disabled]="saving()"
-      (pressed)="reload()"
-    />
-  </cx-inline>
+    </cx-inline>
+  }
   @if (error()) {
     <cx-alert mood="danger" [heading]="error()" />
   }
@@ -154,8 +146,13 @@
       description="Return to all customers to find the enquiry."
     />
   } @else if (!error()) {
-    <h1 class="cx-text-title-1">Customers</h1>
-    <cx-text-field label="Find a customer" [value]="search()" (valueChange)="search.set($event)" />
+    <cx-text-field
+      label=""
+      ariaLabel="Find a customer"
+      prependIcon="search"
+      [value]="search()"
+      (valueChange)="search.set($event)"
+    />
     <cx-toggle-chip-group
       aria-label="Customer filter"
       selection="single"

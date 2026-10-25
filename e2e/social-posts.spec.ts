@@ -12,6 +12,11 @@ test('social posts prepare media, retain edits and move between Pending and Publ
     await mkdir(directory, { recursive: true, mode: 0o700 });
     await writeFile(resolve(directory, name), bytes, { mode: 0o600 });
   };
+  const socialRequests: string[] = [];
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.startsWith('/api/admin/social-posts'))
+      socialRequests.push(request.url());
+  });
   page.on('pageerror', (e) => errors.push(e.message));
   await page.setViewportSize({ width: 1440, height: 1000 });
   const response = await page.goto('/en/admin/social-posts');
@@ -19,6 +24,23 @@ test('social posts prepare media, retain edits and move between Pending and Publ
   await page.getByRole('textbox', { name: 'Username', exact: true }).fill('faunapoolen-e2e-owner');
   await page.locator('input[name="password"]').fill('faunapoolen-e2e-owner-password');
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(
+    page.getByRole('complementary', { name: 'Main navigation' }).getByRole('link'),
+  ).toHaveText(['Customers', 'Campaigns', 'Social posts', 'Settings']);
+  const previewHeading = page.getByText('Social posts is still in development', {
+    exact: true,
+  });
+  const enterPreview = page.getByRole('button', { name: 'Take me there anyway', exact: true });
+  await expect(previewHeading).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add a post', exact: true })).toHaveCount(0);
+  expect(socialRequests).toEqual([]);
+  await capture('social-preview-notice.png');
+  await enterPreview.click();
+  await expect(page.getByRole('button', { name: 'Add a post', exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Customers', exact: true }).click();
+  await page.getByRole('link', { name: 'Social posts', exact: true }).click();
+  await expect(previewHeading).toBeVisible();
+  await enterPreview.click();
   await expect(page.getByRole('button', { name: 'Add a post', exact: true })).toBeVisible();
   await capture('social-empty.png');
   await page.getByRole('button', { name: 'Add a post', exact: true }).click();
@@ -77,6 +99,8 @@ test('social posts prepare media, retain edits and move between Pending and Publ
   await expect(page.getByText(name, { exact: true })).toBeVisible();
   await capture('social-pending.png');
   await page.reload();
+  await expect(previewHeading).toBeVisible();
+  await enterPreview.click();
   await page.getByText(name, { exact: true }).click();
   await page.getByRole('tab', { name: 'Instagram ✓', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Post text', exact: true })).toHaveValue(

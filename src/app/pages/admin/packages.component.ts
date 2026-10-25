@@ -1,4 +1,3 @@
-import { PUBLIC_LANGUAGES, LANGUAGE_ENGLISH_NAMES } from '../../../../server/src/public-routes';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -18,13 +17,8 @@ import {
   CxNumberFieldComponent,
   CxStackComponent,
   CxStateMessageComponent,
-  CxTextFieldComponent,
 } from '@mikaelcedergren/cx-framework';
-import type {
-  PackageCatalogue,
-  PackageLanguage,
-  PackageValues,
-} from '../../../../server/src/package-contracts';
+import type { PackageCatalogue, PackageValues } from '../../../../server/src/package-contracts';
 import { PublicPackageCatalogue } from '../../site/package-catalogue';
 
 @Component({
@@ -38,7 +32,6 @@ import { PublicPackageCatalogue } from '../../site/package-catalogue';
     CxNumberFieldComponent,
     CxStackComponent,
     CxStateMessageComponent,
-    CxTextFieldComponent,
   ],
   templateUrl: './packages.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,12 +48,6 @@ export class PackagesComponent {
   protected readonly savedNotice = signal(false);
   protected readonly leaveOpen = signal(false);
   protected readonly attempted = signal(false);
-  protected readonly languages: { id: PackageLanguage; label: string }[] = PUBLIC_LANGUAGES.map(
-    (id) => ({
-      id,
-      label: LANGUAGE_ENGLISH_NAMES[id] + ' title',
-    }),
-  );
   readonly dirty = computed(
     () => !!this.saved() && JSON.stringify(this.saved()!.packages) !== JSON.stringify(this.draft()),
   );
@@ -83,23 +70,10 @@ export class PackagesComponent {
       this.leaveDecision?.(false);
     });
   }
-  protected titleError(value: string): string | undefined {
-    return !value.trim() || value.trim().length > 80 || /[\u0000-\u001f\u007f]/u.test(value)
-      ? 'Use 1–80 characters on one line.'
-      : undefined;
-  }
   protected priceError(price: number): string | undefined {
     return !Number.isSafeInteger(price) || price < 1 || price > 100000000
       ? 'Enter a whole SEK amount between 1 and 100,000,000.'
       : undefined;
-  }
-  protected updateTitle(index: number, locale: PackageLanguage, title: string): void {
-    this.draft.update((items) =>
-      items.map((item, i) =>
-        i === index ? { ...item, titles: { ...item.titles, [locale]: title } } : item,
-      ),
-    );
-    this.savedNotice.set(false);
   }
   protected updatePrice(index: number, price: number | undefined): void {
     this.draft.update((items) =>
@@ -140,13 +114,7 @@ export class PackagesComponent {
   protected async save(): Promise<void> {
     if (this.saving() || !this.dirty()) return;
     this.attempted.set(true);
-    if (
-      this.draft().some(
-        (p) =>
-          this.priceError(p.price) || this.languages.some((l) => this.titleError(p.titles[l.id])),
-      )
-    )
-      return;
+    if (this.draft().some((p) => this.priceError(p.price))) return;
     this.saving.set(true);
     this.error.set('');
     this.savedNotice.set(false);

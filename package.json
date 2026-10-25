@@ -24,6 +24,7 @@
   },
   "scripts": {
     "dev": "pnpm favicon:check && node scripts/dev.mjs",
+    "dev:seed": "cd server && node --import tsx ../scripts/seed-owner-demo.mts",
     "dev:owner": "pnpm favicon:check && node scripts/dev.mjs --owner",
     "build": "pnpm run build:browser && pnpm run build:server",
     "build:browser": "ng build --configuration prod && node scripts/flatten.mjs && node --test --test-isolation=none tests/public-site.test.mjs",

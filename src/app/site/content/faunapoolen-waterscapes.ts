@@ -1,10 +1,11 @@
 const ROOT = '/assets/images/faunapoolen/editorial';
 
+// Product names are owner-approved terminology and stay identical in every locale.
 export const WATERSCAPE_TYPES = [
   {
     id: 'garden',
     image: `${ROOT}/waterscape-reflecting.webp`,
-    title: $localize`:@@site.waterscapes.garden.title:Garden ponds`,
+    title: $localize`:@@site.waterscapes.garden.title:Ecosystem Garden Pond`,
     body: $localize`:@@site.waterscapes.garden.body:A quiet place for water lilies, visiting birds and reflections. We design Aquascape ecosystem ponds with planting, natural stone and biological filtration.`,
     detail: $localize`:@@site.waterscapes.garden.detail:The shape and planting can be tailored to your garden, with space to sit beside the water and access for care.`,
     alt: $localize`:@@site.waterscapes.garden.alt:A garden pond with water lilies and stone edges beside a timber terrace.`,
@@ -13,7 +14,7 @@ export const WATERSCAPE_TYPES = [
   {
     id: 'koi',
     image: `${ROOT}/waterscape-koi-detail.webp`,
-    title: $localize`:@@site.waterscapes.koi.title:Koi ponds`,
+    title: $localize`:@@site.waterscapes.koi.title:Ecosystem Koi Pond`,
     body: $localize`:@@site.waterscapes.koi.body:Bring the colour and movement of koi into everyday garden life with an Aquascape ecosystem koi pond. We plan depth, shelter and filtration around the fish.`,
     detail: $localize`:@@site.waterscapes.koi.detail:We explain feeding, seasonal care and access to the equipment, so you know what keeping a koi pond involves.`,
     alt: $localize`:@@site.waterscapes.koi.alt:Koi swimming beneath the surface of a planted garden pond.`,
@@ -22,7 +23,7 @@ export const WATERSCAPE_TYPES = [
   {
     id: 'stream',
     image: `${ROOT}/waterscape-pause.webp`,
-    title: $localize`:@@site.waterscapes.stream.title:Streams`,
+    title: $localize`:@@site.waterscapes.stream.title:BioStream`,
     body: $localize`:@@site.waterscapes.stream.body:Follow the gentle sound of water through your garden. We build garden streams with Aquascape circulation and filtration, shaping the flow around natural stone and planting.`,
     detail: $localize`:@@site.waterscapes.stream.detail:A stream can feed a pond or return to a hidden reservoir. We work with the garden’s levels and the places where you like to sit.`,
     alt: $localize`:@@site.waterscapes.stream.alt:A garden stream winding between stones and planting, with people sitting in the background.`,
@@ -31,7 +32,7 @@ export const WATERSCAPE_TYPES = [
   {
     id: 'waterfall',
     image: `${ROOT}/waterscape-stream.webp`,
-    title: $localize`:@@site.waterscapes.waterfall.title:Waterfalls`,
+    title: $localize`:@@site.waterscapes.waterfall.title:Pondless Waterfall`,
     body: $localize`:@@site.waterscapes.waterfall.body:Enjoy the sound of falling water without an open pond. An Aquascape Pondless® Waterfall recirculates water through a hidden underground reservoir.`,
     detail: $localize`:@@site.waterscapes.waterfall.detail:We shape the stone and drops to suit your garden, from a low cascade to a more noticeable waterfall, with access for maintenance.`,
     alt: $localize`:@@site.waterscapes.waterfall.alt:Water cascading over natural stone ledges between garden plants.`,

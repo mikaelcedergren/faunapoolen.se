@@ -3,8 +3,7 @@
     <cx-state-message state="pending" heading="Loading packages" />
   } @else {
     <p>
-      Saving updates package titles and starting prices on this website. Prices are in SEK,
-      excluding VAT and shipping.
+      Saving updates starting prices on this website. Prices are in SEK, excluding VAT and shipping.
     </p>
     @if (error() && !saved()) {
       <cx-alert mood="danger" [heading]="error()" />
@@ -16,19 +15,6 @@
           <section [attr.aria-label]="saved()!.packages[index].titles.en">
             <cx-stack gap="lg">
               <h2 class="cx-text-title-2">{{ saved()!.packages[index].titles.en }}</h2>
-              @for (language of languages; track language.id) {
-                <cx-text-field
-                  [label]="language.label"
-                  [value]="item.titles[language.id]"
-                  [disabled]="saving()"
-                  [validation]="
-                    attempted() && titleError(item.titles[language.id])
-                      ? { type: 'error', message: titleError(item.titles[language.id])! }
-                      : undefined
-                  "
-                  (valueChange)="updateTitle(index, language.id, $event)"
-                />
-              }
               <cx-number-field
                 label="From price"
                 appendText="SEK"
@@ -73,7 +59,7 @@
 <cx-dialog
   variant="confirm"
   heading="Discard package changes?"
-  description="Your unsaved titles and prices will be discarded."
+  description="Your unsaved price changes will be discarded."
   primaryText="Discard changes"
   secondaryText="Keep editing"
   mood="danger"
