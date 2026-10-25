@@ -527,7 +527,20 @@
     }
 
     .fp-certification-line {
+      grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
       gap: var(--space-sm);
+    }
+
+    .fp-certification-line > .fp-certification-stamp {
+      inline-size: 96px;
+      block-size: 96px;
+      margin-block: calc(-1 * var(--space-md));
+      scale: 1;
+    }
+
+    .fp-certification-line .fp-certification-mark--large {
+      inline-size: 88px;
+      block-size: 88px;
     }
 
     .fp-wordmark {
