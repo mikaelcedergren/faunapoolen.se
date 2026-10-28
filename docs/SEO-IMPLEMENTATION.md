@@ -72,12 +72,15 @@ prove the live transport. See [Google’s page-view guidance](https://developers
 
 There are no analytics requests, analytics cookies or visit-context storage before the visitor
 allows statistics. Statistics consent never enables advertising. A compact, non-modal framework
-popover starts with a compact purpose summary and equally styled Reject all and Accept all
-actions. Choose cookies reveals independent statistics and marketing choices with Save choices.
-Reopening settings shows the saved choices; closing without saving discards edits.
-The choices persist across public pages and locales;
-visitors can reopen it through Cookie settings in every public footer. Localized `/cookies/` pages
-explain purpose, storage, lifetimes and withdrawal. Enquiries work when statistics are declined.
+popover starts with a compact purpose summary and directly available Reject and Accept
+actions. While Google collection is disabled, development and production offer only Meta
+marketing consent: a lime Cookies heading, a default Reject button, a lime Accept button, and
+Cookie details. No category switches or extra settings step are shown for this single purpose.
+If Google collection is enabled after review, the existing separate purpose controls return.
+Choices persist across public pages and locales. Cookie settings in every public footer reopens
+the notice; Reject withdraws consent immediately. Closing reopened settings preserves the saved
+choice. Localized `/cookies/` pages explain the active purpose, storage, lifetimes and withdrawal.
+Enquiries work when optional cookies are declined.
 
 | Event                     | Meaning                                                            |
 | ------------------------- | ------------------------------------------------------------------ |
@@ -96,8 +99,8 @@ On 28 October 2026, the owner requested website tracking with Meta pixel
 `1698072815050895`. The separate `SiteMarketing` consent owner feeds the `MetaPixel` transport;
 the Google measurement payload restrictions above describe Google, not Meta's browser SDK.
 Existing Google consent never grants marketing consent. The public cookie panel and cookie
-details describe both purposes in all eight locales, with neither purpose selected for a new
-visitor. Google production collection remains under its existing disabled review gate.
+details describe the active Meta purpose in all eight locales. No tracking is enabled for a new
+visitor. Google collection remains disabled in every environment under its existing review gate.
 
 Meta loads only after marketing opt-in on `https://faunapoolen.se`. There is no unconditional
 head script or noscript image. Local, preview and isolated test origins dispatch observable

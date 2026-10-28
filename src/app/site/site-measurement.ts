@@ -73,8 +73,8 @@ export class SiteMeasurement {
     this.initialized = true;
     const hostname = this.document.defaultView.location.hostname;
     this.available.set(
-      ['localhost', '127.0.0.1', '[::1]'].includes(hostname) ||
-        (hostname === 'faunapoolen.se' && GOOGLE_COLLECTION_REVIEWED),
+      GOOGLE_COLLECTION_REVIEWED &&
+        ['localhost', '127.0.0.1', '[::1]', 'faunapoolen.se'].includes(hostname),
     );
     if (!this.available()) return;
     try {

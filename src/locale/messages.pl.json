@@ -712,13 +712,13 @@
     "site.ui.your_garden": "Twój ogród",
     "site.measurement.settings": "Ustawienia plików cookie",
     "site.measurement.body": "Opcjonalne pliki cookie pomagają nam zrozumieć wizyty i zapytania, a Meta pozwalają mierzyć skuteczność reklam i je personalizować. W każdej chwili możesz zmienić wybór.",
-    "site.measurement.decline": "Odrzuć wszystkie",
-    "site.measurement.allow": "Akceptuj wszystkie",
+    "site.measurement.decline": "Odrzuć",
+    "site.measurement.allow": "Akceptuj",
     "site.measurement.details": "Szczegóły plików cookie",
     "site.about.hero.alt": "Lilia wodna na stawie ogrodowym o zmierzchu, z ciepłymi światłami odbijającymi się w wodzie.",
-    "cookies.title": "Pliki cookie i statystyki witryny",
-    "cookies.choice": "Wybierz statystyki i marketing osobno. Twój wybór nie wpływa na dostęp do strony ani możliwość wysłania zapytania.",
-    "cookies.introduction": "Faunapoolen korzysta z pamięci przeglądarki, aby zapamiętać Twój wybór. Opcjonalne statystyki i marketing wymagają Twojej zgody.",
+    "cookies.title": "Pliki cookie",
+    "cookies.choice": "Twoja decyzja dotycząca plików cookie nie wpływa na dostęp do witryny ani na możliwość wysłania zapytania.",
+    "cookies.introduction": "Faunapoolen korzysta z pamięci przeglądarki, aby zapamiętać Twoją decyzję. Opcjonalne śledzenie wymaga Twojej zgody.",
     "cookies.statisticsTitle": "Co mierzą statystyki",
     "cookies.statistics": "Za Twoją zgodą mierzymy wizyty na stronach, zainteresowanie pakietami i postęp w formularzu, w tym wysłane zapytania. Zdarzenia zawierają adres strony bez parametrów zapytania, tytuł, język, stronę wejścia i ogólną kategorię źródła, np. wyszukiwarkę lub odesłanie. Nie zawierają imienia i nazwiska, e-maila, telefonu, adresu ani wiadomości.",
     "cookies.google": "Google świadczy usługę analityczną i otrzymuje identyfikatory plików cookie oraz dane techniczne, takie jak adres IP i informacje o przeglądarce, gdy statystyki są aktywne. Zgoda na statystyki nie włącza reklam.",
@@ -800,7 +800,9 @@
     "cookies.marketingData": "Meta otrzymuje identyfikatory przeglądarki i plików cookie, adresy odwiedzanych stron i stron odsyłających, informacje o kliknięciach reklam oraz dane techniczne, takie jak adres IP. Nie wysyłamy treści pól zapytania ani nie włączamy zaawansowanego dopasowywania w naszym kodzie. Śledzenie nie działa w prywatnym panelu administracyjnym.",
     "cookies.marketingCookies": "_fbp i _fbc: opcjonalne pliki cookie Meta identyfikujące przeglądarkę i kliknięcia reklam. Zwykle są ważne przez 90 dni i odnawiane podczas korzystania ze strony. Meta może też używać własnych plików cookie, gdy przeglądarka łączy się z jej usługami.",
     "cookies.marketingStorage": "fp-marketing-consent-v1: pamięć lokalna przechowująca osobny wybór dotyczący marketingu do czasu jego zmiany lub wyczyszczenia danych przeglądarki. Zapisany wybór nie jest wysyłany do Meta.",
-    "cookies.marketingWithdrawal": "Aby zatrzymać śledzenie przez Meta, otwórz ustawienia plików cookie, odznacz marketing i zapisz wybór lub odrzuć wszystkie pliki cookie. Zatrzyma to przyszłe zdarzenia i usunie pliki _fbp i _fbc tej strony. Nie usunie informacji już wysłanych ani plików cookie w domenach Meta.",
-    "site.measurement.customize": "Wybierz pliki cookie"
+    "cookies.marketingWithdrawal": "Aby zatrzymać śledzenie przez Meta, otwórz ustawienia plików cookie w stopce dowolnej strony publicznej i wybierz Odrzuć. Zatrzyma to wysyłanie kolejnych zdarzeń i usunie pliki cookie _fbp oraz _fbc tej witryny. Nie usunie informacji już wysłanych ani plików cookie w domenach Meta.",
+    "site.measurement.customize": "Wybierz pliki cookie",
+    "site.measurement.metaBody": "Czy zezwalasz na marketingowe pliki cookie, aby mierzyć wyniki naszych reklam i personalizować reklamy? Twoja aktywność w witrynie będzie udostępniana naszemu partnerowi reklamowemu. Możesz zmienić decyzję w każdej chwili.",
+    "site.measurement.title": "Pliki cookie"
   }
 }

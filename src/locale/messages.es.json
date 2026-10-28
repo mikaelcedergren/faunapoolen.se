@@ -690,13 +690,13 @@
     "site.ui.your_garden": "Tu jardín",
     "site.measurement.settings": "Configuración de cookies",
     "site.measurement.body": "Las cookies opcionales nos ayudan a comprender las visitas y consultas y permiten a Meta medir y personalizar la publicidad. Puedes cambiar tus opciones en cualquier momento.",
-    "site.measurement.decline": "Rechazar todas",
-    "site.measurement.allow": "Aceptar todas",
+    "site.measurement.decline": "Rechazar",
+    "site.measurement.allow": "Aceptar",
     "site.measurement.details": "Detalles de las cookies",
     "site.about.hero.alt": "Un nenúfar en un estanque de jardín al atardecer, con luces cálidas reflejadas en el agua.",
-    "cookies.title": "Cookies y estadísticas del sitio web",
-    "cookies.choice": "Elige por separado las estadísticas y el marketing. Tus opciones no afectan al acceso al sitio ni a la posibilidad de enviar una consulta.",
-    "cookies.introduction": "Faunapoolen utiliza el almacenamiento del navegador para recordar tus opciones. Las estadísticas y el marketing opcionales requieren tu consentimiento.",
+    "cookies.title": "Cookies",
+    "cookies.choice": "Tu elección sobre las cookies no afecta al acceso al sitio ni a la posibilidad de enviar una consulta.",
+    "cookies.introduction": "Faunapoolen utiliza el almacenamiento del navegador para recordar tu elección. El seguimiento opcional requiere tu consentimiento.",
     "cookies.statisticsTitle": "Qué miden las estadísticas",
     "cookies.statistics": "Con tu permiso, medimos las visitas a páginas, el interés en los paquetes de piscinas y el progreso en el formulario de consulta, incluidos los envíos completados. Los eventos incluyen la dirección de la página sin parámetros de consulta, el título, el idioma, la página de entrada y una categoría general de procedencia, como búsquedas o enlaces de otros sitios. No incluyen tu nombre, correo electrónico, teléfono, dirección ni mensaje.",
     "cookies.google": "Google proporciona el servicio de análisis y recibe identificadores de cookies e información técnica, como tu dirección IP y datos del navegador, cuando las estadísticas están activas. El consentimiento para las estadísticas no activa la publicidad.",
@@ -800,7 +800,9 @@
     "cookies.marketingData": "Meta recibe identificadores del navegador y de cookies, direcciones de las páginas visitadas y de procedencia, información sobre clics en anuncios y datos técnicos como tu dirección IP. No enviamos el contenido de los campos de consulta ni activamos la coincidencia avanzada en nuestro código. El seguimiento no se ejecuta en el área de administración privada.",
     "cookies.marketingCookies": "_fbp y _fbc: cookies opcionales de Meta que identifican tu navegador y los clics en anuncios. Normalmente duran 90 días y se renuevan con el uso. Meta también puede utilizar sus propias cookies cuando tu navegador se conecta a sus servicios.",
     "cookies.marketingStorage": "fp-marketing-consent-v1: almacenamiento local que recuerda tu opción de marketing por separado hasta que la cambies o borres los datos del navegador. La opción guardada no se envía a Meta.",
-    "cookies.marketingWithdrawal": "Para detener el seguimiento de Meta, abre la configuración de cookies, desmarca marketing y guarda tus opciones, o rechaza todas las cookies. Esto detiene los eventos futuros y elimina las cookies _fbp y _fbc de este sitio. No puede eliminar información ya enviada ni cookies de los dominios de Meta.",
-    "site.measurement.customize": "Elegir cookies"
+    "cookies.marketingWithdrawal": "Para detener el seguimiento de Meta, abre los ajustes de cookies en el pie de cualquier página pública y elige Rechazar. Esto detiene el envío de eventos futuros y elimina las cookies _fbp y _fbc de este sitio. No elimina la información ya enviada ni las cookies de los dominios de Meta.",
+    "site.measurement.customize": "Elegir cookies",
+    "site.measurement.metaBody": "¿Permites las cookies de marketing para medir los resultados de nuestros anuncios y personalizar la publicidad? Tu actividad en el sitio se compartirá con nuestro socio publicitario. Puedes cambiar tu elección en cualquier momento.",
+    "site.measurement.title": "Cookies"
   }
 }

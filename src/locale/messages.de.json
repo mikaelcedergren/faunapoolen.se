@@ -712,13 +712,13 @@
     "site.ui.your_garden": "Ihr Garten",
     "site.measurement.settings": "Cookie-Einstellungen",
     "site.measurement.body": "Optionale Cookies helfen uns, Besuche und Anfragen zu verstehen, und ermöglichen Meta, Werbung zu messen und zu personalisieren. Du kannst deine Auswahl jederzeit ändern.",
-    "site.measurement.decline": "Alle ablehnen",
-    "site.measurement.allow": "Alle akzeptieren",
+    "site.measurement.decline": "Ablehnen",
+    "site.measurement.allow": "Akzeptieren",
     "site.measurement.details": "Cookie-Details",
     "site.about.hero.alt": "Eine Seerose auf einem Gartenteich in der Dämmerung, warmes Licht spiegelt sich im Wasser.",
-    "cookies.title": "Cookies und Website-Statistiken",
-    "cookies.choice": "Wähle Statistik und Marketing getrennt aus. Deine Auswahl hat keinen Einfluss auf den Zugang zur Website oder die Möglichkeit, eine Anfrage zu senden.",
-    "cookies.introduction": "Faunapoolen nutzt den Browserspeicher, um deine Auswahl zu speichern. Optionale Statistik und Marketing erfordern deine Einwilligung.",
+    "cookies.title": "Cookies",
+    "cookies.choice": "Deine Cookie-Auswahl hat keinen Einfluss auf den Zugang zur Website oder die Möglichkeit, eine Anfrage zu senden.",
+    "cookies.introduction": "Faunapoolen speichert deine Auswahl im Browser. Optionales Tracking erfordert deine Einwilligung.",
     "cookies.statisticsTitle": "Was die Statistiken erfassen",
     "cookies.statistics": "Mit Ihrer Einwilligung messen wir Seitenbesuche, Interesse an Poolpaketen und den Verlauf im Anfrageformular einschließlich erfolgreich gesendeter Anfragen. Ereignisse enthalten die Seitenadresse ohne Abfrageparameter, Seitentitel, Sprache, Einstiegsseite und eine grobe Herkunftskategorie wie Suche oder Verweis. Name, E-Mail, Telefonnummer, Adresse und Nachricht sind nicht enthalten.",
     "cookies.google": "Google stellt den Analysedienst bereit und erhält bei aktiver Statistik Cookie-Kennungen sowie technische Informationen wie deine IP-Adresse und Browserdaten. Die Einwilligung in Statistik aktiviert keine Werbung.",
@@ -800,7 +800,9 @@
     "cookies.marketingData": "Meta erhält Browser- und Cookie-Kennungen, Adressen besuchter und verweisender Seiten, Informationen zu Anzeigenklicks und technische Daten wie deine IP-Adresse. Wir senden keine Inhalte aus Anfragefeldern und aktivieren keinen erweiterten Abgleich in unserem Code. Im privaten Verwaltungsbereich findet kein Tracking statt.",
     "cookies.marketingCookies": "_fbp und _fbc: optionale Meta-Cookies zur Erkennung deines Browsers und von Anzeigenklicks. Sie gelten normalerweise 90 Tage und werden bei Nutzung erneuert. Meta kann auch eigene Cookies verwenden, wenn dein Browser seine Dienste kontaktiert.",
     "cookies.marketingStorage": "fp-marketing-consent-v1: lokaler Speicher, der deine separate Marketing-Auswahl speichert, bis du sie änderst oder Browserdaten löschst. Die gespeicherte Auswahl wird nicht an Meta gesendet.",
-    "cookies.marketingWithdrawal": "Um Meta-Tracking zu beenden, öffne die Cookie-Einstellungen, wähle Marketing ab und speichere deine Auswahl oder lehne alle Cookies ab. Dadurch werden künftige Ereignisse gestoppt und die _fbp- und _fbc-Cookies dieser Website entfernt. Bereits gesendete Informationen und Cookies auf Metas eigenen Domains können so nicht entfernt werden.",
-    "site.measurement.customize": "Cookies auswählen"
+    "cookies.marketingWithdrawal": "Um das Meta-Tracking zu beenden, öffne die Cookie-Einstellungen in der Fußzeile einer beliebigen öffentlichen Seite und wähle Ablehnen. Dadurch werden keine weiteren Ereignisse gesendet und die Cookies _fbp und _fbc dieser Website entfernt. Bereits gesendete Informationen und Cookies auf den Domains von Meta werden dadurch nicht gelöscht.",
+    "site.measurement.customize": "Cookies auswählen",
+    "site.measurement.metaBody": "Möchtest du Marketing-Cookies zulassen, um den Erfolg unserer Anzeigen zu messen und Werbung zu personalisieren? Deine Aktivität auf der Website wird mit unserem Werbepartner geteilt. Du kannst deine Entscheidung jederzeit ändern.",
+    "site.measurement.title": "Cookies"
   }
 }

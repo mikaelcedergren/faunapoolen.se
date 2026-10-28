@@ -712,13 +712,13 @@
     "site.ui.your_garden": "O seu jardim",
     "site.measurement.settings": "Definições de cookies",
     "site.measurement.body": "Os cookies opcionais ajudam-nos a compreender as visitas e os pedidos e permitem à Meta medir e personalizar a publicidade. Pode alterar as suas escolhas a qualquer momento.",
-    "site.measurement.decline": "Rejeitar todos",
-    "site.measurement.allow": "Aceitar todos",
+    "site.measurement.decline": "Rejeitar",
+    "site.measurement.allow": "Aceitar",
     "site.measurement.details": "Detalhes dos cookies",
     "site.about.hero.alt": "Um nenúfar num lago de jardim ao anoitecer, com luzes quentes refletidas na água.",
-    "cookies.title": "Cookies e estatísticas do site",
-    "cookies.choice": "Escolha as estatísticas e o marketing separadamente. As suas escolhas não afetam o acesso ao site nem a possibilidade de enviar um pedido de informação.",
-    "cookies.introduction": "A Faunapoolen utiliza o armazenamento do navegador para recordar as suas escolhas. As estatísticas e o marketing opcionais requerem o seu consentimento.",
+    "cookies.title": "Cookies",
+    "cookies.choice": "A sua escolha sobre cookies não afeta o acesso ao site nem a possibilidade de enviar um pedido de informação.",
+    "cookies.introduction": "A Faunapoolen utiliza o armazenamento do navegador para guardar a sua escolha. O rastreio opcional requer o seu consentimento.",
     "cookies.statisticsTitle": "O que medem as estatísticas",
     "cookies.statistics": "Com a sua autorização, medimos visitas às páginas, interesse nos pacotes e progresso no formulário, incluindo pedidos enviados com sucesso. Os eventos incluem endereço sem parâmetros de consulta, título, idioma, página de entrada e uma categoria geral de origem, como pesquisa ou referência. Não incluem nome, e-mail, telefone, morada ou mensagem.",
     "cookies.google": "A Google fornece o serviço de análise e recebe identificadores de cookies e informações técnicas, como o seu endereço IP e dados do navegador, quando as estatísticas estão ativas. O consentimento para estatísticas não ativa a publicidade.",
@@ -800,7 +800,9 @@
     "cookies.marketingData": "A Meta recebe identificadores do navegador e de cookies, endereços das páginas visitadas e de origem, informações sobre cliques em anúncios e dados técnicos como o seu endereço IP. Não enviamos o conteúdo dos campos dos pedidos nem ativamos a correspondência avançada no nosso código. O rastreamento não funciona na área de administração privada.",
     "cookies.marketingCookies": "_fbp e _fbc: cookies opcionais da Meta que identificam o navegador e os cliques em anúncios. Normalmente duram 90 dias e são renovados durante a utilização. A Meta pode também utilizar os seus próprios cookies quando o navegador contacta os seus serviços.",
     "cookies.marketingStorage": "fp-marketing-consent-v1: armazenamento local que recorda a sua escolha de marketing separada até a alterar ou limpar os dados do navegador. A escolha guardada não é enviada à Meta.",
-    "cookies.marketingWithdrawal": "Para parar o rastreamento da Meta, abra as definições de cookies, desmarque marketing e guarde as suas escolhas, ou rejeite todos os cookies. Isto interrompe eventos futuros e remove os cookies _fbp e _fbc deste site. Não permite remover informações já enviadas nem cookies nos domínios da Meta.",
-    "site.measurement.customize": "Escolher cookies"
+    "cookies.marketingWithdrawal": "Para parar o rastreio da Meta, abra as definições de cookies no rodapé de qualquer página pública e escolha Rejeitar. Isto impede o envio de novos eventos e remove os cookies _fbp e _fbc deste site. Não remove as informações já enviadas nem os cookies nos domínios da Meta.",
+    "site.measurement.customize": "Escolher cookies",
+    "site.measurement.metaBody": "Permite cookies de marketing para medir os resultados dos nossos anúncios e personalizar a publicidade? A sua atividade no site será partilhada com o nosso parceiro de publicidade. Pode alterar a sua escolha a qualquer momento.",
+    "site.measurement.title": "Cookies"
   }
 }

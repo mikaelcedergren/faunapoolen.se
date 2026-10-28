@@ -3,6 +3,7 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   effect,
   HostListener,
   inject,
@@ -31,6 +32,12 @@ import { SiteMarketing } from './site-marketing';
     CxStackComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: `
+    .cookie-heading {
+      color: var(--accent);
+      font-size: var(--font-size-title-3);
+    }
+  `,
   template: `
     <a [href]="detailsHref()" (click)="openSettings($event)">{{ settings }}</a>
     @if (position(); as dock) {
@@ -48,7 +55,8 @@ import { SiteMarketing } from './site-marketing';
         (backdropPressed)="dismiss()"
       >
         <cx-stack class="cx-p-md" gap="md">
-          <p class="cx-editorial">{{ body }}</p>
+          <h2 class="cookie-heading">{{ title }}</h2>
+          <p class="cx-text-body">{{ measurement.available() ? body : metaBody }}</p>
           @if (settingsOpen() && measurement.available()) {
             <cx-checkbox
               [text]="statistics"
@@ -57,7 +65,7 @@ import { SiteMarketing } from './site-marketing';
               (selectedChange)="statisticsSelected.set($event)"
             />
           }
-          @if (settingsOpen() && marketing.available()) {
+          @if (settingsOpen() && measurement.available() && marketing.available()) {
             <cx-checkbox
               [text]="marketingLabel"
               [hint]="marketingHint"
@@ -67,12 +75,12 @@ import { SiteMarketing } from './site-marketing';
           }
           <cx-inline gap="sm" [wrap]="true">
             <cx-button [text]="reject" (click)="choose(false)" />
-            <cx-button [text]="accept" (click)="choose(true)" />
+            <cx-button [text]="accept" mood="accent" (click)="choose(true)" />
           </cx-inline>
           <cx-inline gap="sm" [wrap]="true">
-            @if (settingsOpen()) {
+            @if (measurement.available() && settingsOpen()) {
               <cx-button [text]="save" (click)="saveChoices()" />
-            } @else {
+            } @else if (measurement.available()) {
               <cx-button [text]="customize" (click)="showChoices()" />
             }
             <a [href]="detailsHref()">{{ details }}</a>
@@ -90,15 +98,18 @@ export class CookieNoticeComponent {
   protected readonly marketingSelected = signal(false);
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly popover = viewChild(CxPopoverComponent);
   protected readonly settingsOpen = signal(false);
   protected readonly opener = signal<HTMLElement | undefined>(undefined);
   protected readonly atTop = signal(false);
   protected readonly position = signal<{ gap: number; width: number } | undefined>(undefined);
   protected readonly settings = $localize`:@@site.measurement.settings:Cookie settings`;
+  protected readonly title = $localize`:@@site.measurement.title:Cookies`;
+  protected readonly metaBody = $localize`:@@site.measurement.metaBody:Allow marketing cookies to measure our ads and personalise advertising? Your website activity is shared with our advertising partner. Change your choice anytime.`;
   protected readonly body = $localize`:@@site.measurement.body:Optional cookies help us understand visits and enquiries and let Meta measure and personalise advertising. Change your choices anytime.`;
-  protected readonly reject = $localize`:@@site.measurement.decline:Reject all`;
-  protected readonly accept = $localize`:@@site.measurement.allow:Accept all`;
+  protected readonly reject = $localize`:@@site.measurement.decline:Reject`;
+  protected readonly accept = $localize`:@@site.measurement.allow:Accept`;
   protected readonly save = $localize`:@@site.measurement.save:Save choices`;
   protected readonly customize = $localize`:@@site.measurement.customize:Choose cookies`;
   protected readonly statistics = $localize`:@@site.measurement.statistics:Statistics`;
@@ -113,11 +124,22 @@ export class CookieNoticeComponent {
       this.marketingSelected.set(this.marketing.preference() === 'allowed');
     });
     afterNextRender(() => {
-      const style = this.document.defaultView!.getComputedStyle(this.document.documentElement);
-      this.position.set({
-        gap: parseFloat(style.getPropertyValue('--space-md')),
-        width: parseFloat(style.getPropertyValue('--measure-sm')),
-      });
+      const root = this.document.documentElement;
+      const updatePosition = () => {
+        const style = this.document.defaultView!.getComputedStyle(root);
+        const gap = parseFloat(style.getPropertyValue('--space-md'));
+        // Dock within the usable page width, excluding a persistent browser scrollbar.
+        const width = Math.max(
+          0,
+          Math.min(parseFloat(style.getPropertyValue('--measure-sm')), root.clientWidth - gap * 2),
+        );
+        if (this.position()?.gap !== gap || this.position()?.width !== width)
+          this.position.set({ gap, width });
+      };
+      updatePosition();
+      const observer = new ResizeObserver(updatePosition);
+      observer.observe(root);
+      this.destroyRef.onDestroy(() => observer.disconnect());
     });
   }
 
@@ -164,7 +186,7 @@ export class CookieNoticeComponent {
   }
 
   protected choose(allow: boolean): void {
-    this.measurement.choose(allow ? 'allowed' : 'denied');
+    this.measurement.choose(allow && this.measurement.available() ? 'allowed' : 'denied');
     this.marketing.choose(allow ? 'allowed' : 'denied');
     this.settingsOpen.set(false);
   }

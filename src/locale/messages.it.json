@@ -712,13 +712,13 @@
     "site.ui.your_garden": "Il tuo giardino",
     "site.measurement.settings": "Impostazioni dei cookie",
     "site.measurement.body": "I cookie facoltativi ci aiutano a comprendere visite e richieste e consentono a Meta di misurare e personalizzare la pubblicità. Puoi modificare le tue scelte in qualsiasi momento.",
-    "site.measurement.decline": "Rifiuta tutti",
-    "site.measurement.allow": "Accetta tutti",
+    "site.measurement.decline": "Rifiuta",
+    "site.measurement.allow": "Accetta",
     "site.measurement.details": "Dettagli sui cookie",
     "site.about.hero.alt": "Una ninfea su un laghetto da giardino al crepuscolo, con luci calde riflesse nell’acqua.",
-    "cookies.title": "Cookie e statistiche del sito",
-    "cookies.choice": "Scegli separatamente statistiche e marketing. Le tue scelte non influiscono sull’accesso al sito o sulla possibilità di inviare una richiesta.",
-    "cookies.introduction": "Faunapoolen usa lo spazio di archiviazione del browser per ricordare le tue scelte. Le statistiche e il marketing facoltativi richiedono il tuo consenso.",
+    "cookies.title": "Cookie",
+    "cookies.choice": "La tua scelta sui cookie non limita l’accesso al sito né la possibilità di inviare una richiesta.",
+    "cookies.introduction": "Faunapoolen usa la memoria del browser per ricordare la tua scelta. Il tracciamento facoltativo richiede il tuo consenso.",
     "cookies.statisticsTitle": "Che cosa misurano le statistiche",
     "cookies.statistics": "Con il tuo consenso misuriamo visite alle pagine, interesse per i pacchetti e avanzamento nel modulo di contatto, comprese le richieste inviate. Gli eventi includono indirizzo della pagina senza parametri, titolo, lingua, pagina di ingresso e una categoria generale di provenienza, come ricerca o sito referente. Non includono nome, email, telefono, indirizzo o messaggio.",
     "cookies.google": "Google fornisce il servizio di analisi e riceve identificatori dei cookie e informazioni tecniche, come il tuo indirizzo IP e i dati del browser, quando le statistiche sono attive. Il consenso alle statistiche non attiva la pubblicità.",
@@ -800,7 +800,9 @@
     "cookies.marketingData": "Meta riceve identificatori del browser e dei cookie, indirizzi delle pagine visitate e di provenienza, informazioni sui clic sugli annunci e dati tecnici come il tuo indirizzo IP. Non inviamo il contenuto dei campi delle richieste né attiviamo la corrispondenza avanzata nel nostro codice. Il tracciamento non è attivo nell’area amministrativa privata.",
     "cookies.marketingCookies": "_fbp e _fbc: cookie facoltativi di Meta che identificano il browser e i clic sugli annunci. Durano normalmente 90 giorni e si rinnovano durante l’uso. Meta può anche usare i propri cookie quando il browser contatta i suoi servizi.",
     "cookies.marketingStorage": "fp-marketing-consent-v1: archiviazione locale che ricorda la scelta separata per il marketing finché non la modifichi o cancelli i dati del browser. La scelta salvata non viene inviata a Meta.",
-    "cookies.marketingWithdrawal": "Per interrompere il tracciamento di Meta, apri le impostazioni dei cookie, deseleziona il marketing e salva le scelte, oppure rifiuta tutti i cookie. Questo interrompe gli eventi futuri e rimuove i cookie _fbp e _fbc del sito. Non può eliminare le informazioni già inviate o i cookie sui domini di Meta.",
-    "site.measurement.customize": "Scegli i cookie"
+    "cookies.marketingWithdrawal": "Per interrompere il tracciamento di Meta, apri le impostazioni dei cookie nel piè di pagina di una qualsiasi pagina pubblica e scegli Rifiuta. In questo modo interrompi l’invio di eventi futuri e rimuovi i cookie _fbp e _fbc di questo sito. Le informazioni già inviate e i cookie sui domini di Meta non vengono rimossi.",
+    "site.measurement.customize": "Scegli i cookie",
+    "site.measurement.metaBody": "Vuoi consentire i cookie di marketing per misurare i risultati dei nostri annunci e personalizzare la pubblicità? La tua attività sul sito verrà condivisa con il nostro partner pubblicitario. Puoi cambiare scelta in qualsiasi momento.",
+    "site.measurement.title": "Cookie"
   }
 }
