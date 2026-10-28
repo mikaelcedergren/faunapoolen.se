@@ -43,7 +43,7 @@
     "typecheck:server": "pnpm --filter faunapoolen-server run typecheck",
     "test": "pnpm run test:server",
     "test:server": "pnpm run build:server && pnpm --filter faunapoolen-server run test && node --test tests/server/dev-launcher.test.mjs",
-    "test:verification": "node --test tests/change-verification.test.mjs tests/sitemap.test.mjs",
+    "test:verification": "node --test tests/change-verification.test.mjs tests/sitemap.test.mjs tests/meta-pixel.test.mjs",
     "e2e": "node scripts/run-e2e.mjs",
     "e2e:hmr": "node scripts/run-e2e.mjs --hmr",
     "e2e:install": "playwright install chromium",

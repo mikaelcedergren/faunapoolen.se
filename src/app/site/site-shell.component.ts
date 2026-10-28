@@ -28,6 +28,7 @@ import { CookieNoticeComponent } from './cookie-notice.component';
 import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES } from './language';
 import { ContactInvitationComponent } from './sections/contact-invitation.component';
 import { SiteMeasurement } from './site-measurement';
+import { SiteMarketing } from './site-marketing';
 import { SitePage } from './site-page';
 
 @Component({
@@ -125,6 +126,7 @@ export class SiteShellComponent extends SitePage implements OnInit {
   ];
   private readonly router = inject(Router);
   protected readonly measurement = inject(SiteMeasurement);
+  protected readonly marketing = inject(SiteMarketing);
   private readonly cookieNotice = viewChild(CookieNoticeComponent);
 
   openCookieSettings(event: Event): void {

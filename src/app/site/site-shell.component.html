@@ -81,7 +81,7 @@
         </cx-stack>
       </div>
       <div class="fp-footer-utilities">
-        @if (measurement.available()) {
+        @if (measurement.available() || marketing.available()) {
           <fp-cookie-notice [detailsHref]="routeFor('cookies')" />
         }
         <cx-language-selector

@@ -91,7 +91,7 @@ test('mobile footer language selector keeps the article and includes Danish with
   await page.setViewportSize({ width: 390, height: 844 });
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/blog/posts/build-your-own-nature-pool.html');
-  await page.getByRole('button', { name: 'Avvisa', exact: true }).click();
+  await page.getByRole('button', { name: 'Avvisa alla', exact: true }).click();
   await expect(page).toHaveURL(/\/blog\/posts\/build-your-own-nature-pool.html$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'sv');
   await expect

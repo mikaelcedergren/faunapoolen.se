@@ -61,7 +61,7 @@ test('hero navigation starts at the final crop and scrolling never changes its s
     await expect(media).toHaveCSS('translate', '0px 0%');
   };
   await expectStableStartup();
-  const reject = page.getByRole('button', { name: 'Reject', exact: true });
+  const reject = page.getByRole('button', { name: 'Reject all', exact: true });
   if (await reject.isVisible()) await reject.click();
 
   for (const name of ['Nature pools', 'Prices', 'Waterscapes', 'About', 'Start', 'Nature pools']) {

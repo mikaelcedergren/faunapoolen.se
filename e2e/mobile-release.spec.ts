@@ -54,7 +54,7 @@ for (const width of [360, 430]) {
         );
       }
       await page.goto('/en/');
-      await page.getByRole('button', { name: 'Reject', exact: true }).tap();
+      await page.getByRole('button', { name: 'Reject all', exact: true }).tap();
       await page.getByRole('button', { name: 'Faunapoolen menu', exact: true }).tap();
       await page
         .getByRole('dialog', { name: 'Menu', exact: true })

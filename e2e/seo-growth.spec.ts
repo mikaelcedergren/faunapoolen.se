@@ -337,7 +337,7 @@ for (const [query, source] of [
     expect(await page.evaluate(() => sessionStorage.getItem('fp-analytics-visit'))).toBeNull();
     await page
       .getByRole('region', { name: 'Cookie settings' })
-      .getByRole('button', { name: 'Accept', exact: true })
+      .getByRole('button', { name: 'Accept all', exact: true })
       .click();
     await expect.poll(() => events.some((event) => event.source_group === source)).toBe(true);
     await page.goto('/da/configure/?package=summer');
@@ -372,7 +372,7 @@ test('statistics require opt-in and stop after the visitor withdraws it', async 
 
   await page
     .getByRole('region', { name: 'Cookie settings' })
-    .getByRole('button', { name: 'Accept', exact: true })
+    .getByRole('button', { name: 'Accept all', exact: true })
     .click();
   await expect.poll(() => events.filter((event) => event.name === 'page_view').length).toBe(1);
   // GA uses site-wide cookies, independent of the page where consent is given.
@@ -384,7 +384,7 @@ test('statistics require opt-in and stop after the visitor withdraws it', async 
   await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
   await page
     .getByRole('region', { name: 'Cookie settings' })
-    .getByRole('button', { name: 'Reject', exact: true })
+    .getByRole('button', { name: 'Reject all', exact: true })
     .click();
   expect(
     (await page.context().cookies()).filter((cookie) => /^_ga(?:_|$)/.test(cookie.name)),
@@ -411,11 +411,12 @@ test('a lead is measured once after the confirmed retry and never includes conta
   page,
 }) => {
   const events = await captureMeasurement(page);
+  const marketing = await captureMarketing(page);
   await page.goto('/en/configure/?package=summer&private=synthetic-query-marker');
   await expect(page.locator('form textarea')).toBeEnabled();
   await page
     .getByRole('region', { name: 'Cookie settings' })
-    .getByRole('button', { name: 'Accept', exact: true })
+    .getByRole('button', { name: 'Accept all', exact: true })
     .click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
@@ -441,9 +442,15 @@ test('a lead is measured once after the confirmed retry and never includes conta
   await expect(page.getByText(/We couldn’t confirm receipt/)).toBeVisible();
   await expect.poll(() => events.filter((event) => event.name === 'enquiry_error').length).toBe(1);
   expect(events.filter((event) => event.name === 'generate_lead')).toEqual([]);
+  expect(marketing.filter((event) => event.name === 'Lead')).toEqual([]);
   await page.getByRole('button', { name: 'Send enquiry', exact: true }).click();
   await expect(page.getByText('Your enquiry has been received', { exact: true })).toBeVisible();
   await expect.poll(() => events.filter((event) => event.name === 'generate_lead').length).toBe(1);
+  await expect.poll(() => marketing.filter((event) => event.name === 'Lead').length).toBe(1);
+  expect(marketing.find((event) => event.name === 'Lead')).toEqual({
+    name: 'Lead',
+    path: '/en/configure/',
+  });
   expect(references).toHaveLength(2);
   expect(references[1]).toBe(references[0]);
   const lead = events.find((event) => event.name === 'generate_lead');
@@ -468,9 +475,9 @@ test('a lead is measured once after the confirmed retry and never includes conta
 });
 
 for (const [path, settings, reject, details] of [
-  ['/en/', 'Cookie settings', 'Reject', 'Cookie details'],
-  ['/', 'Inställningar för kakor', 'Avvisa', 'Om kakor'],
-  ['/da/', 'Cookieindstillinger', 'Afvis', 'Om cookies'],
+  ['/en/', 'Cookie settings', 'Reject all', 'Cookie details'],
+  ['/', 'Inställningar för kakor', 'Avvisa alla', 'Om kakor'],
+  ['/da/', 'Cookieindstillinger', 'Afvis alle', 'Om cookies'],
 ]) {
   test(`compact cookie notice supports rejection and details at ${path}`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 640 });
@@ -512,7 +519,7 @@ test('cookie choices persist between locales and remain reachable on established
   await page.goto('/en/');
   await page
     .getByRole('region', { name: 'Cookie settings' })
-    .getByRole('button', { name: 'Accept', exact: true })
+    .getByRole('button', { name: 'Accept all', exact: true })
     .click();
   await page.goto('/blog/posts/build-your-own-nature-pool.html');
   const settings = page
@@ -525,11 +532,143 @@ test('cookie choices persist between locales and remain reachable on established
   await settings.click();
   await page
     .getByRole('region', { name: 'Inställningar för kakor', exact: true })
-    .getByRole('button', { name: 'Avvisa', exact: true })
+    .getByRole('button', { name: 'Avvisa alla', exact: true })
     .click();
   await expect(settings).toBeFocused();
   await page.goto('/da/');
   await expect(page.getByRole('region', { name: 'Cookieindstillinger', exact: true })).toHaveCount(
     0,
   );
+});
+
+async function captureMarketing(page: Page): Promise<MeasurementEvent[]> {
+  const events: MeasurementEvent[] = [];
+  await page.exposeFunction('recordFaunapoolenMarketing', (detail: MeasurementEvent) =>
+    events.push(detail),
+  );
+  await page.addInitScript(() => {
+    window.addEventListener('faunapoolen:marketing', (event) => {
+      void (
+        window as Window & { recordFaunapoolenMarketing: (detail: unknown) => Promise<void> }
+      ).recordFaunapoolenMarketing((event as CustomEvent).detail);
+    });
+  });
+  return events;
+}
+
+test('marketing has independent consent, persists across locales, and stops after withdrawal', async ({
+  page,
+}) => {
+  const marketing = await captureMarketing(page);
+  const statistics = await captureMeasurement(page);
+  const external: string[] = [];
+  page.on('request', (request) => {
+    if (/facebook\.(net|com)|google-analytics\.com|googletagmanager\.com/.test(request.url()))
+      external.push(request.url());
+  });
+  // Existing statistics consent does not grant the new marketing purpose.
+  await page.addInitScript(() => {
+    if (localStorage.getItem('fp-analytics-consent-v1') === null)
+      localStorage.setItem('fp-analytics-consent-v1', 'allowed');
+  });
+  await page.goto('/en/cookies/');
+  const panel = page.getByRole('region', { name: 'Cookie settings' });
+  await panel.getByRole('button', { name: 'Choose cookies', exact: true }).click();
+  await expect(panel.getByRole('checkbox', { name: 'Statistics', exact: true })).toBeChecked();
+  await expect(panel.getByRole('checkbox', { name: 'Marketing', exact: true })).not.toBeChecked();
+  expect(marketing).toEqual([]);
+  await panel.getByRole('checkbox', { name: 'Statistics', exact: true }).uncheck();
+  await panel.getByRole('checkbox', { name: 'Marketing', exact: true }).check();
+  await panel.getByRole('button', { name: 'Save choices', exact: true }).click();
+  await expect.poll(() => marketing.length).toBe(1);
+  const statisticsCount = statistics.length;
+  await page.goto('/da/configure/?private=synthetic-marker');
+  await expect(page.locator('form textarea')).toBeEnabled();
+  await expect.poll(() => marketing.length).toBe(2);
+  expect(marketing.at(-1)).toEqual({ name: 'PageView', path: '/da/configure/' });
+  expect(statistics).toHaveLength(statisticsCount);
+  await page.goto('/en/cookies/');
+  await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
+  await expect(panel.getByRole('checkbox', { name: 'Marketing', exact: true })).toBeChecked();
+  await page.context().addCookies([
+    { name: '_fbp', value: 'synthetic-browser', url: new URL('/', page.url()).href },
+    { name: '_fbc', value: 'synthetic-click', url: new URL('/', page.url()).href },
+  ]);
+  await panel.getByRole('button', { name: 'Reject all', exact: true }).click();
+  expect(
+    (await page.context().cookies()).filter((cookie) => /^_fb[pc]$/.test(cookie.name)),
+  ).toEqual([]);
+  const count = marketing.length;
+  await page.goto('/en/configure/');
+  await expect(page.locator('form textarea')).toBeEnabled();
+  await page.locator('form textarea').fill('Synthetic private form value');
+  expect(marketing).toHaveLength(count);
+  expect(JSON.stringify(marketing)).not.toContain('synthetic-marker');
+  expect(external).toEqual([]);
+  expect(statisticsCount).toBeGreaterThan(0);
+});
+
+test('statistics alone never grants marketing and private routes never emit Meta events', async ({
+  page,
+}) => {
+  const marketing = await captureMarketing(page);
+  await page.goto('/en/cookies/');
+  const panel = page.getByRole('region', { name: 'Cookie settings' });
+  await panel.getByRole('button', { name: 'Choose cookies', exact: true }).click();
+  await panel.getByRole('checkbox', { name: 'Statistics', exact: true }).check();
+  await panel.getByRole('button', { name: 'Save choices', exact: true }).click();
+  expect(await page.evaluate(() => localStorage.getItem('fp-marketing-consent-v1'))).toBe('denied');
+  expect(marketing).toEqual([]);
+  await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
+  await panel.getByRole('button', { name: 'Accept all', exact: true }).click();
+  await expect.poll(() => marketing.length).toBe(1);
+  await page.goto('/en/admin/');
+  await expect(page.getByRole('form', { name: 'Sign in', exact: true })).toBeVisible();
+  expect(marketing).toHaveLength(1);
+  expect(await page.locator('script[src*="facebook"]').count()).toBe(0);
+});
+
+test('withdrawal in another tab stops marketing in the current page', async ({ page, context }) => {
+  const marketing = await captureMarketing(page);
+  await page.goto('/en/configure/');
+  await page
+    .getByRole('region', { name: 'Cookie settings' })
+    .getByRole('button', { name: 'Accept all', exact: true })
+    .click();
+  await expect.poll(() => marketing.length).toBe(1);
+  const second = await context.newPage();
+  await second.goto('/en/cookies/');
+  await second
+    .locator('footer')
+    .getByRole('link', { name: 'Cookie settings', exact: true })
+    .click();
+  await second
+    .getByRole('region', { name: 'Cookie settings' })
+    .getByRole('button', { name: 'Reject all', exact: true })
+    .click();
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem('fp-marketing-consent-v1')))
+    .toBe('denied');
+  await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
+  await expect(page.getByRole('checkbox', { name: 'Marketing', exact: true })).not.toBeChecked();
+  await page.goto('/en/nature-pools/');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  expect(marketing).toHaveLength(1);
+  await second.close();
+});
+
+test('closing cookie settings discards unsaved choices', async ({ page }) => {
+  await page.goto('/en/cookies/');
+  const panel = page.getByRole('region', { name: 'Cookie settings' });
+  await panel.getByRole('button', { name: 'Reject all', exact: true }).click();
+  const settings = page
+    .locator('footer')
+    .getByRole('link', { name: 'Cookie settings', exact: true });
+  await settings.click();
+  await panel.getByRole('checkbox', { name: 'Marketing', exact: true }).check();
+  await page.keyboard.press('Escape');
+  await expect(panel).toHaveCount(0);
+  await settings.click();
+  await expect(panel.getByRole('checkbox', { name: 'Marketing', exact: true })).not.toBeChecked();
+  expect(await page.evaluate(() => localStorage.getItem('fp-marketing-consent-v1'))).toBe('denied');
 });

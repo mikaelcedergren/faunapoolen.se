@@ -71,8 +71,11 @@ the published origin during the separately authorized release. Account settings 
 prove the live transport. See [Google’s page-view guidance](https://developers.google.com/analytics/devguides/collection/ga4/views).
 
 There are no analytics requests, analytics cookies or visit-context storage before the visitor
-allows statistics. Advertising tags are not enabled. A compact, non-modal framework popover offers
-equally styled Reject and Accept actions. The choice persists across public pages and locales;
+allows statistics. Statistics consent never enables advertising. A compact, non-modal framework
+popover starts with a compact purpose summary and equally styled Reject all and Accept all
+actions. Choose cookies reveals independent statistics and marketing choices with Save choices.
+Reopening settings shows the saved choices; closing without saving discards edits.
+The choices persist across public pages and locales;
 visitors can reopen it through Cookie settings in every public footer. Localized `/cookies/` pages
 explain purpose, storage, lifetimes and withdrawal. Enquiries work when statistics are declined.
 
@@ -86,6 +89,41 @@ explain purpose, storage, lifetimes and withdrawal. Enquiries work when statisti
 | `enquiry_error`           | Validation, rate limiting or unconfirmed delivery; no input values |
 
 Context is limited to clean public page/landing paths, language, a broad source category (`search`, `paid`, `referral`, `direct` or `internal`) and valid package/service values. Paid click markers and recognized paid campaign media are classified only after consent; their values are never retained or sent. The category describes the consented visit context, not proof of an individual search query or complete attribution. Raw query strings, referrer URLs, contact data, free-text notes, exact locations and request IDs are not sent. Visit context is held only in browser session storage after opt-in. Declining clears that context and removes applicable GA cookies.
+
+### Meta website tracking
+
+On 28 October 2026, the owner requested website tracking with Meta pixel
+`1698072815050895`. The separate `SiteMarketing` consent owner feeds the `MetaPixel` transport;
+the Google measurement payload restrictions above describe Google, not Meta's browser SDK.
+Existing Google consent never grants marketing consent. The public cookie panel and cookie
+details describe both purposes in all eight locales, with neither purpose selected for a new
+visitor. Google production collection remains under its existing disabled review gate.
+
+Meta loads only after marketing opt-in on `https://faunapoolen.se`. There is no unconditional
+head script or noscript image. Local, preview and isolated test origins dispatch observable
+local events but never load the SDK or contact Meta. `PageView` follows public canonical page
+visits, with duplicate calls on the same page suppressed. `Lead` follows the existing confirmed
+enquiry receipt, including the interrupted-receipt retry path; it is not a button-click event.
+No form field values, advanced-matching identifiers, monetary values or custom parameters are
+passed to Meta. SDK automatic configuration and automatic history page views are disabled in
+code, leaving the two explicit event calls. Private/non-canonical routes do not emit events;
+an in-app transition to one revokes the SDK's consent and discards queued events.
+
+Meta's SDK can send page/referring addresses, ad click identifiers, browser/cookie identifiers
+and technical information such as IP addresses. Do not put personal information in public
+URLs. Cookie details distinguish that processing from the cleaner Google event payload.
+Withdrawal revokes SDK consent, removes queued event calls if the SDK is still downloading,
+and clears this site's `_fbp` and `_fbc` cookies. Withdrawal in another tab also stops this
+document's marketing events. Previously sent data and cookies on Meta's domains cannot be
+removed by this website.
+
+Development verification covers independent choices, persistence, withdrawal, private routes,
+confirmed leads, download races, and absence of external requests locally. This is not proof of
+Meta account ownership or live event receipt. At separately requested publication, confirm the
+pixel/account with the campaign owner, review Events Manager automatic events and automatic
+advanced matching (keep both off), and inspect actual network payloads and Test events for one
+page view and one confirmed lead. Confirm no requests before consent or after withdrawal.
+Do not treat a local synthetic event as proof that Meta received it.
 
 The private inbox remains the sole enquiry authority. Qualification and wins are assessed in the existing business workflow; this implementation does not relabel contacted/closed as qualified/won. Persistent new outcome fields would require separately coordinated shared-storage work. Monthly lead-quality review can use the existing records without adding a parallel operational store.
 

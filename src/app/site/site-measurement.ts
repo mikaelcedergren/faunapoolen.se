@@ -2,6 +2,7 @@ import { FAUNAPOOLEN_SERVICES } from './content/faunapoolen-editorial';
 import { DOCUMENT } from '@angular/common';
 import { inject, Injectable, signal } from '@angular/core';
 import { PUBLIC_CANONICAL_PATHS } from '../../../server/src/public-routes';
+import { SiteMarketing } from './site-marketing';
 
 type Preference = 'unset' | 'allowed' | 'denied';
 type EventName =
@@ -56,6 +57,7 @@ function visitSource(location: Location, referrer: string): SourceGroup {
 /** Optional public-site measurement. No requests, cookies or visit storage before opt-in. */
 @Injectable({ providedIn: 'root' })
 export class SiteMeasurement {
+  private readonly marketing = inject(SiteMarketing);
   private readonly document = inject(DOCUMENT);
   readonly preference = signal<Preference>('unset');
   readonly available = signal(false);
@@ -66,6 +68,7 @@ export class SiteMeasurement {
   private source: SourceGroup = 'direct';
 
   initialize(): void {
+    this.marketing.initialize();
     if (this.initialized || !this.document.defaultView) return;
     this.initialized = true;
     const hostname = this.document.defaultView.location.hostname;
@@ -84,7 +87,8 @@ export class SiteMeasurement {
   }
 
   choose(value: 'allowed' | 'denied'): void {
-    if (!this.available()) return;
+    // Reject all also revokes a saved statistics choice while its transport is disabled.
+    if (!this.available() && value === 'allowed') return;
     this.preference.set(value);
     const browser = this.document.defaultView as MeasurementWindow | null;
     if (!browser) return;
@@ -185,6 +189,8 @@ export class SiteMeasurement {
   }
 
   track(name: EventName, context: EventContext = {}): void {
+    if (name === 'page_view') this.marketing.track('PageView');
+    if (name === 'generate_lead') this.marketing.track('Lead');
     const browser = this.document.defaultView as MeasurementWindow | null;
     const path = this.publicPath();
     if (!browser || !path || !this.available() || this.preference() !== 'allowed') return;

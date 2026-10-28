@@ -54,7 +54,7 @@ for (const viewport of [
   test(`guide section navigation at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto('/en/blog/posts/build-your-own-nature-pool.html');
-    await page.getByRole('button', { name: 'Reject', exact: true }).click();
+    await page.getByRole('button', { name: 'Reject all', exact: true }).click();
     await page.evaluate(() => document.fonts.ready);
     const contents = page.getByRole('navigation', { name: 'In this guide' });
     await expect(page.locator('#guide-body')).toBeVisible();
@@ -85,7 +85,7 @@ for (const viewport of [
   test(`direct article section links clear the header at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await page.goto('/en/blog/posts/build-your-own-nature-pool.html#guide-section-1');
-    await page.getByRole('button', { name: 'Reject', exact: true }).click();
+    await page.getByRole('button', { name: 'Reject all', exact: true }).click();
     await page.evaluate(() => document.fonts.ready);
     const section = page.locator('#guide-section-1');
     await expect(page).toHaveURL(/build-your-own-nature-pool\.html#guide-section-1$/);
