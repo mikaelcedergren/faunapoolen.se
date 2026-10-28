@@ -32,6 +32,11 @@ for (const viewport of [
     }
     await expect(page.locator('cx-masthead [brand] img')).toBeVisible();
     await expect(page.locator('cx-masthead [brand]')).toHaveText('Faunapoolen');
+    await expect(page.locator('cx-masthead [brand]')).toHaveAccessibleName('Faunapoolen');
+    const contact = await header
+      .getByRole('link', { name: 'Contact us', exact: true })
+      .boundingBox();
+    expect(brand!.x + brand!.width).toBeLessThan(contact!.x);
     const photograph = await hero.locator('img[media]').boundingBox();
     const heading = await page.locator('h1').boundingBox();
     const navigation = await header.boundingBox();

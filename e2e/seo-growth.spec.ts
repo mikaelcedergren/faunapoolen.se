@@ -586,10 +586,12 @@ test('closing reopened cookie settings preserves the saved choice', async ({ pag
   await page.goto('/en/cookies/');
   const panel = page.getByRole('region', { name: 'Cookie settings' });
   await panel.getByRole('button', { name: 'Accept', exact: true }).click();
+  await expect(panel).toHaveCount(0);
   const settings = page
     .locator('footer')
     .getByRole('link', { name: 'Cookie settings', exact: true });
   await settings.click();
+  await expect(panel.getByRole('button', { name: 'Reject', exact: true })).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(panel).toHaveCount(0);
   await expect(settings).toBeFocused();
