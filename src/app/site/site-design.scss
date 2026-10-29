@@ -282,6 +282,11 @@
     display: block;
   }
 
+  .fp-photo-link,
+  .fp-gallery-photo-link {
+    cursor: pointer;
+  }
+
   .fp-band {
     background: var(--surface);
   }

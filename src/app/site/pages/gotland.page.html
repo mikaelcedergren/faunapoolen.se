@@ -84,10 +84,10 @@
         }
       }
       <section [attr.aria-label]="evidence.caseTitle">
-        <cx-grid [columns]="3" [columnsMobile]="2" gap="lg" align="start">
+        <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
           @for (item of gotlandPhotos; track item.id) {
             <a
-              class="cx-figure"
+              class="cx-figure fp-gallery-photo-link"
               [attr.data-gotland-photo]="item.id"
               [href]="item.src"
               (click)="gallery.openPhoto($event, item.id)"
@@ -108,7 +108,7 @@
               />
             </a>
           }
-        </cx-grid>
+        </cx-masonry>
       </section>
     </cx-stack>
   </section>

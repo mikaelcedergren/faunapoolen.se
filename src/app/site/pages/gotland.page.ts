@@ -4,6 +4,7 @@ import {
   CxDividerComponent,
   CxGridComponent,
   CxHeroComponent,
+  CxMasonryComponent,
   CxStackComponent,
 } from '@mikaelcedergren/cx-framework';
 import { FAUNAPOOLEN_COMMERCIAL } from '../content/faunapoolen-commercial';
@@ -32,6 +33,7 @@ import { SiteShellComponent } from '../site-shell.component';
     CxDividerComponent,
     CxGridComponent,
     CxHeroComponent,
+    CxMasonryComponent,
     CxStackComponent,
     SiteShellComponent,
     GotlandFilmComponent,
