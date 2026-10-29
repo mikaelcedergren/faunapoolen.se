@@ -84,7 +84,7 @@
         }
       }
       <section [attr.aria-label]="evidence.caseTitle">
-        <cx-masonry [columns]="3" [columnsMobile]="2" gap="lg">
+        <cx-grid [columns]="3" [columnsMobile]="2" gap="lg" align="start">
           @for (item of gotlandPhotos; track item.id) {
             <a
               class="cx-figure"
@@ -108,7 +108,7 @@
               />
             </a>
           }
-        </cx-masonry>
+        </cx-grid>
       </section>
     </cx-stack>
   </section>
