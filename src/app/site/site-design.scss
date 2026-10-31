@@ -40,7 +40,7 @@
   .fp-body,
   .fp-body-lg,
   .fp-body-sm {
-    line-height: var(--line-height-editorial-body);
+    line-height: var(--line-height-relaxed);
   }
 
   .fp-body {
@@ -62,7 +62,7 @@
     color: var(--ink);
     font-family: var(--font-family-heading);
     font-size: var(--font-size-title-1);
-    line-height: var(--line-height-heading);
+    line-height: var(--line-height-tight);
     text-decoration: none;
   }
 
@@ -82,12 +82,12 @@
   // headings need a clear step above the 18px reading text, as requested.
   .fp-heading {
     font-size: clamp(32px, 3vw, 40px);
-    line-height: var(--line-height-heading);
+    line-height: var(--line-height-tight);
   }
 
   .fp-subheading {
     font-size: 28px;
-    line-height: var(--line-height-heading);
+    line-height: var(--line-height-tight);
   }
 
   .fp-certification-strip {
@@ -102,8 +102,8 @@
   .fp-certification-line {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr);
-    min-block-size: var(--space-2xl);
-    max-width: var(--measure-lg);
+    min-block-size: 64px;
+    max-width: var(--content-width-lg);
     margin-inline: auto;
     align-items: center;
     gap: var(--space-xl);
@@ -133,7 +133,7 @@
     block-size: 120px;
     box-sizing: border-box;
     padding: var(--space-xs);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-full);
     corner-shape: round;
     background: var(--surface-alt);
   }
@@ -203,7 +203,7 @@
   }
 
   .fp-feature-copy {
-    max-inline-size: var(--measure-sm);
+    max-inline-size: var(--content-width-sm);
   }
 
   .fp-film-trigger {
@@ -232,10 +232,10 @@
     position: relative;
     display: grid;
     place-items: center;
-    inline-size: var(--space-2xl);
-    block-size: var(--space-2xl);
+    inline-size: 64px;
+    block-size: 64px;
     border: var(--line);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-full);
     corner-shape: round;
     background: var(--surface-alt);
     transition: background var(--motion-fast) var(--ease-out);
@@ -341,7 +341,7 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    block-size: calc(var(--font-size-editorial-body) * var(--line-height-editorial-body));
+    block-size: calc(var(--font-size-editorial-body) * var(--line-height-relaxed));
   }
 
   .fp-package-actions {
@@ -371,8 +371,8 @@
 
   .fp-step-number {
     font-family: var(--font-family-heading);
-    font-size: var(--font-size-display);
-    line-height: var(--line-height-display);
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1.05;
     color: var(--accent);
   }
 
@@ -402,7 +402,7 @@
     color: inherit;
     font-family: var(--font-family-heading);
     font-size: var(--font-size-title-1);
-    line-height: var(--line-height-heading);
+    line-height: var(--line-height-tight);
   }
 
   .fp-footer {
@@ -428,7 +428,7 @@
     color: var(--ink);
     font-family: var(--font-family-heading);
     font-size: var(--font-size-title-1);
-    line-height: var(--line-height-heading);
+    line-height: var(--line-height-tight);
     text-decoration: none;
   }
 
@@ -471,7 +471,7 @@
   .fp-project-quote {
     inline-size: calc(100% - var(--gutter-page) * 2);
     margin-inline: auto;
-    max-inline-size: var(--measure-lg);
+    max-inline-size: var(--content-width-lg);
     text-align: center;
   }
 
@@ -479,7 +479,7 @@
     margin: 0;
     font-family: var(--font-family-heading);
     font-size: clamp(28px, 3vw, 40px);
-    line-height: var(--line-height-editorial-lead);
+    line-height: var(--line-height-relaxed);
   }
 
   .fp-project-quote figcaption {
@@ -492,7 +492,7 @@
   }
 
   .fp-project-next {
-    max-inline-size: var(--measure-md);
+    max-inline-size: var(--content-width-md);
     margin-inline: auto;
     text-align: center;
   }

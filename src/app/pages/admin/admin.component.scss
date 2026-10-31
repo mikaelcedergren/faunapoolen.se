@@ -24,7 +24,7 @@ fp-admin {
 }
 
 .fp-admin-login__panel {
-  width: min(100%, var(--measure-sm));
+  width: min(100%, var(--content-width-sm));
 }
 
 .fp-admin-login__submit {
@@ -64,7 +64,7 @@ fp-admin {
 .fp-admin-content {
   display: grid;
   width: 100%;
-  max-width: var(--measure-xl);
+  max-width: var(--content-width-xl);
   min-width: 0;
   margin-inline: auto;
   padding: var(--space-xl) var(--gutter-page) var(--space-2xl);
@@ -91,7 +91,7 @@ fp-admin {
 
 .fp-generation-wait h2 {
   font-size: var(--font-size-title-2);
-  line-height: var(--line-height-heading);
+  line-height: var(--line-height-tight);
 }
 
 .fp-campaign-panel {
@@ -131,19 +131,19 @@ fp-admin {
 
 .fp-rationale-section h3 {
   font-size: var(--font-size-title-3);
-  line-height: var(--line-height-heading);
+  line-height: var(--line-height-tight);
 }
 
 .fp-rationale-section p {
   color: var(--opacity-high);
-  line-height: var(--line-height-body-relaxed);
+  line-height: var(--line-height-relaxed);
 }
 
 .fp-prompts,
 .fp-strategy {
   display: grid;
   width: 100%;
-  max-width: var(--measure-lg);
+  max-width: var(--content-width-lg);
   gap: var(--space-lg);
 }
 
@@ -156,7 +156,7 @@ fp-admin {
 }
 
 .fp-strategy {
-  max-width: var(--measure-md);
+  max-width: var(--content-width-md);
 }
 
 .fp-assumptions {
@@ -167,8 +167,8 @@ fp-admin {
 }
 
 .fp-prose {
-  max-width: var(--measure-md);
-  line-height: var(--line-height-body-relaxed);
+  max-width: var(--content-width-md);
+  line-height: var(--line-height-relaxed);
   white-space: pre-wrap;
 }
 
@@ -179,7 +179,7 @@ fp-admin {
 }
 
 .fp-clipboard-status {
-  min-height: var(--space-md);
+  min-height: 16px;
 }
 
 @media (max-width: #{bp.$mobile - 1px}) {

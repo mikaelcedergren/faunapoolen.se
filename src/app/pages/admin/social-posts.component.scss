@@ -10,11 +10,11 @@
 }
 .social-title {
   font-size: var(--font-size-title-1);
-  line-height: var(--line-height-heading);
+  line-height: var(--line-height-tight);
 }
 .social-subtitle {
   font-size: var(--font-size-title-3);
-  line-height: var(--line-height-heading);
+  line-height: var(--line-height-tight);
 }
 .social-meta {
   color: var(--opacity-high);
@@ -43,7 +43,7 @@
 .social-copy {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  line-height: var(--line-height-body-relaxed);
+  line-height: var(--line-height-relaxed);
 }
 .social-issues {
   margin: 0;

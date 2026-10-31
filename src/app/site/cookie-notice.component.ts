@@ -131,7 +131,10 @@ export class CookieNoticeComponent {
         // Dock within the usable page width, excluding a persistent browser scrollbar.
         const width = Math.max(
           0,
-          Math.min(parseFloat(style.getPropertyValue('--measure-sm')), root.clientWidth - gap * 2),
+          Math.min(
+            parseFloat(style.getPropertyValue('--content-width-sm')),
+            root.clientWidth - gap * 2,
+          ),
         );
         if (this.position()?.gap !== gap || this.position()?.width !== width)
           this.position.set({ gap, width });
