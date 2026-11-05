@@ -175,7 +175,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       ogTitle: $localize`:@@blog.build.seo.ogTitle:Build your own natural pool: steps and costs | Faunapoolen`,
       ogDescription: $localize`:@@blog.build.seo.ogDescription:Planning to build a natural pool yourself? Learn about excavation, liners, filtration, material costs and common mistakes before you start.`,
       ogImage: 'https://faunapoolen.se/assets/images/guides/build.webp',
-      dateModified: '2026-10-03',
+      dateModified: '2026-11-05',
       enPath: '/en/blog/posts/build-your-own-nature-pool.html',
       daPath: '/da/blog/posts/build-your-own-nature-pool.html',
       defaultLanguage: 'sv',

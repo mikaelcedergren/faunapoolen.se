@@ -1,4 +1,4 @@
-<fp-site-shell [showInvitation]="!isPriceGuide">
+<fp-site-shell [showInvitation]="!isPriceGuide && !isBuildGuide">
   <cx-hero
     [heading]="guide.title"
     headingClass="cx-font-regular"
@@ -33,7 +33,21 @@
           @if (isPriceGuide) {
             <fp-guide-prices />
           }
-          <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading().html"></div>
+          <cx-stack gap="lg">
+            <div id="guide-body" class="cx-editorial" [innerHTML]="guideReading().html"></div>
+            @if (isBuildGuide) {
+              <cx-stack gap="md" align="start">
+                <cx-button
+                  [text]="buildPrices"
+                  [href]="routeFor('pricing')"
+                  mood="accent"
+                  size="large"
+                  appendIcon="arrow-right"
+                />
+                <a [href]="routeFor('pricing') + '#consultation'">{{ buildEnquiry }}</a>
+              </cx-stack>
+            }
+          </cx-stack>
         </div>
       </cx-sidebar-layout>
     </div>
