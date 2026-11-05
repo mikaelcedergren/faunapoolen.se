@@ -14,6 +14,7 @@ import { FAUNAPOOLEN_EDITORIAL } from '../content/faunapoolen-editorial';
 import { FAQ_ITEMS } from '../content/faunapoolen-faq';
 import { NATURE_POOL_LANDING, POOL_ENQUIRY } from '../content/faunapoolen-landing';
 import { NATURE_POOL_DETAILS } from '../content/faunapoolen-pool-details';
+import { FAUNAPOOLEN_REGIONS, type FaunapoolenRegionId } from '../content/faunapoolen-regions';
 import { CertificationStripComponent } from '../sections/certification-strip.component';
 import { DirectContactComponent } from '../sections/direct-contact.component';
 import { EnquiryFormComponent } from '../sections/enquiry-form.component';
@@ -74,6 +75,11 @@ export class NaturePoolsPage extends SitePage {
     { title: this.detail.everydayGardenTitle, body: this.detail.everydayGardenBody },
   ];
   protected readonly poolEnquiry = POOL_ENQUIRY;
+  protected readonly regionalGuidesLabel = $localize`:@@site.naturePools.regionalGuides:Regional planning guides`;
+  protected readonly regions = Object.entries(FAUNAPOOLEN_REGIONS).map(([id, region]) => ({
+    name: region.name,
+    href: this.routeFor(id as FaunapoolenRegionId),
+  }));
   protected readonly poolEnquiryHref = this.routeFor('nature-pools') + '#consultation';
   protected readonly questions = [
     ...['space', 'consultation'].map((id) => FAQ_ITEMS.find((item) => item.id === id)!),

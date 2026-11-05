@@ -17,8 +17,8 @@ import { BlogArticle } from '../content/blog-catalog';
           class="fp-article-photo"
           [src]="guide().image"
           alt=""
-          width="1536"
-          height="1024"
+          [width]="guide().imageWidth"
+          [height]="guide().imageHeight"
           loading="lazy"
         />
         <h3 class="cx-text-title-2 cx-font-serif cx-font-regular">{{ guide().title }}</h3>

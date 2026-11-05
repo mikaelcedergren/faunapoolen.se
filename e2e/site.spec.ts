@@ -266,6 +266,8 @@ test('informational pages do not fetch the pool catalogue', async ({ page }) => 
     expect(packageRequests, route).toEqual([]);
   }
   await page.goto('/en/nature-pools/pricing/');
-  await expect(page.locator('fp-package-comparison .fp-package')).toHaveCount(3);
+  const prices = page.locator('fp-package-comparison .fp-package cx-metric');
+  await expect(prices).toHaveCount(3);
+  await expect(prices.first()).toContainText('SEK');
   expect(packageRequests).toHaveLength(1);
 });

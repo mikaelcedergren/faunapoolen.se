@@ -9,13 +9,20 @@
   >
     <cx-button context [text]="ui.all_guides" icon="arrow-left" [href]="routeFor('guides')" />
     <p body id="guide-intro">{{ guide.intro }}</p>
-    @if (guideId !== 'build' && guideId !== 'difference') {
+    @if (guide.seo.dateModified) {
       <p meta>
         {{ updatedLabel }}
         <time [attr.datetime]="guide.seo.dateModified">{{ updatedDate }}</time>
       </p>
     }
-    <img media [src]="guide.image" [alt]="guide.imageAlt" width="1536" fetchpriority="high" />
+    <img
+      media
+      [src]="guide.image"
+      [alt]="guide.imageAlt"
+      [width]="guide.imageWidth"
+      [height]="guide.imageHeight"
+      fetchpriority="high"
+    />
   </cx-hero>
   <article>
     <div class="cx-container cx-py-2xl">

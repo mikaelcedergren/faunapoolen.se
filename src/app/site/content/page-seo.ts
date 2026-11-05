@@ -2,8 +2,8 @@ import type { PublicPage } from '../../../../server/src/public-routes';
 
 export const PAGE_SEO: Record<PublicPage, { title: string; description: string }> = {
   home: {
-    title: $localize`:@@seo.home.title:Nature pools in Sweden | Faunapoolen`,
-    description: $localize`:@@seo.home.description:Nature pools for gardens across Sweden and Denmark. Compare pool packages and explore local advice for Skåne, Halland, Blekinge and Småland.`,
+    title: $localize`:@@seo.home.title:Nature pools in Sweden and Denmark | Faunapoolen`,
+    description: $localize`:@@seo.home.description:Nature pool design and construction throughout the EU, primarily in Sweden and Denmark. Explore a completed Gotland pool, compare packages and plan your project.`,
   },
   'nature-pools': {
     title: $localize`:@@seo.nature-pools.title:Build a nature pool – design and construction | Faunapoolen`,
@@ -27,11 +27,11 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
   },
   about: {
     title: $localize`:@@seo.about.title:About Faunapoolen – nature pool design and construction`,
-    description: $localize`:@@seo.about.description:Meet Faunapoolen and learn how we approach design, construction and care. We build nature pools across Sweden and welcome projects in Denmark.`,
+    description: $localize`:@@seo.about.description:Meet the team behind Faunapoolen. We design, build and care for nature pools throughout the EU, with a focus on Sweden and Denmark.`,
   },
   cookies: {
-    title: $localize`:@@seo.cookies.title:Cookies and website statistics | Faunapoolen`,
-    description: $localize`:@@seo.cookies.description:Choose whether to allow website statistics and learn how Faunapoolen uses cookies and browser storage.`,
+    title: $localize`:@@seo.cookies.title:Cookies and your privacy choices | Faunapoolen`,
+    description: $localize`:@@seo.cookies.description:Learn how Faunapoolen uses cookies and browser storage, what optional tracking involves, and how to change or withdraw your consent.`,
   },
   faq: {
     title: $localize`:@@seo.faq.title:Frequently asked questions about nature pools | Faunapoolen`,
@@ -43,18 +43,18 @@ export const PAGE_SEO: Record<PublicPage, { title: string; description: string }
   },
   skane: {
     title: $localize`:@@seo.skane.title:Nature pools in Skåne – design and construction | Faunapoolen`,
-    description: $localize`:@@seo.skane.description:Planning a nature pool in Skåne? Explore pool packages, site questions and the first steps towards a pool designed for your garden.`,
+    description: $localize`:@@seo.skane.description:Plan a nature pool in Skåne, from swimming space to terraces and ground levels. Compare packages and find out what to discuss with your municipality.`,
   },
   halland: {
     title: $localize`:@@seo.halland.title:Nature pools in Halland – design and construction | Faunapoolen`,
-    description: $localize`:@@seo.halland.description:Planning a nature pool in Halland? Explore pool packages, site questions and the first steps towards a pool designed for your garden.`,
+    description: $localize`:@@seo.halland.description:Nature pool design and construction in Halland. Plan water supply and filling, explore pool packages and discuss the conditions in your garden.`,
   },
   blekinge: {
     title: $localize`:@@seo.blekinge.title:Nature pools in Blekinge – design and construction | Faunapoolen`,
-    description: $localize`:@@seo.blekinge.description:Planning a nature pool in Blekinge? Explore pool packages, site questions and the first steps towards a pool designed for your garden.`,
+    description: $localize`:@@seo.blekinge.description:Planning a nature pool in Blekinge? Explore packages, site access and the questions to raise for coastal or protected properties before construction.`,
   },
   smaland: {
     title: $localize`:@@seo.smaland.title:Nature pools in Småland – design and construction | Faunapoolen`,
-    description: $localize`:@@seo.smaland.description:Planning a nature pool in Småland? Explore pool packages, site questions and the first steps towards a pool designed for your garden.`,
+    description: $localize`:@@seo.smaland.description:Plan a nature pool in Småland with swimming space, filtration and garden access considered together. Check buried services and compare pool packages.`,
   },
 };

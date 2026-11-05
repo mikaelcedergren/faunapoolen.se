@@ -9,6 +9,8 @@ import {
   PUBLIC_PAGES,
   GUIDE_SLUGS,
   LEGACY_REDIRECTS,
+  LANGUAGE_LOCALES,
+  publicLanguageFromPath,
 } from '../server/src/public-routes.ts';
 
 const root = resolve(import.meta.dirname, '..');
@@ -33,6 +35,26 @@ function plain(nodes) {
 }
 function read(path) {
   return parser.parse(readFileSync(join(browserRoot, path), 'utf8'), path).rootNodes;
+}
+function webpDimensions(file) {
+  const bytes = readFileSync(file);
+  assert.equal(bytes.toString('ascii', 0, 4), 'RIFF', file);
+  assert.equal(bytes.toString('ascii', 8, 12), 'WEBP', file);
+  for (let offset = 12; offset + 8 <= bytes.length;) {
+    const type = bytes.toString('ascii', offset, offset + 4);
+    const data = offset + 8;
+    if (type === 'VP8X')
+      return [1 + bytes.readUIntLE(data + 4, 3), 1 + bytes.readUIntLE(data + 7, 3)];
+    if (type === 'VP8 ')
+      return [bytes.readUInt16LE(data + 6) & 0x3fff, bytes.readUInt16LE(data + 8) & 0x3fff];
+    if (type === 'VP8L') {
+      const dimensions = bytes.readUInt32LE(data + 1);
+      return [1 + (dimensions & 0x3fff), 1 + ((dimensions >>> 14) & 0x3fff)];
+    }
+    const size = bytes.readUInt32LE(offset + 4);
+    offset += 8 + size + (size % 2);
+  }
+  assert.fail(`No WebP dimensions: ${file}`);
 }
 test('every HTML document, including generated redirects, carries its release identity marker', () => {
   for (const entry of readdirSync(browserRoot, { recursive: true, withFileTypes: true })) {
@@ -109,6 +131,47 @@ const translations = Object.fromEntries(
     JSON.parse(readFileSync(join(root, `src/locale/messages.${locale}.json`), 'utf8')).translations,
   ]),
 );
+test('every canonical page is reachable from its language homepage through initial HTML links', () => {
+  const origin = 'https://faunapoolen.se';
+  const canonicalPaths = new Set(PUBLIC_CANONICAL_PATHS);
+  const outgoing = new Map();
+  for (const path of PUBLIC_CANONICAL_PATHS) {
+    const body = walk(read(pathFile(path)), (node) => node.name === 'body')[0];
+    assert.ok(body, path);
+    const targets = new Set();
+    for (const link of walk(body.children, (node) => node.name === 'a')) {
+      const href = attr(link, 'href');
+      if (!href || (attr(link, 'rel') ?? '').toLowerCase().split(/\s+/).includes('nofollow'))
+        continue;
+      const target = new URL(href, origin + path);
+      if (
+        target.origin === origin &&
+        target.pathname !== path &&
+        canonicalPaths.has(target.pathname) &&
+        publicLanguageFromPath(target.pathname) === publicLanguageFromPath(path)
+      )
+        targets.add(target.pathname);
+    }
+    outgoing.set(path, targets);
+  }
+  for (const locale of PUBLIC_LANGUAGES) {
+    const reached = new Set();
+    const pending = [PUBLIC_PAGES[locale].home];
+    while (pending.length) {
+      const path = pending.pop();
+      if (reached.has(path)) continue;
+      reached.add(path);
+      pending.push(...outgoing.get(path));
+    }
+    assert.deepEqual(
+      PUBLIC_CANONICAL_PATHS.filter(
+        (path) => publicLanguageFromPath(path) === locale && !reached.has(path),
+      ),
+      [],
+      `${locale}: canonical pages need a crawlable route from the homepage, independent of sitemap and hreflang discovery`,
+    );
+  }
+});
 for (const locale of PUBLIC_LANGUAGES) {
   for (const [page, path] of Object.entries(PUBLIC_PAGES[locale])) {
     test(`${locale}: ${page} uses English page slugs and localized SEO before JavaScript`, () => {
@@ -200,6 +263,17 @@ for (const locale of PUBLIC_LANGUAGES) {
     assert.equal(walk(nodes, (node) => node.name === 'fp-guide-prices').length, 1);
     const prices = walk(nodes, (node) => attr(node, 'id') === 'guide-prices')[0];
     assert.ok(prices, 'Starting-price section is readable and linked from contents');
+    const priceSection = walk(
+      nodes,
+      (node) => node.name === 'section' && attr(node, 'aria-labelledby') === 'guide-prices',
+    )[0];
+    const packageItems = walk(priceSection.children, (node) => node.name === 'li');
+    assert.equal(packageItems.length, 3, 'Stable package scope is available before JavaScript');
+    for (const [index, id] of ['glade', 'summer', 'horizon'].entries()) {
+      const text = plain(packageItems[index].children);
+      assert.ok(text.includes(translations[locale][`site.packages.${id}.area`]));
+      assert.ok(text.includes(translations[locale][`site.packages.${id}.description`]));
+    }
     assert.ok(links.some((href) => href.endsWith('#guide-prices')));
     const invitation = walk(
       nodes,
@@ -233,7 +307,7 @@ for (const locale of PUBLIC_LANGUAGES) {
         images.push(image.src);
       }
     }
-    assert.equal(images.length, locale === 'da' ? 9 : 10);
+    assert.equal(images.length, 10);
     assert.equal(
       new Set(images).size,
       images.length,
@@ -282,6 +356,57 @@ for (const locale of PUBLIC_LANGUAGES) {
   });
 }
 for (const path of PUBLIC_CANONICAL_PATHS) {
+  test(`structured data and image metadata describe the rendered page: ${path}`, () => {
+    const nodes = read(pathFile(path));
+    const meta = (property) =>
+      attr(
+        walk(nodes, (node) => node.name === 'meta' && attr(node, 'property') === property)[0],
+        'content',
+      );
+    const scripts = walk(
+      nodes,
+      (node) => node.name === 'script' && attr(node, 'id') === 'fp-jsonld',
+    );
+    assert.equal(scripts.length, 1);
+    const data = JSON.parse(scripts[0].children.map((node) => node.value ?? '').join(''));
+    const canonical = 'https://faunapoolen.se' + path;
+    const page = data['@graph'].find((node) => node['@id'] === `${canonical}#webpage`);
+    assert.ok(page);
+    assert.equal(page.url, canonical);
+    assert.equal(page.inLanguage, LANGUAGE_LOCALES[publicLanguageFromPath(path)]);
+    assert.equal(meta('og:url'), canonical);
+    const image = new URL(meta('og:image'));
+    assert.equal(image.origin, 'https://faunapoolen.se');
+    assert.deepEqual(
+      [Number(meta('og:image:width')), Number(meta('og:image:height'))],
+      webpDimensions(join(browserRoot, image.pathname)),
+      'Preview dimensions match the actual public image',
+    );
+    const organization = data['@graph'].find(
+      (node) => node['@id'] === 'https://faunapoolen.se/#organization',
+    );
+    assert.deepEqual(
+      organization.areaServed.map((area) => area.name),
+      ['Sweden', 'Denmark', 'European Union'],
+    );
+    if (path.includes('/blog/posts/')) {
+      assert.equal(meta('og:type'), 'article');
+      assert.equal(page['@type'], 'BlogPosting');
+      assert.equal(page.headline, plain(walk(nodes, (node) => node.name === 'h1')[0].children));
+      assert.equal(page.mainEntityOfPage, canonical);
+      assert.equal(page.image, image.href);
+      assert.equal(meta('article:published_time'), page.datePublished);
+      assert.equal(meta('article:modified_time'), page.dateModified);
+      assert.equal(page.author['@id'], organization['@id']);
+    } else {
+      assert.equal(page['@type'], 'WebPage');
+      assert.equal(meta('article:published_time'), undefined);
+      assert.equal(meta('article:modified_time'), undefined);
+    }
+    const service = data['@graph'].find((node) => node['@type'] === 'Service');
+    if (service && /\/nature-pools\/(?:pricing\/)?$/.test(path))
+      assert.deepEqual(service.areaServed, organization.areaServed);
+  });
   test(`canonical identity and reciprocal alternates: ${path}`, () => {
     const nodes = read(pathFile(path));
     if (path.includes('/blog/posts/')) {
@@ -343,22 +468,42 @@ for (const path of PUBLIC_CANONICAL_PATHS) {
 }
 
 for (const locale of PUBLIC_LANGUAGES) {
-  test(`${locale}: package shells retain VAT exclusions without freezing editable prices`, () => {
-    const prefix = locale === 'sv' ? '' : locale + '/';
-    const nodes = read(prefix + 'nature-pools/pricing/index.html');
-    const text = plain(nodes);
-    // Current prices belong to the runtime catalogue, never a stale build snapshot.
-    for (const value of [430_000, 1_100_000, 4_400_000]) {
-      const amount = new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: 'SEK',
-        maximumFractionDigits: 0,
-      })
-        .format(value)
-        .replace(/\s+/g, ' ');
-      assert.ok(!text.includes(amount), `Package amount ${amount} is not frozen into HTML`);
+  test(`${locale}: package specifications are prerendered without freezing editable offers`, () => {
+    for (const page of ['home', 'nature-pools', 'pricing']) {
+      const nodes = read(pathFile(PUBLIC_PAGES[locale][page]));
+      const text = plain(nodes);
+      // Current prices belong to the runtime catalogue, never a stale build snapshot.
+      for (const value of [430_000, 1_100_000, 4_400_000]) {
+        const amount = new Intl.NumberFormat(locale, {
+          style: 'currency',
+          currency: 'SEK',
+          maximumFractionDigits: 0,
+        })
+          .format(value)
+          .replace(/\s+/g, ' ');
+        assert.ok(!text.includes(amount), `Package amount ${amount} is not frozen into HTML`);
+      }
+      assert.doesNotMatch(
+        text,
+        /8(?:[\s.,]*8){8}/,
+        'Layout reservations never publish fake prices',
+      );
+      assert.ok(text.includes(translations[locale]['site.editorial.priceScope']));
+      const comparison = walk(nodes, (node) => node.name === 'fp-package-comparison')[0];
+      const cards = walk(comparison.children, (node) => node.name === 'article');
+      assert.equal(cards.length, 3, 'Package scope is readable before the live prices arrive');
+      for (const [index, id] of ['glade', 'summer', 'horizon'].entries()) {
+        const card = cards[index];
+        const text = plain(card.children);
+        for (const field of ['description', 'area', 'depth', 'filtrationSize', 'materials'])
+          assert.ok(
+            text.includes(translations[locale][`site.packages.${id}.${field}`]),
+            `${id}.${field}`,
+          );
+        assert.equal(walk(card.children, (node) => node.name === 'cx-metric').length, 0);
+        assert.equal(walk(card.children, (node) => node.name === 'a').length, 0);
+      }
     }
-    assert.ok(text.includes(translations[locale]['site.editorial.priceScope']));
   });
 }
 

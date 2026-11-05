@@ -52,9 +52,9 @@ export class PricingPage extends SitePage {
   protected readonly images = FAUNAPOOLEN_IMAGES;
   protected readonly copy = FAUNAPOOLEN_COPY;
 
-  // A nine-digit sample covers the catalogue's supported price range. It is
-  // measurement text only, never a displayed or announced offer.
-  protected readonly priceReservation = `${this.copy.common.from} ${this.packageCatalogue.money(888888888)} · ${this.copy.common.priceExclusions}`;
+  // Reserve responsive space with truthful text: crawlers may extract the
+  // skeleton's hidden measurement content as well as the live price.
+  protected readonly priceReservation = $localize`:@@site.pricing.priceReservation:Pool starting prices exclude VAT and shipping.`;
   protected readonly priceUnavailable = $localize`:@@packages.priceUnavailable:Price unavailable`;
   protected readonly poolEnquiryHref = this.routeFor('pricing') + '#consultation';
   protected readonly poolEnquiry = POOL_ENQUIRY;

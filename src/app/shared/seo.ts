@@ -10,6 +10,11 @@ import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 
 export const SITE_ORIGIN = 'https://faunapoolen.se';
 const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/assets/images/og-image.jpg`;
+export const SERVICE_AREA = [
+  { '@type': 'Country', name: 'Sweden' },
+  { '@type': 'Country', name: 'Denmark' },
+  { '@type': 'AdministrativeArea', name: 'European Union' },
+] as const;
 
 /** Per-page SEO, carried on each route's `data.seo`. `path` is always the Swedish (root) path. */
 export interface PageSeo {
@@ -29,6 +34,8 @@ export interface PageSeo {
   ogImageHeight?: number;
   /** og:type — 'website' (default) or 'article' for blog posts. */
   ogType?: string;
+  /** Visible article heading; the browser title may include search context and branding. */
+  headline?: string;
   /** Blog posts only: publish date (ISO 8601; date-only is fine). */
   datePublished?: string;
   /** Last significant content change (YYYY-MM-DD); omit when unknown. Also feeds the sitemap. */
@@ -144,12 +151,16 @@ export class SeoTitleStrategy extends TitleStrategy {
     this.meta.updateTag({ property: 'og:image:height', content: String(seo.ogImageHeight ?? 630) });
     if (seo.ogType === 'article' && seo.datePublished) {
       this.meta.updateTag({ property: 'article:published_time', content: seo.datePublished });
-      this.meta.updateTag({
-        property: 'article:modified_time',
-        content: seo.dateModified ?? seo.datePublished,
-      });
     } else {
       this.meta.removeTag("property='article:published_time'");
+    }
+    const modifiedTime = seo.dateModified ?? seo.datePublished;
+    if (seo.ogType === 'article' && modifiedTime) {
+      this.meta.updateTag({
+        property: 'article:modified_time',
+        content: modifiedTime,
+      });
+    } else {
       this.meta.removeTag("property='article:modified_time'");
     }
 
@@ -232,7 +243,7 @@ export class SeoTitleStrategy extends TitleStrategy {
       '@id': `${canonical}#webpage`,
       url: canonical,
       name: title,
-      ...(isArticle ? { headline: title } : {}),
+      ...(isArticle ? { headline: seo.headline ?? title } : {}),
       description,
       inLanguage,
       isPartOf: { '@id': `${siteBase}#website` },
@@ -254,8 +265,8 @@ export class SeoTitleStrategy extends TitleStrategy {
     };
     const graph: object[] = [
       {
-        // Service-area business: designs and builds across Sweden with no public premises, so an
-        // address is deliberately absent.
+        // Service-area business: builds across the EU, primarily Sweden and Denmark. There are
+        // no public premises, so an address is deliberately absent.
         '@type': ['Organization', 'LocalBusiness'],
         '@id': `${SITE_ORIGIN}/#organization`,
         name: 'Faunapoolen AB',
@@ -263,7 +274,7 @@ export class SeoTitleStrategy extends TitleStrategy {
         logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/assets/images/logo.png` },
         image,
         telephone: '+46735406757',
-        areaServed: { '@type': 'Country', name: 'Sweden' },
+        areaServed: SERVICE_AREA,
       },
       {
         '@type': 'WebSite',

@@ -5,7 +5,7 @@ import { sitePath } from './site-paths';
 import { activeLanguage, languageBase } from './language';
 import { BLOG_ARTICLES } from './content/blog-catalog';
 import { ARTICLE_LOADERS } from './article-loaders';
-import type { PageSeo } from '../shared/seo';
+import { SERVICE_AREA, type PageSeo } from '../shared/seo';
 const locale = activeLanguage();
 const loaders = {
   home: () => import('./pages/home.page').then((m) => m.HomePage),
@@ -31,8 +31,8 @@ function pageRoute(page: Exclude<FaunapoolenPage, 'guide'>): Route {
     enPath: sitePath(page, 'en'),
     daPath: sitePath(page, 'da'),
     description: PAGE_SEO[page].description,
-    ogImageWidth: page === 'gotland' ? 1920 : 1536,
-    ogImageHeight: page === 'gotland' ? 1920 : 1024,
+    ogImageWidth: page === 'gotland' ? 1400 : 1536,
+    ogImageHeight: page === 'gotland' ? 1400 : 1024,
     ogImage:
       'https://faunapoolen.se/assets/images/faunapoolen/' +
       (page === 'gotland' ? 'gotland/gotland-waterfall.webp' : 'hero-family.webp'),
@@ -59,10 +59,7 @@ function pageRoute(page: Exclude<FaunapoolenPage, 'guide'>): Route {
                 containedInPlace: { '@type': 'Country', name: 'Sweden' },
               },
             ]
-          : [
-              { '@type': 'Country', name: 'Sweden' },
-              { '@type': 'Country', name: 'Denmark' },
-            ],
+          : SERVICE_AREA,
       },
     ];
   }
@@ -95,6 +92,17 @@ export const siteRoutes: Routes = [
     title: article.seo.title,
     loadComponent: loaders.guide,
     resolve: { bodyHtml: ARTICLE_LOADERS[article.id] },
-    data: { page: 'guide', guide: article.id, seo: article.seo, locale },
+    data: {
+      page: 'guide',
+      guide: article.id,
+      seo: {
+        ...article.seo,
+        ogType: 'article',
+        headline: article.title,
+        ogImageWidth: article.imageWidth,
+        ogImageHeight: article.imageHeight,
+      } satisfies PageSeo,
+      locale,
+    },
   })),
 ];

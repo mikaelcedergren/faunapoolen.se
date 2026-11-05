@@ -36,15 +36,15 @@ export const BODY_HTML = $localize`:@@blog.difference.bodyHtml:<h2>What is a nat
 <p>Compare quotations for the same swimming area, site conditions and scope of work. Filtration, excavation, access, materials and the surrounding garden all affect the installation cost. A natural pool avoids routine chlorine purchases, but that alone does not determine which pool costs less to run.</p>
 <p>Budget for circulation, any heating, equipment care and seasonal work in either case. Ask what you will need to do yourself and what professional servicing costs. The total depends on the installation and how you use it, rather than the pool type alone.</p>
 <p>Our <a href="/en/blog/posts/naturpool-pris.html">nature pool price guide</a> explains the difference between material costs and a complete installation. See <a href="/en/nature-pools/pricing/">current package prices</a> for a pool we build for you.</p>
-<h2>Building a natural pool – what should you consider?</h2>
-<p>If you are considering building a natural pool, it is important to think through both design and function. Natural pools can be designed in many different ways, from modern geometric shapes to more organic and pond-like solutions. Regardless of style, it is important to ensure good water flow and choose the right plants.</p>
-<h3>Here’s how you can build a natural pool:</h3>
+<h2>Compare the proposed systems, not just the pool names</h2>
+<p>Two pools described as natural can use different filtration layouts and equipment. Ask each supplier to explain how the proposed system treats the water, which checks it needs and who will carry out the care. Compare those answers with the conventional pool you are considering.</p>
 <ul>
-<li>Plan size and design – Do you want a modern pool or a more natural bathing area at home?</li>
-<li>Choose the right plants – These act as natural filters and help keep the water clean.</li>
-<li>Build a stable structure – A well-planned natural pool lasts for many years without major renovation needs.</li>
-<li>Optimize water flow – The placement of filtration zones and plants plays an important role in water quality.</li>
+<li><strong>Swimming and space:</strong> compare usable swimming dimensions, depth, access and the complete footprint, including filtration and equipment.</li>
+<li><strong>Water treatment:</strong> ask about filtration, circulation, any dosing and the water-quality monitoring plan for the actual installation.</li>
+<li><strong>Care and ownership:</strong> compare routine tasks, seasonal work, electricity, consumables and the scope of any service agreement.</li>
+<li><strong>Heating and protection:</strong> discuss the temperature and swimming season you want, suitable covers and protection around the water.</li>
 </ul>
+<p>Ask what is included in the quotation, what remains your responsibility and which site conditions could change the work. A pool's appearance or treatment label does not establish its lifetime, total cost or suitability for your property.</p>
 <h2>Is a natural pool the right choice for you?</h2>
 <p>A natural pool can suit you if you want to swim without routine chlorine treatment and enjoy water as part of a planted garden. Choose it with a clear understanding of the space, upkeep and seasonal changes involved. A conventional pool may suit you better if you prefer its appearance and water-treatment routine.</p>
 <p>Compare the complete installation, the care plan and the running costs before deciding. Faunapoolen can help you assess whether a natural pool fits your garden and the way you want to swim.</p>

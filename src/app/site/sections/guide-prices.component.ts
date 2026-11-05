@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CxStateMessageComponent } from '@mikaelcedergren/cx-framework';
-import { FAUNAPOOLEN_COPY } from '../content/faunapoolen-content';
+import {
+  FAUNAPOOLEN_COPY,
+  FAUNAPOOLEN_PACKAGES,
+  type FaunapoolenPackage,
+} from '../content/faunapoolen-content';
 import { PublicPackageCatalogue } from '../package-catalogue';
 
 export const GUIDE_PRICE_HEADING = $localize`:@@site.guidePrices.heading:What does a nature pool cost?`;
@@ -23,16 +27,20 @@ export const GUIDE_PRICE_HEADING = $localize`:@@site.guidePrices.heading:What do
           [action]="{ text: retry }"
           (action)="catalogue.reload()"
         />
-      } @else {
-        <ul>
-          @for (item of catalogue.packages(); track item.id) {
-            <li>
-              <strong>{{ item.name }}: {{ copy.common.from }} {{ catalogue.price(item) }}</strong
-              >. {{ item.area }}. {{ item.description }}
-            </li>
-          }
-        </ul>
       }
+      <ul>
+        @for (item of packageSpecifications; track item.id) {
+          @let current = currentPackage(item.id);
+          <li>
+            @if (current) {
+              <strong
+                >{{ current.name }}: {{ copy.common.from }} {{ catalogue.price(current) }}</strong
+              >.
+            }
+            {{ item.area }}. {{ item.description }}
+          </li>
+        }
+      </ul>
       <p>{{ exclusions }} {{ qualification }}</p>
     </section>
   `,
@@ -40,6 +48,10 @@ export const GUIDE_PRICE_HEADING = $localize`:@@site.guidePrices.heading:What do
 export class GuidePricesComponent {
   protected readonly catalogue = inject(PublicPackageCatalogue);
   protected readonly copy = FAUNAPOOLEN_COPY;
+  protected readonly packageSpecifications = FAUNAPOOLEN_PACKAGES;
+  protected currentPackage(id: FaunapoolenPackage['id']): FaunapoolenPackage | undefined {
+    return this.catalogue.packages().find((item) => item.id === id);
+  }
   protected readonly heading = GUIDE_PRICE_HEADING;
   protected readonly introduction = $localize`:@@site.guidePrices.introduction:Faunapoolen’s current package starting prices give you a first budget for a pool we design and build. The three sizes help you compare a place for daily dips, swimming together or a larger water garden.`;
   protected readonly qualification = $localize`:@@site.guidePrices.qualification:These are starting prices for the package scope, not a total quotation for your garden. Ground conditions, access and the additional work described below affect the final cost.`;

@@ -406,7 +406,7 @@ test('a lead is measured once after the confirmed retry and never includes conta
 
 for (const [path, settings, reject, details] of [
   ['/en/', 'Cookie settings', 'Reject', 'Cookie details'],
-  ['/', 'Inställningar för kakor', 'Avvisa', 'Om kakor'],
+  ['/', 'Cookieinställningar', 'Avvisa', 'Om cookies'],
   ['/da/', 'Cookieindstillinger', 'Afvis', 'Om cookies'],
 ]) {
   test(`compact cookie notice supports rejection and details at ${path}`, async ({ page }) => {
@@ -454,14 +454,14 @@ test('cookie choices persist between locales and remain reachable on established
   await page.goto('/blog/posts/build-your-own-nature-pool.html');
   const settings = page
     .locator('footer')
-    .getByRole('link', { name: 'Inställningar för kakor', exact: true });
+    .getByRole('link', { name: 'Cookieinställningar', exact: true });
   await expect(settings).toBeVisible();
-  await expect(
-    page.getByRole('region', { name: 'Inställningar för kakor', exact: true }),
-  ).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Cookieinställningar', exact: true })).toHaveCount(
+    0,
+  );
   await settings.click();
   await page
-    .getByRole('region', { name: 'Inställningar för kakor', exact: true })
+    .getByRole('region', { name: 'Cookieinställningar', exact: true })
     .getByRole('button', { name: 'Avvisa', exact: true })
     .click();
   await expect(settings).toBeFocused();

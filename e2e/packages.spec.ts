@@ -159,7 +159,11 @@ test('failed saves keep edits and public read failures never show stale prices',
       exact: true,
     }),
   ).toBeVisible();
-  await expect(page.locator('.fp-package')).toHaveCount(0);
+  const comparison = page.locator('fp-package-comparison');
+  await expect(comparison.locator('.fp-package')).toHaveCount(3);
+  await expect(comparison).toContainText('Starting from 2 m × 2.5 m (5 m²)');
+  await expect(comparison.locator('cx-metric')).toHaveCount(0);
+  await expect(comparison.locator('a')).toHaveCount(0);
   await page
     .locator('fp-package-comparison')
     .screenshot({ path: '/tmp/fauna-packages-unavailable.png' });

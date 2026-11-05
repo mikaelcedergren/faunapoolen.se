@@ -98,7 +98,7 @@ test('a blog post loads', async ({ page }) => {
   expect(res?.status()).toBe(200);
 });
 
-test('English header and footer share navigation and the closing invitation leads to a consultation', async ({
+test('English footer retains primary navigation and adds useful information links', async ({
   page,
 }) => {
   const res = await page.goto('/en/');
@@ -123,7 +123,13 @@ test('English header and footer share navigation and the closing invitation lead
     '/en/about/',
   ]);
   expect(footerLinks).toEqual(expect.arrayContaining(headerLinks));
-  expect(footerLinks).toHaveLength(headerLinks.length);
+  expect(footerLinks).toEqual(
+    expect.arrayContaining([
+      { href: '/en/faq/', text: 'Questions and answers' },
+      { href: '/en/cookies/', text: 'About cookies' },
+    ]),
+  );
+  expect(footerLinks).toHaveLength(headerLinks.length + 2);
   const footer = page.locator('footer');
   await expect(
     footer.getByRole('link', { name: 'Faunapoolen Certified Aquascape Contractor', exact: true }),

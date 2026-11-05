@@ -5,6 +5,8 @@ export interface BlogArticle {
   readonly title: string;
   readonly intro: string;
   readonly image: string;
+  readonly imageWidth: number;
+  readonly imageHeight: number;
   readonly imageAlt: string;
   readonly summary: string;
   readonly related: readonly FaunapoolenGuideId[];
@@ -17,6 +19,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.naturpool-pris.intro:From the first budget to a clearer comparison: understand nature pool prices, what our packages include and how your garden shapes the final cost.`,
     image: '/assets/images/guides/naturpool-pris.webp',
     imageAlt: $localize`:@@blog.naturpool-pris.imageAlt:A modest nature pool with decorative stone boulders and planted surroundings beside a cottage garden.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.naturpool-pris.summary:Understand starting prices, included work and site-specific costs before comparing nature pool packages.`,
     related: [
       'vad-kostar-det-att-aga-en-naturpool',
@@ -45,6 +49,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.naturpool-10-vanliga-fragor.intro:What does a nature pool cost, how much care does it need and can the water be heated? Find clear answers to ten common questions about planning, building and living with a nature pool in Sweden.`,
     image: '/assets/images/guides/naturpool-10-vanliga-fragor.webp',
     imageAlt: $localize`:@@blog.naturpool-10-vanliga-fragor.imageAlt:A nature pool at dusk with a lantern and a blanket on the stone edge beside the water.`,
+    imageWidth: 1672,
+    imageHeight: 941,
     summary: $localize`:@@blog.naturpool-10-vanliga-fragor.summary:Ten answers about nature pool prices, disadvantages, DIY construction, maintenance, filtration, heating, space, permissions, mosquitoes and winter.`,
     related: [
       'build',
@@ -73,6 +79,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.varma-upp-naturpool.intro:Warmer morning swims or a longer season? Explore heating, heat pumps, covers and running costs, and what needs to work with your pool’s biological filtration.`,
     image: '/assets/images/guides/varma-upp-naturpool.webp',
     imageAlt: $localize`:@@blog.varma-upp-naturpool.imageAlt:An outdoor heat pump on a dry base beside a nature pool in an autumn garden.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.varma-upp-naturpool.summary:Plan warmer swims around your filtration system, cover and budget, with a realistic view of the season you want.`,
     related: [
       'vad-kostar-det-att-aga-en-naturpool',
@@ -101,6 +109,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.din-naturpool-skotsel-efter-installation.intro:The installation is finished and your nature pool is ready for everyday life. Here is what to check, what to clean and what you can leave to the living filter, with help from us whenever you need it.`,
     image: '/assets/images/guides/din-naturpool-skotsel-efter-installation.webp',
     imageAlt: $localize`:@@blog.din-naturpool-skotsel-efter-installation.imageAlt:A leaf skimmer lifting fallen leaves from the water beside a timber pool deck.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.din-naturpool-skotsel-efter-installation.summary:Keep this checklist for everyday checks, weekly cleaning and seasonal tasks—or arrange a little help from us.`,
     related: [
       'skotsel-av-naturpool-under-aret',
@@ -130,6 +140,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.naturpool-i-sodra-sverige.intro:Planning a nature pool in Skåne, Halland, Blekinge or Småland? Start with how you want to swim, the space around your home and a realistic budget. Here is what to consider when commissioning a pool designed for your garden.`,
     image: '/assets/images/guides/naturpool-i-sodra-sverige.webp',
     imageAlt: $localize`:@@blog.naturpool-i-sodra-sverige.imageAlt:A natural swimming pond in a southern Swedish garden, with fields and a red cottage beyond.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.naturpool-i-sodra-sverige.summary:Ground conditions, space and budget shape the plan for a garden pool in Skåne, Halland, Blekinge or Småland.`,
     related: [
       'hur-mycket-plats-behover-en-naturpool',
@@ -154,11 +166,13 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
   },
   {
     id: 'build',
-    title: $localize`:@@blog.build.title:Building a nature pool – how to do it yourself`,
-    intro: $localize`:@@blog.build.intro:Building a nature pool yourself is a dream for many who want to create a unique, eco-friendly, and harmonious place in their garden. A nature pool not only offers a swimming experience free from chemicals but also becomes an aesthetic part of the garden that blends into nature. Constructing a nature pool can seem like a big challenge, but it is possible with the right planning and knowledge. In this guide, you will learn how to do it, what risks exist, and how to avoid common mistakes.`,
+    title: $localize`:@@blog.build.title:Building a nature pool yourself: planning, stages and costs`,
+    intro: $localize`:@@blog.build.intro:A DIY nature pool needs a complete plan for the ground, swimming area, filtration and safety. Understand the construction stages, decide where specialist help is needed and budget for the whole installation before you start.`,
     image: '/assets/images/guides/build.webp',
     imageAlt: $localize`:@@blog.build.imageAlt:A lined pool basin under construction, with stone, a shovel and a wheelbarrow beside it.`,
-    summary: $localize`:@@blog.build.summary:Understand the construction stages, ground preparation and filtration decisions before taking on your own pool build.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
+    summary: $localize`:@@blog.build.summary:Plan a self-build around the site, filtration, safety and complete budget, with clear responsibilities for specialist work.`,
     related: [
       'why-you-should-get-a-natural-pool',
       '5-common-problems-installing-a-nature-pool',
@@ -168,12 +182,12 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       'naturpool-fran-forsta-samtal-till-bad',
     ],
     seo: {
-      title: $localize`:@@blog.build.seo.title:Build your own natural pool: steps and costs | Faunapoolen`,
+      title: $localize`:@@blog.build.seo.title:Build your own natural pool: planning and costs | Faunapoolen`,
       path: '/blog/posts/build-your-own-nature-pool.html',
-      keywords: $localize`:@@blog.build.seo.keywords:nature pool, custom pools, build nature pool, chemical-free pool, natural pool, organic pool, water landscape, sustainable pool, pool design, pool installation, garden design, pool maintenance, chemical-free water landscapes, fountains, aquascape, aquascape pools`,
-      description: $localize`:@@blog.build.seo.description:Planning to build a natural pool yourself? Learn about excavation, liners, filtration, material costs and common mistakes before you start.`,
-      ogTitle: $localize`:@@blog.build.seo.ogTitle:Build your own natural pool: steps and costs | Faunapoolen`,
-      ogDescription: $localize`:@@blog.build.seo.ogDescription:Planning to build a natural pool yourself? Learn about excavation, liners, filtration, material costs and common mistakes before you start.`,
+      keywords: $localize`:@@blog.build.seo.keywords:DIY natural pool, build a natural swimming pool, natural pool planning, natural pool costs`,
+      description: $localize`:@@blog.build.seo.description:Planning a DIY natural pool? Understand the build stages, filtration, safety, specialist work and complete costs before excavating.`,
+      ogTitle: $localize`:@@blog.build.seo.ogTitle:Build your own natural pool: planning and costs | Faunapoolen`,
+      ogDescription: $localize`:@@blog.build.seo.ogDescription:Planning a DIY natural pool? Understand the build stages, filtration, safety, specialist work and complete costs before excavating.`,
       ogImage: 'https://faunapoolen.se/assets/images/guides/build.webp',
       dateModified: '2026-11-05',
       enPath: '/en/blog/posts/build-your-own-nature-pool.html',
@@ -184,9 +198,11 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
   {
     id: 'difference',
     title: $localize`:@@blog.difference.title:Difference between a natural pool and a regular pool – which one should you choose?`,
-    intro: $localize`:@@blog.difference.intro:Having a pool at home is a dream for many. It transforms the garden into a place for relaxation, fun, and refreshing dips on hot summer days. But when choosing a pool, there is an important question to ask: should you build a natural pool or a traditional pool? Both options have their advantages, but if you want a sustainable pool without chemicals, an ecological pool may be the best choice. Here we go through the differences so you can find the right solution for your home!`,
+    intro: $localize`:@@blog.difference.intro:A natural pool and a conventional pool offer different ways to treat the water and enjoy your garden. Compare filtration, space, care and total costs, including the tradeoffs, before deciding which approach suits the way you want to swim.`,
     image: '/assets/images/guides/difference.webp',
     imageAlt: $localize`:@@blog.difference.imageAlt:A rectangular natural swimming pool beside a planted gravel filtration area.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.difference.summary:Compare how the two pool types clean their water, fit into the garden and need to be cared for.`,
     related: [
       'why-you-should-get-a-natural-pool',
@@ -199,12 +215,12 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     seo: {
       title: $localize`:@@blog.difference.seo.title:Natural pool vs conventional pool: differences | Faunapoolen`,
       path: '/blog/posts/difference-between-normal-pool-and-natural-pool.html',
-      keywords: $localize`:@@blog.difference.seo.keywords:nature pool, custom pools, build nature pool, chemical-free pool, natural pool, organic pool, water landscape, sustainable pool, pool design, pool installation, garden design, pool maintenance, chemical-free water landscapes, fountains, aquascape, aquascape pools`,
+      keywords: $localize`:@@blog.difference.seo.keywords:natural pool vs conventional pool, natural pool advantages, natural pool disadvantages, pool filtration and care`,
       description: $localize`:@@blog.difference.seo.description:Compare natural and conventional pools: how they clean the water, the care they need and the costs to consider before choosing a pool for your garden.`,
       ogTitle: $localize`:@@blog.difference.seo.ogTitle:Natural pool vs conventional pool: differences | Faunapoolen`,
       ogDescription: $localize`:@@blog.difference.seo.ogDescription:Compare natural and conventional pools: how they clean the water, the care they need and the costs to consider before choosing a pool for your garden.`,
       ogImage: 'https://faunapoolen.se/assets/images/guides/difference.webp',
-      dateModified: '2026-10-03',
+      dateModified: '2026-11-05',
       enPath: '/en/blog/posts/difference-between-normal-pool-and-natural-pool.html',
       daPath: '/da/blog/posts/difference-between-normal-pool-and-natural-pool.html',
       defaultLanguage: 'sv',
@@ -216,6 +232,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.5-common-problems-installing-a-nature-pool.intro:A successful nature pool starts with the site, the way you want to swim and a system designed for both. These five questions help you judge a proposal before construction begins.`,
     image: '/assets/images/guides/5-common-problems-installing-a-nature-pool.webp',
     imageAlt: $localize`:@@blog.5-common-problems-installing-a-nature-pool.imageAlt:Leaves gathering at a nature pool intake beneath overhanging branches.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.5-common-problems-installing-a-nature-pool.summary:Spot planning mistakes involving filtration, leaves, sealing, circulation and planting before they become pool problems.`,
     related: [
       'how-filtering-works-with-nature-pools',
@@ -249,6 +267,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     image:
       '/assets/images/guides/how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.webp',
     imageAlt: $localize`:@@blog.how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.imageAlt:A golf-course groundskeeper inspecting the planted bank of a pond beside a fairway.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.how-faunapoolen-helps-golf-clubs-manage-ponds-lakes-and-streams.summary:Map each pond’s role, water flow and maintenance needs before deciding what work the course requires.`,
     related: [
       'algae-control-and-maintenance-tips',
@@ -281,6 +301,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.pool-conversions.intro:An existing pool can be a starting point, but its structure, available space and new cleaning system need to work together. Here is what to investigate before deciding on conversion.`,
     image: '/assets/images/guides/pool-conversions.webp',
     imageAlt: $localize`:@@blog.pool-conversions.imageAlt:An existing rectangular garden pool with an open inspection cover beside its edge.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.pool-conversions.summary:Find out what can stay, what may need replacing and how to assess an existing pool for biological filtration.`,
     related: [
       'how-filtering-works-with-nature-pools',
@@ -312,6 +334,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.sports-stars-natural-ponds.intro:If cold bathing is part of your plans, the route to the water and the system’s winter operation matter as much as its appearance. Start with how you want to use the place.`,
     image: '/assets/images/guides/sports-stars-natural-ponds.webp',
     imageAlt: $localize`:@@blog.sports-stars-natural-ponds.imageAlt:A towel beside steps and a handrail leading into a nature pool on a cool morning.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.sports-stars-natural-ponds.summary:Plan the path from house or sauna to water, a practical way in and out, and the limits of winter operation.`,
     related: [
       'skotsel-av-naturpool-under-aret',
@@ -344,6 +368,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     image:
       '/assets/images/guides/can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.webp',
     imageAlt: $localize`:@@blog.can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.imageAlt:A garden shed downpipe connected to a covered rainwater barrel.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.can-i-use-water-storage-solutions-when-traditional-wells-arent-an-option.summary:Match roof collection and storage to your garden’s water needs, with separate checks before using rainwater in a swimming pool.`,
     related: [
       'creating-harmony-intergrating-water-features-with-your-landscape',
@@ -379,6 +405,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     image:
       '/assets/images/guides/creating-harmony-intergrating-water-features-with-your-landscape.webp',
     imageAlt: $localize`:@@blog.creating-harmony-intergrating-water-features-with-your-landscape.imageAlt:A garden path connecting a seating area, planting and a pond.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.creating-harmony-intergrating-water-features-with-your-landscape.summary:Bring paths, seating, planting and water together so the garden works for swimming and everyday life.`,
     related: [
       'small-features-for-small-spaces',
@@ -413,6 +441,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.small-features-for-small-spaces.intro:You do not need a swimming area to enjoy water in the garden. Compare a fountain, a waterfall with a hidden reservoir and a small planted pond, including the space their care needs.`,
     image: '/assets/images/guides/small-features-for-small-spaces.webp',
     imageAlt: $localize`:@@blog.small-features-for-small-spaces.imageAlt:A small stone fountain beside a chair in a compact planted courtyard.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.small-features-for-small-spaces.summary:Choose between a fountain, pondless waterfall and planted pond, with room to enjoy it and look after it.`,
     related: [
       'creating-harmony-intergrating-water-features-with-your-landscape',
@@ -444,6 +474,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.algae-control-and-maintenance-tips.intro:Start by finding out what has changed. The appearance of the algae, recent weather and the way your system is running give more useful clues than choosing a treatment at random.`,
     image: '/assets/images/guides/algae-control-and-maintenance-tips.webp',
     imageAlt: $localize`:@@blog.algae-control-and-maintenance-tips.imageAlt:A close view of string algae along a submerged stone at the edge of a garden pond.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.algae-control-and-maintenance-tips.summary:Learn what green water and string algae can tell you, what to check first and when to ask for help.`,
     related: [
       'how-filtering-works-with-nature-pools',
@@ -476,6 +508,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.how-filtering-works-with-nature-pools.intro:Biological treatment is a system, not a plant added to an ordinary pool. Debris collection, filter surfaces and circulation need to work together, with care suited to the installation.`,
     image: '/assets/images/guides/how-filtering-works-with-nature-pools.webp',
     imageAlt: $localize`:@@blog.how-filtering-works-with-nature-pools.imageAlt:Water flowing through a planted gravel filter beside a natural swimming area.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.how-filtering-works-with-nature-pools.summary:Follow water from debris collection through the biological filter and back to the swimming area.`,
     related: [
       '5-common-problems-installing-a-nature-pool',
@@ -508,6 +542,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.why-you-should-get-a-natural-pool.intro:A morning dip, a seat beside the water or an afternoon together: a nature pool can give the garden a new purpose. Decide how you want to use it, then consider the space, budget and care that go with it.`,
     image: '/assets/images/guides/why-you-should-get-a-natural-pool.webp',
     imageAlt: $localize`:@@blog.why-you-should-get-a-natural-pool.imageAlt:Two adults enjoying breakfast beside a nature pool after a swim.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.why-you-should-get-a-natural-pool.summary:Picture daily swims and time in the garden, alongside the space, budget and care a nature pool needs.`,
     related: [
       'difference',
@@ -540,6 +576,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.hur-mycket-plats-behover-en-naturpool.intro:The swimming area is only part of a natural pool. Treatment, edges, paths and maintenance access all need a place in the garden. Start with how you want to use the water, then assess the whole installation.`,
     image: '/assets/images/guides/hur-mycket-plats-behover-en-naturpool.webp',
     imageAlt: $localize`:@@blog.hur-mycket-plats-behover-en-naturpool.imageAlt:A pool footprint marked with string and a measuring tape on a garden lawn.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.hur-mycket-plats-behover-en-naturpool.summary:Allow room for swimming, filtration, edges and access. A useful sketch includes the whole installation.`,
     related: [
       'naturpool-pris',
@@ -569,6 +607,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.skotsel-av-naturpool-under-aret.intro:A natural pool needs regular attention to leaves, water level, circulation and its surroundings. Use the seasons to organize that work, with the handover plan and equipment instructions deciding exactly what your pool needs.`,
     image: '/assets/images/guides/skotsel-av-naturpool-under-aret.webp',
     imageAlt: $localize`:@@blog.skotsel-av-naturpool-under-aret.imageAlt:An adult preparing a leaf net beside a nature pool among autumn trees.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.skotsel-av-naturpool-under-aret.summary:Work through spring startup, summer checks, autumn leaves and winter preparation with the plan for your installation.`,
     related: [
       'algae-control-and-maintenance-tips',
@@ -597,6 +637,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.naturpool-fran-forsta-samtal-till-bad.intro:A commissioned natural pool starts with how you want to use your garden. Here is how the first conversation, site assessment, proposal, construction and handover fit together, and which decisions need to be made along the way.`,
     image: '/assets/images/guides/naturpool-fran-forsta-samtal-till-bad.webp',
     imageAlt: $localize`:@@blog.naturpool-fran-forsta-samtal-till-bad.imageAlt:A homeowner and garden designer discussing a pool plan at a table in the garden.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.naturpool-fran-forsta-samtal-till-bad.summary:Follow the steps from a site visit and design proposal to construction, handover and your first swim.`,
     related: [
       'naturpool-pris',
@@ -626,6 +668,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.naturpool-sakerhet-och-tillstand.intro:Plan the water, protection and surrounding works together. Before building a natural pool in Sweden, establish which permissions, electrical work and water arrangements apply to the actual property and design.`,
     image: '/assets/images/guides/naturpool-sakerhet-och-tillstand.webp',
     imageAlt: $localize`:@@blog.naturpool-sakerhet-och-tillstand.imageAlt:A closed garden pool gate with a high latch and a clear path to the water beyond.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.naturpool-sakerhet-och-tillstand.summary:Check child protection, electrical work, ground changes and water arrangements before construction begins in Sweden.`,
     related: [
       'hur-mycket-plats-behover-en-naturpool',
@@ -654,6 +698,8 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
     intro: $localize`:@@blog.vad-kostar-det-att-aga-en-naturpool.intro:The installation price is the beginning of the budget. Electricity, water, routine care and eventual repairs shape the cost of ownership. Here is how to estimate those items without relying on a promised annual figure.`,
     image: '/assets/images/guides/vad-kostar-det-att-aga-en-naturpool.webp',
     imageAlt: $localize`:@@blog.vad-kostar-det-att-aga-en-naturpool.imageAlt:A calculator and notebook on a garden table with a nature pool in the background.`,
+    imageWidth: 1536,
+    imageHeight: 1024,
     summary: $localize`:@@blog.vad-kostar-det-att-aga-en-naturpool.summary:Build a running budget for electricity, water, care and repairs, using a worked example with clear assumptions.`,
     related: [
       'naturpool-pris',

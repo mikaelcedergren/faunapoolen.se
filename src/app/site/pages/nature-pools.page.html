@@ -175,7 +175,21 @@
             [heading]="item.question"
             [expandable]="true"
           >
-            <p class="fp-body">{{ item.answer }}</p>
+            <cx-stack gap="md">
+              <p class="fp-body">{{ item.answer }}</p>
+              @if (item.id === 'location') {
+                <nav [attr.aria-label]="regionalGuidesLabel">
+                  <cx-stack gap="sm">
+                    <p class="fp-body">{{ regionalGuidesLabel }}</p>
+                    <cx-inline gap="md">
+                      @for (region of regions; track region.href) {
+                        <a [href]="region.href">{{ region.name }}</a>
+                      }
+                    </cx-inline>
+                  </cx-stack>
+                </nav>
+              }
+            </cx-stack>
           </cx-list-item>
         }
       </cx-list>

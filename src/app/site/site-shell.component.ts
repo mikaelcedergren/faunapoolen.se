@@ -115,13 +115,19 @@ export class SiteShellComponent extends SitePage implements OnInit {
   protected readonly footerGroups = [
     {
       label: $localize`:@@site.footer.explore:Explore`,
-      items: ['nature-pools', 'waterscapes', 'pricing'].map((id) =>
-        this.navItems.find((item) => item.id === id)!,
-      ),
+      items: [
+        ...['nature-pools', 'waterscapes', 'pricing'].map((id) =>
+          this.navItems.find((item) => item.id === id)!,
+        ),
+        this.navItem('faq', $localize`:@@site.footer.faq:Questions and answers`),
+      ],
     },
     {
       label: 'Faunapoolen',
-      items: ['home', 'guides', 'about'].map((id) => this.navItems.find((item) => item.id === id)!),
+      items: [
+        ...['home', 'guides', 'about'].map((id) => this.navItems.find((item) => item.id === id)!),
+        this.navItem('cookies', $localize`:@@site.footer.cookies:About cookies`),
+      ],
     },
   ];
   private readonly router = inject(Router);

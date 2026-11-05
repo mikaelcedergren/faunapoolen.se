@@ -16,7 +16,7 @@ export const FAUNAPOOLEN_COMMERCIAL = {
   swimmingBody: $localize`:@@site.commercial.swimmingBody:A pond or stream gives you a place to spend time beside the water. If swimming is part of your plan, explore a nature pool with a swimming area and filtration designed for that purpose.`,
   gardenGuideLink: $localize`:@@site.commercial.gardenGuideLink:Plan water features with your garden`,
   waterscapeArea: $localize`:@@site.commercial.waterscapeArea:We design water features throughout Sweden and in Denmark. Tell us about your garden and we will discuss the right scope; ponds and streams are quoted individually.`,
-  areaTitle: $localize`:@@site.commercial.areaTitle:Nature pools in southern Sweden`,
+  areaTitle: $localize`:@@site.commercial.areaTitle:Where we build nature pools`,
   pricingTitle: $localize`:@@site.commercial.pricingTitle:What does a nature pool cost?`,
   pricingIntro: $localize`:@@site.commercial.pricingIntro:Choose a starting point for your garden. We’ll help you understand what your site needs and agree a clear scope before you decide.`,
   scopeTitle: $localize`:@@site.commercial.scopeTitle:What does your pool package cover?`,

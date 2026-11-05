@@ -18,7 +18,8 @@
         />
       }
       <cx-grid [columns]="3" [columnsMobile]="1" gap="2xl">
-        @for (item of packageCatalogue.packages(); track item.id) {
+        @for (item of packageSpecifications; track item.id) {
+          @let current = currentPackage(item.id);
           <article class="fp-package">
             <img
               class="fp-package-illustration"
@@ -39,8 +40,10 @@
               loading="lazy"
             />
             <cx-stack gap="md" align="start">
-              <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ item.name }}</h3>
-              <span class="fp-accent-rule" aria-hidden="true"></span>
+              @if (current) {
+                <h3 class="fp-subheading cx-font-serif cx-font-regular">{{ current.name }}</h3>
+                <span class="fp-accent-rule" aria-hidden="true"></span>
+              }
               <div class="cx-editorial">
                 <p>{{ item.description }}</p>
               </div>
@@ -61,21 +64,23 @@
                 </cx-inline>
               }
             </cx-stack>
-            <cx-stack class="fp-package-actions" gap="lg" align="start">
-              <cx-stack gap="sm" align="start">
-                <cx-metric [label]="copy.common.from" [value]="packageCatalogue.price(item)" />
-                <p class="fp-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
-                <p class="fp-body-sm cx-text-muted">{{ copy.common.travelCosts }}</p>
+            @if (current) {
+              <cx-stack class="fp-package-actions" gap="lg" align="start">
+                <cx-stack gap="sm" align="start">
+                  <cx-metric [label]="copy.common.from" [value]="packageCatalogue.price(current)" />
+                  <p class="fp-body-lg cx-text-muted">{{ copy.common.priceExclusions }}</p>
+                  <p class="fp-body-sm cx-text-muted">{{ copy.common.travelCosts }}</p>
+                </cx-stack>
+                <cx-button
+                  [text]="copy.common.viewPackage"
+                  mood="accent"
+                  appendIcon="arrow-right"
+                  [href]="interestHref(item.id)"
+                  (click)="choosePackage($event, item.id)"
+                  size="large"
+                />
               </cx-stack>
-              <cx-button
-                [text]="copy.common.viewPackage"
-                mood="accent"
-                appendIcon="arrow-right"
-                [href]="interestHref(item.id)"
-                (click)="choosePackage($event, item.id)"
-                size="large"
-              />
-            </cx-stack>
+            }
           </article>
         }
       </cx-grid>

@@ -32,8 +32,8 @@ export class NaturePoolBenefitsComponent {
         body: $localize`:@@site.poolBenefits.garden.body:Natural stone, planting and a shape suited to your space make your pool feel part of the garden.`,
       },
       {
-        heading: $localize`:@@site.poolBenefits.environment.heading:Reduce your pool’s environmental impact`,
-        body: $localize`:@@site.poolBenefits.environment.body:No water changes are needed, helping save resources while keeping chemical pool treatments out of your garden.`,
+        heading: $localize`:@@site.poolBenefits.environment.heading:Plan for sensible water use`,
+        body: $localize`:@@site.poolBenefits.environment.body:Water recirculates through filtration. Filling, topping up and any water replacement depend on your installation, water conditions and care plan.`,
       },
     ],
   };

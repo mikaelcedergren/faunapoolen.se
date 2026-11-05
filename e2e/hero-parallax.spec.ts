@@ -1,4 +1,6 @@
-import { expect, test } from './test';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { expect, test, type Locator } from './test';
 
 test('hero navigation starts at the final crop and scrolling never changes its scale', async ({
   page,
@@ -114,7 +116,7 @@ for (const width of [1440, 390]) {
   for (const outcome of ['success', 'failure'] as const) {
     test(`pricing reserves the full hero crop during delayed ${outcome} at ${width}px`, async ({
       page,
-    }) => {
+    }, testInfo) => {
       await page.setViewportSize({ width, height: 900 });
       let release!: () => void;
       const gate = new Promise<void>((resolve) => {
@@ -130,6 +132,40 @@ for (const width of [1440, 390]) {
       const hero = page.locator('cx-hero');
       const loader = hero.locator('cx-skeleton-loader');
       await expect(loader).toHaveAttribute('aria-busy', 'true');
+      const comparison = page.locator('fp-package-comparison');
+      const evidenceDirectory = resolve(import.meta.dirname, '../.run/verification/release-review');
+      await mkdir(evidenceDirectory, { recursive: true, mode: 0o700 });
+      const capture = async (locator: Locator, surface: string, state: string) => {
+        const filename = `en-pricing-${surface}-${outcome}-${state}-${width}.png`;
+        const image = await locator.screenshot({
+          path: testInfo.outputPath(filename),
+          animations: 'disabled',
+        });
+        // The hermetic runtime is removed after the test; retain review evidence with the other captures.
+        await writeFile(resolve(evidenceDirectory, filename), image, { mode: 0o600 });
+      };
+      if (outcome === 'success') {
+        await capture(hero, 'hero', 'pending');
+        for (const image of await comparison.locator('img').all()) {
+          await image.scrollIntoViewIfNeeded();
+          await expect
+            .poll(() =>
+              image.evaluate(
+                (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
+              ),
+            )
+            .toBe(true);
+        }
+        await capture(comparison, 'packages', 'pending');
+        await page.evaluate(
+          () =>
+            new Promise<void>((resolve) => {
+              scrollTo({ top: 0, left: 0, behavior: 'instant' });
+              requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+            }),
+        );
+        await expect(loader).toHaveAttribute('aria-busy', 'true');
+      }
       const geometry = () =>
         hero.evaluate((element) => {
           const bounds = (selector: string) => {
@@ -157,6 +193,8 @@ for (const width of [1440, 390]) {
           );
         }
       }
+      await capture(hero, 'hero', 'settled');
+      await capture(comparison, 'packages', 'settled');
     });
   }
 }

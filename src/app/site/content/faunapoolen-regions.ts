@@ -80,9 +80,9 @@ export const FAUNAPOOLEN_REGIONS = {
 
 export type FaunapoolenRegionId = keyof typeof FAUNAPOOLEN_REGIONS;
 export const REGION_COPY = {
-  coverage: $localize`:@@site.region.shared.coverage:Our work also takes us beyond southern Sweden: we build nature pools throughout Sweden and in Denmark.`,
+  coverage: $localize`:@@site.region.shared.coverage:We build nature pools throughout the EU, primarily in Sweden and Denmark. Our work covers all of Sweden, including Skåne, Halland, Blekinge and Småland.`,
   planningTitle: $localize`:@@site.region.shared.planningTitle:Questions to settle before construction`,
-  planningBody: $localize`:@@site.region.shared.planningBody:The sources below are local starting points. Your municipality assesses what applies to your property and proposal; guidance for one place is not a decision for another.`,
+  planningBody: $localize`:@@site.region.shared.planningBody:These questions help you prepare for a conversation with your municipality. What applies depends on your property and proposal; guidance for one place is not a decision for another.`,
   nextTitle: $localize`:@@site.region.shared.nextTitle:From your idea to a considered proposal`,
   nextBody: $localize`:@@site.region.shared.nextBody:Tell us your town or postcode, how you want to use the garden and what you have in mind. In the first free phone conversation, we discuss the possibilities and next step. A site visit is agreed separately and is paid, with the fee credited against installation if you proceed.`,
   packageTitle: $localize`:@@site.region.shared.packageTitle:Compare the scale of your project`,

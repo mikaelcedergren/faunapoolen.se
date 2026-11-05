@@ -1,20 +1,21 @@
-# Swedish search and package enquiries
+# Public search and package enquiries
 
-Implementation of [the SEO growth plan](SEO-SWEDISH-GROWTH-PLAN.md), with the owner's corrections of 17 September 2026.
+Current implementation of [the SEO growth plan](SEO-SWEDISH-GROWTH-PLAN.md), reconciled with the owner's service-area and language decisions of 24 October 2026 and the site-wide review of 5 November 2026. Dated records below describe the scope verified at the time; they do not override current product decisions.
 
 ## Product decisions
 
-- Public page slugs are **English in every language**. Swedish stays at `/`, English at `/en/`, Danish at `/da/`. Existing blog slugs are unchanged; the five new guide slugs use Swedish.
-- The offer covers **all Sweden and Denmark**. Skåne, Halland, Blekinge and Småland receive additional search content because they are close to home. EU-wide service is a future ambition.
-- The three current starting prices—430,000 / 1,100,000 / 4,400,000 SEK excluding VAT and shipping—were confirmed by the owner on 2 October 2026 to match the [live package overview](https://faunapoolen.se/pond-packages-landing.html). Starting swimming areas use the same listed dimensions: 3.5 × 5 = 17.5 m², 6 × 4 = 24 m², and 10 × 10 = 100 m². Their existing shared package source owns numbers, swimming areas and inclusions. Site-specific quotations determine final scope and price.
+- Public page slugs are **English in every language**. Swedish stays at `/`; English, Danish, Italian, Spanish, European Portuguese, German and Polish use `/en/`, `/da/`, `/it/`, `/es/`, `/pt/`, `/de/` and `/pl/`. Existing blog slugs and literal `.html` URLs remain unchanged.
+- The offer covers **the whole EU, primarily Sweden and Denmark**. Skåne, Halland, Blekinge and Småland retain regional guidance and remain named in the service-area FAQ. Regional pages do not imply offices or completed projects in those regions.
+- The current public package catalogue at `/api/packages` owns editable package titles and starting prices. Prices remain in SEK, excluding VAT and shipping, and are fetched with `no-store`; builds and editorial documents must not freeze an old price into public HTML. The shared package definitions own dimensions, swimming areas and inclusions. Static package specifications are prerendered, while current prices arrive from the API. Site-specific quotations determine final scope and price.
 - Emotional homepage and nature-pool headlines, real Gotland evidence, the three package choices, free first phone consultation and paid/credited site visit terms stay intact.
-- No database format, private enquiry data, generation setting or production deployment is changed by this work.
+- The owner reconfirmed the existing construction-cost, running-cost and care estimates on 5 November 2026. Their approved values and wording remain unchanged.
+- This SEO change does not alter the database format, private enquiry data or paid-generation setting. Production publication remains a separate action.
 
 These decisions supersede the corresponding draft assumptions in the plan.
 
 ## Routes and content
 
-The shared public catalogue owns 93 canonical paths: fourteen commercial/index page families and seventeen guides in three languages. It also owns fifty-three one-hop aliases, including the previous Swedish/Danish page paths and inherited legacy routes.
+The shared public catalogue owns **288 canonical paths**: fourteen commercial/index page families and twenty-two guides in eight languages. It also owns the one-hop aliases for previous translated page paths and inherited legacy routes. `server/src/public-routes.ts` is the route authority; current tests derive completeness from that catalogue.
 
 | Purpose                        | Swedish-language canonical                                                                            |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------- |
@@ -27,19 +28,19 @@ The shared public catalogue owns 93 canonical paths: fourteen commercial/index p
 | Enquiry                        | `/configure/`                                                                                         |
 | Guides                         | `/blog/` and preserved/new literal `.html` article paths                                              |
 
-The Projects overview has been removed. Its former addresses redirect directly to the localized Gotland case, which remains linked from the start page. Header and footer share one navigation list, including Prices. The footer uses the shared language selector, a logo without a wordmark, email and a Cookie settings link on the alternate surface. The water-image invitation above it links to localized prices.
+The Projects overview has been removed. Its former addresses redirect directly to the localized Gotland case, which remains linked from the start page. Header and footer include Prices. The footer also links to the localized questions-and-answers and cookie-information pages; Cookie settings remains a separate consent action. The footer retains the shared language selector, logo and contact details. The nature-pool page's location FAQ links to all four regional planning guides in its own language.
 
-Prefix the same paths with `/en` or `/da` for the other languages. `/pricing/` and its counterparts go straight to the price hub. Its water-feature quotation section retains the planned `#waterfall` and `#fountains` fragment destinations; fragments cannot be inspected by a server redirect.
+Prefix the same paths with the relevant language root for the other seven languages. `/pricing/` and its counterparts go straight to the price hub. Existing fragment destinations are preserved; fragments cannot be inspected by a server redirect.
 
 All retained main pages have distinct search titles/descriptions and relevant links. The new price hub explains starting prices, cost drivers, total footprint, scope and ownership. Four regional pages use actual local authority guidance and accurately located Gotland evidence, without invented offices or local projects. The guide index groups planning, water/care and other garden water subjects.
 
-Ten eligible guides have been rewritten in English, Swedish and Danish. Five additional guides cover space, care through the year, the commissioned build process, Swedish safety/permission questions and ownership costs. Numerical operating-cost examples are explicitly hypothetical, with declared assumptions; they are not a promise about installed equipment or running costs.
+All twenty-two guides have complete bodies, metadata and localized internal links in all eight languages. Their subjects include planning, prices, filtration, space, seasonal care, heating, the commissioned build process, Swedish safety/permission questions and ownership costs. Legal guidance about Sweden remains explicitly scoped to Sweden in translations. Numerical operating-cost examples are hypothetical, with declared assumptions; they are not a promise about installed equipment or running costs.
 
 ## Article editing policy — 3 October 2026
 
 The owner removed the special protection for the DIY and comparison articles. Their bodies,
 headings, introductions, titles, descriptions, imagery and related reading may now be improved
-in all three locales under the ordinary editorial workflow. No separate protection-rule approval
+in all eight locales under the ordinary editorial workflow. No separate protection-rule approval
 is required. Their established URLs, language relationships and indexability retain the same
 continuity checks as other articles.
 
@@ -50,14 +51,14 @@ records in the SEO growth plan and guide reviews. This change does not itself re
 
 ## Enquiry and measurement
 
-Package actions carry their stable choice into the enquiry. Changes to package/service update the non-personal URL state, so refresh and header/footer/suggested-language navigation preserve it. Canonicals stay clean. The form still accepts a conversation without a package and still confirms a lead only after a durable accepted receipt.
+Package actions carry their stable choice into the enquiry. Changes to package/service update the non-personal URL state, so refresh, header/footer navigation and explicit language selection preserve it. Canonicals stay clean. The form still accepts a conversation without a package and still confirms a lead only after a durable accepted receipt.
 
 The existing public GA4 property (`G-E1BFSP43WZ`, property `465257705`, stream `9884717759`)
 has a **disabled production transport pending the launch payload check**. On 3 October 2026,
 the owner authorized the pre-launch measurement work. Google tag user-provided data capabilities
 and automatic history, scroll, outbound-click, form, video and download detection were disabled;
 GA4 enhanced measurement was also switched off. These account settings take effect on the existing
-live tag too. Ordinary page views remain available on the old site.
+live tag too. This historical account review does not establish that the current transport has been reviewed or enabled; Google collection remains disabled in every environment.
 
 The same account review registered `generate_lead` as a key event (once per event, no default
 monetary value) and added four event-scoped custom dimensions: Enquiry landing page
@@ -154,8 +155,7 @@ known `YYYY-MM-DD` date. Articles with a recorded publication date may use that 
 first revision. Unknown dates are omitted. Builds, file timestamps and repository-wide commits
 never refresh sitemap dates. Invalid, future or conflicting dates fail generation.
 
-The DIY and comparison guides record 3 October 2026 for their approved metadata, content and
-contextual-link revisions in all three locales. No original publication date is invented.
+Every guide uses an `Article` node with its visible H1 as `headline`. Known substantive modification dates are emitted independently of publication dates; an unknown original publication date remains omitted. The DIY and comparison guides record 5 November 2026 for the current substantive revisions. Builds do not manufacture freshness.
 
 ### Checks
 
@@ -205,3 +205,53 @@ Editorial references, checked 3 October 2026:
 These references support the biological-system and maintenance explanation, not a quantified
 comparison of costs, health outcomes or environmental impact. No external source blocks were
 added to the public articles.
+
+## Site-wide SEO review and implementation — 5 November 2026
+
+### Observed production baseline
+
+The read-only public crawl covered all 288 canonical URLs. Every URL returned HTTP 200; the crawl checked titles, descriptions, canonical URLs and language alternatives, and found no missing image `alt` attributes. These observations concern the published baseline, not publication of the changes below. A present `alt` attribute is not, by itself, proof of a good image description.
+
+The public link graph identified 48 canonical pages without an incoming link from another public page: the FAQ, cookie-information and four regional page families in eight languages. The sitemap listed them, but the ordinary site navigation did not provide the same discovery paths. A public text fetch also exposed the pricing layout placeholder as a fabricated starting price of 888,888,888 SEK.
+
+### Implemented corrections
+
+- The footer now links to FAQ and cookie information in every locale, independently of the Cookie settings action. The nature-pool location FAQ links to the four regional planning guides. These changes provide public discovery paths for the 48 previously orphaned routes.
+- Package sizes, static specifications and inclusion details are present in prerendered content. Editable titles and prices retain the existing `/api/packages` authority and loading/error behavior; the build does not embed stale prices. The fabricated numeric reservation was replaced by truthful VAT/shipping wording.
+- Image width and height values now match the measured source assets, including the conversion-guide images. Image URLs and real Gotland photography are preserved.
+- All 22 guides emit `Article` structured data with the visible H1 as `headline`. Known modification dates are independent of unknown publication dates; no first-publication date was invented.
+- The DIY article now explains planning, coordination, filtration, construction stages, commissioning and a complete budget. It no longer supplies a universal material-cost floor, filter-area ratio, self-cleaning promise or health guarantee. The comparison article adds a practical checklist for comparing actual proposed systems and responsibilities.
+- Water-use copy describes recirculation, filling, topping up and possible replacement according to the installation and care plan. It no longer promises that water never needs changing. The owner expressly retained the existing cost and care estimates; their approved values and wording remain unchanged.
+- Home/about metadata and service-area wording match EU-wide work, primarily Sweden and Denmark. Regional descriptions reflect the actual planning topic of each page. Danish copy uses the familiar term `svømmesø` alongside `naturpool`, without treating the names as identical technical specifications.
+- English source and all seven translated catalogues contain 809 matching message keys. The revised bodies preserve internal language-specific links, image URLs and Swedish legal geography. The remaining external links in the top-ten guide were removed while their research references remain in [the editorial source record](EDITORIAL-SOURCES.md).
+
+### Search Console observations
+
+The authenticated read-only account review found the sitemap in **Success** state with 288 discovered pages and a last-read date of 4 November 2026. The performance window from 4 August through 3 November 2026 showed 797 clicks and 22,182 impressions. These are baseline totals, not results attributable to this implementation.
+
+Sweden supplied 719 clicks and mobile devices 591 clicks. The Swedish DIY URL was the leading page with 314 clicks and 10,085 impressions. An exact-query Pages report for `naturpool` also placed the DIY article first (84 clicks, 4,334 impressions, average position 7.6), ahead of the comparison article (12 clicks, 894 impressions) and homepage (9 clicks, 391 impressions). This supports preserving the established informational pages and their URLs while improving useful onward links; it does not justify redirecting them to the homepage. Query and page totals use different aggregation and should not be added together. Positions are period averages, and impressions are not market search volume.
+
+The indexing overview still reported 176 crawled-but-not-indexed pages. Direct URL inspections of the FAQ and Portuguese guide index, `/pt/blog/`, instead showed both indexed, with their own canonical URLs and a Googlebot smartphone crawl dated 25 October. The aggregate report and the inspected URLs therefore describe different snapshots. Two inspections do not prove that all canonical pages are indexed, and the older aggregate count must not be treated as 176 newly verified current failures.
+
+Both the Manual actions and Security issues reports showed **No issues detected**. The Core Web Vitals report dated 3 November showed no categorized mobile URLs and insufficient desktop usage data. These results do not establish a field-performance pass. A public PageSpeed API request was rate-limited (HTTP 429), so no new Lighthouse score is claimed. Existing synthetic browser checks verify pricing-hero geometry during delayed price success and failure at desktop and mobile widths; they are not substitutes for real-user Core Web Vitals.
+
+Google Analytics collection remains disabled under the existing live-payload review gate. No measurement transport, account setting, Business Profile, outreach or paid-generation setting was enabled by this SEO implementation.
+
+### Final verification
+
+Catalogue coverage, affected-article HTML structure, localized links, image attributes and whitespace checks passed during implementation. A separate peer reading found no meaning-changing defects in the Swedish, Danish, German and Polish DIY translations or any of the seven translated comparison checklists. The Italian, Spanish and European Portuguese DIY drafts received a separate source/target reading. This is not external native-speaker certification.
+
+`pnpm verify:change --visual` passed on 5 November 2026 in 201.5 seconds: the full repository gate, isolated browser journeys and rendered development homepage. This includes 902 public-artifact checks across all 288 canonicals and 124 browser tests. Formatting, platform, type, translation, server and verification tests passed; the style-token check found zero violations across 185 files. The delayed pricing tests retain their original zero-shift geometry assertions at 1440px and 390px, for successful and failed price responses.
+
+The separate final Custodian review returned **Pass** for the revised desktop pricing, DIY, comparison, guide index, regional guidance, nature-pool page, expanded service-area FAQ and footer. Public-release baseline and current-development screenshots used a 1280 × 720 viewport. Settled viewport captures replaced full-page stitching artifacts on the regional page. Pricing loading, success and error states were reviewed at 1440px and 390px; the Swedish DIY article was also inspected at 367 × 767 with no horizontal overflow. This screenshot review does not claim separate assistive-technology testing or visual inspection of every translated page. All translated canonical HTML, metadata and links are covered by the common artifact checks.
+
+Evidence is retained locally in `.run/verification/seo-2026-11-05/`, `.run/verification/release-review/` and the change-verification receipt. The registered development service was confirmed ready and serves the revised source. No production release, commit or push was performed. Search visibility, traffic and qualified enquiries require subsequent observation after publication; no ranking improvement or position is promised.
+
+### Current Google guidance used
+
+- [SEO fundamentals](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) and [helpful, reliable content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content): clear page purpose, useful original information and evidence for claims.
+- [Technical requirements](https://developers.google.com/search/docs/essentials/technical), [canonicalization](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) and [localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions): accessible content, consistent canonical signals and reciprocal language relationships.
+- [Article structured data](https://developers.google.com/search/docs/appearance/structured-data/article): represent the visible article and its known dates accurately. Structured data does not guarantee a rich result or a higher ranking.
+- [Search Console and Analytics](https://developers.google.com/search/docs/monitor-debug/google-analytics-search-console) and [traffic-drop diagnosis](https://developers.google.com/search/docs/monitor-debug/debugging-search-traffic-drops): distinguish search exposure from on-site behavior, account for seasonality, and assess comparable query/page/country/device groups.
+- [Generative-AI optimization guidance](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide): conventional SEO foundations and useful, distinctive content remain relevant. [Dedicated generative-AI reports](https://developers.google.com/search/blog/2026/06/gen-ai-performance-reports) and [multimodal reporting](https://developers.google.com/search/blog/2026/09/web-multimodal-in-sc) are available for future measurement; their existence is not evidence that Faunapoolen has received those impressions or conversions.
+- [Google's documentation update record](https://developers.google.com/search/updates): FAQ rich results were retired in May 2026. The FAQ page serves readers and internal discovery; this implementation does not promise FAQ rich snippets.
