@@ -98,6 +98,28 @@ The DIY rewrite does not claim that every system needs equal swimming and regene
 
 The older Aquascape contractor article at `https://www.aquascapeinc.com/professionals/blog/contractor-articles/the-most-effective-way-to-filter-pond-water` returned no readable content during this pass. Its historical 3 October reference is not renewed as checked evidence for this revision.
 
+### DIY search-intent and commissioning revision — 5 November 2026
+
+The owner's accepted purpose is to answer self-build questions usefully, explain the complete
+undertaking and lead interested readers into Faunapoolen's commissioned pool offer. The article
+does not offer DIY advice, kits, design-only work or support for someone else's construction.
+
+- [Aquascape wetland installation instructions](https://www.aquascapeinc.com/instructions/wetland-system)
+  — prefiltration, microbial filter media, accessible sediment cleanout and planned return flow.
+  Together with the recreational-pond guide above, this supports the illustrative water-flow
+  sequence; it is not a universal system specification or proof of bathing-water quality.
+- [Elsäkerhetsverket: why use a registered electrical company](https://elsakerhetsverket.se/privatpersoner/anlita-ett-elinstallationsforetag/varfor-anlita-ett-registrerat-elforetag/)
+  — check registration and the appropriate activity type for commissioned work in Sweden.
+- The current Boverket guidance above governs pool safety. Do not reuse an older municipal
+  20-centimetre depth threshold as a safety exemption.
+
+The worked 6 × 3 × 1.5 metre example is arithmetic for an imagined rectangular swimming area:
+18 square metres and 27 cubic metres (27,000 litres). It is neither a construction design nor a
+Faunapoolen package specification, excavation quantity or cost quotation. Budget guidance uses
+quantities, written quotations and complete scope instead of inventing a universal DIY price.
+Gotland links refer to the existing authentic case study, without attributing hypothetical costs
+or construction details to that project. Research references stay in this editorial record.
+
 ## Water-use copy — reviewed 5 November 2026
 
 Applies to `src/app/site/sections/nature-pool-benefits.component.ts` and its translations.

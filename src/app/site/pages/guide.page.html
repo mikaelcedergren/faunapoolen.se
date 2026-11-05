@@ -45,13 +45,13 @@
             @if (isBuildGuide) {
               <cx-stack gap="md" align="start">
                 <cx-button
-                  [text]="buildPrices"
-                  [href]="routeFor('pricing')"
+                  [text]="buildExplore"
+                  [href]="routeFor('nature-pools')"
                   mood="accent"
                   size="large"
                   appendIcon="arrow-right"
                 />
-                <a [href]="routeFor('pricing') + '#consultation'">{{ buildEnquiry }}</a>
+                <a [href]="routeFor('pricing')">{{ buildPrices }}</a>
               </cx-stack>
             }
           </cx-stack>

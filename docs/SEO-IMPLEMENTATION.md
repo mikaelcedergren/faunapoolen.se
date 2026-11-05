@@ -51,6 +51,13 @@ records in the SEO growth plan and guide reviews. This change does not itself re
 
 ## Enquiry and measurement
 
+The DIY nature-pool guide answers self-build searches and leads interested readers into the
+commissioned-build offer. Its closing actions open the nature-pool service and package-pricing
+pages. They do not invite DIY advice, kit enquiries or support for another supplier's design.
+The budget, construction sequence and failure-prevention guidance must be useful before that
+commercial transition. Current package prices remain in the shared catalogue; illustrative
+quantity calculations are not cost quotations or buildable designs.
+
 Package actions carry their stable choice into the enquiry. Changes to package/service update the non-personal URL state, so refresh, header/footer navigation and explicit language selection preserve it. Canonicals stay clean. The form still accepts a conversation without a package and still confirms a lead only after a durable accepted receipt.
 
 The existing public GA4 property (`G-E1BFSP43WZ`, property `465257705`, stream `9884717759`)

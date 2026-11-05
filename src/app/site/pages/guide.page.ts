@@ -45,8 +45,8 @@ import { SiteShellComponent } from '../site-shell.component';
 export class GuidePage extends SitePage {
   protected readonly isPriceGuide = this.guideId === 'naturpool-pris';
   protected readonly isBuildGuide = this.guideId === 'build';
-  protected readonly buildPrices = $localize`:@@site.buildGuide.prices:See pools and prices`;
-  protected readonly buildEnquiry = $localize`:@@site.buildGuide.enquiry:Talk to us about a pool build`;
+  protected readonly buildExplore = $localize`:@@site.buildGuide.explore:Explore the pools we build`;
+  protected readonly buildPrices = $localize`:@@site.buildGuide.prices:Compare packages and starting prices`;
   protected readonly exploreTitle = $localize`:@@site.priceGuide.exploreTitle:Picture a nature pool in your garden`;
   protected readonly exploreBody = $localize`:@@site.priceGuide.exploreBody:Explore the shapes, swimming spaces and everyday life behind the budget.`;
   protected readonly exploreLink = $localize`:@@site.priceGuide.exploreLink:Explore our nature pools`;
