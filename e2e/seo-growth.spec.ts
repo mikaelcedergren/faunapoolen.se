@@ -320,7 +320,7 @@ async function captureMeasurement(page: Page): Promise<MeasurementEvent[]> {
   return events;
 }
 
-test('disabled statistics stays off even when marketing is accepted', async ({ page }) => {
+test('statistics stays off when only marketing is accepted', async ({ page }) => {
   const events = await captureMeasurement(page);
   const marketing = await captureMarketing(page);
   const googleRequests: string[] = [];
@@ -331,9 +331,13 @@ test('disabled statistics stays off even when marketing is accepted', async ({ p
   await page.goto('/en/configure/?package=glade&gclid=synthetic-private-click');
   await expect(page.locator('form textarea')).toBeEnabled();
   const panel = page.getByRole('region', { name: 'Cookie settings' });
-  await expect(panel.getByRole('checkbox')).toHaveCount(0);
+  await expect(panel.getByRole('checkbox')).toHaveCount(2);
   await expect(panel.getByRole('button')).toHaveCount(2);
+  expect(events).toEqual([]);
   expect(marketing).toEqual([]);
+  await expect(panel.getByRole('checkbox', { name: 'Statistics', exact: true })).toBeChecked();
+  await expect(panel.getByRole('checkbox', { name: 'Marketing', exact: true })).toBeChecked();
+  await panel.getByRole('checkbox', { name: 'Statistics', exact: true }).uncheck();
   await panel.getByRole('button', { name: 'Accept', exact: true }).click();
   await expect.poll(() => marketing.length).toBe(1);
   await page.locator('form textarea').fill('Synthetic private enquiry text');
@@ -344,6 +348,56 @@ test('disabled statistics stays off even when marketing is accepted', async ({ p
   expect(googleRequests).toEqual([]);
   expect(await page.evaluate(() => sessionStorage.getItem('fp-analytics-visit'))).toBeNull();
   expect(await page.evaluate(() => localStorage.getItem('fp-analytics-consent-v1'))).toBe('denied');
+});
+
+test('statistics consent persists, excludes private context, and stops after withdrawal', async ({
+  page,
+}) => {
+  const events = await captureMeasurement(page);
+  const marketing = await captureMarketing(page);
+  const external: string[] = [];
+  page.on('request', (request) => {
+    if (/facebook\.(net|com)|google-analytics\.com|googletagmanager\.com/.test(request.url()))
+      external.push(request.url());
+  });
+  await page.goto('/en/configure/?package=glade&gclid=synthetic-private-click');
+  await expect(page.locator('form textarea')).toBeEnabled();
+  const panel = page.getByRole('region', { name: 'Cookie settings' });
+  expect(events).toEqual([]);
+  expect(await page.evaluate(() => sessionStorage.getItem('fp-analytics-visit'))).toBeNull();
+  await expect(panel.getByRole('checkbox', { name: 'Statistics', exact: true })).toBeChecked();
+  await panel.getByRole('checkbox', { name: 'Marketing', exact: true }).uncheck();
+  await panel.getByRole('button', { name: 'Accept', exact: true }).click();
+  await expect.poll(() => events.filter((event) => event.name === 'page_view').length).toBe(1);
+  expect(events[0]).toMatchObject({
+    page_location: 'https://faunapoolen.se/en/configure/',
+    page_referrer: '',
+    landing_path: '/en/configure/',
+    source_group: 'paid',
+  });
+  await page.goto('/en/cookies/');
+  await expect.poll(() => events.filter((event) => event.name === 'page_view').length).toBe(2);
+  expect(events.at(-1)).toMatchObject({ landing_path: '/en/configure/', source_group: 'paid' });
+  expect(marketing).toEqual([]);
+  expect(JSON.stringify(events)).not.toContain('synthetic-private-click');
+  await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
+  await expect(panel.getByRole('checkbox', { name: 'Statistics', exact: true })).toBeChecked();
+  await page.context().addCookies([
+    { name: '_ga', value: 'synthetic-browser', url: new URL('/', page.url()).href },
+    { name: '_ga_E1BFSP43WZ', value: 'synthetic-session', url: new URL('/', page.url()).href },
+  ]);
+  await panel.getByRole('checkbox', { name: 'Statistics', exact: true }).uncheck();
+  await panel.getByRole('button', { name: 'Accept', exact: true }).click();
+  expect(
+    (await page.context().cookies()).filter((cookie) => /^_ga(?:_|$)/.test(cookie.name)),
+  ).toEqual([]);
+  expect(await page.evaluate(() => sessionStorage.getItem('fp-analytics-visit'))).toBeNull();
+  const count = events.length;
+  await page.goto('/en/configure/');
+  await expect(page.locator('form textarea')).toBeEnabled();
+  await page.locator('form textarea').fill('Synthetic private form value');
+  expect(events).toHaveLength(count);
+  expect(external).toEqual([]);
 });
 
 test('a lead is measured once after the confirmed retry and never includes contact data', async ({
@@ -390,8 +444,14 @@ test('a lead is measured once after the confirmed retry and never includes conta
   });
   expect(references).toHaveLength(2);
   expect(references[1]).toBe(references[0]);
-  expect(events).toEqual([]);
-  const serialized = JSON.stringify(marketing);
+  await expect.poll(() => events.filter((event) => event.name === 'generate_lead').length).toBe(1);
+  expect(events.find((event) => event.name === 'generate_lead')).toMatchObject({
+    page_location: 'https://faunapoolen.se/en/configure/',
+    page_referrer: '',
+    landing_path: '/en/configure/',
+    package_id: 'summer',
+  });
+  const serialized = JSON.stringify([...marketing, ...events]);
   for (const value of [
     'Synthetic private name marker',
     'synthetic-private-marker@example.test',
@@ -405,8 +465,8 @@ test('a lead is measured once after the confirmed retry and never includes conta
 });
 
 for (const [path, settings, reject, details] of [
-  ['/en/', 'Cookie settings', 'Reject', 'Cookie details'],
-  ['/', 'Cookieinställningar', 'Avvisa', 'Om cookies'],
+  ['/en/', 'Cookie settings', 'Reject', 'About cookies'],
+  ['/', 'Cookieinställningar', 'Avvisa', 'Om kakor'],
   ['/da/', 'Cookieindstillinger', 'Afvis', 'Om cookies'],
 ]) {
   test(`compact cookie notice supports rejection and details at ${path}`, async ({ page }) => {
@@ -419,12 +479,13 @@ for (const [path, settings, reject, details] of [
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.x + box!.width).toBeLessThanOrEqual(320);
     expect(box!.y + box!.height).toBeLessThanOrEqual(640);
-    await notice.getByRole('link', { name: details, exact: true }).click();
+    await expect(notice.getByRole('link')).toHaveCount(0);
+    await expect(notice.getByRole('button')).toHaveCount(2);
+    await expect(notice.getByRole('checkbox').nth(0)).toBeChecked();
+    await expect(notice.getByRole('checkbox').nth(1)).toBeChecked();
+    await notice.getByRole('button', { name: reject, exact: true }).click();
+    await page.locator('footer').getByRole('link', { name: details, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(`${path}cookies/?$`));
-    await page
-      .getByRole('region', { name: settings, exact: true })
-      .getByRole('button', { name: reject, exact: true })
-      .click();
     await expect(notice).toHaveCount(0);
     await page.reload();
     await expect(
@@ -503,8 +564,8 @@ test('marketing has independent consent, persists across locales, and stops afte
   });
   await page.goto('/en/cookies/');
   const panel = page.getByRole('region', { name: 'Cookie settings' });
-  await expect(panel.getByRole('checkbox')).toHaveCount(0);
-  await expect(panel.getByRole('button', { name: 'Choose cookies', exact: true })).toHaveCount(0);
+  await expect(panel.getByRole('checkbox')).toHaveCount(2);
+  await expect(panel.getByRole('button')).toHaveCount(2);
   expect(marketing).toEqual([]);
   await panel.getByRole('button', { name: 'Accept', exact: true }).click();
   await expect.poll(() => marketing.length).toBe(1);
@@ -513,7 +574,7 @@ test('marketing has independent consent, persists across locales, and stops afte
   await expect(page.locator('form textarea')).toBeEnabled();
   await expect.poll(() => marketing.length).toBe(2);
   expect(marketing.at(-1)).toEqual({ name: 'PageView', path: '/da/configure/' });
-  expect(statistics).toHaveLength(statisticsCount);
+  await expect.poll(() => statistics.length).toBeGreaterThan(statisticsCount);
   await page.goto('/en/cookies/');
   await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
   await expect(panel.getByRole('button', { name: 'Reject', exact: true })).toBeFocused();
@@ -532,7 +593,7 @@ test('marketing has independent consent, persists across locales, and stops afte
   expect(marketing).toHaveLength(count);
   expect(JSON.stringify(marketing)).not.toContain('synthetic-marker');
   expect(external).toEqual([]);
-  expect(statisticsCount).toBe(0);
+  expect(statisticsCount).toBeGreaterThan(0);
 });
 
 test('rejection never grants marketing and private routes never emit Meta events', async ({
@@ -545,6 +606,8 @@ test('rejection never grants marketing and private routes never emit Meta events
   expect(await page.evaluate(() => localStorage.getItem('fp-marketing-consent-v1'))).toBe('denied');
   expect(marketing).toEqual([]);
   await page.locator('footer').getByRole('link', { name: 'Cookie settings', exact: true }).click();
+  await expect(panel.getByRole('checkbox', { name: 'Marketing', exact: true })).not.toBeChecked();
+  await panel.getByRole('checkbox', { name: 'Marketing', exact: true }).check();
   await panel.getByRole('button', { name: 'Accept', exact: true }).click();
   await expect.poll(() => marketing.length).toBe(1);
   await page.goto('/en/admin/');

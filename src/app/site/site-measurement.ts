@@ -25,9 +25,9 @@ type MeasurementWindow = Window & {
 const KEY = 'fp-analytics-consent-v1';
 // Existing public GA4 property. Advertising tags are intentionally not activated by analytics consent.
 const PROPERTY = 'G-E1BFSP43WZ';
-// Account-side automatic collection was disabled on 3 October 2026.
-// Keep transport closed until launch verification checks the actual Google payloads.
-const GOOGLE_COLLECTION_REVIEWED: boolean = false;
+// Account-side collection restrictions were rechecked on 6 November 2026.
+// The owner authorized the enabled release for controlled live payload verification.
+const GOOGLE_COLLECTION_REVIEWED: boolean = true;
 const paths = new Set(PUBLIC_CANONICAL_PATHS);
 const sourceGroups = ['direct', 'internal', 'search', 'referral', 'paid'] as const;
 type SourceGroup = (typeof sourceGroups)[number];
@@ -73,8 +73,8 @@ export class SiteMeasurement {
     this.initialized = true;
     const hostname = this.document.defaultView.location.hostname;
     this.available.set(
-      GOOGLE_COLLECTION_REVIEWED &&
-        ['localhost', '127.0.0.1', '[::1]', 'faunapoolen.se'].includes(hostname),
+      ['localhost', '127.0.0.1', '[::1]'].includes(hostname) ||
+        (GOOGLE_COLLECTION_REVIEWED && hostname === 'faunapoolen.se'),
     );
     if (!this.available()) return;
     try {

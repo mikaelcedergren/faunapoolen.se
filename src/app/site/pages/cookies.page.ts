@@ -80,6 +80,6 @@ export class CookiesPage extends SitePage {
   protected readonly consentStorage = $localize`:@@cookies.consentStorage:fp-analytics-consent-v1: local storage containing only your allow or reject choice. It remains until you change it or clear this website's browser data. It is not sent to Google.`;
   protected readonly visitStorage = $localize`:@@cookies.visitStorage:fp-analytics-visit: optional session storage for your landing page and broad source category. Used only after acceptance, removed when you reject statistics or end the browser session.`;
   protected readonly withdrawalTitle = $localize`:@@cookies.withdrawalTitle:Changing your choice`;
-  protected readonly withdrawal = $localize`:@@cookies.withdrawal:Open cookie settings in the footer of any public page. Deselect statistics and save your choices to stop future analytics events and remove this website's Google Analytics cookies and visit context. This does not undo statistics already sent. You can also clear saved choices through your browser.`;
+  protected readonly withdrawal = $localize`:@@cookies.withdrawal:Open cookie settings in the footer of any public page. Deselect statistics and choose Accept to stop future analytics events and remove this website's Google Analytics cookies and visit context. This does not undo statistics already sent. You can also clear saved choices through your browser.`;
   protected readonly contact = $localize`:@@cookies.contact:For questions about our use of cookies, contact`;
 }

@@ -240,8 +240,9 @@ Owner: Codex/operator, after explicit launch authorization.
       they are not evidence of the new release's current indexing state.
 - [ ] Record launch time, release identities, verification evidence and any accepted limitations.
 
-The source still has `GOOGLE_COLLECTION_REVIEWED = false`. Account setup and local consent tests
-are preparation; they do not prove production enquiry tracking. Full measurement sign-off remains
+The owner authorized publishing `GOOGLE_COLLECTION_REVIEWED = true` on 6 November 2026 to
+complete the controlled live check. Account setup and local consent tests alone do not prove
+production enquiry tracking. Full measurement sign-off remains
 open until the real transport passes the launch check. Google indexing itself can happen later
 and is not a condition for the website to serve customers.
 

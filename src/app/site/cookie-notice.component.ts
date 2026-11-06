@@ -57,7 +57,7 @@ import { SiteMarketing } from './site-marketing';
         <cx-stack class="cx-p-md" gap="md">
           <h2 class="cookie-heading">{{ title }}</h2>
           <p class="cx-text-body">{{ measurement.available() ? body : metaBody }}</p>
-          @if (settingsOpen() && measurement.available()) {
+          @if (measurement.available()) {
             <cx-checkbox
               [text]="statistics"
               [hint]="statisticsHint"
@@ -65,7 +65,7 @@ import { SiteMarketing } from './site-marketing';
               (selectedChange)="statisticsSelected.set($event)"
             />
           }
-          @if (settingsOpen() && measurement.available() && marketing.available()) {
+          @if (marketing.available()) {
             <cx-checkbox
               [text]="marketingLabel"
               [hint]="marketingHint"
@@ -77,14 +77,6 @@ import { SiteMarketing } from './site-marketing';
             <cx-button [text]="reject" (click)="choose(false)" />
             <cx-button [text]="accept" mood="accent" (click)="choose(true)" />
           </cx-inline>
-          <cx-inline gap="sm" [wrap]="true">
-            @if (measurement.available() && settingsOpen()) {
-              <cx-button [text]="save" (click)="saveChoices()" />
-            } @else if (measurement.available()) {
-              <cx-button [text]="customize" (click)="showChoices()" />
-            }
-            <a [href]="detailsHref()">{{ details }}</a>
-          </cx-inline>
         </cx-stack>
       </cx-popover>
     }
@@ -94,8 +86,8 @@ export class CookieNoticeComponent {
   readonly detailsHref = input.required<string>();
   protected readonly measurement = inject(SiteMeasurement);
   protected readonly marketing = inject(SiteMarketing);
-  protected readonly statisticsSelected = signal(false);
-  protected readonly marketingSelected = signal(false);
+  protected readonly statisticsSelected = signal(true);
+  protected readonly marketingSelected = signal(true);
   private readonly document = inject(DOCUMENT);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
@@ -107,21 +99,18 @@ export class CookieNoticeComponent {
   protected readonly settings = $localize`:@@site.measurement.settings:Cookie settings`;
   protected readonly title = $localize`:@@site.measurement.title:Cookies`;
   protected readonly metaBody = $localize`:@@site.measurement.metaBody:Allow marketing cookies to measure our ads and personalise advertising? Your website activity is shared with our advertising partner. Change your choice anytime.`;
-  protected readonly body = $localize`:@@site.measurement.body:Optional cookies help us understand visits and enquiries and let Meta measure and personalise advertising. Change your choices anytime.`;
+  protected readonly body = $localize`:@@site.measurement.body:Optional cookies help us understand visits and enquiries and improve our marketing. Change your choices anytime.`;
   protected readonly reject = $localize`:@@site.measurement.decline:Reject`;
   protected readonly accept = $localize`:@@site.measurement.allow:Accept`;
-  protected readonly save = $localize`:@@site.measurement.save:Save choices`;
-  protected readonly customize = $localize`:@@site.measurement.customize:Choose cookies`;
   protected readonly statistics = $localize`:@@site.measurement.statistics:Statistics`;
   protected readonly statisticsHint = $localize`:@@site.measurement.statisticsHint:Google Analytics helps us understand visits and enquiries.`;
   protected readonly marketingLabel = $localize`:@@site.measurement.marketing:Marketing`;
-  protected readonly marketingHint = $localize`:@@site.measurement.marketingHint:Meta measures ad results and personalises advertising using your visits and enquiries.`;
-  protected readonly details = $localize`:@@site.measurement.details:Cookie details`;
+  protected readonly marketingHint = $localize`:@@site.measurement.marketingHint:Measure ad results and personalise advertising using your visits and enquiries.`;
 
   constructor() {
     effect(() => {
-      this.statisticsSelected.set(this.measurement.preference() === 'allowed');
-      this.marketingSelected.set(this.marketing.preference() === 'allowed');
+      this.statisticsSelected.set(this.measurement.preference() !== 'denied');
+      this.marketingSelected.set(this.marketing.preference() !== 'denied');
     });
     afterNextRender(() => {
       const root = this.document.documentElement;
@@ -148,8 +137,8 @@ export class CookieNoticeComponent {
 
   openSettings(event: Event): void {
     event.preventDefault();
-    this.statisticsSelected.set(this.measurement.preference() === 'allowed');
-    this.marketingSelected.set(this.marketing.preference() === 'allowed');
+    this.statisticsSelected.set(this.measurement.preference() !== 'denied');
+    this.marketingSelected.set(this.marketing.preference() !== 'denied');
     this.opener.set(
       event.target instanceof HTMLElement
         ? (event.target.closest<HTMLElement>('button, a') ?? event.target)
@@ -174,23 +163,11 @@ export class CookieNoticeComponent {
     );
   }
 
-  protected showChoices(): void {
-    this.settingsOpen.set(true);
-    afterNextRender(
-      () => this.popover()?.surfaceElement()?.querySelector<HTMLInputElement>('input')?.focus(),
-      { injector: this.injector },
-    );
-  }
-
-  protected saveChoices(): void {
-    this.measurement.choose(this.statisticsSelected() ? 'allowed' : 'denied');
-    this.marketing.choose(this.marketingSelected() ? 'allowed' : 'denied');
-    this.settingsOpen.set(false);
-  }
-
   protected choose(allow: boolean): void {
-    this.measurement.choose(allow && this.measurement.available() ? 'allowed' : 'denied');
-    this.marketing.choose(allow ? 'allowed' : 'denied');
+    const statistics = allow && this.measurement.available() && this.statisticsSelected();
+    const marketing = allow && this.marketing.available() && this.marketingSelected();
+    this.measurement.choose(statistics ? 'allowed' : 'denied');
+    this.marketing.choose(marketing ? 'allowed' : 'denied');
     this.settingsOpen.set(false);
   }
 
